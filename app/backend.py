@@ -25,7 +25,9 @@ import os
 
 
 app = FastAPI()
-app.mount("/pricer", StaticFiles(directory="/Users/borjagarcia/Coursera/option-pricer/frontend/dist"), name="pricer")
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+pricer_dir = os.path.join(base_dir, "option-pricer", "frontend", "dist")
+app.mount("/pricer", StaticFiles(directory=pricer_dir), name="pricer")
 templates = Jinja2Templates(directory=os.path.dirname(__file__))
 
 app.add_middleware(
@@ -138,7 +140,8 @@ def get_data():
 
     # --- 2. PCA Part ---
     try:
-        data = pd.read_csv('../SwissGovYields.csv', index_col=0)
+        csv_path = os.path.join(base_dir, 'SwissGovYields.csv')
+        data = pd.read_csv(csv_path, index_col=0)
         data.index = pd.to_datetime(data.index, format='%Y %m', errors='ignore')
         try:
             data.index = pd.to_datetime(data.index)

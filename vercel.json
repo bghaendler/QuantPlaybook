@@ -1,0 +1,35 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "app/backend.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "app/index.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "option-pricer/frontend/dist/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "app/backend.py"
+    },
+    {
+      "src": "/calculate",
+      "dest": "app/backend.py"
+    },
+    {
+      "src": "/pricer/(.*)",
+      "dest": "option-pricer/frontend/dist/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "app/index.html"
+    }
+  ]
+}
