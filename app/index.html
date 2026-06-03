@@ -1349,29 +1349,10 @@
            WIP / PENDING ITEMS — Red indicator
            ============================================= */
         .nav-wip {
-            color: #f87171 !important;   /* red-400 */
-            opacity: 0.85 !important;
+            display: none !important;
         }
-        .nav-wip::after {
-            content: '  🚧';
-            font-style: normal;
-            font-size: 0.7em;
-            opacity: 0.8;
-        }
-        .nav-wip:hover {
-            color: #fca5a5 !important;   /* red-300 on hover */
-            opacity: 1 !important;
-            cursor: not-allowed;
-        }
-        /* Also dim the parent summary when ALL children are WIP */
-        .nav-section-title.all-wip {
-            color: #f87171 !important;
-            opacity: 0.75;
-        }
-        .nav-section-title.all-wip::after {
-            content: '  🚧';
-            font-size: 0.7em;
-            opacity: 0.8;
+        #section-knowledge-check {
+            display: none !important;
         }
 </style>
 </head>
@@ -5279,15 +5260,13 @@
                 }
             });
 
-            // C) For each nav-level-3 details block, if ALL its nav-items are WIP,
-            //    also dim the summary heading
-            document.querySelectorAll('.sidebar .nav-level-3').forEach(details => {
-                const items = details.querySelectorAll('.nav-item');
+            // C) For each details block in the sidebar, if ALL its sub-items are WIP, hide the block entirely
+            document.querySelectorAll('.sidebar details').forEach(details => {
+                const items = details.querySelectorAll('.nav-item, .nav-model-item');
                 if (items.length === 0) return;
                 const allWip = Array.from(items).every(el => el.classList.contains('nav-wip'));
                 if (allWip) {
-                    const summary = details.querySelector('summary');
-                    if (summary) summary.classList.add('all-wip');
+                    details.style.display = 'none';
                 }
             });
         });
