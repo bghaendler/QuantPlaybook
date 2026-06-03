@@ -109,7 +109,7 @@ const App = () => {
     setLoading(true);
     try {
       const payload = { model: currentModel, ...currentInputs };
-      const response = await axios.post('http://127.0.0.1:8000/calculate', payload);
+      const response = await axios.post('/calculate', payload);
       setData(response.data);
     } catch (error) {
       console.error("Error:", error);

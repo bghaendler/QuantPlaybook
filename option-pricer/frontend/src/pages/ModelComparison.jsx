@@ -56,7 +56,7 @@ const ModelComparison = () => {
         for (const model of MODEL_INFO) {
             try {
                 // Call
-                const callResponse = await fetch('http://localhost:8000/calculate', {
+                const callResponse = await fetch('/calculate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -69,7 +69,7 @@ const ModelComparison = () => {
                 callResults[model.id] = callData.price;
 
                 // Put
-                const putResponse = await fetch('http://localhost:8000/calculate', {
+                const putResponse = await fetch('/calculate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -90,7 +90,7 @@ const ModelComparison = () => {
 
         // Also fetch BSM as reference
         try {
-            const bsmCallResponse = await fetch('http://localhost:8000/calculate', {
+            const bsmCallResponse = await fetch('/calculate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -102,7 +102,7 @@ const ModelComparison = () => {
             const bsmCallData = await bsmCallResponse.json();
             callResults.bsm = bsmCallData.price;
 
-            const bsmPutResponse = await fetch('http://localhost:8000/calculate', {
+            const bsmPutResponse = await fetch('/calculate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
