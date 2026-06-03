@@ -267,13 +267,10 @@
 
         /* Content Width — Notion-style Full Width toggle */
         .main-content-inner {
-            max-width: 960px;
+            max-width: 100%;
             width: 100%;
             margin: 0 auto;
             transition: max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        body.wide-text .main-content-inner {
-            max-width: 100%;
         }
         /* Override any per-template max-width caps when Full Width is on */
         body.wide-text .main-content-inner [style*="max-width"] {
@@ -932,13 +929,15 @@
             flex: 1;
             overflow-y: auto;
             position: relative;
-            padding: 3.5rem 4rem;
+            /* Standard mode: generous side padding creates a Notion-style centered column */
+            padding: 3.5rem max(2rem, calc(50% - 420px));
             scroll-behavior: smooth;
             background: var(--bg-color);
             color: var(--text-color);
             transition: background 0.3s, color 0.3s, padding 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
         body.wide-text .main-content {
+            /* Full Width mode: minimal padding, content fills the available area */
             padding: 3.5rem 2rem;
         }
 
