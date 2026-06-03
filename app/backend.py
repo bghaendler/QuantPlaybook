@@ -11,9 +11,10 @@ from scipy.stats import norm, multivariate_normal
 from scipy.optimize import brentq
 from fastapi import Body, HTTPException
 from typing import Dict, Any
-from option_engine import OptionEngine
+import sys
 import os
-# Trigger reload after updating sidebar menu structures
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from option_engine import OptionEngine
 
 
 
