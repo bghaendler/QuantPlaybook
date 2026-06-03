@@ -8,395 +8,373 @@
         <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Locking in borrowing rates today using Forward Rate Agreements (FRAs) and resettled Interest Rate Futures contracts, including the convexity adjustment.</div>
     </header>
 
-    <div style="display: flex; flex-direction: column; gap: 2.5rem; max-width: 1400px; margin-bottom: 4rem;">
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
+        <button id="tabFwdTheory" onclick="switchFwdTab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Theory</button>
+        <button id="tabFwdSandbox" onclick="switchFwdTab('sandbox')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Forward Curve Sandbox</button>
+    </div>
 
-        <!-- Forward Rate Agreements (FRA) and Locking In -->
-        <div class="container" style="margin-bottom: 0; gap: 2rem; align-items: stretch; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
-            <div class="card" style="margin-bottom: 0;">
-                <h2>Forward Rate Agreements (FRA)</h2>
-                <p>A <strong>Forward Rate Agreement (FRA)</strong> is an over-the-counter (OTC) contract traded between two parties at calendar date $t$ that allows them to lock in a borrowing or lending rate today over a future period $[T_0, T_1]$. It is specified by:</p>
-                <ul style="margin-left: 1.25rem; line-height: 1.7; display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem;">
+    <!-- Section A: Core Theory -->
+    <div id="secFwdTheory" style="display: block;">
+        <div style="margin-bottom: 1.5rem; background: var(--accent-glow); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--accent); font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.5; color: var(--text-color);">
+            Forward and futures contracts allow market participants to lock in borrowing rates today. Daily margin settlement in futures creates a convexity adjustment relative to OTC forwards.
+        </div>
+
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; align-items: stretch;">
+            <!-- Card 1: Forward Rate Agreements -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; border: 1px solid var(--card-border); background: var(--card-bg);">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700;">Forward Rate Agreements (FRA)</h3>
+                <p>A <strong>Forward Rate Agreement (FRA)</strong> is an over-the-counter (OTC) contract traded between two parties at calendar date $t$ that allows them to lock in a borrowing or lending rate today over a future period $[T_0, T_1]$:</p>
+                <ul style="padding-left: 1.2rem; line-height: 1.6; display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; font-size: 0.9rem;">
                     <li>A future period $[T_0, T_1]$ with length denoted by $\delta = T_1 - T_0$.</li>
-                    <li>A fixed interest rate $K$.</li>
-                    <li>A notional principal amount $N$.</li>
+                    <li>A fixed interest rate $K$ and a notional principal amount $N$.</li>
                 </ul>
-                <p>At the payment date $T_1$ (sometimes settled at $T_0$ in discounted terms), the holder of the FRA contract:</p>
-                <div style="background: rgba(124, 58, 237, 0.04); padding: 1rem; border-left: 4px solid var(--accent); border-radius: 6px; margin: 1rem 0;">
-                    <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
-                        <li><strong>Pays the fixed rate:</strong> $\delta K N$</li>
-                        <li><strong>Receives the floating spot rate:</strong> $\delta L(T_0, T_1) N$</li>
-                    </ul>
+                <p>At the payment date $T_1$, the holder of the FRA contract receives the net interest payoff:</p>
+                <div style="background: var(--metric-bg); padding: 1rem; border-left: 4px solid var(--accent); border-radius: 6px; margin: 1rem 0;">
+                    <div style="font-weight: 700; color: var(--accent); font-size: 1rem; text-align: center;">
+                        $$ \text{Payoff}(T_1) = N \delta \bigl( L(T_0, T_1) - K \bigr) $$
+                    </div>
                 </div>
-                <p>Here, $L(T_0, T_1)$ is the simple spot rate prevailing over $[T_0, T_1]$, which is <em>floating</em> because its value is completely unknown at spot date $t$ and only becomes determined at $T_0$.</p>
             </div>
 
-            <div class="card" style="margin-bottom: 0; background: #f8fafc; border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between;">
+            <!-- Card 2: How FRAs Lock In Rates -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; border: 1px solid var(--card-border); background: var(--metric-bg); display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
-                    <h3 style="margin-top: 0; color: #334155; font-family: 'Inter', sans-serif;">How FRAs Lock In Rates</h3>
+                    <h3 style="margin-top: 0; color: var(--text-color); font-family: var(--font-family-sans); font-weight: 700;">How FRAs Lock In Rates</h3>
                     <p>Suppose you plan to take a floating-rate loan of principal $N$ at time $T_0$, which matures at $T_1$. You will owe simple spot interest of $\delta L(T_0, T_1) N$ at maturity. To eliminate this cash flow uncertainty, you enter into a receiver FRA as the holder:</p>
                     <div style="display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0; font-family: 'Inter', sans-serif; font-size: 0.9rem;">
-                        <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #cbd5e1; padding-bottom: 0.4rem;">
+                        <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--card-border); padding-bottom: 0.4rem;">
                             <span>Floating rate loan interest owed:</span>
-                            <span style="font-weight: 600; color: #b91c1c;">− δ L(T₀, T₁) N</span>
+                            <span style="font-weight: 600; color: #ef4444;">− δ L(T₀, T₁) N</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #cbd5e1; padding-bottom: 0.4rem;">
+                        <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--card-border); padding-bottom: 0.4rem;">
                             <span>Floating interest received from FRA:</span>
-                            <span style="font-weight: 600; color: #16a34a;">+ δ L(T₀, T₁) N</span>
+                            <span style="font-weight: 600; color: #10b981;">+ δ L(T₀, T₁) N</span>
                         </div>
                         <div style="display: flex; justify-content: space-between; padding-top: 0.2rem;">
                             <span>Fixed interest paid via FRA:</span>
-                            <span style="font-weight: 600; color: #2563eb;">− δ K N</span>
+                            <span style="font-weight: 600; color: var(--accent);">− δ K N</span>
                         </div>
                     </div>
                     <p style="margin-bottom: 0;">Notice that the floating rate cash flows <strong>cancel out perfectly</strong>. The net cash flow you pay at $T_1$ is strictly the fixed interest $\delta K N$, successfully locking in rate $K$.</p>
                 </div>
+            </div>
+
+            <!-- Card 3: Analytical Derivation of FRA Value -->
+            <div class="card" style="grid-column: span 2; margin-bottom: 0; padding: 1.5rem; border: 1px solid var(--card-border); background: var(--card-bg);">
+                <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">Analytical Derivation of the FRA Value</h3>
+                <p>Recall the definition of the simple spot rate: $L(T_0, T_1) = \frac{1}{\delta} \left( \frac{1}{P(T_0, T_1)} - 1 \right)$. Substituting this into the payoff yields:</p>
+                <div style="margin: 1.25rem 0; overflow-x: auto; text-align: center;">
+                    $$ \text{Payoff}(T_1) = N \left( \frac{1}{P(T_0, T_1)} - 1 - \delta K \right) = N (I_1 - I_2) $$
+                </div>
                 
-                <!-- Cash Flow Timeline Diagram -->
-                <div style="background: white; border: 1px solid #e2e8f0; padding: 1rem; border-radius: 8px; margin-top: 1rem; text-align: center;">
-                    <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #64748b; display: block; margin-bottom: 0.5rem;">FRA Cash Flow Timeline</span>
-                    <div style="display: flex; justify-content: space-between; align-items: center; position: relative; margin: 0 1rem;">
-                        <div style="position: absolute; left: 0; right: 0; top: 10px; height: 2px; background: #cbd5e1; z-index: 1;"></div>
-                        <div style="z-index: 2; background: white; padding: 0 4px; font-size: 0.8rem; font-weight: 700; color: #64748b;">t<br/><span style="font-weight: normal; font-size: 0.7rem; color: #94a3b8;">Today</span></div>
-                        <div style="z-index: 2; background: white; padding: 0 4px; font-size: 0.8rem; font-weight: 700; color: #334155;">T₀<br/><span style="font-weight: normal; font-size: 0.7rem; color: #94a3b8;">Rate Set</span></div>
-                        <div style="z-index: 2; background: white; padding: 0 4px; font-size: 0.8rem; font-weight: 700; color: #0d9488;">T₁<br/><span style="font-weight: normal; font-size: 0.7rem; color: #0f766e;">Settlement</span></div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin-top: 0; color: var(--accent); font-size: 0.95rem; font-family: var(--font-family-sans);">1. Valuation of Component $I_1$</h4>
+                        <p style="font-size: 0.85rem; line-height: 1.5; opacity: 0.9;">Component $I_1$ pays $\frac{1}{P(T_0, T_1)}$ at date $T_1$. Since this cash flow is unknown at time $t$ but becomes fully known at $T_0$, its value at time $T_0$ is found by discounting from $T_1$ using the $T_0$-discount bond:</p>
+                        <div style="margin: 0.5rem 0; font-weight: 700; text-align: center; color: var(--text-color);">
+                            $$ V_{I_1}(T_0) = P(T_0, T_1) \times \frac{1}{P(T_0, T_1)} = 1 $$
+                        </div>
+                        <p style="font-size: 0.85rem; line-height: 1.5; opacity: 0.9; margin-bottom: 0;">Since its value is exactly 1 unit of cash guaranteed at $T_0$, its present value today at time $t$ is simply the price of a ZCB maturing at $T_0$:</p>
+                        <div style="margin-top: 0.5rem; font-weight: 700; text-align: center; color: var(--accent);">
+                            $$ V_{I_1}(t) = P(t, T_0) $$
+                        </div>
                     </div>
-                    <div style="margin-top: 0.75rem; font-size: 0.8rem; color: #0f766e; font-weight: 600;">Net Payoff at T₁: N δ ( L(T₀, T₁) − K )</div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Payoff and Step-by-Step Value Derivation -->
-        <div class="card" style="margin-bottom: 0;">
-            <h2>Analytical Derivation of the FRA Value</h2>
-            <p>At payment maturity $T_1$, the cash payoff of the FRA to the holder is:</p>
-            <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
-                $$ \text{Payoff}(T_1) = N \bigl( \delta L(T_0, T_1) - \delta K \bigr) $$
-            </div>
-            <p>Recall the definition of the simple spot rate: $L(T_0, T_1) = \frac{1}{\delta} \left( \frac{1}{P(T_0, T_1)} - 1 \right)$. Substituting this in yields:</p>
-            <div style="margin: 1.25rem 0; overflow-x: auto; text-align: center;">
-                $$ \text{Payoff}(T_1) = N \left( \frac{1}{P(T_0, T_1)} - 1 - \delta K \right) = N (I_1 - I_2) $$
-            </div>
-            <p>We decompose the contract into two distinct components $I_1$ and $I_2$ paying out at $T_1$ and value them at spot $t \le T_0$ separately:</p>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
-                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
-                    <h4 style="margin-top: 0; color: #475569; font-size: 1rem;">1. Valuation of Component $I_1$</h4>
-                    <p style="font-size: 0.9rem; line-height: 1.65; opacity: 0.9;">Component $I_1$ pays $\frac{1}{P(T_0, T_1)}$ at date $T_1$. Since this cash flow is unknown at time $t$ but becomes fully known at $T_0$, its value at time $T_0$ is found by discounting from $T_1$ using the $T_0$-discount bond:</p>
-                    <div style="margin: 0.5rem 0; font-weight: 700; text-align: center; color: #1e293b;">
-                        $$ V_{I_1}(T_0) = P(T_0, T_1) \times \frac{1}{P(T_0, T_1)} = 1 $$
-                    </div>
-                    <p style="font-size: 0.9rem; line-height: 1.65; opacity: 0.9; margin-bottom: 0;">Since its value is exactly 1 unit of cash guaranteed at $T_0$, its present value today at time $t$ is simply the price of a ZCB maturing at $T_0$:</p>
-                    <div style="margin-top: 0.5rem; font-weight: 700; text-align: center; color: #2563eb;">
-                        $$ V_{I_1}(t) = P(t, T_0) $$
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin-top: 0; color: #8b5cf6; font-size: 0.95rem; font-family: var(--font-family-sans);">2. Valuation of Component $I_2$</h4>
+                        <p style="font-size: 0.85rem; line-height: 1.5; opacity: 0.9;">Component $I_2$ represents the fixed payment $1 + \delta K$ at date $T_1$. This is a completely deterministic, risk-free future cash flow known today at time $t$.</p>
+                        <p style="font-size: 0.85rem; line-height: 1.5; opacity: 0.9; margin-bottom: 0;">By the standard rules of risk-free discounting, its present value today is simply found by multiplying by the zero-coupon bond price maturing at $T_1$:</p>
+                        <div style="margin-top: 1rem; font-weight: 700; text-align: center; color: #8b5cf6;">
+                            $$ V_{I_2}(t) = (1 + \delta K) P(t, T_1) $$
+                        </div>
                     </div>
                 </div>
 
-                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
-                    <h4 style="margin-top: 0; color: #475569; font-size: 1rem;">2. Valuation of Component $I_2$</h4>
-                    <p style="font-size: 0.9rem; line-height: 1.65; opacity: 0.9;">Component $I_2$ represents the fixed payment $1 + \delta K$ at date $T_1$. This is a completely deterministic, risk-free future cash flow known today at time $t$.</p>
-                    <p style="font-size: 0.9rem; line-height: 1.65; opacity: 0.9; margin-bottom: 0;">By the standard rules of risk-free discounting, its present value today is simply found by multiplying by the zero-coupon bond price maturing at $T_1$:</p>
-                    <div style="margin-top: 1rem; font-weight: 700; text-align: center; color: #2563eb;">
-                        $$ V_{I_2}(t) = (1 + \delta K) P(t, T_1) $$
-                    </div>
+                <div style="background: var(--accent-glow); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--accent); margin: 1rem 0; text-align: center; font-size: 1.2rem; font-weight: 700; color: var(--accent);">
+                    $$ V_{\text{FRA}}(t, T_0, T_1) = N \bigl( P(t, T_0) - (1 + \delta K)P(t, T_1) \bigr) $$
                 </div>
             </div>
 
-            <p>Combining these two valuations, we obtain the <strong>total time-$t$ value of the Forward Rate Agreement ($V_{\text{FRA}}$)</strong>:</p>
-            <div style="background: rgba(37, 99, 235, 0.05); padding: 1.5rem; border-radius: 8px; border: 1px solid rgba(37, 99, 235, 0.15); margin: 1rem 0; text-align: center; font-size: 1.2rem; font-weight: 700; color: #1e3a8a;">
-                $$ V_{\text{FRA}}(t, T_0, T_1) = N \bigl( P(t, T_0) - (1 + \delta K)P(t, T_1) \bigr) $$
-            </div>
-            <p style="margin-bottom: 0;">This analytical formulation shows that the value of an FRA is a linear decreasing function of the locked rate $K$. If $K$ is set too high, the value of the FRA to the holder becomes negative (and positive for the counterparty). At inception, the rate $K$ is chosen to make the contract's value exactly zero.</p>
-        </div>
-
-        <!-- Spot Forward Rates and Instantaneous Limits -->
-        <div class="container" style="margin-bottom: 0; gap: 2rem; align-items: stretch; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
-            <div class="card" style="margin-bottom: 0;">
-                <h2>Simple &amp; Instantaneous Forward Rates</h2>
-                <h3>Simple Forward Rate $F(t, T_0, T_1)$</h3>
+            <!-- Card 4: Simple & Instantaneous Forward Rates -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; border: 1px solid var(--card-border); background: var(--card-bg);">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700;">Simple &amp; Instantaneous Forward Rates</h3>
                 <p>The fair rate $K$ which renders the FRA value zero today is defined as the <strong>simple forward rate</strong> prevailing at time $t$ for lending period $[T_0, T_1]$:</p>
-                <div style="margin: 1rem 0; overflow-x: auto; text-align: center; font-weight: 700; font-size: 1.1rem; color: var(--accent);">
+                <div style="margin: 1rem 0; text-align: center; font-weight: 700; font-size: 1.1rem; color: var(--accent);">
                     $$ F(t, T_0, T_1) = \frac{1}{\delta} \left( \frac{P(t, T_0)}{P(t, T_1)} - 1 \right) $$
                 </div>
                 <p>When the evaluation time $t$ reaches the loan start date $T_0$, the forward rate converges to the standard simple spot rate: $F(T_0, T_0, T_1) = L(T_0, T_1)$.</p>
                 <p>Using this rate, we can re-express the FRA value elegantly as:</p>
-                <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                <div style="margin: 1rem 0; text-align: center;">
                     $$ V_{\text{FRA}}(t, T_0, T_1) = N P(t, T_1) \delta \bigl( F(t, T_0, T_1) - K \bigr) $$
                 </div>
             </div>
 
-            <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b;">
-                <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif;">Instantaneous Forward Rate $f(t, T)$</h3>
-                <p>If we let the length of the lending period contract to zero (i.e. letting $T_1 \to T_0 = T$ or $\delta \to 0$), we obtain the <strong>instantaneous forward rate</strong> with maturity $T$:</p>
-                <div style="margin: 1rem 0; overflow-x: auto; text-align: center; font-weight: 700; font-size: 1.05rem; color: #b45309;">
-                    $$ f(t, T) = \lim_{T_1 \to T} F(t, T, T_1) = -\frac{\partial \ln P(t, T)}{\partial T} $$
+            <!-- Card 5: Instantaneous Forward Rate -->
+            <div class="card" style="margin-bottom: 0; background: var(--metric-bg); border-left: 4px solid var(--accent); padding: 2rem; color: var(--text-color); display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; color: var(--accent); font-size: 1.25rem; font-weight: 800; font-family: var(--font-family-sans);">Instantaneous Forward Rate $f(t, T)$</h3>
+                    <p>If we let the length of the lending period contract to zero (i.e. letting $T_1 \to T_0 = T$ or $\delta \to 0$), we obtain the <strong>instantaneous forward rate</strong> with maturity $T$:</p>
+                    <div style="margin: 1rem 0; text-align: center; font-weight: 700; font-size: 1.05rem; color: var(--accent);">
+                        $$ f(t, T) = \lim_{T_1 \to T} F(t, T, T_1) = -\frac{\partial \ln P(t, T)}{\partial T} $$
+                    </div>
+                    <p>This is the rate that can be locked in today at $t$ for an instantaneous loan at maturity $T$. Integrating this relation gives the ZCB price in terms of the instantaneous forward rates:</p>
+                    <div style="margin: 1rem 0; text-align: center;">
+                        $$ P(t, T) = e^{-\int_t^T f(t, u) du} $$
+                    </div>
                 </div>
-                <p>This is the rate that can be locked in today at $t$ for an instantaneous loan at maturity $T$. Integrating this relation gives the ZCB price in terms of the instantaneous forward rates:</p>
-                <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
-                    $$ P(t, T) = e^{-\int_t^T f(t, u) du} $$
-                </div>
-                <p style="margin-bottom: 0;">Thus, knowing all instantaneous forward rates is mathematically equivalent to knowing all bond prices. Yield curves are simply the time-average of forward rates: $y(t, T) = \frac{1}{T-t}\int_t^T f(t, u)du$.</p>
             </div>
-        </div>
 
-        <!-- Interest Rate Futures, Marking-to-market, Convexity -->
-        <div class="container" style="margin-bottom: 0; gap: 2rem; align-items: stretch; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
-            <div class="card" style="margin-bottom: 0;">
-                <h2>Interest Rate Futures</h2>
+            <!-- Card 6: Futures & Convexity Adjustment -->
+            <div class="card" style="grid-column: span 2; margin-bottom: 0; padding: 1.5rem; border: 1px solid var(--card-border); background: var(--card-bg);">
+                <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">Futures vs. Forwards: Convexity Adjustment</h3>
                 <p>Similar to an FRA, an <strong>interest rate futures</strong> contract allows investors to manage or hedge exposure to simple spot interest rates over a future period $[T_0, T_1]$.</p>
                 <p>However, unlike FRAs, futures are exchange-traded and <strong>daily marked-to-market (resettled)</strong>. Instead of holding a growing exposure with a counterparty, any change in value is settled in cash at the end of each trading day, resetting the contract's current market value to zero.</p>
-                <p>At any date $t \le T_0$, the futures price is quoted as:</p>
-                <div style="margin: 1rem 0; text-align: center; font-size: 1.1rem; font-weight: 700;">
-                    $$ P_{\text{futures}}(t, T_0, T_1) = 100 \times \bigl(1 - R_{\text{futures}}(t, T_0, T_1)\bigr) $$
-                </div>
-                <p>where $R_{\text{futures}}$ is the quoted <strong>futures rate</strong>. On day $t + \Delta t$, the holder receives the margin cash flow:</p>
-                <div style="margin: 1rem 0; text-align: center;">
-                    $$ \text{Cash Flow} = P_{\text{futures}}(t+\Delta t, T_0, T_1) - P_{\text{futures}}(t, T_0, T_1) $$
-                </div>
-            </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin-top: 0; color: var(--accent); font-size: 0.95rem; font-family: var(--font-family-sans);">Daily Settlement Quotation</h4>
+                        <p style="font-size: 0.85rem; line-height: 1.5;">At any date $t \le T_0$, the futures price is quoted as:</p>
+                        <div style="margin: 0.5rem 0; text-align: center; font-size: 1.1rem; font-weight: 700; color: var(--accent);">
+                            $$ P_{\text{futures}}(t) = 100 \times \bigl(1 - R_{\text{futures}}(t)\bigr) $$
+                        </div>
+                    </div>
 
-            <div class="card" style="margin-bottom: 0; background: #f0fdf4; border-left: 4px solid #22c55e;">
-                <h3 style="margin-top: 0; color: #15803d; font-family: 'Inter', sans-serif;">Futures vs. Forwards: Convexity Adjustment</h3>
-                <p>The daily settlement cash flows must satisfy two mathematical conditions:</p>
-                <ul style="margin-left: 1.25rem; line-height: 1.7; display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem;">
-                    <li><strong>At delivery $T_0$:</strong> $R_{\text{futures}}(T_0, T_0, T_1) = L(T_0, T_1)$</li>
-                    <li><strong>At any $t < T_0$:</strong> The present value of the resettled cash flow must be zero.</li>
-                </ul>
-                <p>Because of this resettlement, the futures rate is a martingale under the risk-neutral measure $\mathbb{Q}$, whereas the simple forward rate is a martingale under the forward measure $\mathbb{Q}^{T_1}$.</p>
-                <p>This difference in measures creates a systematic gap called the <strong>convexity adjustment</strong>:</p>
-                <div style="margin: 1rem 0; text-align: center; font-size: 1.05rem; font-weight: 700; color: #166534;">
-                    $$ \text{Convexity Adjustment} = R_{\text{futures}}(t, T_0, T_1) - F(t, T_0, T_1) $$
+                    <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); border-left: 4px solid #10b981;">
+                        <h4 style="margin-top: 0; color: #10b981; font-size: 0.95rem; font-family: var(--font-family-sans);">The Convexity Gap</h4>
+                        <p style="font-size: 0.85rem; line-height: 1.5;">Because of daily resettlement, the futures rate is a martingale under the risk-neutral measure $\mathbb{Q}$, whereas simple forward rates are martingales under the forward measure $\mathbb{Q}^{T_1}$. This creates a positive convexity adjustment:</p>
+                        <div style="margin: 0.5rem 0; text-align: center; font-size: 1.05rem; font-weight: 700; color: #10b981;">
+                            $$ \text{Convexity Adjustment} = R_{\text{futures}} - F $$
+                        </div>
+                    </div>
                 </div>
-                <p style="margin-bottom: 0;">This adjustment is <strong>typically positive</strong> because daily settlement allows futures holders to reinvest cash margins at higher rates when interest rates rise, requiring a premium to equalize attractiveness.</p>
             </div>
         </div>
+    </div>
 
-        <!-- INTERACTIVE SPOT & FORWARD CURVE CALCULATOR -->
-        <div class="card" style="padding: 2.5rem; border: 1px solid var(--card-border); background: var(--card-bg);">
-            <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.02em;">Interactive: Spot Yield Curve vs. Forward Curve Simulator</h2>
-            <p style="font-size: 1rem; color: var(--text-color); opacity: 0.75; margin-bottom: 2rem;">
+    <!-- Section B: Forward Curve Sandbox -->
+    <div id="secFwdSandbox" style="display: none;">
+        <div class="card" style="padding: 1.5rem; border: 1px solid var(--card-border); background: var(--card-bg); margin-bottom: 2rem;">
+            <h2 style="font-size: 1.4rem; font-weight: 800; color: var(--text-color); margin: 0 0 0.5rem 0; font-family: var(--font-family-sans);">Spot Yield Curve vs. Forward Curve Simulator</h2>
+            <p style="font-size: 0.95rem; color: #6b7280; margin-bottom: 1.5rem; font-family: var(--font-family-sans);">
                 Adjust yield curve parameters (representing zero-coupon bond discount factors) to visually compare the ZCB price curve, spot yield curve $y(0, T)$, and instantaneous forward curve $f(0, T)$ up to 30 years maturity.
             </p>
-            
-            <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0; justify-content: space-between; align-items: stretch;">
-                <div style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 0.25rem;">
-                    <label for="fwdInitialSlider" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Base Spot Rate $r(0)$: <span id="fwdInitialValue" style="color: #2563eb;">4.0%</span></label>
-                    <input id="fwdInitialSlider" max="0.15" min="0.005" step="0.005" style="width: 100%; cursor: pointer;" type="range" value="0.04"/>
-                </div>
-                <div style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 0.25rem;">
-                    <label for="fwdSlopeSlider" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Curve Slope Parameter (NS): <span id="fwdSlopeValue" style="color: #2563eb;">2.0%</span></label>
-                    <input id="fwdSlopeSlider" max="0.08" min="-0.08" step="0.002" style="width: 100%; cursor: pointer;" type="range" value="0.02"/>
-                </div>
-                <div style="flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 0.25rem;">
-                    <label for="fwdHumpSlider" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Curve Hump Parameter (NS): <span id="fwdHumpValue" style="color: #2563eb;">-1.0%</span></label>
-                    <input id="fwdHumpSlider" max="0.10" min="-0.10" step="0.005" style="width: 100%; pointer-events: auto; cursor: pointer;" type="range" value="-0.01"/>
-                </div>
-            </div>
 
-            <!-- Live Calculation Panel -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
-                <div class="metric" style="background: var(--metric-bg); border-left: 4px solid #3b82f6; padding: 1rem; border-radius: 8px;">
-                    <span class="metric-label" style="font-size: 0.8rem; text-transform: uppercase; color: #64748b;">5Y Spot Yield $y(0, 5)$</span>
-                    <span class="metric-value" id="calcSpotYield5" style="font-size: 1.3rem; font-weight: 700; color: #1e3a8a;">—</span>
-                </div>
-                <div class="metric" style="background: var(--metric-bg); border-left: 4px solid #7c3aed; padding: 1rem; border-radius: 8px;">
-                    <span class="metric-label" style="font-size: 0.8rem; text-transform: uppercase; color: #64748b;">5Y Instantaneous Forward $f(0, 5)$</span>
-                    <span class="metric-value" id="calcInstForward5" style="font-size: 1.3rem; font-weight: 700; color: #5b21b6;">—</span>
-                </div>
-                <div class="metric" style="background: var(--metric-bg); border-left: 4px solid #ef4444; padding: 1rem; border-radius: 8px;">
-                    <span class="metric-label" style="font-size: 0.8rem; text-transform: uppercase; color: #64748b;">Simple Forward Rate $F(0, 5, 10)$</span>
-                    <span class="metric-value" id="calcSimpleFwd" style="font-size: 1.3rem; font-weight: 700; color: #b91c1c;">—</span>
-                </div>
-            </div>
-
-            <!-- Graphs side-by-side -->
-            <div class="container" style="margin-bottom: 0; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));">
-                <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
-                    <h4 style="margin: 0 0 1rem 0; font-size: 1.05rem; font-weight: 700; color: var(--text-color); text-align: center;">ZCB Price / Discount Curve $P(0, T)$</h4>
-                    <div style="height: 320px; position: relative;">
-                        <canvas id="fwdZcbChart"></canvas>
+            <div style="display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls Column -->
+                <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-family-sans);">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 0.9rem; font-weight: 700; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; color: var(--text-color);">Parameters</h3>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <label for="fwdInitialSlider" style="font-weight: 700; font-size: 0.8rem; color: var(--text-color);">Base Spot Rate $r(0)$: <span id="fwdInitialValue" style="color: var(--accent);">4.0%</span></label>
+                        <input id="fwdInitialSlider" max="0.15" min="0.005" step="0.005" style="width: 100%; cursor: pointer;" type="range" value="0.04"/>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <label for="fwdSlopeSlider" style="font-weight: 700; font-size: 0.8rem; color: var(--text-color);">Slope Parameter: <span id="fwdSlopeValue" style="color: var(--accent);">2.0%</span></label>
+                        <input id="fwdSlopeSlider" max="0.08" min="-0.08" step="0.002" style="width: 100%; cursor: pointer;" type="range" value="0.02"/>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <label for="fwdHumpSlider" style="font-weight: 700; font-size: 0.8rem; color: var(--text-color);">Hump Parameter: <span id="fwdHumpValue" style="color: var(--accent);">-1.0%</span></label>
+                        <input id="fwdHumpSlider" max="0.10" min="-0.10" step="0.005" style="width: 100%; cursor: pointer;" type="range" value="-0.01"/>
                     </div>
                 </div>
-                <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
-                    <h4 style="margin: 0 0 1rem 0; font-size: 1.05rem; font-weight: 700; color: var(--text-color); text-align: center;">Spot Yield Curve $y(0, T)$ vs. Forward Curve $f(0, T)$</h4>
-                    <div style="height: 320px; position: relative;">
-                        <canvas id="fwdRatesChart"></canvas>
+
+                <!-- Plot & Calculations Column -->
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <!-- Live Calculation Panel -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem;">
+                        <div style="background: var(--metric-bg); border-left: 4px solid #3b82f6; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                            <span style="font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-weight: 700; display: block;">5Y Spot Yield y(0, 5)</span>
+                            <span id="calcSpotYield5" style="font-size: 1.2rem; font-weight: 700; color: #2563eb; font-family: monospace; display: block; margin-top: 0.25rem;">—</span>
+                        </div>
+                        <div style="background: var(--metric-bg); border-left: 4px solid #7c3aed; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                            <span style="font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-weight: 700; display: block;">5Y Instant Forward f(0, 5)</span>
+                            <span id="calcInstForward5" style="font-size: 1.2rem; font-weight: 700; color: #7c3aed; font-family: monospace; display: block; margin-top: 0.25rem;">—</span>
+                        </div>
+                        <div style="background: var(--metric-bg); border-left: 4px solid #ef4444; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                            <span style="font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-weight: 700; display: block;">Simple Forward F(0, 5, 10)</span>
+                            <span id="calcSimpleFwd" style="font-size: 1.2rem; font-weight: 700; color: #ef4444; font-family: monospace; display: block; margin-top: 0.25rem;">—</span>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div class="card" style="margin-bottom: 0; padding: 1.25rem; border: 1px solid var(--card-border); background: var(--card-bg); height: 320px; position: relative;">
+                            <h4 style="margin: 0 0 0.75rem 0; font-size: 0.85rem; font-weight: 700; color: var(--text-color); text-transform: uppercase; text-align: center;">Discount Curve P(0, T)</h4>
+                            <div style="height: 250px; position: relative;">
+                                <canvas id="fwdZcbChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="card" style="margin-bottom: 0; padding: 1.25rem; border: 1px solid var(--card-border); background: var(--card-bg); height: 320px; position: relative;">
+                            <h4 style="margin: 0 0 0.75rem 0; font-size: 0.85rem; font-weight: 700; color: var(--text-color); text-transform: uppercase; text-align: center;">Spot vs Instantaneous Forward</h4>
+                            <div style="height: 250px; position: relative;">
+                                <canvas id="fwdRatesChart"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
 <script>
-    // ============================================================
-    // Section 1.2: Forward & Futures Rates Charting & Calculations
-    // ============================================================
-    let fwdZcbChartInstance = null;
-    let fwdRatesChartInstance = null;
+    (function() {
+        let fwdZcbChartInstance = null;
+        let fwdRatesChartInstance = null;
 
-    function runForwardRatesSimulation() {
-        const r0 = parseFloat(document.getElementById('fwdInitialSlider').value);
-        const slope = parseFloat(document.getElementById('fwdSlopeSlider').value);
-        const hump = parseFloat(document.getElementById('fwdHumpSlider').value);
+        window.switchFwdTab = function(tab) {
+            const tabTheory = document.getElementById('tabFwdTheory');
+            const tabSandbox = document.getElementById('tabFwdSandbox');
+            const secTheory = document.getElementById('secFwdTheory');
+            const secSandbox = document.getElementById('secFwdSandbox');
 
-        // Update labels
-        document.getElementById('fwdInitialValue').textContent = (r0 * 100).toFixed(1) + '%';
-        document.getElementById('fwdSlopeValue').textContent = (slope * 100).toFixed(1) + '%';
-        document.getElementById('fwdHumpValue').textContent = (hump * 100).toFixed(1) + '%';
-
-        // Nelson-Siegel model functions (tau = 4.0 for standard economic hump timing)
-        const tau = 4.0;
-        
-        // Spot yield y(0, T)
-        function getNSYield(T) {
-            if (T === 0) return r0;
-            const factor1 = (1 - Math.exp(-T / tau)) / (T / tau);
-            const factor2 = factor1 - Math.exp(-T / tau);
-            // Beta0 + Beta1 * factor1 + Beta2 * factor2
-            // Beta0 = long-term rate, Beta1 = slope, Beta2 = hump
-            // To align with r0 at short end: Beta0 + Beta1 = r0 => longTerm = r0 - Beta1 (which is spot + slope)
-            const beta0 = r0 + slope; 
-            const beta1 = -slope;
-            const beta2 = hump * 3.0;
-            return beta0 + beta1 * factor1 + beta2 * factor2;
-        }
-
-        // Instantaneous forward f(0, T)
-        function getNSForward(T) {
-            if (T === 0) return r0;
-            const beta0 = r0 + slope;
-            const beta1 = -slope;
-            const beta2 = hump * 3.0;
-            const expTerm = Math.exp(-T / tau);
-            return beta0 + beta1 * expTerm + beta2 * (T / tau) * expTerm;
-        }
-
-        // Discount Factor P(0, T)
-        function getNSDiscount(T) {
-            const yieldVal = getNSYield(T);
-            return Math.exp(-yieldVal * T);
-        }
-
-        // Calculate and plot points
-        const maturities = [];
-        const discounts = [];
-        const yields = [];
-        const forwards = [];
-
-        for (let i = 0; i <= 60; i++) {
-            const T = i * 0.5;
-            maturities.push(T);
-            discounts.push(getNSDiscount(T));
-            yields.push(getNSYield(T) * 100);
-            forwards.push(getNSForward(T) * 100);
-        }
-
-        // Live calculation values
-        const y5 = getNSYield(5.0);
-        const f5 = getNSForward(5.0);
-        const p5 = getNSDiscount(5.0);
-        const p10 = getNSDiscount(10.0);
-        const simpleFwd = (1.0 / 5.0) * (p5 / p10 - 1.0); // F(0, 5, 10) with delta = 5
-
-        document.getElementById('calcSpotYield5').textContent = (y5 * 100).toFixed(4) + '%';
-        document.getElementById('calcInstForward5').textContent = (f5 * 100).toFixed(4) + '%';
-        document.getElementById('calcSimpleFwd').textContent = (simpleFwd * 100).toFixed(4) + '%';
-
-        // Styling context
-        const isDark = document.body.classList.contains('dark-theme');
-        const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
-        const tickColor = isDark ? '#94a3b8' : '#64748b';
-
-        // Chart 1: ZCB Prices
-        const ctxZcb = document.getElementById('fwdZcbChart').getContext('2d');
-        if (fwdZcbChartInstance) { fwdZcbChartInstance.destroy(); }
-        fwdZcbChartInstance = new Chart(ctxZcb, {
-            type: 'line',
-            data: {
-                labels: maturities,
-                datasets: [{
-                    label: 'Discount Factor P(0, T)',
-                    data: discounts,
-                    borderColor: '#2563eb',
-                    backgroundColor: 'rgba(37, 99, 235, 0.05)',
-                    borderWidth: 2.5,
-                    pointRadius: 0,
-                    tension: 0.2,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: {
-                        grid: { color: gridColor },
-                        ticks: { color: tickColor, maxTicksLimit: 10 },
-                        title: { display: true, text: 'Maturity T (Years)', color: tickColor }
-                    },
-                    y: {
-                        grid: { color: gridColor },
-                        ticks: { color: tickColor },
-                        min: 0,
-                        max: 1.1,
-                        title: { display: true, text: 'Price P(0, T)', color: tickColor }
-                    }
-                }
+            if (tab === 'theory') {
+                tabTheory.style.color = 'var(--accent)';
+                tabTheory.style.borderBottomColor = 'var(--accent)';
+                tabSandbox.style.color = '#6b7280';
+                tabSandbox.style.borderBottomColor = 'transparent';
+                secTheory.style.display = 'block';
+                secSandbox.style.display = 'none';
+            } else {
+                tabSandbox.style.color = 'var(--accent)';
+                tabSandbox.style.borderBottomColor = 'var(--accent)';
+                tabTheory.style.color = '#6b7280';
+                tabTheory.style.borderBottomColor = 'transparent';
+                secTheory.style.display = 'none';
+                secSandbox.style.display = 'block';
+                setTimeout(runForwardRatesSimulation, 50);
             }
-        });
+        };
 
-        // Chart 2: Spot Yields vs. Forwards
-        const ctxRates = document.getElementById('fwdRatesChart').getContext('2d');
-        if (fwdRatesChartInstance) { fwdRatesChartInstance.destroy(); }
-        fwdRatesChartInstance = new Chart(ctxRates, {
-            type: 'line',
-            data: {
-                labels: maturities,
-                datasets: [
-                    {
-                        label: 'Spot Yield Curve y(0, T)',
-                        data: yields,
-                        borderColor: '#2563eb',
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        tension: 0.2,
-                        fill: false
-                    },
-                    {
-                        label: 'Instantaneous Forward Curve f(0, T)',
-                        data: forwards,
-                        borderColor: '#7c3aed',
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        tension: 0.2,
-                        fill: false
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'top', labels: { color: tickColor } } },
-                scales: {
-                    x: {
-                        grid: { color: gridColor },
-                        ticks: { color: tickColor, maxTicksLimit: 10 },
-                        title: { display: true, text: 'Maturity T (Years)', color: tickColor }
-                    },
-                    y: {
-                        grid: { color: gridColor },
-                        ticks: { color: tickColor },
-                        title: { display: true, text: 'Rate (%)', color: tickColor }
-                    }
-                }
+        window.runForwardRatesSimulation = function() {
+            const r0 = parseFloat(document.getElementById('fwdInitialSlider').value);
+            const slope = parseFloat(document.getElementById('fwdSlopeSlider').value);
+            const hump = parseFloat(document.getElementById('fwdHumpSlider').value);
+
+            // Update labels
+            document.getElementById('fwdInitialValue').textContent = (r0 * 100).toFixed(1) + '%';
+            document.getElementById('fwdSlopeValue').textContent = (slope * 100).toFixed(1) + '%';
+            document.getElementById('fwdHumpValue').textContent = (hump * 100).toFixed(1) + '%';
+
+            const tau = 4.0;
+            
+            function getNSYield(T) {
+                if (T === 0) return r0;
+                const factor1 = (1 - Math.exp(-T / tau)) / (T / tau);
+                const factor2 = factor1 - Math.exp(-T / tau);
+                const beta0 = r0 + slope; 
+                const beta1 = -slope;
+                const beta2 = hump * 3.0;
+                return beta0 + beta1 * factor1 + beta2 * factor2;
             }
-        });
-    }
 
-    // Attach Event Listeners to Sliders
-    ['fwdInitialSlider', 'fwdSlopeSlider', 'fwdHumpSlider'].forEach(id => {
-        document.getElementById(id).addEventListener('input', runForwardRatesSimulation);
-    });
+            function getNSForward(T) {
+                if (T === 0) return r0;
+                const beta0 = r0 + slope;
+                const beta1 = -slope;
+                const beta2 = hump * 3.0;
+                const expTerm = Math.exp(-T / tau);
+                return beta0 + beta1 * expTerm + beta2 * (T / tau) * expTerm;
+            }
+
+            function getNSDiscount(T) {
+                const yieldVal = getNSYield(T);
+                return Math.exp(-yieldVal * T);
+            }
+
+            const maturities = [];
+            const discounts = [];
+            const yields = [];
+            const forwards = [];
+
+            for (let i = 0; i <= 60; i++) {
+                const T = i * 0.5;
+                maturities.push(T);
+                discounts.push(getNSDiscount(T));
+                yields.push(getNSYield(T) * 100);
+                forwards.push(getNSForward(T) * 100);
+            }
+
+            const y5 = getNSYield(5.0);
+            const f5 = getNSForward(5.0);
+            const p5 = getNSDiscount(5.0);
+            const p10 = getNSDiscount(10.0);
+            const simpleFwd = (1.0 / 5.0) * (p5 / p10 - 1.0);
+
+            document.getElementById('calcSpotYield5').textContent = (y5 * 100).toFixed(4) + '%';
+            document.getElementById('calcInstForward5').textContent = (f5 * 100).toFixed(4) + '%';
+            document.getElementById('calcSimpleFwd').textContent = (simpleFwd * 100).toFixed(4) + '%';
+
+            const isDark = document.body.classList.contains('dark-theme');
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
+            const tickColor = isDark ? '#94a3b8' : '#64748b';
+
+            const ctxZcb = document.getElementById('fwdZcbChart');
+            if (ctxZcb) {
+                if (fwdZcbChartInstance) { fwdZcbChartInstance.destroy(); }
+                fwdZcbChartInstance = new Chart(ctxZcb.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: maturities,
+                        datasets: [{
+                            label: 'Discount Factor P(0, T)',
+                            data: discounts,
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37, 99, 235, 0.03)',
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            tension: 0.2,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { color: gridColor }, ticks: { color: tickColor, maxTicksLimit: 10, font: { size: 8 } }, title: { display: true, text: 'Maturity T (Years)', color: tickColor, font: { size: 9 } } },
+                            y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 8 } }, min: 0, max: 1.1, title: { display: true, text: 'Price P(0, T)', color: tickColor, font: { size: 9 } } }
+                        }
+                    }
+                });
+            }
+
+            const ctxRates = document.getElementById('fwdRatesChart');
+            if (ctxRates) {
+                if (fwdRatesChartInstance) { fwdRatesChartInstance.destroy(); }
+                fwdRatesChartInstance = new Chart(ctxRates.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: maturities,
+                        datasets: [
+                            { label: 'Spot Yield Curve y(0, T)', data: yields, borderColor: '#2563eb', borderWidth: 2, pointRadius: 0, tension: 0.2, fill: false },
+                            { label: 'Instantaneous Forward f(0, T)', data: forwards, borderColor: '#7c3aed', borderWidth: 2, pointRadius: 0, tension: 0.2, fill: false }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'top', labels: { color: tickColor, font: { size: 9 } } } },
+                        scales: {
+                            x: { grid: { color: gridColor }, ticks: { color: tickColor, maxTicksLimit: 10, font: { size: 8 } }, title: { display: true, text: 'Maturity T (Years)', color: tickColor, font: { size: 9 } } },
+                            y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 8 } }, title: { display: true, text: 'Rate (%)', color: tickColor, font: { size: 9 } } }
+                        }
+                    }
+                });
+            }
+        };
+
+        window.initForwardRatesSimulation = function() {
+            switchFwdTab('theory');
+        };
+
+        setTimeout(() => {
+            ['fwdInitialSlider', 'fwdSlopeSlider', 'fwdHumpSlider'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('input', runForwardRatesSimulation);
+            });
+        }, 100);
+    })();
 </script>

@@ -8,224 +8,453 @@
         <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Core definitions, compounding frequencies, yield curves, the short rate, money market accounts, and discount factors.</div>
     </header>
 
-    <div class="container" style="max-width: 1400px; grid-template-columns: 1fr; gap: 2.5rem; margin-bottom: 4rem;">
-        
-        <!-- INTRO AND CORE MATH CARDS -->
-        <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem; align-items: stretch;">
-            <div class="card" style="margin-bottom: 0; padding: 2rem; border: 1px solid var(--card-border); background: var(--card-bg);">
-                <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin-bottom: 1rem;">1. Understading compounding frequencies</h2>
-                <p style="font-size: 1rem; line-height: 1.7; color: var(--text-color); opacity: 0.85; margin-bottom: 1.25rem;">
-                    Interest represents the rent paid by a borrower of money to a lender over a period of time $[t, T]$. With a principal loan of 1 unit at time $t$, the borrower pays back the principal plus an interest amount $R$ at maturity $T$. The compounding frequency determines how we annualize and quote this return:
-                </p>
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
+        <button id="tabIrTheory" onclick="switchIrTab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Theory</button>
+        <button id="tabIrCurve" onclick="switchIrTab('curve')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Yield Curve Sandbox</button>
+        <button id="tabIrMma" onclick="switchIrTab('mma')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Money Market Sandbox</button>
+    </div>
+
+    <!-- Section A: Core Theory -->
+    <div id="secIrTheory" style="display: block;">
+        <div style="margin-bottom: 1.5rem; background: var(--accent-glow); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--accent); font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.5; color: var(--text-color);">
+            Interest rates represent the cost of borrowing capital. Compounding frequency determines how rates are quoted, scaling from simple linear conventions (LIBOR) to continuous logarithmic limits.
+        </div>
+
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; align-items: stretch;">
+            <!-- Card 1: Compounding Frequencies -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; border: 1px solid var(--card-border); background: var(--card-bg);">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700;">Compounding Frequencies</h3>
+                <p>Interest represents the rent paid by a borrower of money to a lender over a period of time $[t, T]$. The compounding frequency determines how we annualize and quote this return:</p>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0;">
-                    <div style="background: rgba(59, 130, 246, 0.04); padding: 1.25rem; border-radius: 8px; border-left: 4px solid #3b82f6;">
-                        <h4 style="margin: 0 0 0.5rem 0; color: #1e3a8a; font-size: 1rem; font-weight: 700;">Simple Rate (LIBOR) $L(t, T)$</h4>
-                        <p style="margin: 0 0 0.75rem 0; font-size: 0.9rem; opacity: 0.85;">Quoted daily as a simple linear rate. Used extensively for interbank reference rates.</p>
-                        <div style="font-size: 1.1rem; font-weight: 700; text-align: center; color: #1e3a8a;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0;">
+                    <div style="background: var(--metric-bg); padding: 0.8rem; border-radius: 8px; border-left: 4px solid var(--accent);">
+                        <h4 style="margin: 0 0 0.25rem 0; color: var(--accent); font-size: 0.9rem; font-weight: 700;">Simple Rate $L(t, T)$</h4>
+                        <div style="font-size: 0.95rem; font-weight: 700; text-align: center; color: var(--accent);">
                             $$ 1 + R = 1 + (T - t)L(t, T) $$
                         </div>
                     </div>
                     
-                    <div style="background: rgba(239, 68, 68, 0.04); padding: 1.25rem; border-radius: 8px; border-left: 4px solid #ef4444;">
-                        <h4 style="margin: 0 0 0.5rem 0; color: #7f1d1d; font-size: 1rem; font-weight: 700;">Continuous Compounding (Yield) $y(t, T)$</h4>
-                        <p style="margin: 0 0 0.75rem 0; font-size: 0.9rem; opacity: 0.85;">Reinvested continuously at logarithmic rates. Standard for analytical interest rate models.</p>
-                        <div style="font-size: 1.1rem; font-weight: 700; text-align: center; color: #7f1d1d;">
+                    <div style="background: var(--metric-bg); padding: 0.8rem; border-radius: 8px; border-left: 4px solid #ef4444;">
+                        <h4 style="margin: 0 0 0.25rem 0; color: #ef4444; font-size: 0.9rem; font-weight: 700;">Continuous $y(t, T)$</h4>
+                        <div style="font-size: 0.95rem; font-weight: 700; text-align: center; color: #ef4444;">
                             $$ 1 + R = e^{(T - t)y(t, T)} $$
                         </div>
                     </div>
                 </div>
 
-                <p style="font-size: 1rem; line-height: 1.7; color: var(--text-color); opacity: 0.85; margin: 0 0 1.25rem 0;">
-                    For any positive interest return ($R > 0$), <strong>simple compounding interest rates are mathematically higher than their continuously compounded yield counterparts</strong>: $L(t, T) > y(t, T)$.
-                </p>
+                <p style="margin-bottom: 0;">For any positive interest return ($R > 0$), <strong>simple compounding interest rates are mathematically higher than their continuously compounded yield counterparts</strong>: $L(t, T) > y(t, T)$.</p>
+            </div>
 
-                <p style="font-size: 1rem; line-height: 1.7; color: var(--text-color); opacity: 0.85; margin: 1.25rem 0 0.5rem 0;">
-                    We also define the <strong>$n$-fold compounded interest rate $y_n(t, T)$</strong> corresponding to the lending period $[t, T]$ through:
-                </p>
-                
-                <div style="background: rgba(124, 58, 237, 0.04); padding: 1.25rem; border-radius: 8px; border-left: 4px solid #7c3aed; margin: 1rem 0; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 1.5rem; align-items: center;">
-                    <div>
-                        <h4 style="margin: 0 0 0.5rem 0; color: #5b21b6; font-size: 1rem; font-weight: 700;">$n$-Fold Compounded Rate $y_n(t, T)$</h4>
-                        <p style="margin: 0; font-size: 0.9rem; opacity: 0.85;">Compounded $n$ times per year (e.g., $n=2$ for semi-annual, $n=4$ for quarterly, $n=12$ for monthly).</p>
+            <!-- Card 2: n-Fold Compounding & Term Structure -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; border: 1px solid var(--card-border); background: var(--metric-bg); display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; color: var(--text-color); font-family: var(--font-family-sans); font-weight: 700;">$n$-Fold Compounding</h3>
+                    <p>We define the <strong>$n$-fold compounded interest rate $y_n(t, T)$</strong> corresponding to the lending period $[t, T]$ through:</p>
+                    
+                    <div style="background: var(--card-bg); padding: 1rem; border-radius: 8px; border-left: 4px solid var(--accent); margin: 1rem 0;">
+                        $$ P(t, T) = \left( 1 + \frac{y_n(t, T)}{n} \right)^{-n(T-t)} $$
                     </div>
-                    <div>
-                        <div style="font-size: 1.05rem; font-weight: 700; text-align: center; color: #5b21b6;">
-                            $$ P(t, T) = \left( 1 + \frac{y_n(t, T)}{n} \right)^{-n(T-t)} $$
-                        </div>
-                    </div>
-                </div>
-
-                <p style="font-size: 1rem; line-height: 1.7; color: var(--text-color); opacity: 0.85; margin: 1.25rem 0 0.5rem 0;">
-                    Elementary calculus shows that as the compounding frequency $n$ approaches infinity, we obtain continuous compounding as the limit:
-                </p>
-                <div style="font-size: 1.15rem; font-weight: 700; text-align: center; color: var(--text-color); margin: 0.5rem 0;">
-                    $$ \lim_{n \to \infty} y_n(t, T) = y(t, T) $$
+                    <p>Elementary calculus shows that as the compounding frequency $n$ approaches infinity, we obtain continuous compounding as the limit: $\lim_{n \to \infty} y_n(t, T) = y(t, T)$.</p>
                 </div>
             </div>
 
-            <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 12px; padding: 2rem; color: #451a03;">
-                <h3 style="margin-top: 0; color: #b45309; font-size: 1.25rem; font-weight: 800; font-family: 'Inter', sans-serif;">EPFL Session Spotlight</h3>
-                <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; padding-left: 1.25rem; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;">
-                    <li><strong>Term Structure:</strong> Prevailing term structure is obtained by freezing $t$ and varying $T$. Economic fluctuations cause this curve to shift, twist, and bend.</li>
-                    <li><strong>Short Rate $r(t)$:</strong> At the short end, compounding frequencies coincide:
-                        <div style="text-align: center; margin: 0.5rem 0; font-weight: 700;">
+            <!-- Card 3: The Money Market Account -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; border: 1px solid var(--card-border); background: var(--card-bg);">
+                <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">The Money Market Account</h3>
+                <p>Investing 1 unit of currency at the short rate $r(t)$, and continuously reinvesting it, grows into the <strong>money market account</strong> $B(t)$:</p>
+                <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border-left: 4px solid #8b5cf6; margin: 1rem 0;">
+                    $$ B(t) = e^{\int_0^t r(s) ds} $$
+                </div>
+                <p>The Money Market Account is a <strong>risk-free asset</strong> because its return over $[t, t+dt]$ is determined by $r(t)$ which is known at the beginning of the time interval (locally previsible and lacking local volatility).</p>
+            </div>
+
+            <!-- Card 4: Spot Rates & Discount Bonds -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; border: 1px solid var(--card-border); background: var(--accent-glow); border-left: 4px solid var(--accent); color: var(--text-color); display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; color: var(--accent); font-size: 1.25rem; font-weight: 800; font-family: var(--font-family-sans);">Term Structure &amp; Short Rate</h3>
+                    <ul style="font-size: 0.95rem; line-height: 1.6; padding-left: 1.2rem; margin: 0; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <li><strong>Term Structure:</strong> Prevailing term structure is obtained by freezing $t$ and varying $T$. Economic fluctuations cause this curve to shift, twist, and bend.</li>
+                        <li><strong>Short Rate $r(t)$:</strong> At the short end, compounding frequencies coincide:
                             $$ \lim_{T \to t} L(t, T) = \lim_{T \to t} y(t, T) = r(t) $$
-                        </div>
-                        This is the rate earned on a loan over a short period $[t, t + dt]$.
-                    </li>
-                    <li><strong>Discount Bond:</strong> Zero-coupon bond pays 1 at maturity $T$. Its price curve represents the <strong>discount curve</strong>, typically smooth, decreasing, and satisfying $P(T, T) = 1$.</li>
-                </ul>
+                        </li>
+                        <li><strong>Discount Bond:</strong> Zero-coupon bond pays 1 at maturity $T$. Its price curve represents the <strong>discount curve</strong>, typically smooth, decreasing, and satisfying $P(T, T) = 1$.</li>
+                    </ul>
+                </div>
             </div>
         </div>
+    </div>
 
-        <!-- INTERACTIVE TERM STRUCTURE CALCULATOR (CHART 1 & 2) -->
-        <div class="card" style="padding: 2rem; border: 1px solid var(--card-border); background: var(--card-bg);">
-            <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin-bottom: 0.5rem;">Interactive Term Structure: Simple Rate vs Yield & ZCB Prices</h2>
-            <p style="font-size: 1rem; color: var(--text-color); opacity: 0.75; margin-bottom: 1.5rem;">
+    <!-- Section B: Yield Curve Sandbox -->
+    <div id="secIrCurve" style="display: none;">
+        <div class="card" style="padding: 1.5rem; border: 1px solid var(--card-border); background: var(--card-bg); margin-bottom: 2rem;">
+            <h2 style="font-size: 1.4rem; font-weight: 800; color: var(--text-color); margin: 0 0 0.5rem 0; font-family: var(--font-family-sans);">Spot Yield Curve vs. ZCB Discount Factors</h2>
+            <p style="font-size: 0.95rem; color: #6b7280; margin-bottom: 1.5rem; font-family: var(--font-family-sans);">
                 Adjust parameters to compare the simple rate curve $L(0, T)$ and continuous yield curve $y(0, T)$ side-by-side with the ZCB discount curve $P(0, T)$ up to 30 years maturity.
             </p>
-            
-            <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0; justify-content: space-between; align-items: stretch;">
-                <div style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 0.25rem;">
-                    <label for="irInitialSlider" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Base Short Rate $r(0)$: <span id="irInitialValue" style="color: #2563eb;">4.0%</span></label>
-                    <input id="irInitialSlider" max="0.15" min="0.005" step="0.005" style="width: 100%; cursor: pointer;" type="range" value="0.04"/>
-                </div>
-                
-                <div style="flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 0.25rem;">
-                    <label for="irCurveTypeSelect" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Term Structure Shape</label>
-                    <select id="irCurveTypeSelect" style="padding: 0.5rem; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-weight: 600; color: #334155; outline: none; cursor: pointer;">
-                        <option value="flat">Flat</option>
-                        <option value="upward">Upward Sloping (Normal)</option>
-                        <option value="downward">Downward Sloping (Inverted)</option>
-                        <option value="humped">Humped Curve</option>
-                    </select>
-                </div>
 
-                <div style="flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 0.25rem;">
-                    <label for="irFrequencySelect" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Compounding Freq ($n$)</label>
-                    <select id="irFrequencySelect" style="padding: 0.5rem; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-weight: 600; color: #334155; outline: none; cursor: pointer;">
-                        <option value="1">Annual (n = 1)</option>
-                        <option value="2" selected>Semi-Annual (n = 2)</option>
-                        <option value="4">Quarterly (n = 4)</option>
-                        <option value="12">Monthly (n = 12)</option>
-                        <option value="365">Daily (n = 365)</option>
-                    </select>
-                </div>
-                
-                <div style="flex: 1 1 200px; min-width: 0; background: rgba(59, 130, 246, 0.03); border: 1px solid rgba(59, 130, 246, 0.1); border-radius: 8px; padding: 0.75rem 1.25rem; display: flex; flex-direction: column; justify-content: center;">
-                    <div style="font-size: 0.8rem; color: #1e3a8a; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">10-Year Factors</div>
-                    <div style="font-size: 0.95rem; color: #334155; font-family: monospace; font-weight: 600;">
-                        Yield $y(10)$: <span id="irY10" style="color: #ef4444;">4.00%</span>
-                    </div>
-                    <div style="font-size: 0.95rem; color: #334155; font-family: monospace; font-weight: 600;">
-                        $n$-Comp $y_n(10)$: <span id="irYn10" style="color: #7c3aed;">4.08%</span>
-                    </div>
-                    <div style="font-size: 0.95rem; color: #334155; font-family: monospace; font-weight: 600;">
-                        Simple $L(10)$: <span id="irL10" style="color: #3b82f6;">4.20%</span>
-                    </div>
-                </div>
-                
-                <div style="flex: 1 1 150px; min-width: 0; background: rgba(16, 185, 129, 0.03); border: 1px solid rgba(16, 185, 129, 0.1); border-radius: 8px; padding: 0.75rem 1.25rem; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                    <div style="font-size: 0.8rem; color: #065f46; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">10-Y ZCB Price</div>
-                    <div id="irP10" style="font-size: 2rem; font-weight: 800; color: #10b981; font-family: monospace;">0.6703</div>
-                </div>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
-                <div class="chart-container" style="min-width: 0; height: 350px; background: rgba(0,0,0,0.01); border-radius: 8px; padding: 1rem; border: 1px dashed var(--card-border);">
-                    <canvas id="interestRatesChart"></canvas>
-                </div>
-                <div class="chart-container" style="min-width: 0; height: 350px; background: rgba(0,0,0,0.01); border-radius: 8px; padding: 1rem; border: 1px dashed var(--card-border);">
-                    <canvas id="discountCurveChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- MONEY MARKET ACCOUNT SIMULATOR (CHART 3) -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch;">
-            <div class="card" style="margin-bottom: 0; padding: 2rem; border: 1px solid var(--card-border); background: var(--card-bg); display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin-bottom: 1rem;">2. The Money Market Account</h2>
-                    <p style="font-size: 1rem; line-height: 1.7; color: var(--text-color); opacity: 0.85; margin-bottom: 1.25rem;">
-                        Investing 1 unit of currency at the short rate $r(t)$, and continuously reinvesting it, grows into the <strong>money market account</strong> $B(t)$. 
-                    </p>
-                    <p style="font-size: 1rem; line-height: 1.7; color: var(--text-color); opacity: 0.85; margin-bottom: 1.25rem;">
-                        The local return is given by $B(t + dt) = B(t)(1 + r(t)dt)$. With normalization $B(0) = 1$, we obtain the continuous limit:
-                    </p>
+            <div style="display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls Column -->
+                <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-family-sans);">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 0.9rem; font-weight: 700; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; color: var(--text-color);">Parameters</h3>
                     
-                    <div style="background: rgba(124, 58, 237, 0.04); padding: 1.25rem; border-radius: 8px; border-left: 4px solid #7c3aed; margin: 1.5rem 0;">
-                        <div style="font-size: 1.25rem; font-weight: 700; text-align: center; color: #6d28d9;">
-                            $$ B(t) = e^{\int_0^t r(s) ds} $$
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <label for="irInitialSlider" style="font-weight: 700; font-size: 0.8rem; color: var(--text-color);">Base Short Rate $r(0)$: <span id="irInitialValue" style="color: var(--accent);">4.0%</span></label>
+                        <input id="irInitialSlider" max="0.15" min="0.005" step="0.005" style="width: 100%; cursor: pointer;" type="range" value="0.04"/>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <label for="irCurveTypeSelect" style="font-weight: 700; font-size: 0.8rem; color: var(--text-color);">Term Structure Shape</label>
+                        <select id="irCurveTypeSelect" style="padding: 0.4rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; cursor: pointer; font-family: var(--font-family-sans); font-weight: 600;">
+                            <option value="flat">Flat</option>
+                            <option value="upward">Upward Sloping (Normal)</option>
+                            <option value="downward">Downward Sloping (Inverted)</option>
+                            <option value="humped">Humped Curve</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <label for="irFrequencySelect" style="font-weight: 700; font-size: 0.8rem; color: var(--text-color);">Compounding Freq ($n$)</label>
+                        <select id="irFrequencySelect" style="padding: 0.4rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; cursor: pointer; font-family: var(--font-family-sans); font-weight: 600;">
+                            <option value="1">Annual (n = 1)</option>
+                            <option value="2" selected>Semi-Annual (n = 2)</option>
+                            <option value="4">Quarterly (n = 4)</option>
+                            <option value="12">Monthly (n = 12)</option>
+                            <option value="365">Daily (n = 365)</option>
+                        </select>
+                    </div>
+                    
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.75rem; display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.8rem;">
+                        <div style="font-weight: 700; color: var(--accent); text-transform: uppercase;">10-Year Factors</div>
+                        <div style="font-family: monospace;">Yield $y(10)$: <span id="irY10" style="color: #ef4444; font-weight: bold;">4.00%</span></div>
+                        <div style="font-family: monospace;">$n$-Comp $y_n(10)$: <span id="irYn10" style="color: #8b5cf6; font-weight: bold;">4.08%</span></div>
+                        <div style="font-family: monospace;">Simple $L(10)$: <span id="irL10" style="color: var(--accent); font-weight: bold;">4.20%</span></div>
+                    </div>
+                    
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.75rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.2rem;">
+                        <div style="font-size: 0.75rem; color: #64748b; font-weight: 700; text-transform: uppercase;">10-Y ZCB Price</div>
+                        <div id="irP10" style="font-size: 1.4rem; font-weight: 800; color: #10b981; font-family: monospace;">0.6703</div>
+                    </div>
+                </div>
+
+                <!-- Plot Column -->
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div class="card" style="margin-bottom: 0; padding: 1.25rem; border: 1px solid var(--card-border); background: var(--card-bg); height: 320px; position: relative;">
+                            <h4 style="margin: 0 0 0.75rem 0; font-size: 0.85rem; font-weight: 700; color: var(--text-color); text-transform: uppercase; text-align: center;">Simple Rate vs Continuous Yield</h4>
+                            <div style="height: 250px; position: relative;">
+                                <canvas id="interestRatesChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="card" style="margin-bottom: 0; padding: 1.25rem; border: 1px solid var(--card-border); background: var(--card-bg); height: 320px; position: relative;">
+                            <h4 style="margin: 0 0 0.75rem 0; font-size: 0.85rem; font-weight: 700; color: var(--text-color); text-transform: uppercase; text-align: center;">ZCB Discount Curve P(0, T)</h4>
+                            <div style="height: 250px; position: relative;">
+                                <canvas id="discountCurveChart"></canvas>
+                            </div>
                         </div>
                     </div>
-                    
-                    <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-color); opacity: 0.75; margin-bottom: 1.5rem;">
-                        The Money Market Account is a <strong>risk-free asset</strong> because its return over $[t, t+dt]$ is determined by $r(t)$ which is known at the beginning of the time interval (i.e. it is locally previsible and lacks local volatility).
-                    </p>
-                </div>
-                
-                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem;">
-                    <div style="font-size: 0.85rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 0.75rem;">Short Rate Path Selection</div>
-                    <div style="display: flex; gap: 0.5rem; width: 100%;">
-                        <button id="irMmaConstantBtn" style="flex: 1; padding: 0.6rem 0.5rem; font-size: 0.85rem; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; background: #e2e8f0; color: #334155; transition: all 0.2s;">Constant</button>
-                        <button id="irMmaSinusoidalBtn" style="flex: 1; padding: 0.6rem 0.5rem; font-size: 0.85rem; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; background: #e2e8f0; color: #334155; transition: all 0.2s;">Sinusoidal</button>
-                        <button id="irMmaStochasticBtn" style="flex: 1; padding: 0.6rem 0.5rem; font-size: 0.85rem; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; background: var(--primary-color); color: white; transition: all 0.2s;">Stochastic</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" style="margin-bottom: 0; padding: 2rem; border: 1px solid var(--card-border); background: var(--card-bg); display: flex; flex-direction: column; justify-content: space-between;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-color); margin: 0;">Interactive Short Rate &amp; MMA Path</h3>
-                    <div style="font-size: 0.9rem; color: #64748b; font-family: monospace; font-weight: 700;">
-                        MMA Final Value $B(10)$: <span id="irFinalMMA" style="color: #7c3aed; font-size: 1.1rem; font-weight: 800;">1.4921</span>
-                    </div>
-                </div>
-                
-                <div class="chart-container" style="min-width: 0; height: 350px; background: rgba(0,0,0,0.01); border-radius: 8px; padding: 1rem; border: 1px dashed var(--card-border);">
-                    <canvas id="moneyMarketChart"></canvas>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- PRACTICE EXERCISE -->
-        <div class="card" style="background: #f0fdf4; border-left: 4px solid #22c55e; padding: 2rem;">
-            <h2 style="color: #166534; font-size: 1.5rem; font-weight: 800; margin-top: 0; margin-bottom: 0.5rem;">Practice Exercise: Simple Compounding vs continuous yield</h2>
-            <p style="color: #15803d; font-size: 1.05rem; font-weight: 600; line-height: 1.6; margin-bottom: 1.5rem;">
-                A financial institution borrows $100 face value on the interbank LIBOR market for a period of 6 months ($\tau = 0.5$ years). The quoted 6-month LIBOR simple rate is $L(t, T) = 6\%$. 
-                <br><strong>Calculate the discount bond price $P(t, T)$ and the corresponding continuously compounded yield $y(t, T)$.</strong>
+    <!-- Section C: Money Market Sandbox -->
+    <div id="secIrMma" style="display: none;">
+        <div class="card" style="padding: 1.5rem; border: 1px solid var(--card-border); background: var(--card-bg); margin-bottom: 2rem;">
+            <h2 style="font-size: 1.4rem; font-weight: 800; color: var(--text-color); margin: 0 0 0.5rem 0; font-family: var(--font-family-sans);">Money Market Account Reinvestment Paths</h2>
+            <p style="font-size: 0.95rem; color: #6b7280; margin-bottom: 1.5rem; font-family: var(--font-family-sans);">
+                Simulate short rate trajectories and trace how reinvesting continuous cash flows builds the capital profile in your Money Market Account.
             </p>
-            
-            <details style="background: white; padding: 1.25rem; border-radius: 8px; border: 1px solid #bbf7d0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-                <summary style="cursor: pointer; font-weight: 700; color: #15803d; list-style: none; display: flex; align-items: center;">
-                    <span style="margin-right: 0.5rem; font-size: 1.1rem;">👉</span> Show Step-by-Step Mathematical Solution
-                </summary>
-                <div style="margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid #e2e8f0; color: #334155; font-size: 1rem; line-height: 1.8;">
-                    <ol>
-                        <li style="margin-bottom: 1rem;">
-                            <strong>Calculate the Discount Factor (ZCB Price) $P(t, T)$:</strong>
-                            <p style="margin-top: 0.25rem; opacity: 0.9;">
-                                Using the simple compounding price relation:
-                                $$ P(t, T) = \frac{1}{1 + (T - t)L(t, T)} = \frac{1}{1 + 0.5 \times 0.06} = \frac{1}{1.03} \approx \mathbf{0.970874} $$
-                                Meaning the institution buys a discount bond paying 100 for a price of <strong>$97.09</strong>.
-                            </p>
-                        </li>
-                        <li>
-                            <strong>Calculate the Continuously Compounded Yield $y(t, T)$:</strong>
-                            <p style="margin-top: 0.25rem; opacity: 0.9;">
-                                Using the continuous compounding yield relation:
-                                $$ P(t, T) = e^{-(T - t)y(t, T)} \implies y(t, T) = -\frac{\ln P(t, T)}{T - t} $$
-                                $$ y(t, T) = -\frac{\ln(0.970874)}{0.5} = -\frac{-0.029559}{0.5} \approx 0.059118 \text{ (or } \mathbf{5.91\%}\text{)} $$
-                            </p>
-                        </li>
-                    </ol>
-                    <div style="background: rgba(34, 197, 94, 0.05); padding: 1rem; border-radius: 6px; border-left: 4px solid #22c55e; margin-top: 1rem; font-weight: 600;">
-                        Verification: Consistent with the mathematical inequality $L(t, T) > y(t, T)$, the simple rate is exactly $6.00\%$ while the continuously compounded yield is $5.91\%$.
+
+            <div style="display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls Column -->
+                <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-family-sans);">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 0.9rem; font-weight: 700; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; color: var(--text-color);">MMA Settings</h3>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 0.4rem; width: 100%;">
+                        <label style="font-weight: 700; font-size: 0.8rem; color: var(--text-color);">Short Rate Path</label>
+                        <button id="irMmaConstantBtn" style="width: 100%; padding: 0.5rem; font-size: 0.85rem; font-weight: 700; border-radius: 6px; cursor: pointer; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); transition: all 0.2s; margin-bottom: 0.4rem;">Constant</button>
+                        <button id="irMmaSinusoidalBtn" style="width: 100%; padding: 0.5rem; font-size: 0.85rem; font-weight: 700; border-radius: 6px; cursor: pointer; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); transition: all 0.2s; margin-bottom: 0.4rem;">Sinusoidal</button>
+                        <button id="irMmaStochasticBtn" style="width: 100%; padding: 0.5rem; font-size: 0.85rem; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; background: var(--accent); color: white; transition: all 0.2s;">Stochastic</button>
+                    </div>
+
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.75rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.2rem;">
+                        <div style="font-size: 0.75rem; color: #64748b; font-weight: 700; text-transform: uppercase;">MMA value B(10)</div>
+                        <div id="irFinalMMA" style="font-size: 1.4rem; font-weight: 800; color: #8b5cf6; font-family: monospace;">1.4921</div>
                     </div>
                 </div>
-            </details>
-        </div>
 
+                <!-- Plot Column -->
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <div class="card" style="margin-bottom: 0; padding: 1.25rem; border: 1px solid var(--card-border); background: var(--card-bg); height: 320px; position: relative;">
+                        <h4 style="margin: 0 0 0.75rem 0; font-size: 0.85rem; font-weight: 700; color: var(--text-color); text-transform: uppercase; text-align: center;">Interactive Short Rate &amp; MMA Path</h4>
+                        <div style="height: 250px; position: relative;">
+                            <canvas id="moneyMarketChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<script>
+    (function() {
+        let irRatesChartInstance = null;
+        let irDiscountChartInstance = null;
+        let irMmaChartInstance = null;
+        let mmaPathType = 'stochastic';
+
+        window.switchIrTab = function(tab) {
+            const tabTheory = document.getElementById('tabIrTheory');
+            const tabCurve = document.getElementById('tabIrCurve');
+            const tabMma = document.getElementById('tabIrMma');
+            const secTheory = document.getElementById('secIrTheory');
+            const secCurve = document.getElementById('secIrCurve');
+            const secMma = document.getElementById('secIrMma');
+
+            if (tab === 'theory') {
+                tabTheory.style.color = 'var(--accent)';
+                tabTheory.style.borderBottomColor = 'var(--accent)';
+                tabCurve.style.color = '#6b7280';
+                tabCurve.style.borderBottomColor = 'transparent';
+                tabMma.style.color = '#6b7280';
+                tabMma.style.borderBottomColor = 'transparent';
+                secTheory.style.display = 'block';
+                secCurve.style.display = 'none';
+                secMma.style.display = 'none';
+            } else if (tab === 'curve') {
+                tabCurve.style.color = 'var(--accent)';
+                tabCurve.style.borderBottomColor = 'var(--accent)';
+                tabTheory.style.color = '#6b7280';
+                tabTheory.style.borderBottomColor = 'transparent';
+                tabMma.style.color = '#6b7280';
+                tabMma.style.borderBottomColor = 'transparent';
+                secTheory.style.display = 'none';
+                secCurve.style.display = 'block';
+                secMma.style.display = 'none';
+                setTimeout(runInterestRatesSimulation, 50);
+            } else if (tab === 'mma') {
+                tabMma.style.color = 'var(--accent)';
+                tabMma.style.borderBottomColor = 'var(--accent)';
+                tabTheory.style.color = '#6b7280';
+                tabTheory.style.borderBottomColor = 'transparent';
+                tabCurve.style.color = '#6b7280';
+                tabCurve.style.borderBottomColor = 'transparent';
+                secTheory.style.display = 'none';
+                secCurve.style.display = 'none';
+                secMma.style.display = 'block';
+                setTimeout(runMmaPathSimulation, 50);
+            }
+        };
+
+        window.runInterestRatesSimulation = function() {
+            const r0 = parseFloat(document.getElementById('irInitialSlider').value);
+            const curveType = document.getElementById('irCurveTypeSelect').value;
+            const n = parseInt(document.getElementById('irFrequencySelect').value);
+
+            document.getElementById('irInitialValue').textContent = (r0 * 100).toFixed(1) + '%';
+
+            const maturities = [];
+            const simpleRates = [];
+            const continuousYields = [];
+            const nCompoundedYields = [];
+            const discountFactors = [];
+
+            function getYieldAtT(T) {
+                if (T === 0) return r0;
+                if (curveType === 'flat') return r0;
+                if (curveType === 'upward') return r0 + 0.04 * (1 - Math.exp(-T / 3.0));
+                if (curveType === 'downward') return r0 - 0.02 * (1 - Math.exp(-T / 4.0));
+                if (curveType === 'humped') return r0 + 0.08 * (T / 5.0) * Math.exp(-T / 3.0);
+                return r0;
+            }
+
+            for (let i = 1; i <= 30; i++) {
+                const T = i;
+                maturities.push(T);
+                const y = getYieldAtT(T);
+                continuousYields.push(y * 100);
+                const df = Math.exp(-y * T);
+                discountFactors.push(df);
+                const simpleR = (1 / T) * (1 / df - 1);
+                simpleRates.push(simpleR * 100);
+                const yn = n * (Math.pow(df, -1 / (n * T)) - 1);
+                nCompoundedYields.push(yn * 100);
+            }
+
+            const y10 = getYieldAtT(10.0);
+            const df10 = Math.exp(-y10 * 10.0);
+            const simpleL10 = (1 / 10.0) * (1 / df10 - 1);
+            const yn10 = n * (Math.pow(df10, -1 / (n * 10.0)) - 1);
+
+            document.getElementById('irY10').textContent = (y10 * 100).toFixed(2) + '%';
+            document.getElementById('irYn10').textContent = (yn10 * 100).toFixed(2) + '%';
+            document.getElementById('irL10').textContent = (simpleL10 * 100).toFixed(2) + '%';
+            document.getElementById('irP10').textContent = df10.toFixed(4);
+
+            const isDark = document.body.classList.contains('dark-theme');
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
+            const tickColor = isDark ? '#94a3b8' : '#64748b';
+
+            const ctxRates = document.getElementById('interestRatesChart');
+            if (ctxRates) {
+                if (irRatesChartInstance) irRatesChartInstance.destroy();
+                irRatesChartInstance = new Chart(ctxRates.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: maturities,
+                        datasets: [
+                            { label: 'Simple Rate L(0, T)', data: simpleRates, borderColor: '#2563eb', borderWidth: 2, pointRadius: 0, fill: false },
+                            { label: 'Continuous Yield y(0, T)', data: continuousYields, borderColor: '#ef4444', borderWidth: 2, pointRadius: 0, fill: false },
+                            { label: `n-Compounded y_n(0, T)`, data: nCompoundedYields, borderColor: '#7c3aed', borderWidth: 2, pointRadius: 0, fill: false }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'top', labels: { color: tickColor, font: { size: 9 } } } },
+                        scales: {
+                            x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 8 } }, title: { display: true, text: 'Maturity T (Years)', color: tickColor, font: { size: 9 } } },
+                            y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 8 } }, title: { display: true, text: 'Rate (%)', color: tickColor, font: { size: 9 } } }
+                        }
+                    }
+                });
+            }
+
+            const ctxDisc = document.getElementById('discountCurveChart');
+            if (ctxDisc) {
+                if (irDiscountChartInstance) irDiscountChartInstance.destroy();
+                irDiscountChartInstance = new Chart(ctxDisc.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: maturities,
+                        datasets: [{
+                            label: 'Discount Factor P(0, T)',
+                            data: discountFactors,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.03)',
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 8 } }, title: { display: true, text: 'Maturity T (Years)', color: tickColor, font: { size: 9 } } },
+                            y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 8 } }, min: 0, max: 1.1, title: { display: true, text: 'Price P(0, T)', color: tickColor, font: { size: 9 } } }
+                        }
+                    }
+                });
+            }
+        };
+
+        window.runMmaPathSimulation = function() {
+            const steps = 100;
+            const T = 10.0;
+            const dt = T / steps;
+            const time = [];
+            const rPath = [];
+            const bPath = [];
+
+            let r = 0.04;
+            let B = 1.0;
+
+            for (let i = 0; i <= steps; i++) {
+                const t = i * dt;
+                time.push(t.toFixed(1));
+
+                if (mmaPathType === 'constant') {
+                    r = 0.04;
+                } else if (mmaPathType === 'sinusoidal') {
+                    r = 0.04 + 0.02 * Math.sin(t * 1.5);
+                } else if (mmaPathType === 'stochastic') {
+                    if (i > 0) {
+                        const Z = Math.sqrt(-2.0 * Math.log(Math.random() || 0.0001)) * Math.cos(2.0 * Math.PI * (Math.random() || 0.0001));
+                        r += 0.15 * (0.04 - r) * dt + 0.015 * Math.sqrt(dt) * Z;
+                    }
+                }
+
+                if (i > 0) {
+                    B = B * Math.exp(r * dt);
+                }
+
+                rPath.push(r * 100);
+                bPath.push(B);
+            }
+
+            document.getElementById('irFinalMMA').textContent = B.toFixed(4);
+
+            const isDark = document.body.classList.contains('dark-theme');
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
+            const tickColor = isDark ? '#94a3b8' : '#64748b';
+
+            const ctxMma = document.getElementById('moneyMarketChart');
+            if (ctxMma) {
+                if (irMmaChartInstance) irMmaChartInstance.destroy();
+                irMmaChartInstance = new Chart(ctxMma.getContext('2d'), {
+                    data: {
+                        labels: time,
+                        datasets: [
+                            { label: 'Short Rate r(t) (%)', type: 'line', data: rPath, borderColor: '#ef4444', borderWidth: 2, pointRadius: 0, fill: false, yAxisID: 'y' },
+                            { label: 'MMA Account B(t) ($)', type: 'line', data: bPath, borderColor: '#7c3aed', borderWidth: 2.5, pointRadius: 0, fill: false, yAxisID: 'y1' }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'top', labels: { color: tickColor, font: { size: 9 } } } },
+                        scales: {
+                            x: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 8 } } },
+                            y: { grid: { color: gridColor }, ticks: { color: tickColor, font: { size: 8 } }, position: 'left', title: { display: true, text: 'Short Rate (%)', color: '#ef4444', font: { size: 9 } } },
+                            y1: { grid: { drawOnChartArea: false }, ticks: { color: tickColor, font: { size: 8 } }, position: 'right', title: { display: true, text: 'Account Value ($)', color: '#7c3aed', font: { size: 9 } } }
+                        }
+                    }
+                });
+            }
+        };
+
+        window.initInterestRatesSimulation = function() {
+            switchIrTab('theory');
+        };
+
+        setTimeout(() => {
+            const select = document.getElementById('irCurveTypeSelect');
+            if (select) select.addEventListener('change', runInterestRatesSimulation);
+
+            const initial = document.getElementById('irInitialSlider');
+            if (initial) initial.addEventListener('input', runInterestRatesSimulation);
+
+            const freq = document.getElementById('irFrequencySelect');
+            if (freq) freq.addEventListener('change', runInterestRatesSimulation);
+
+            // MMA path buttons
+            const btnConst = document.getElementById('irMmaConstantBtn');
+            const btnSin = document.getElementById('irMmaSinusoidalBtn');
+            const btnStoch = document.getElementById('irMmaStochasticBtn');
+
+            function setMmaBtnActive(activeBtn) {
+                [btnConst, btnSin, btnStoch].forEach(btn => {
+                    if (btn) {
+                        btn.style.background = 'var(--card-bg)';
+                        btn.style.color = 'var(--text-color)';
+                        btn.style.border = '1px solid var(--card-border)';
+                    }
+                });
+                if (activeBtn) {
+                    activeBtn.style.background = 'var(--accent)';
+                    activeBtn.style.color = 'white';
+                    activeBtn.style.border = 'none';
+                }
+            }
+
+            if (btnConst) btnConst.onclick = () => { mmaPathType = 'constant'; setMmaBtnActive(btnConst); runMmaPathSimulation(); };
+            if (btnSin) btnSin.onclick = () => { mmaPathType = 'sinusoidal'; setMmaBtnActive(btnSin); runMmaPathSimulation(); };
+            if (btnStoch) btnStoch.onclick = () => { mmaPathType = 'stochastic'; setMmaBtnActive(btnStoch); runMmaPathSimulation(); };
+
+        }, 100);
+    })();
+</script>
