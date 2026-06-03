@@ -1,0 +1,692 @@
+<div id="view-calibration" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">Module 4: Interest Rate Derivatives</h1>
+        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">4. Model Calibration Example (HJM Calibration to Caps)</div>
+    </header>
+
+    <div style="display: flex; flex-direction: column; gap: 3rem; max-width: 1400px; margin-bottom: 4rem;">
+
+        <!-- 1. Executive Summary: Core Concept of HJM Model Calibration -->
+        <div class="container" style="margin-bottom: 0; gap: 2rem; align-items: stretch; grid-template-columns: 1.2fr 0.8fr;">
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h2 style="margin-top: 0; font-size: 1.5rem; font-weight: 700; color: var(--text-color);">Two-Factor Gaussian HJM Model Calibration</h2>
+                    <p style="font-size: 1rem; color: var(--text-color); opacity: 0.85; line-height: 1.6;">
+                        Having developed the framework for forward measures and options, we now have all the ingredients to calibrate a term structure model to market data. In this module, we calibrate a <strong>two-factor Gaussian Heath–Jarrow–Morton (HJM) model</strong> to market Swiss swap rates and at-the-money (ATM) cap quotes.
+                    </p>
+                    <p style="font-size: 1rem; color: var(--text-color); opacity: 0.85; line-height: 1.6;">
+                        To do this, we price caps analytically within the Gaussian HJM model, evaluate the market price sensitivities (<strong>Vegas</strong>) under the Black and Bachelier frameworks, and formulate an elegant, fast, and robust <strong>vega-weighted least squares calibration problem</strong>.
+                    </p>
+                </div>
+                <div style="margin-top: 1rem; padding: 0.75rem 1rem; background: var(--nav-hover); border-left: 4px solid var(--accent); border-radius: 4px; font-size: 0.9rem; color: var(--text-color);">
+                    <strong>Optimal Parameters Found:</strong><br>
+                    <code style="font-family: monospace; font-weight: 700; color: var(--accent);">v₁ = 0.0149</code>, 
+                    <code style="font-family: monospace; font-weight: 700; color: var(--accent);">v₂ = 0.0056</code>, 
+                    <code style="font-family: monospace; font-weight: 700; color: var(--accent);">β₁ = 1.7381</code>, 
+                    <code style="font-family: monospace; font-weight: 700; color: var(--accent);">β₂ = 0.0127</code>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; display: flex; flex-direction: column; justify-content: center; padding: 2rem;">
+                <h3 style="margin-top: 0; color: #166534; font-family: 'Inter', sans-serif; font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: #16a34a;"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
+                    Calibration Workflow
+                </h3>
+                <ol style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #14532d; padding-left: 1.2rem; margin-bottom: 0;">
+                    <li style="margin-bottom: 0.5rem;"><strong>Discount Curve Estimation:</strong> Construct the semi-annual discount factors $P(0, T_k)$ using the pseudoinverse method from Swiss swap rates.</li>
+                    <li style="margin-bottom: 0.5rem;"><strong>ATM Strike Curve Calculation:</strong> Determine the 6-month forward swap rates to define at-the-money cap strikes.</li>
+                    <li style="margin-bottom: 0.5rem;"><strong>Model Caplet Pricing:</strong> Price caplets using HJM integrated return volatilities.</li>
+                    <li><strong>Vega-Weighted Minimization:</strong> Minimize implied volatility errors approximated efficiently via analytical Cap Vegas.</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- 2. Mathematical Foundations: HJM Vol Specification & Pricing -->
+        <div class="container" style="margin-bottom: 0; gap: 2rem; align-items: stretch; grid-template-columns: 1fr 1fr;">
+            <!-- HJM Volatility Card -->
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-size: 1.3rem; font-weight: 700; color: var(--text-color); margin-bottom: 1rem;">Two-Factor Gaussian HJM Specification</h3>
+                <p>We consider a two-factor Gaussian HJM model with the volatility structure:</p>
+                <p style="text-align: center; font-size: 1.15rem; background: var(--nav-hover); padding: 0.75rem; border-radius: 6px; font-family: monospace;">
+                    $$ \sigma(t, T) = \left( e^{-\beta_1(T-t)}v_1, \ e^{-\beta_2(T-t)}v_2 \right) $$
+                </p>
+                <p>where $v_1, v_2, \beta_1, \beta_2$ are positive parameters to be calibrated to market data.</p>
+                <p>By elementary integration, the integrated volatility term inside the option pricing formula yields:</p>
+                <div style="background: var(--nav-hover); padding: 1rem; border-radius: 6px; font-size: 1.05rem; overflow-x: auto;">
+                    $$ \int_0^{T_{i-1}} \| v(s, T_{i-1}) - v(s, T_i) \|^2 ds = \sum_{k=1}^2 \frac{v_k^2}{\beta_k^2} (e^{-\beta_k T_{i-1}} - e^{-\beta_k T_i})^2 \frac{e^{2\beta_k T_{i-1}} - 1}{2\beta_k} $$
+                </div>
+                <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.5rem; font-style: italic;">
+                    *Note: For very small $\beta_k \approx 0$, the limits are resolved analytically to avoid numerical divide-by-zero errors.
+                </p>
+            </div>
+
+            <!-- Caplet Pricing Card -->
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-size: 1.3rem; font-weight: 700; color: var(--text-color); margin-bottom: 1rem;">HJM Caplet Pricing Formula</h3>
+                <p>Recall that the $i$-th caplet (resets at $T_{i-1}$ and settles at $T_i$) with strike rate $\kappa$ is equivalent to $1 + \delta\kappa$ put options on the $T_i$-bond expiring at $T_{i-1}$. In the Gaussian HJM model, the time-0 price is:</p>
+                <div style="background: var(--nav-hover); padding: 1rem; border-radius: 6px; font-size: 1.05rem; overflow-x: auto;">
+                    $$ Cpl(T_{i-1}, T_i) = P(0, T_{i-1})\Phi(-d_2(i)) - (1 + \delta \kappa) P(0, T_i)\Phi(-d_1(i)) $$
+                </div>
+                <p>where $\Phi$ is the standard normal cumulative distribution, and the parameters $d_1, d_2$ are given by:</p>
+                <div style="background: var(--nav-hover); padding: 1rem; border-radius: 6px; font-size: 0.95rem; overflow-x: auto; margin-bottom: 0.5rem;">
+                    $$ d_{1,2}(i) = \frac{\log\left( \frac{P(0, T_i)}{P(0, T_{i-1})} (1 + \delta \kappa) \right) \pm \frac{1}{2} \sigma_i^2}{\sigma_i} $$
+                </div>
+                <p>with $\sigma_i^2 = \int_0^{T_{i-1}} \| v(s, T_{i-1}) - v(s, T_i) \|^2 ds$ as the integrated variance.</p>
+            </div>
+        </div>
+
+        <!-- 3. Why Vega-Weights are Perfect: Calibration Math -->
+        <div class="card">
+            <h3 style="margin-top: 0; font-size: 1.3rem; font-weight: 700; color: var(--text-color); margin-bottom: 1rem;">Solving Implied Vol Errors via Vega-Weighting</h3>
+            <p>Directly minimizing the mean squared error of **implied volatilities** ($\sum (\hat{\sigma}_n^\theta - \sigma_n)^2$) is standard because implied vols standardize prices and are comparable. However, computing $\hat{\sigma}_n^\theta$ in real-time requires numerical root-finding (inverting the Black/Bachelier formula) for each step of the optimizer, which is computationally expensive.</p>
+            
+            <p><strong>The Solution:</strong> A first-order Taylor expansion of the pricing function $C_n(\sigma)$ around the market volatility $\sigma_n$ yields:</p>
+            <div style="background: var(--nav-hover); padding: 0.75rem; border-radius: 6px; font-size: 1.1rem; text-align: center; margin-bottom: 1.25rem;">
+                $$ \hat{C}_n^\theta \approx C_n + \text{vega}_n (\hat{\sigma}_n^\theta - \sigma_n) \implies (\hat{\sigma}_n^\theta - \sigma_n)^2 \approx \frac{1}{(\text{vega}_n)^2} (\hat{C}_n^\theta - C_n)^2 $$
+            </div>
+            <p>Thus, by weighting the squared price errors with the inverse squared market vega ($\frac{1}{\text{vega}_n^2}$), the problem is reduced to a fast, analytical, weighted least-squares minimization that runs instantly!</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+                <div style="border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; background: var(--sidebar-bg);">
+                    <h4 style="margin-top: 0; color: var(--accent); font-weight: 700; margin-bottom: 0.75rem;">Black Cap Vega ($\text{vega}_{Black}$)</h4>
+                    <p style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 0;">
+                        Black caplet vega with respect to Black relative volatility $\sigma_B$ is:
+                        $$ \text{vega}_{i, Black} = \delta P(0, T_i) F_i \sqrt{T_{i-1}} \phi(d_1) $$
+                        where $\phi(x)$ is the normal density. The Black cap vega is the sum of caplet vegas.
+                    </p>
+                </div>
+                <div style="border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; background: var(--sidebar-bg);">
+                    <h4 style="margin-top: 0; color: var(--secondary-accent); font-weight: 700; margin-bottom: 0.75rem;">Bachelier Cap Vega ($\text{vega}_{Bachelier}$)</h4>
+                    <p style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 0;">
+                        Bachelier caplet vega with respect to Normal absolute volatility $\sigma_N$ is:
+                        $$ \text{vega}_{i, Bachelier} = \delta P(0, T_i) \sqrt{T_{i-1}} \phi(D_i) $$
+                        where $D_i = \frac{F_i - \kappa}{\sigma_N \sqrt{T_{i-1}}}$. The Bachelier cap vega is the sum of caplet vegas.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Interactive Calibration Dashboard & Fitted Curves -->
+        <div class="card" style="padding: 2.5rem; border: 2px solid var(--accent);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                <h2 style="margin: 0; font-size: 1.6rem; font-weight: 800; color: var(--text-color); display: flex; align-items: center; gap: 0.75rem;">
+                    <span style="display: inline-block; width: 12px; height: 24px; background: var(--accent); border-radius: 2px;"></span>
+                    Interactive Optimization Playground
+                </h2>
+                <div style="display: flex; gap: 0.5rem; background: var(--sidebar-bg); padding: 0.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                    <button class="calib-toggle-btn active" id="btn-normal-vol" onclick="setCalibMeasure('Normal')" style="border: none; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;">Normal Vol (bps)</button>
+                    <button class="calib-toggle-btn" id="btn-black-vol" onclick="setCalibMeasure('Black')" style="border: none; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;">Black Vol (%)</button>
+                </div>
+            </div>
+
+            <p style="font-size: 1rem; color: var(--text-color); opacity: 0.85; margin-bottom: 2rem;">
+                Play the role of the calibration optimizer! Drag the sliders to adjust the parameters $v_1$, $v_2$, $\beta_1$, and $\beta_2$ of the two-factor Gaussian HJM model. The **Fitted Implied Volatility Curve** and **Weighted Mean Squared Error (WMSE)** will dynamically update.
+            </p>
+
+            <div class="container" style="margin-bottom: 0; gap: 2.5rem; align-items: stretch; grid-template-columns: 1fr 1.2fr;">
+                
+                <!-- Sliders Controls Panel -->
+                <div style="display: flex; flex-direction: column; gap: 1.5rem; justify-content: space-between;">
+                    <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                        <!-- v1 -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 700; color: var(--text-color); font-size: 0.95rem;">Factor 1 Base Volatility ($v_1$)</label>
+                                <span id="v1-val" style="font-family: monospace; font-weight: 700; color: var(--accent); font-size: 1.1rem; background: var(--sidebar-bg); padding: 0.2rem 0.5rem; border-radius: 4px;">0.0149</span>
+                            </div>
+                            <input type="range" id="slider-v1" min="0" max="0.05" step="0.0001" value="0.0149" oninput="updateCalibrationEngine()" style="width: 100%; accent-color: var(--accent);" />
+                        </div>
+
+                        <!-- v2 -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 700; color: var(--text-color); font-size: 0.95rem;">Factor 2 Base Volatility ($v_2$)</label>
+                                <span id="v2-val" style="font-family: monospace; font-weight: 700; color: var(--accent); font-size: 1.1rem; background: var(--sidebar-bg); padding: 0.2rem 0.5rem; border-radius: 4px;">0.0056</span>
+                            </div>
+                            <input type="range" id="slider-v2" min="0" max="0.05" step="0.0001" value="0.0056" oninput="updateCalibrationEngine()" style="width: 100%; accent-color: var(--accent);" />
+                        </div>
+
+                        <!-- beta1 -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 700; color: var(--text-color); font-size: 0.95rem;">Factor 1 Mean Reversion ($\beta_1$)</label>
+                                <span id="beta1-val" style="font-family: monospace; font-weight: 700; color: var(--accent); font-size: 1.1rem; background: var(--sidebar-bg); padding: 0.2rem 0.5rem; border-radius: 4px;">1.7381</span>
+                            </div>
+                            <input type="range" id="slider-beta1" min="0" max="5.0" step="0.001" value="1.7381" oninput="updateCalibrationEngine()" style="width: 100%; accent-color: var(--accent);" />
+                        </div>
+
+                        <!-- beta2 -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 700; color: var(--text-color); font-size: 0.95rem;">Factor 2 Mean Reversion ($\beta_2$)</label>
+                                <span id="beta2-val" style="font-family: monospace; font-weight: 700; color: var(--accent); font-size: 1.1rem; background: var(--sidebar-bg); padding: 0.2rem 0.5rem; border-radius: 4px;">0.0127</span>
+                            </div>
+                            <input type="range" id="slider-beta2" min="0" max="5.0" step="0.001" value="0.0127" oninput="updateCalibrationEngine()" style="width: 100%; accent-color: var(--accent);" />
+                        </div>
+                    </div>
+
+                    <!-- Summary Info -->
+                    <div style="background: var(--sidebar-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); margin-top: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <span style="font-weight: 700; color: var(--text-color); font-size: 0.95rem;">Vega-Weighted MSE (WMSE):</span>
+                            <span id="wmse-val" style="font-family: monospace; font-weight: 800; font-size: 1.25rem; padding: 0.25rem 0.75rem; border-radius: 4px; color: #166534; background: #dcfce7; transition: all 0.2s;">0.00e-0</span>
+                        </div>
+                        <div style="display: flex; gap: 0.75rem;">
+                            <button onclick="resetCalibrationOptimal()" style="flex: 1; background: var(--accent); color: white; border: none; padding: 0.75rem 1rem; border-radius: 6px; font-weight: 700; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+                                Reset to Calibrated Optimal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fitted Curves Dynamic Chart -->
+                <div style="background: var(--sidebar-bg); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--card-border); position: relative; height: 420px; display: flex; align-items: center; justify-content: center;">
+                    <canvas id="calibrationChart" style="max-height: 100%; max-width: 100%;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Data Tables: Swiss Swap Rates, Discount Factors, Cap Quotes -->
+        <details class="card" style="border: 1px solid var(--card-border); border-radius: 12px; background: var(--card-bg);">
+            <summary style="font-size: 1.2rem; font-weight: 700; color: var(--text-color); padding: 1.25rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; list-style: none;">
+                <span style="display: flex; align-items: center; gap: 0.75rem;">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    Swiss Swap Rates & Estimated Discount curve P(0, Tk) Table
+                </span>
+                <span style="font-size: 0.9rem; font-weight: 600; color: #64748b;">Click to view comprehensive historical dataset</span>
+            </summary>
+
+            <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--sidebar-bg); display: flex; flex-direction: column; gap: 2rem;">
+                
+                <!-- Swap Data and Mini explanation -->
+                <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem; align-items: center;">
+                    <div>
+                        <h4 style="margin-top: 0; font-size: 1.1rem; font-weight: 700; color: var(--text-color); margin-bottom: 0.75rem;">Market spot swap curve context</h4>
+                        <p style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 0;">
+                            The calibration starts from Switzerland market swap rates paying annual fixed coupons with maturities ranging from 1 year to 30 years. The very first rate is the 6-month simple spot rate ($0.343\%$). Because the caps have <strong>semi-annual cash flows</strong> ($\delta = 0.5$), we estimate the discount curve $P(0, T_k)$ at the semi-annual frequency.
+                        </p>
+                        <p style="font-size: 0.95rem; line-height: 1.6; margin-top: 0.5rem; margin-bottom: 0;">
+                            We apply the exact method based on the <strong>pseudoinverse matrix</strong> to reconstruct the discount factors consistently for all 60 periods ($T_{59} = 30$ years) matching the EPFL paper bootstrap results.
+                        </p>
+                    </div>
+                    
+                    <!-- Swap rates table -->
+                    <div style="max-height: 220px; overflow-y: auto; border: 1px solid var(--card-border); border-radius: 8px;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; background: var(--card-bg);">
+                            <thead>
+                                <tr style="background: var(--sidebar-bg); border-bottom: 2px solid var(--card-border); text-align: left;">
+                                    <th style="padding: 0.5rem 0.75rem; font-weight: 700;">Maturity</th>
+                                    <th style="padding: 0.5rem 0.75rem; font-weight: 700;">Swap rate (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem 0.75rem; font-family: monospace;">6m</td><td style="padding: 0.4rem 0.75rem; font-family: monospace; font-weight: 700; color: var(--accent);">0.3430</td></tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem 0.75rem; font-family: monospace;">1y</td><td style="padding: 0.4rem 0.75rem; font-family: monospace; font-weight: 700;">0.4420</td></tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem 0.75rem; font-family: monospace;">2y</td><td style="padding: 0.4rem 0.75rem; font-family: monospace; font-weight: 700;">0.6260</td></tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem 0.75rem; font-family: monospace;">3y</td><td style="padding: 0.4rem 0.75rem; font-family: monospace; font-weight: 700;">0.8630</td></tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem 0.75rem; font-family: monospace;">4y</td><td style="padding: 0.4rem 0.75rem; font-family: monospace; font-weight: 700;">1.1191</td></tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem 0.75rem; font-family: monospace;">5y</td><td style="padding: 0.4rem 0.75rem; font-family: monospace; font-weight: 700;">1.3650</td></tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem 0.75rem; font-family: monospace;">6y</td><td style="padding: 0.4rem 0.75rem; font-family: monospace; font-weight: 700;">1.5750</td></tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem 0.75rem; font-family: monospace;">7y</td><td style="padding: 0.4rem 0.75rem; font-family: monospace; font-weight: 700;">1.7574</td></tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem 0.75rem; font-family: monospace;">8y</td><td style="padding: 0.4rem 0.75rem; font-family: monospace; font-weight: 700;">1.9184</td></tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem 0.75rem; font-family: monospace;">9y</td><td style="padding: 0.4rem 0.75rem; font-family: monospace; font-weight: 700;">2.0630</td></tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem 0.75rem; font-family: monospace;">10y</td><td style="padding: 0.4rem 0.75rem; font-family: monospace; font-weight: 700;">2.1905</td></tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem 0.75rem; font-family: monospace;">15y</td><td style="padding: 0.4rem 0.75rem; font-family: monospace; font-weight: 700;">2.5990</td></tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem 0.75rem; font-family: monospace;">20y</td><td style="padding: 0.4rem 0.75rem; font-family: monospace; font-weight: 700;">2.7135</td></tr>
+                                <tr><td style="padding: 0.4rem 0.75rem; font-family: monospace;">30y</td><td style="padding: 0.4rem 0.75rem; font-family: monospace; font-weight: 700;">2.7135</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 60 semi-annual Discount factors table -->
+                <div>
+                    <h4 style="margin-top: 0; font-size: 1.1rem; font-weight: 700; color: var(--text-color); margin-bottom: 0.75rem;">Estimated semi-annual Discount Factors $P(0, T_k)$ Matrix</h4>
+                    <div style="overflow-x: auto; border: 1px solid var(--card-border); border-radius: 8px;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.825rem; background: var(--card-bg); text-align: center;">
+                            <thead>
+                                <tr style="background: var(--sidebar-bg); border-bottom: 2px solid var(--card-border);">
+                                    <th style="padding: 0.6rem; font-weight: 700;">Row Offset</th>
+                                    <th style="padding: 0.6rem; font-weight: 700;">$i = 0$ ($0 \to 5$ yrs)</th>
+                                    <th style="padding: 0.6rem; font-weight: 700;">$i = 1$ ($5 \to 10$ yrs)</th>
+                                    <th style="padding: 0.6rem; font-weight: 700;">$i = 2$ ($10 \to 15$ yrs)</th>
+                                    <th style="padding: 0.6rem; font-weight: 700;">$i = 3$ ($15 \to 20$ yrs)</th>
+                                    <th style="padding: 0.6rem; font-weight: 700;">$i = 4$ ($20 \to 25$ yrs)</th>
+                                    <th style="padding: 0.6rem; font-weight: 700;">$i = 5$ ($25 \to 30$ yrs)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem; font-weight: 600; background: var(--sidebar-bg);">$T_{10i}$</td><td style="padding: 0.5rem; font-family: monospace;">0.9983</td><td style="padding: 0.5rem; font-family: monospace;">0.9216</td><td style="padding: 0.5rem; font-family: monospace;">0.7865</td><td style="padding: 0.5rem; font-family: monospace;">0.6591</td><td style="padding: 0.5rem; font-family: monospace;">0.5642</td><td style="padding: 0.5rem; font-family: monospace;">0.4918</td></tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem; font-weight: 600; background: var(--sidebar-bg);">$T_{1+10i}$</td><td style="padding: 0.5rem; font-family: monospace;">0.9956</td><td style="padding: 0.5rem; font-family: monospace;">0.9093</td><td style="padding: 0.5rem; font-family: monospace;">0.7729</td><td style="padding: 0.5rem; font-family: monospace;">0.6489</td><td style="padding: 0.5rem; font-family: monospace;">0.5565</td><td style="padding: 0.5rem; font-family: monospace;">0.4855</td></tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem; font-weight: 600; background: var(--sidebar-bg);">$T_{2+10i}$</td><td style="padding: 0.5rem; font-family: monospace;">0.9916</td><td style="padding: 0.5rem; font-family: monospace;">0.8963</td><td style="padding: 0.5rem; font-family: monospace;">0.7595</td><td style="padding: 0.5rem; font-family: monospace;">0.6390</td><td style="padding: 0.5rem; font-family: monospace;">0.5489</td><td style="padding: 0.5rem; font-family: monospace;">0.4793</td></tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem; font-weight: 600; background: var(--sidebar-bg);">$T_{3+10i}$</td><td style="padding: 0.5rem; font-family: monospace;">0.9876</td><td style="padding: 0.5rem; font-family: monospace;">0.8833</td><td style="padding: 0.5rem; font-family: monospace;">0.7462</td><td style="padding: 0.5rem; font-family: monospace;">0.6291</td><td style="padding: 0.5rem; font-family: monospace;">0.5414</td><td style="padding: 0.5rem; font-family: monospace;">0.4731</td></tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem; font-weight: 600; background: var(--sidebar-bg);">$T_{4+10i}$</td><td style="padding: 0.5rem; font-family: monospace;">0.9810</td><td style="padding: 0.5rem; font-family: monospace;">0.8697</td><td style="padding: 0.5rem; font-family: monospace;">0.7331</td><td style="padding: 0.5rem; font-family: monospace;">0.6193</td><td style="padding: 0.5rem; font-family: monospace;">0.5340</td><td style="padding: 0.5rem; font-family: monospace;">0.4671</td></tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem; font-weight: 600; background: var(--sidebar-bg);">$T_{5+10i}$</td><td style="padding: 0.5rem; font-family: monospace;">0.9745</td><td style="padding: 0.5rem; font-family: monospace;">0.8562</td><td style="padding: 0.5rem; font-family: monospace;">0.7200</td><td style="padding: 0.5rem; font-family: monospace;">0.6096</td><td style="padding: 0.5rem; font-family: monospace;">0.5267</td><td style="padding: 0.5rem; font-family: monospace;">0.4610</td></tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem; font-weight: 600; background: var(--sidebar-bg);">$T_{6+10i}$</td><td style="padding: 0.5rem; font-family: monospace;">0.9653</td><td style="padding: 0.5rem; font-family: monospace;">0.8422</td><td style="padding: 0.5rem; font-family: monospace;">0.7072</td><td style="padding: 0.5rem; font-family: monospace;">0.6001</td><td style="padding: 0.5rem; font-family: monospace;">0.5195</td><td style="padding: 0.5rem; font-family: monospace;">0.4551</td></tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem; font-weight: 600; background: var(--sidebar-bg);">$T_{7+10i}$</td><td style="padding: 0.5rem; font-family: monospace;">0.9562</td><td style="padding: 0.5rem; font-family: monospace;">0.8283</td><td style="padding: 0.5rem; font-family: monospace;">0.6943</td><td style="padding: 0.5rem; font-family: monospace;">0.5905</td><td style="padding: 0.5rem; font-family: monospace;">0.5122</td><td style="padding: 0.5rem; font-family: monospace;">0.4493</td></tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem; font-weight: 600; background: var(--sidebar-bg);">$T_{8+10i}$</td><td style="padding: 0.5rem; font-family: monospace;">0.9450</td><td style="padding: 0.5rem; font-family: monospace;">0.8142</td><td style="padding: 0.5rem; font-family: monospace;">0.6818</td><td style="padding: 0.5rem; font-family: monospace;">0.5812</td><td style="padding: 0.5rem; font-family: monospace;">0.5052</td><td style="padding: 0.5rem; font-family: monospace;">0.4435</td></tr>
+                                <tr><td style="padding: 0.5rem; font-weight: 600; background: var(--sidebar-bg);">$T_{9+10i}$</td><td style="padding: 0.5rem; font-family: monospace;">0.9338</td><td style="padding: 0.5rem; font-family: monospace;">0.8001</td><td style="padding: 0.5rem; font-family: monospace;">0.6692</td><td style="padding: 0.5rem; font-family: monospace;">0.5719</td><td style="padding: 0.5rem; font-family: monospace;">0.4982</td><td style="padding: 0.5rem; font-family: monospace;">0.4378</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </details>
+
+        <!-- Cap Quotes & Vegas Information Tables -->
+        <div class="card">
+            <h3 style="margin-top: 0; font-size: 1.3rem; font-weight: 700; color: var(--text-color); margin-bottom: 1.25rem;">Market Cap Data & Implied Volatilities Dataset</h3>
+            <div style="overflow-x: auto; border: 1px solid var(--card-border); border-radius: 8px;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left;">
+                    <thead>
+                        <tr style="background: var(--sidebar-bg); border-bottom: 2px solid var(--card-border);">
+                            <th style="padding: 0.75rem 1rem; font-weight: 700;">Maturity</th>
+                            <th style="padding: 0.75rem 1rem; font-weight: 700;">ATM Strike (%)</th>
+                            <th style="padding: 0.75rem 1rem; font-weight: 700;">Market Nominal Price</th>
+                            <th style="padding: 0.75rem 1rem; font-weight: 700;">Black Implied Vol (%)</th>
+                            <th style="padding: 0.75rem 1rem; font-weight: 700;">Normal Implied Vol (bps)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cap-data-table-body">
+                        <!-- Populated by JavaScript dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .calib-toggle-btn {
+        background: transparent;
+        color: var(--text-color);
+        opacity: 0.65;
+    }
+    .calib-toggle-btn:hover {
+        opacity: 0.9;
+        background: var(--nav-hover);
+    }
+    .calib-toggle-btn.active {
+        background: var(--accent) !important;
+        color: white !important;
+        opacity: 1 !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<script>
+    // --- 1. Swap Rates, Discount Factors, and Cap quotes Data ---
+    const calibrationP_discount = [
+        0.9983, 0.9956, 0.9916, 0.9876, 0.9810, 0.9745, 0.9653, 0.9562, 0.9450, 0.9338, // 0.5y to 5.0y (k=0 to 9)
+        0.9216, 0.9093, 0.8963, 0.8833, 0.8697, 0.8562, 0.8422, 0.8283, 0.8142, 0.8001, // 5.5y to 10.0y (k=10 to 19)
+        0.7865, 0.7729, 0.7595, 0.7462, 0.7331, 0.7200, 0.7072, 0.6943, 0.6818, 0.6692, // 10.5y to 15.0y (k=20 to 29)
+        0.6591, 0.6489, 0.6390, 0.6291, 0.6193, 0.6096, 0.6001, 0.5905, 0.5812, 0.5719, // 15.5y to 20.0y (k=30 to 39)
+        0.5642, 0.5565, 0.5489, 0.5414, 0.5340, 0.5267, 0.5195, 0.5122, 0.5052, 0.4982, // 20.5y to 25.0y (k=40 to 49)
+        0.4918, 0.4855, 0.4793, 0.4731, 0.4671, 0.4610, 0.4551, 0.4493, 0.4435, 0.4378  // 25.5y to 30.0y (k=50 to 59)
+    ];
+
+    const marketCapQuotes = [
+        { maturity: 1,  price: 0.0012, blackIV: 1.7052, normalIV: 0.008681, strike: 0.0054 },
+        { maturity: 2,  price: 0.0046, blackIV: 1.1362, normalIV: 0.007658, strike: 0.0072 },
+        { maturity: 3,  price: 0.0092, blackIV: 0.7652, normalIV: 0.007092, strike: 0.0097 },
+        { maturity: 4,  price: 0.0148, blackIV: 0.5454, normalIV: 0.006717, strike: 0.0123 },
+        { maturity: 5,  price: 0.0210, blackIV: 0.4136, normalIV: 0.006386, strike: 0.0148 },
+        { maturity: 6,  price: 0.0278, blackIV: 0.3458, normalIV: 0.006210, strike: 0.0168 },
+        { maturity: 7,  price: 0.0349, blackIV: 0.3046, normalIV: 0.006079, strike: 0.0186 },
+        { maturity: 8,  price: 0.0417, blackIV: 0.2710, normalIV: 0.005867, strike: 0.0202 },
+        { maturity: 9,  price: 0.0490, blackIV: 0.2502, normalIV: 0.005749, strike: 0.0216 },
+        { maturity: 10, price: 0.0565, blackIV: 0.2367, normalIV: 0.005686, strike: 0.0228 },
+        { maturity: 15, price: 0.0904, blackIV: 0.1987, normalIV: 0.005346, strike: 0.0267 },
+        { maturity: 20, price: 0.1196, blackIV: 0.1938, normalIV: 0.005480, strike: 0.0277 },
+        { maturity: 30, price: 0.1686, blackIV: 0.1931, normalIV: 0.005679, strike: 0.0275 }
+    ];
+
+    let calibrationChartInstance = null;
+    let calibrationActiveMeasure = 'Normal'; // 'Normal' or 'Black'
+
+    // --- 2. Stat Helper Normal Math ---
+    function calib_phi(x) {
+        return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
+    }
+
+    function calib_Phi(x) {
+        const a1 = 0.254829592;
+        const a2 = -0.284496736;
+        const a3 = 1.421413741;
+        const a4 = -1.453152027;
+        const a5 = 1.061405429;
+        const p = 0.3275911;
+
+        const sign = (x < 0) ? -1 : 1;
+        const absX = Math.abs(x) / Math.sqrt(2.0);
+
+        const t = 1.0 / (1.0 + p * absX);
+        const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-absX * absX);
+
+        return 0.5 * (1.0 + sign * y);
+    }
+
+    // --- 3. Complete analytical pricing & vega calculations ---
+    function getCalibrationCapRates(maturity) {
+        const numCaplets = maturity * 2 - 1;
+        const rates = [];
+        for (let i = 1; i <= numCaplets; i++) {
+            const P_prev = calibrationP_discount[i - 1];
+            const P_curr = calibrationP_discount[i];
+            const fwd = (P_prev / P_curr - 1) / 0.5;
+            rates.push({
+                index: i,
+                T_minus_1: i * 0.5,
+                T_i: (i + 1) * 0.5,
+                P_minus_1: P_prev,
+                P_i: P_curr,
+                forwardRate: fwd
+            });
+        }
+        return rates;
+    }
+
+    // Dynamic Black Cap Vega
+    function calculateBlackCapVega(maturity, strike, blackIV) {
+        const periods = getCalibrationCapRates(maturity);
+        let capVega = 0;
+        
+        periods.forEach(p => {
+            const Ti_minus_1 = p.T_minus_1;
+            const P_i = p.P_i;
+            const F_i = p.forwardRate;
+            
+            const num = Math.log(F_i / strike) + 0.5 * blackIV * blackIV * Ti_minus_1;
+            const den = blackIV * Math.sqrt(Ti_minus_1);
+            const d1 = num / den;
+            
+            const capletVega = 0.5 * P_i * F_i * Math.sqrt(Ti_minus_1) * calib_phi(d1);
+            capVega += capletVega;
+        });
+        
+        return capVega;
+    }
+
+    // Dynamic Bachelier Cap Vega
+    function calculateBachelierCapVega(maturity, strike, normalIV) {
+        const periods = getCalibrationCapRates(maturity);
+        let capVega = 0;
+        
+        periods.forEach(p => {
+            const Ti_minus_1 = p.T_minus_1;
+            const P_i = p.P_i;
+            const F_i = p.forwardRate;
+            
+            const D_i = (F_i - strike) / (normalIV * Math.sqrt(Ti_minus_1));
+            const capletVega = 0.5 * P_i * Math.sqrt(Ti_minus_1) * calib_phi(D_i);
+            capVega += capletVega;
+        });
+        
+        return capVega;
+    }
+
+    // Two-factor HJM Integrated Variance with robust analytical limits
+    function getHJMIntegratedVariance(Ti_minus_1, Ti, v1, v2, beta1, beta2) {
+        const delta = Ti - Ti_minus_1;
+        
+        // Factor 1
+        let term1;
+        if (Math.abs(beta1) < 1e-5) {
+            term1 = v1 * v1 * delta * delta * Ti_minus_1;
+        } else {
+            const factor = Math.exp(-beta1 * Ti_minus_1) - Math.exp(-beta1 * Ti);
+            const integral = (Math.exp(2 * beta1 * Ti_minus_1) - 1) / (2 * beta1);
+            term1 = (v1 * v1) / (beta1 * beta1) * (factor * factor) * integral;
+        }
+        
+        // Factor 2
+        let term2;
+        if (Math.abs(beta2) < 1e-5) {
+            term2 = v2 * v2 * delta * delta * Ti_minus_1;
+        } else {
+            const factor = Math.exp(-beta2 * Ti_minus_1) - Math.exp(-beta2 * Ti);
+            const integral = (Math.exp(2 * beta2 * Ti_minus_1) - 1) / (2 * beta2);
+            term2 = (v2 * v2) / (beta2 * beta2) * (factor * factor) * integral;
+        }
+        
+        return term1 + term2;
+    }
+
+    // Analytical Gaussian HJM Cap Pricing
+    function calculateHJMModelCapPrice(maturity, strike, v1, v2, beta1, beta2) {
+        const periods = getCalibrationCapRates(maturity);
+        let capPrice = 0;
+        
+        periods.forEach(p => {
+            const Ti_minus_1 = p.T_minus_1;
+            const Ti = p.T_i;
+            const P_minus_1 = p.P_minus_1;
+            const P_i = p.P_i;
+            
+            const variance = getHJMIntegratedVariance(Ti_minus_1, Ti, v1, v2, beta1, beta2);
+            const stdDev = Math.sqrt(variance);
+            
+            if (stdDev < 1e-8) {
+                // Option value is deterministic or flat zero
+                const payoff = Math.max(0, P_minus_1 - (1 + 0.5 * strike) * P_i);
+                capPrice += payoff;
+                return;
+            }
+            
+            const d1 = (Math.log(P_i / P_minus_1 * (1 + 0.5 * strike)) + 0.5 * variance) / stdDev;
+            const d2 = d1 - stdDev;
+            
+            const capletPrice = P_minus_1 * calib_Phi(-d2) - (1 + 0.5 * strike) * P_i * calib_Phi(-d1);
+            capPrice += capletPrice;
+        });
+        
+        return capPrice;
+    }
+
+    // --- 4. Main Calibration Update Engine ---
+    function updateCalibrationEngine() {
+        const v1 = parseFloat(document.getElementById('slider-v1').value);
+        const v2 = parseFloat(document.getElementById('slider-v2').value);
+        const beta1 = parseFloat(document.getElementById('slider-beta1').value);
+        const beta2 = parseFloat(document.getElementById('slider-beta2').value);
+
+        // Update Slider Labels
+        document.getElementById('v1-val').innerText = v1.toFixed(4);
+        document.getElementById('v2-val').innerText = v2.toFixed(4);
+        document.getElementById('beta1-val').innerText = beta1.toFixed(4);
+        document.getElementById('beta2-val').innerText = beta2.toFixed(4);
+
+        // Calculate model errors & implied volatilities
+        let totalWSE = 0;
+        const modelImpliedVols = [];
+        const marketImpliedVols = [];
+        const labels = [];
+
+        marketCapQuotes.forEach(q => {
+            const modelPrice = calculateHJMModelCapPrice(q.maturity, q.strike, v1, v2, beta1, beta2);
+            let vegaVal = 0;
+            let marketIV = 0;
+            let modelIV = 0;
+
+            if (calibrationActiveMeasure === 'Normal') {
+                vegaVal = calculateBachelierCapVega(q.maturity, q.strike, q.normalIV);
+                marketIV = q.normalIV * 10000; // to bps
+                modelIV = marketIV + ((modelPrice - q.price) / vegaVal) * 10000;
+            } else {
+                vegaVal = calculateBlackCapVega(q.maturity, q.strike, q.blackIV);
+                marketIV = q.blackIV * 100; // to %
+                modelIV = marketIV + ((modelPrice - q.price) / vegaVal) * 100;
+            }
+
+            // Cap floor bound to avoid negative or crazy vols in visualization
+            if (modelIV < 0) modelIV = 0;
+
+            const squaredVolError = Math.pow((modelPrice - q.price) / vegaVal, 2);
+            totalWSE += squaredVolError;
+
+            modelImpliedVols.push(modelIV);
+            marketImpliedVols.push(marketIV);
+            labels.push(q.maturity + 'Y');
+        });
+
+        // Update WMSE UI Stat Card with dynamic styling
+        const wmseEl = document.getElementById('wmse-val');
+        wmseEl.innerText = totalWSE.toExponential(4);
+        
+        if (totalWSE < 1e-4) {
+            wmseEl.style.color = '#166534';
+            wmseEl.style.background = '#dcfce7'; // green
+        } else if (totalWSE < 1e-3) {
+            wmseEl.style.color = '#854d0e';
+            wmseEl.style.background = '#fef9c3'; // yellow/gold
+        } else {
+            wmseEl.style.color = '#991b1b';
+            wmseEl.style.background = '#fee2e2'; // red
+        }
+
+        // Live update Chart.js
+        if (calibrationChartInstance) {
+            calibrationChartInstance.data.labels = labels;
+            calibrationChartInstance.data.datasets[0].data = marketImpliedVols;
+            calibrationChartInstance.data.datasets[1].data = modelImpliedVols;
+            calibrationChartInstance.options.scales.y.title.text = calibrationActiveMeasure === 'Normal' ? 'Implied Volatility (bps)' : 'Implied Volatility (%)';
+            calibrationChartInstance.update('none'); // no animation for smooth high-speed drag feeling
+        }
+    }
+
+    // Reset Sliders to calibrated optimal parameter values
+    function resetCalibrationOptimal() {
+        document.getElementById('slider-v1').value = 0.0149;
+        document.getElementById('slider-v2').value = 0.0056;
+        document.getElementById('slider-beta1').value = 1.7381;
+        document.getElementById('slider-beta2').value = 0.0127;
+        updateCalibrationEngine();
+    }
+
+    // Toggle Implied Volatility measure (Black % vs. Normal/Bachelier bps)
+    function setCalibMeasure(measure) {
+        calibrationActiveMeasure = measure;
+        
+        document.querySelectorAll('.calib-toggle-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        if (measure === 'Normal') {
+            document.getElementById('btn-normal-vol').classList.add('active');
+        } else {
+            document.getElementById('btn-black-vol').classList.add('active');
+        }
+        
+        updateCalibrationEngine();
+    }
+
+    // --- 5. Chart.js & DOM Initialization ---
+    function initCalibrationCharts() {
+        const ctx = document.getElementById('calibrationChart');
+        if (!ctx) return;
+
+        // Populate market data quotes grid
+        const tableBody = document.getElementById('cap-data-table-body');
+        if (tableBody && tableBody.children.length === 0) {
+            let htmlStr = '';
+            marketCapQuotes.forEach(q => {
+                const strikePercent = (q.strike * 100).toFixed(2) + '%';
+                const priceDecimal = q.price.toFixed(4);
+                const blackIVPercent = (q.blackIV * 100).toFixed(2) + '%';
+                const normalIVBps = (q.normalIV * 10000).toFixed(2) + ' bps';
+
+                htmlStr += `<tr style="border-bottom: 1px solid var(--card-border);">
+                    <td style="padding: 0.65rem 1rem; font-weight: 600; color: var(--text-color);">${q.maturity}y</td>
+                    <td style="padding: 0.65rem 1rem; font-family: monospace; font-weight: 600;">${strikePercent}</td>
+                    <td style="padding: 0.65rem 1rem; font-family: monospace; font-weight: 600;">${priceDecimal}</td>
+                    <td style="padding: 0.65rem 1rem; font-family: monospace; color: var(--accent); font-weight: 700;">${blackIVPercent}</td>
+                    <td style="padding: 0.65rem 1rem; font-family: monospace; color: var(--secondary-accent); font-weight: 700;">${normalIVBps}</td>
+                </tr>`;
+            });
+            tableBody.innerHTML = htmlStr;
+        }
+
+        if (calibrationChartInstance) {
+            calibrationChartInstance.destroy();
+        }
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? '#334155' : '#e2e8f0';
+        const labelColor = isDark ? '#94a3b8' : '#475569';
+
+        calibrationChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Market Quotes',
+                        data: [],
+                        borderColor: '#0f172a',
+                        backgroundColor: '#0f172a',
+                        borderWidth: 0,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        showLine: false, // only scatter dots
+                        fill: false
+                    },
+                    {
+                        label: 'Two-Factor HJM Fitted Model',
+                        data: [],
+                        borderColor: '#ef4444', // premium red
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        borderWidth: 2.5,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        lineTension: 0.25,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: labelColor,
+                            font: { family: 'Inter', size: 12, weight: '600' }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: gridColor },
+                        ticks: { color: labelColor, font: { family: 'Inter', weight: '500' } },
+                        title: {
+                            display: true,
+                            text: 'Maturity (Years)',
+                            color: labelColor,
+                            font: { family: 'Inter', weight: '700' }
+                        }
+                    },
+                    y: {
+                        grid: { color: gridColor },
+                        ticks: { color: labelColor, font: { family: 'Inter', weight: '500' } },
+                        title: {
+                            display: true,
+                            text: 'Implied Volatility',
+                            color: labelColor,
+                            font: { family: 'Inter', weight: '700' }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Trigger first rendering
+        updateCalibrationEngine();
+    }
+</script>

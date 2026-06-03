@@ -1,0 +1,165 @@
+<div id="view-forward-yield" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">Continuously Compounded Forward Rate (Forward Yield)</h1>
+        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Reading Module covering the mathematical formulation of continuously compounded forward rates, its limit behaviors, and numerical comparisons.</div>
+    </header>
+
+    <div style="display: flex; flex-direction: column; gap: 2.5rem; max-width: 1400px; margin-bottom: 4rem;">
+
+        <!-- Core Formulation Card -->
+        <div class="card" style="margin-bottom: 0;">
+            <h2>Definition and Core Equation</h2>
+            <p>In analogy to the continuously compounded spot rate (yield) $y(t, T)$, we define the <strong>continuously compounded forward rate (forward yield)</strong> with reference period $[T_0, T_1]$ prevailing at time $t \le T_0$ as:</p>
+            <div style="background: rgba(124, 58, 237, 0.04); padding: 1.5rem; border-left: 4px solid var(--accent); border-radius: 8px; margin: 1.5rem 0; text-align: center; font-size: 1.25rem; font-weight: 700; color: #1e3a8a;">
+                $$ Y(t, T_0, T_1) = \frac{1}{T_1 - T_0} \log \left( \frac{P(t, T_0)}{P(t, T_1)} \right) $$
+            </div>
+            <p>This formulation represents the continuously compounded annualized rate of return that can be locked in today at date $t$ for an investment spanning the future time interval $[T_0, T_1]$.</p>
+        </div>
+
+        <!-- Limit Behaviors Card -->
+        <div class="container" style="margin-bottom: 0; gap: 2rem; align-items: stretch; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+            <div class="card" style="margin-bottom: 0;">
+                <h3>Spot Convergence ($t = T_0$)</h3>
+                <p>When the evaluation calendar date $t$ reaches the start of the reference loan period $T_0$, the continuously compounded forward rate converges exactly to the spot yield over $[T_0, T_1]$:</p>
+                <div style="margin: 1.25rem 0; text-align: center; font-size: 1.1rem; font-weight: 600; color: #1e3a8a;">
+                    $$ Y(T_0, T_0, T_1) = y(T_0, T_1) $$
+                </div>
+                <p><strong>Proof / Intuition:</strong> Substituting $t = T_0$ into the definition and noting that the zero-coupon bond price at maturity is exactly 1 ($P(T_0, T_0) = 1$):</p>
+                <div style="margin: 0.5rem 0; text-align: center;">
+                    $$ Y(T_0, T_0, T_1) = \frac{1}{T_1 - T_0} \log \left( \frac{1}{P(T_0, T_1)} \right) = y(T_0, T_1) $$
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; background: #f8fafc; border: 1px solid #e2e8f0;">
+                <h3>Instantaneous Forward Limit ($\delta \to 0$)</h3>
+                <p>For an infinitesimally small reference period, as $T_1 \to T_0 = T$, the continuously compounded forward rate converges to the standard <strong>instantaneous forward rate</strong> with maturity $T$:</p>
+                <div style="margin: 1.25rem 0; text-align: center; font-size: 1.1rem; font-weight: 700; color: var(--accent);">
+                    $$ \lim_{T_1 \to T_0 = T} Y(t, T_0, T_1) = f(t, T) $$
+                </div>
+                <p><strong>Step-by-Step Derivation:</strong></p>
+                <p style="font-size: 0.95rem; line-height: 1.6;">Let $\delta = T_1 - T_0$. Re-expressing the yield in limit terms:</p>
+                <div style="margin: 0.5rem 0; text-align: center; font-size: 0.95rem;">
+                    $$ \lim_{\delta \to 0} \frac{\log P(t, T_0) - \log P(t, T_0 + \delta)}{\delta} $$
+                </div>
+                <p style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 0;">This is the exact limit definition of the negative first partial derivative of the logarithm of bond prices with respect to maturity: $-\frac{\partial \ln P(t, T)}{\partial T} = f(t, T)$.</p>
+            </div>
+        </div>
+
+        <!-- Relationship between Compounding Frequencies -->
+        <div class="card" style="margin-bottom: 0;">
+            <h2>Relationship: Simple Forward Rate vs. Forward Yield</h2>
+            <p>Just as simple spot rates are higher than their continuously compounded yield counterparts, the <strong>simple forward rate $F(t, T_0, T_1)$ is always strictly higher than the continuously compounded forward rate (forward yield) $Y(t, T_0, T_1)$</strong> for any positive interest rate environment:</p>
+            <div style="text-align: center; margin: 1rem 0; font-size: 1.15rem; font-weight: 700; color: #b91c1c;">
+                $$ F(t, T_0, T_1) > Y(t, T_0, T_1) $$
+            </div>
+            <p><strong>Proof / Algebra:</strong></p>
+            <p>Recall the zero-coupon bond pricing formulations under both compounding conventions:</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; text-align: center; font-size: 1rem;">
+                <div style="background: #f8fafc; padding: 1rem; border-radius: 6px;">
+                    <strong>Simple Forward Rate:</strong>
+                    $$ \frac{P(t, T_0)}{P(t, T_1)} = 1 + \delta F(t, T_0, T_1) $$
+                </div>
+                <div style="background: #f8fafc; padding: 1rem; border-radius: 6px;">
+                    <strong>Continuously Compounded Forward:</strong>
+                    $$ \frac{P(t, T_0)}{P(t, T_1)} = e^{\delta Y(t, T_0, T_1)} $$
+                </div>
+            </div>
+            <p>Equating both bond ratios yields the exact transcendental conversion relation:</p>
+            <div style="margin: 1.25rem 0; text-align: center; font-weight: 600;">
+                $$ 1 + \delta F(t, T_0, T_1) = e^{\delta Y(t, T_0, T_1)} \implies Y(t, T_0, T_1) = \frac{\log\bigl(1 + \delta F(t, T_0, T_1)\bigr)}{\delta} $$
+            </div>
+            <p style="margin-bottom: 0;">Since $\log(1 + x) < x$ for all $x > 0$, substituting $x = \delta F$ directly proves that $Y(t, T_0, T_1) < F(t, T_0, T_1)$ strictly holds.</p>
+        </div>
+
+        <!-- INTERACTIVE CONVERTOR & CALCULATOR -->
+        <div class="card" style="padding: 2.5rem; border: 1px solid var(--card-border); background: var(--card-bg);">
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.02em;">Interactive Forward Yield &amp; Compounding Converter</h2>
+            <p style="font-size: 1rem; color: var(--text-color); opacity: 0.75; margin-bottom: 2rem;">
+                Input or adjust parameters representing zero-coupon bond prices and tenor length to see how simple forward rates, forward yields, and instantaneous rates convert in real-time.
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 2rem; align-items: end;">
+                <div>
+                    <label for="yldP0Slider" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Bond Price $P(t, T_0)$: <span id="yldP0Value" style="color: #2563eb;">0.950</span></label>
+                    <input id="yldP0Slider" max="1.0" min="0.5" step="0.005" style="width: 100%; cursor: pointer;" type="range" value="0.95"/>
+                </div>
+                <div>
+                    <label for="yldP1Slider" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Bond Price $P(t, T_1)$: <span id="yldP1Value" style="color: #2563eb;">0.900</span></label>
+                    <input id="yldP1Slider" max="0.99" min="0.4" step="0.005" style="width: 100%; cursor: pointer;" type="range" value="0.90"/>
+                </div>
+                <div>
+                    <label for="yldDeltaSlider" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Tenor length $\delta$ (Years): <span id="yldDeltaValue" style="color: #2563eb;">1.00</span></label>
+                    <input id="yldDeltaSlider" max="5.0" min="0.10" step="0.10" style="width: 100%; cursor: pointer;" type="range" value="1.00"/>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                <div style="background: var(--metric-bg); border-left: 4px solid #b91c1c; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                    <h4 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Simple Forward Rate $F(t, T_0, T_1)$</h4>
+                    <span id="calcYldSimpleFwd" style="font-size: 1.8rem; font-weight: 800; color: #b91c1c; font-family: monospace;">—</span>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 0.85rem; opacity: 0.85; line-height: 1.5;">Quoted simple interest payback locked today for loans over $[T_0, T_1]$ under simple linear format.</p>
+                </div>
+
+                <div style="background: var(--metric-bg); border-left: 4px solid #1e3a8a; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                    <h4 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Forward Yield $Y(t, T_0, T_1)$</h4>
+                    <span id="calcYldFwdYield" style="font-size: 1.8rem; font-weight: 800; color: #1e3a8a; font-family: monospace;">—</span>
+                    <p style="margin: 0.5rem 0 0 0; font-size: 0.85rem; opacity: 0.85; line-height: 1.5;">Quoted yield rate locked today under continuously compounded exponential format.</p>
+                </div>
+            </div>
+
+            <!-- Live Gap and Percentage Difference -->
+            <div style="background: #fef2f2; border: 1px solid #fee2e2; border-radius: 8px; padding: 1.25rem; margin-top: 1.5rem; font-family: 'Inter', sans-serif;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <strong style="color: #991b1b; font-size: 1.05rem;">Compounding Gap: $F(t, T_0, T_1) - Y(t, T_0, T_1)$</strong>
+                        <p style="margin: 0.25rem 0 0 0; font-size: 0.9rem; color: #7f1d1d; opacity: 0.9;">The simple forward rate is systematically higher than the continuously compounded forward yield.</p>
+                    </div>
+                    <span id="calcYldGap" style="font-size: 1.75rem; font-weight: 800; color: #991b1b; font-family: monospace;">—</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // Section 1.2.2: Forward Yield Calculator
+    // ============================================================
+    function runForwardYieldSimulation() {
+        let p0 = parseFloat(document.getElementById('yldP0Slider').value);
+        let p1 = parseFloat(document.getElementById('yldP1Slider').value);
+        const delta = parseFloat(document.getElementById('yldDeltaSlider').value);
+
+        // Standard financial boundary: bond price P(t, T1) must be strictly less than P(t, T0) to prevent negative yields
+        if (p1 >= p0) {
+            // Adjust slider values to preserve boundary
+            p1 = p0 - 0.005;
+            document.getElementById('yldP1Slider').value = p1;
+        }
+
+        // Update Labels
+        document.getElementById('yldP0Value').textContent = p0.toFixed(3);
+        document.getElementById('yldP1Value').textContent = p1.toFixed(3);
+        document.getElementById('yldDeltaValue').textContent = delta.toFixed(2);
+
+        // Calculate Simple Forward
+        const simpleFwd = (1.0 / delta) * (p0 / p1 - 1.0);
+
+        // Calculate Forward Yield (continuously compounded)
+        const fwdYield = (1.0 / delta) * Math.log(p0 / p1);
+
+        // Calculate Gap
+        const gap = simpleFwd - fwdYield;
+
+        // Display results in percentages
+        document.getElementById('calcYldSimpleFwd').textContent = (simpleFwd * 100).toFixed(4) + '%';
+        document.getElementById('calcYldFwdYield').textContent = (fwdYield * 100).toFixed(4) + '%';
+        document.getElementById('calcYldGap').textContent = '+' + (gap * 100).toFixed(4) + ' %';
+    }
+
+    // Attach Event Listeners
+    ['yldP0Slider', 'yldP1Slider', 'yldDeltaSlider'].forEach(id => {
+        document.getElementById(id).addEventListener('input', runForwardYieldSimulation);
+    });
+</script>

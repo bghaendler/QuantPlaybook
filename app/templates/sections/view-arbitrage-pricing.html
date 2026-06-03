@@ -1,0 +1,95 @@
+<div id="view-arbitrage-pricing" style="display: none;">
+<header>
+<h1>Module 3.2: Short Rate Models</h1>
+<div class="subtitle" style="color: #6b7280;">1. Arbitrage Bond Pricing</div>
+</header>
+<div class="container" style="grid-template-columns: 1fr; gap: 3rem; max-width: 1400px;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+<div class="card" style="margin-bottom: 0;">
+<h2>1. Arbitrage Bond Pricing</h2>
+<p>Given an adapted short rate process $r(t)$, the Arbitrage Pricing Theorem implies that discounted bond price processes are $\mathbb{Q}$-martingales for all maturities $T$.</p>
+<p>Using the fact that $P(T, T) = 1$, this leads us to the fundamental bond pricing formula:</p>
+<div style="background: #f9fafb; padding: 1.5rem; border-radius: 4px; border-left: 4px solid var(--accent); margin: 1.5rem 0;">
+<p style="text-align: center; font-size: 1.1rem; margin: 0;">$$ P(t, T) = \mathbb{E}^{\mathbb{Q}}_t \left[ e^{-\int_t^T r(s)ds} \right] $$</p>
+</div>
+<p>This formula states that the bond price is the conditional expectation, under the risk-neutral measure $\mathbb{Q}$, of the exponential of the time-integrated short rate process. The dynamics of $P(t, T)$ directly depend on the specific model we choose for $r(t)$.</p>
+</div>
+<div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px;">
+<h3 style="margin-top:0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+<p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> A bond's price today is just the average expected future payoff, discounted back to today using the bank's interest rate.</p>
+<ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+<li style="margin-bottom: 1rem;"><strong>The Risk-Neutral Measure ($\mathbb{Q}$):</strong> We've put on our "magic glasses" so that we don't have to worry about risk premiums. Under this measure, the bond's discounted price behaves like a fair game.</li>
+<li style="margin-bottom: 1rem;"><strong>The Formula:</strong> Instead of discounting by a constant rate, we add up (integrate) the fluctuating short-term rates over the life of the bond.</li>
+<li style="margin-bottom: 0;"><strong>Example:</strong> If you buy a zero-coupon bond paying $100 at maturity, its price today is calculated by simulating all possible paths the interest rate might take, discounting the $100 along each path, and taking the average.</li>
+</ul>
+</div>
+</div>
+<!-- Interactive Visualization -->
+<div class="card" style="margin-bottom: 2rem;">
+<h2>Interactive Visualization: Pricing by Expectation</h2>
+<p style="margin-bottom: 1.5rem;">Adjust the mathematical parameters below. Notice how increasing volatility ($\sigma$) actually <em>increases</em> the bond price due to <strong>Convexity Bias</strong> (Jensen's Inequality: $\mathbb{E}[e^{-X}] &gt; e^{-\mathbb{E}[X]}$).</p>
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+<!-- Parameter Controls -->
+<div style="display: flex; flex-direction: column; gap: 1rem;">
+<div>
+<label for="volatilitySlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.9rem; color: #334155;">Volatility ($\sigma$): <span id="volValue">0.02</span></label>
+<input id="volatilitySlider" max="0.15" min="0" step="0.01" style="width: 100%;" type="range" value="0.02"/>
+</div>
+<div>
+<label for="meanRevSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.9rem; color: #334155;">Mean Reversion ($\kappa$): <span id="kappaValue">0.50</span></label>
+<input id="meanRevSlider" max="2" min="0" step="0.1" style="width: 100%;" type="range" value="0.5"/>
+</div>
+<div>
+<label for="thetaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.9rem; color: #334155;">Long-Term Mean ($\theta$): <span id="thetaValue">5.0%</span></label>
+<input id="thetaSlider" max="0.1" min="0.01" step="0.01" style="width: 100%;" type="range" value="0.05"/>
+</div>
+</div>
+<!-- Mathematical Formula dynamically updated -->
+<div style="border-left: 2px solid #cbd5e1; border-right: 2px solid #cbd5e1; padding: 0 1.5rem; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 0.85rem; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem; text-align: center;">Simulated Process (Vasicek SDE)</div>
+<div style="background: white; padding: 1rem; border-radius: 4px; text-align: center; border: 1px solid #e2e8f0; font-family: 'Courier New', monospace; font-size: 0.95rem;">
+                                dr = <span id="dynKappa" style="color:#2563eb; font-weight:bold;">0.50</span>(<span id="dynTheta" style="color:#16a34a; font-weight:bold;">0.05</span> - r)dt + <span id="dynSigma" style="color:#dc2626; font-weight:bold;">0.02</span>dW
+                            </div>
+<div style="text-align: center; margin-top: 1rem; font-size: 0.85rem; color: #475569; font-weight: 500;">
+                                The simulated price is the empirical average: <br> $\frac{1}{N} \sum e^{-\int r_s ds}$
+                            </br></div>
+</div>
+<!-- Price Output -->
+<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+<div style="font-size: 0.9rem; color: #64748b; font-weight: 600; text-transform: uppercase;">Simulated Bond Price $P(0, T)$</div>
+<div id="simulatedPrice" style="font-size: 2.5rem; font-weight: 800; color: var(--primary-color); font-family: 'Courier New', Courier, monospace; margin: 0.5rem 0;">$95.12</div>
+<button id="resimulateBtn" style="background: var(--primary-color); color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 4px; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%;">Run 10 New Paths</button>
+</div>
+</div>
+<div class="chart-container" style="height: 400px;">
+<canvas id="arbitrageChart"></canvas>
+</div>
+</div>
+<!-- Sample Exercise -->
+<div class="card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
+<h2 style="color: #166534;">Practice Exercise</h2>
+<p style="color: #166534; font-weight: 500;">Suppose you are pricing a 1-year zero-coupon bond paying $100. In a simplified discrete model under $\mathbb{Q}$, the short rate $r$ remains constant for the year but has two equally likely scenarios:</p>
+<ul style="color: #166534; margin-bottom: 1.5rem;">
+<li><strong>Scenario A (prob = 0.5):</strong> $r = 2\%$ (0.02)</li>
+<li><strong>Scenario B (prob = 0.5):</strong> $r = 6\%$ (0.06)</li>
+</ul>
+<p style="color: #166534; margin-bottom: 1.5rem;">Use the Arbitrage Bond Pricing Theorem to calculate the exact bond price $P(0, 1)$ today.</p>
+<details style="background: white; padding: 1rem; border-radius: 6px; border: 1px solid #bbf7d0;">
+<summary style="cursor: pointer; font-weight: 600; color: #15803d; list-style: none; display: flex; align-items: center;">
+<span style="margin-right: 0.5rem;">👉</span> Show Step-by-Step Solution
+                        </summary>
+<div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; color: #334155;">
+<p>The pricing formula states: $P(0, 1) = \mathbb{E}^{\mathbb{Q}} \left[ 100 \cdot e^{-\int_0^1 r(s)ds} \right]$</p>
+<p>Since the rate is constant over the year in each scenario, the integral is just $r \cdot 1$.</p>
+<ol style="line-height: 1.8;">
+<li>Discount factor for Scenario A: $e^{-0.02} \approx 0.9802$</li>
+<li>Discount factor for Scenario B: $e^{-0.06} \approx 0.9418$</li>
+<li>Expected value: $0.5 \times (100 \times 0.9802) + 0.5 \times (100 \times 0.9418)$</li>
+<li>$P(0, 1) = 49.01 + 47.09 = 96.10$</li>
+</ol>
+<p><strong>Answer:</strong> The price of the bond today is approximately <strong>$96.10</strong>.</p>
+</div>
+</details>
+</div>
+</div>
+</div>

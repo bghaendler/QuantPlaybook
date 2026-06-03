@@ -1,0 +1,177 @@
+<div id="view-cqf-mp-diffeq-second-order-1" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #f59e0b; font-family: var(--font-family-sans);">3. Second Order ODEs P1</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Second Order Ordinary Differential Equations - Special Cases &amp; Operator Theory</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Decomposition of special cases, operator notation, linear independence, vector spaces, and complementary/particular splits.</div>
+    </header>
+
+    <!-- General Second Order Form & Special Cases -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1. General Form &amp; Decomposition of Special Cases</h3>
+        <p>The most general form of a second-order ODE can be written implicitly as $F(x, y, y', y'') = 0$. When one or more terms are explicitly absent, we can decompose the equation into a sequential system of first-order equations:</p>
+
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">
+            <strong>Case A: Both $y'$ and $y$ are missing: $y'' = f(x)$</strong>
+            <p style="margin: 0.25rem 0;">Solved by direct double integration. For example, if $y'' = 4x$:</p>
+            $$y' = 2x^2 + C \implies y = \frac{2}{3}x^3 + Cx + D$$
+            <p style="font-style: italic; color: #6b7280; margin: 0.25rem 0;">Every second-order ODE solution must contain exactly two arbitrary constants of integration.</p>
+
+            <strong style="display: block; margin-top: 1rem;">Case B: Variable $y$ is missing: $y'' = f(x, y')$</strong>
+            <p style="margin: 0.25rem 0;">Introduce substitution $p = y'$, which means $y'' = p'$. This converts the second-order equation into a first-order equation in $p$:</p>
+            $$\frac{dp}{dx} = f(x, p)$$
+            <p style="margin: 0.25rem 0;">Once $p(x)$ is solved, recover $y$ via integration: $y = \int p(x)\,dx$.</p>
+
+            <strong style="display: block; margin-top: 1rem;">Case C: Independent variable $x$ is missing: $y'' = f(y)$</strong>
+            <p style="margin: 0.25rem 0;">Using substitution $p = y'$, because $x$ is missing, we use the chain rule to rewrite the second derivative:</p>
+            $$y'' = \frac{dp}{dx} = \frac{dp}{dy}\frac{dy}{dx} = p \frac{dp}{dy}$$
+            <p style="margin: 0.25rem 0;">This transforms the ODE into a first-order separable equation in terms of variables $p$ and $y$:</p>
+            $$p \frac{dp}{dy} = f(y)$$
+        </div>
+    </div>
+
+    <!-- Differential Operator Notation -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">2. Nth Order Linear Equations &amp; Operator Notation</h3>
+        <p>Using the differential operator notation where $D \equiv d/dx$, we can express an $n^{\text{th}}$-order linear differential equation compactly as:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$Ly = g(x)$$</p>
+        <p>where $L$ is a linear differential operator. The linearity of $L$ is defined by two fundamental algebraic properties:</p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li>Constants factor out: $L(c y) = c L(y)$</li>
+            <li>Linearity over sums: $L(y_1 + y_2) = L(y_1) + L(y_2)$</li>
+        </ul>
+        <p>The general solution to a non-homogeneous equation $Ly = g(x)$ is the sum of two distinct components:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$y = y_c + y_p$$</p>
+        <p style="font-size: 0.92rem; color: #6b7280; text-align: center;">Where $y_c$ (Complementary Function) solves the homogeneous system $Ly = 0$, and $y_p$ (Particular Integral) solves the non-homogeneous equation $Ly = g(x)$.</p>
+    </div>
+
+    <!-- Homogeneous vector space -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">3. Homogeneous Solution &amp; Vector Space Properties</h3>
+        <p>Because the operator $L$ is linear, the set of all solutions to the homogeneous equation $Ly = 0$ forms a **vector space**. This means that if $y_1$ and $y_2$ are solutions, any linear combination $c_1 y_1 + c_2 y_2$ is also a solution.</p>
+        
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li>A set of functions is <strong>linearly dependent</strong> if a linear combination of them can equal zero with not all coefficients being zero, meaning one function can be expressed in terms of the others.</li>
+            <li style="margin-top: 0.5rem;">A set of functions is <strong>linearly independent</strong> if the only way the linear combination can equal zero is for all coefficients to be zero.</li>
+        </ul>
+        <p>An $n^{\text{th}}$-order homogeneous ODE has exactly $n$ linearly independent solutions. The general solution of the homogeneous equation is formed by taking a linear combination of all $n$ independent solutions:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$y_c = c_1 y_1 + c_2 y_2 + \dots + c_n y_n$$</p>
+    </div>
+
+    <!-- Interactive Case B Substitution Sandbox -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">4. Interactive Case B Substitution Sandbox</h3>
+        <p>Observe the numerical integration of a missing-$y$ second-order ODE $x y'' + 2y' = x^3$. We substitute $p = y'$ to reduce it to a first-order linear ODE: $x p' + 2p = x^3 \implies p' + \frac{2}{x} p = x^2$. This is solved using integrating factor $R(x) = x^2$, leading to $p(x) = \frac{x^3}{5} + \frac{C_1}{x^2}$. Finally we integrate to recover $y(x) = \frac{x^4}{20} - \frac{C_1}{x} + C_2$. Adjust constant $C_1$ to see the trajectories:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls -->
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Constant ($C_1$):</label>
+                    <input type="range" id="diffeq21SliderC1" min="-5" max="5" value="2" step="0.5" oninput="runDiffeqSecondOrder1Simulation()" style="width: 100%; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: -0.75rem; margin-bottom: 1.25rem; color: #6b7280;">
+                        <span>-5</span>
+                        <span id="diffeq21C1Val" style="font-weight: bold; color: var(--accent);">C1 = 2</span>
+                        <span>5</span>
+                    </div>
+
+                    <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border);">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">SOLVED DECOMPOSED p(x) = y'</div>
+                        <div id="diffeq21PFormula" style="font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-top: 0.25rem;">p(x) = x^3/5 + 2/x^2</div>
+                    </div>
+                </div>
+
+                <!-- Custom 2D Line Chart Canvas -->
+                <div style="background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 1rem;">
+                    <canvas id="diffeq21Canvas" width="320" height="200" style="width: 100%; height: 200px; display: block;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.runDiffeqSecondOrder1Simulation = function() {
+                const c1 = parseFloat(document.getElementById('diffeq21SliderC1').value);
+                document.getElementById('diffeq21C1Val').innerText = `C1 = ${c1}`;
+                document.getElementById('diffeq21PFormula').innerText = `p(x) = x^3/5 + (${c1})/x^2`;
+
+                drawSecondOrder1Graph(c1);
+
+                const parent = document.getElementById('view-cqf-mp-diffeq-second-order-1');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawSecondOrder1Graph(c1) {
+                const canvas = document.getElementById('diffeq21Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const margin = 20;
+                const topMargin = 20;
+                const bottomMargin = 20;
+                const width = canvas.width - 2 * margin;
+                const height = canvas.height - topMargin - bottomMargin;
+
+                const minX = 0.5;
+                const maxX = 3.0;
+                const minY = -10.0;
+                const maxY = 10.0;
+
+                function getCX(x) {
+                    return margin + ((x - minX) / (maxX - minX)) * width;
+                }
+
+                function getCY(y) {
+                    return canvas.height - bottomMargin - ((y - minY) / (maxY - minY)) * height;
+                }
+
+                // Grid lines
+                ctx.strokeStyle = '#222';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(margin, getCY(0));
+                ctx.lineTo(canvas.width - margin, getCY(0));
+                ctx.stroke();
+
+                // Plot y(x) = x^4/20 - c1/x with C2 = 0
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                let started = false;
+                for (let x = minX; x <= maxX; x += 0.05) {
+                    const y = Math.pow(x, 4) / 20 - c1 / x;
+                    const cx = getCX(x);
+                    const cy = getCY(y);
+                    if (y >= minY && y <= maxY) {
+                        if (!started) {
+                            ctx.moveTo(cx, cy);
+                            started = true;
+                        } else {
+                            ctx.lineTo(cx, cy);
+                        }
+                    }
+                }
+                ctx.stroke();
+
+                // Title
+                ctx.fillStyle = '#888';
+                ctx.font = '9px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(`Decomposed Solution y(x) (C2 = 0)`, canvas.width / 2, topMargin);
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('diffeq21SliderC1')) runDiffeqSecondOrder1Simulation();
+            }, 100);
+        })();
+    </script>
+</div>

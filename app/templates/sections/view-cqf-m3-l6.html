@@ -1,0 +1,589 @@
+<div id="view-cqf-m3-l6" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 03: Equities &amp; Currencies</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 06</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L6: Understanding Volatility</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">The Four Volatilities, the Inconsistencies of Vega, Term Structure Calibration, and Volatility Arbitrage Hedging</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM3L6Types" onclick="switchM3L6Tab('types')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. The Four Volatilities</button>
+        <button id="tabM3L6Vega" onclick="switchM3L6Tab('vega')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Vega &amp; Greeks Rules</button>
+        <button id="tabM3L6Calibration" onclick="switchM3L6Tab('calibration')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Calibration (Un-averaging)</button>
+        <button id="tabM3L6Smiles" onclick="switchM3L6Tab('smiles')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. Skews, Smiles &amp; Insurance</button>
+        <button id="tabM3L6Guide" onclick="switchM3L6Tab('guide')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Master Study Guide</button>
+        <button id="tabM3L6Sandbox" onclick="switchM3L6Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Volatility Arbitrage Sandbox</button>
+    </div>
+
+    <!-- TAB 1: The Four Volatilities -->
+    <div id="secM3L6Types" style="display: block;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem;">The Volatility Taxonomy</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6; color: #4b5563; margin-bottom: 1.25rem;">
+                    Dr. Paul Wilmott frames volatility as the central unknown parameter in options pricing. Black-Scholes is an elegant model precisely because it has **exactly one unknown parameter**. With zero unknowns, trade would cease due to perfect agreement; with too many, the model becomes unusable.
+                </p>
+
+                <!-- Grid of 4 Volatilities -->
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 1.5rem;">
+                    <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 1rem;">1. Actual / Local Volatility ($\sigma_a$)</h4>
+                        <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                            The instantaneous random "noise" in a financial instrument's SDE: $dS = \mu S dt + \sigma_a S dX$. It exists purely at an instant, has **no associated time scale**, cannot be directly observed, and must be forecast over the option's entire life.
+                        </p>
+                    </div>
+                    <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: #10b981; font-size: 1rem;">2. Historical / Realized Volatility</h4>
+                        <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                            The calculated standard deviation of returns over a past window. It requires two timescales: a lookback window (e.g. 60 days) and a return interval (e.g. daily). Realized volatility serves as a baseline forecast for future actual volatility.
+                        </p>
+                    </div>
+                    <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: #8b5cf6; font-size: 1rem;">3. Implied Volatility ($\sigma_i$)</h4>
+                        <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                            The volatility backed out of current option market prices using the Black-Scholes formula. It is associated with a single timescale: **expiration**. It is influenced by supply/demand crash insurance motives, rather than reflecting a pure physical forecast.
+                        </p>
+                    </div>
+                    <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: #ea580c; font-size: 1rem;">4. Forward Volatility</h4>
+                        <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                            The implied volatility over a future window (e.g. between month 1 and month 2) extracted by comparing current implied volatilities of different maturities. It serves as an arbitrage-free forecast of future options pricing.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Premium Timeline Mapping -->
+                <h4 style="margin: 1.5rem 0 0.75rem 0; font-weight: 700; font-family: var(--font-family-sans); font-size: 1.1rem; text-align: center;">Volatility Timeline Mapping</h4>
+                <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); overflow-x: auto; font-family: monospace; white-space: pre; font-size: 0.8rem; line-height: 1.5; color:#374151;">
+                    Realized / Historical Volatility (Past window)
+                     |&lt;------------------------&gt;|
+    ========================================================================&gt; Time (t)
+    The Past                                 Now (t*)          The Future
+                                                |                   |
+                                                |&lt;-----------------&gt;|
+                                               Implied Volatility (up to Expiration T)
+                                                                    |
+                                                                    |&lt;-----&gt;|
+                                                                    Forward Volatility
+                                                \    \    \
+                                                 \    \    \
+                                               Actual / Local Volatility
+                                               (Exists only at a single instant)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Vega & Greeks Rules -->
+    <div id="secM3L6Vega" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; margin-bottom: 2rem; display: grid; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Vega: The "Bastard Greek"</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        Vega measures the sensitivity of an option's theoretical value to changes in volatility:
+                        $$\text{Vega} = \frac{\partial V}{\partial \sigma} = S \sqrt{T-t} N'(d_1)$$
+                    </p>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        Dr. Paul Wilmott labels Vega a **"bastard Greek"** because it is mathematically inconsistent: it involves differentiating the Black-Scholes formula with respect to a parameter ($\sigma$) that the formula's very SDE derivation assumes to be **constant**.
+                    </p>
+                    <div style="background: rgba(239, 68, 68, 0.05); padding: 1rem; border-radius: 8px; border-left: 4px solid #ef4444; font-size: 0.82rem; line-height: 1.5; color: #991b1b; margin-top: 0.5rem;">
+                        <strong>Analogy:</strong> Differentiating the Black-Scholes formula with respect to volatility $\sigma$ is conceptually equivalent to differentiating the area of a circle ($A = \pi r^2$) with respect to $\pi$. Despite this inconsistency, Vega is a critical tool used to manage residual volatility risks in exotic books.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem;">Greeks &amp; Volatility Rules of Thumb</h3>
+                
+                <div style="display:flex; flex-direction:column; gap:1.1rem; font-size:0.85rem; line-height:1.5; color:#4b5563;">
+                    <div style="border-bottom: 1px solid var(--card-border); padding-bottom: 0.6rem;">
+                        <strong style="color:var(--accent);">Rule 1: Asset Scaling</strong>
+                        <p style="margin: 0.25rem 0 0 0;">Doubling volatility $\sigma$ is mathematically equivalent to quadrupling the time to expiration $T$ in the pricing formulas. They scale as $\sigma\sqrt{T}$.</p>
+                    </div>
+                    <div style="border-bottom: 1px solid var(--card-border); padding-bottom: 0.6rem;">
+                        <strong style="color:var(--accent);">Rule 2: Delta &amp; Gamma Smoothing</strong>
+                        <p style="margin: 0.25rem 0 0 0;">Increasing volatility smooths out Delta and Gamma curves across asset space. This acts as a physical diffusion process, flattening highly peaked profiles.</p>
+                    </div>
+                    <div>
+                        <strong style="color:var(--accent);">Rule 3: Gamma Peak Fading</strong>
+                        <p style="margin: 0.25rem 0 0 0;">Low volatility creates a very steep, dangerously severe Gamma peak right at the strike price $E$. High volatility flattens and distributes this risk safely.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Calibration (Un-averaging) -->
+    <div id="secM3L6Calibration" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Term Structure Calibration &amp; "Un-averaging"</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    If we assume the market is right, we can reconcile different implied volatilities for different expirations by modeling a **time-dependent, deterministic actual volatility** $\sigma_a(t)$.
+                    Under this framework, the implied volatility is the root mean square average of the time-varying variance:
+                    $$\sigma_i(T; t^*)^2 = \frac{1}{T - t^*} \int_{t^*}^{T} \sigma_a(\tau)^2 d\tau$$
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); margin-bottom:1.25rem;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Differentiating the term structure (Leibniz Rule Proof)</h4>
+                    <p style="font-size: 0.85rem; line-height: 1.6; color:#4b5563; margin:0;">
+                        To solve for the local variance $\sigma_a(T)^2$, we multiply by the time interval and differentiate both sides with respect to expiration $T$:
+                        $$(T - t^*)\sigma_i(T; t^*)^2 = \int_{t^*}^{T} \sigma_a(\tau)^2 d\tau$$
+                        $$\frac{\partial}{\partial T}\left[ (T - t^*)\sigma_i(T; t^*)^2 \right] = \sigma_a(T)^2$$
+                        Applying the product rule on the left yields the closed-form un-averaging formula:
+                        $$\sigma_a(T) = \sqrt{\sigma_i(T; t^*)^2 + 2(T - t^*)\sigma_i(T; t^*)\frac{\partial \sigma_i(T; t^*)}{\partial T}}$$
+                    </p>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; font-size:0.85rem; line-height:1.5; color:#4b5563;">
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong style="color:var(--accent);">Numerical Instability</strong>
+                        <p style="margin:0.25rem 0 0 0; font-size:0.8rem;">
+                            Because implied volatility represents a smoothed average, backing out local volatility is an **inverse problem**. Differentiation amplifies noise, causing mild ripples in market quotes to produce extremely jagged, unstable, or negative local volatility curves.
+                        </p>
+                    </div>
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong style="color:var(--accent);">Temporal Recalibration Inconsistency</strong>
+                        <p style="margin:0.25rem 0 0 0; font-size:0.8rem;">
+                            The calibrated function $\sigma_a(t)$ is supposed to be a fixed deterministic forecast of calendar time. In practice, recalibrating the model a week later ($t^*$) yields a completely different function. This mismatch demonstrates that a deterministic model of time is physically incorrect.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Skews, Smiles & Insurance -->
+    <div id="secM3L6Smiles" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; display: grid; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Volatility Skews, Smiles &amp; Frowns</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        Implied volatility is not flat; it varies significantly with strike $E$. In equity markets, we observe a downward sloping **skew** (fear of sudden crashes). In FX markets, we often observe a symmetric **smile** (expectations of large jumps in either direction) or a **frown**.
+                    </p>
+
+                    <div style="background: var(--metric-bg); padding: 1.1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 0.5rem; font-size:0.82rem; line-height:1.5;">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.9rem; text-align:center;">The Supply &amp; Demand Insurance Analog</h4>
+                        <p style="margin:0; color:#4b5563;">
+                            Just like car insurance premiums cover profit margins, business costs, and crash probability (making premium costs higher than actuarial replication), deep out-of-the-money puts are priced by **supply, demand, crash hedging, and fat-tail risk**. 
+                            We cannot extract a pure physical probability from implied volatility because Black-Scholes packs all market frictions into a single parameter: **volatility**.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: #8b5cf6; margin-bottom: 0.75rem;">Dupire Local Volatility</h3>
+                    <p style="font-size: 0.85rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.5rem;">
+                        To handle strikes and expiries simultaneously, Dupire developed the local volatility surface $\sigma_a(S, t)$ from market prices of European options:
+                        $$\sigma_a(E, T)^2 = \frac{\frac{\partial C}{\partial T} + (r - D)E\frac{\partial C}{\partial E} + D C}{\frac{1}{2} E^2 \frac{\partial^2 C}{\partial E^2}}$$
+                    </p>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                        This equation takes the second derivative with respect to strike (which represents the risk-neutral probability density) in the denominator and the first derivative with respect to time in the numerator.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: Master Study Guide -->
+    <div id="secM3L6Guide" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 1.5rem;">Volatility Calibration worked Solutions</h3>
+
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <!-- Problem 1 -->
+                    <details style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden;" open>
+                        <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
+                            Problem 6.1: Piecewise Constant "Un-averaging" Solution
+                        </summary>
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                            <strong>Question:</strong><br>
+                            Given the following term structure of monthly implied volatilities:
+                            <ul>
+                                <li>Month 1 ($T_1 = 1/12$): Implied Volatility $\sigma_i(T_1) = 30\%$</li>
+                                <li>Month 2 ($T_2 = 2/12$): Implied Volatility $\sigma_i(T_2) = 25\%$</li>
+                                <li>Month 3 ($T_3 = 3/12$): Implied Volatility $\sigma_i(T_3) = 26\%$</li>
+                            </ul>
+                            Calculate the piecewise constant actual volatilities $\sigma_1$, $\sigma_2$, and $\sigma_3$ during each month.
+                            <hr style="border:0; border-top:1px solid var(--card-border); margin:1rem 0;">
+                            <strong>Detailed Solution:</strong><br>
+                            <p><strong>Step 1: First Month actual Volatility ($\sigma_1$)</strong><br>
+                            Since the first period starts at zero, the average matches the local:
+                            $$\sigma_1 = \sigma_i(T_1) = 30\%$$
+                            </p>
+                            
+                            <p><strong>Step 2: Second Month actual Volatility ($\sigma_2$)</strong><br>
+                            The variance over the first two months is time-weighted:
+                            $$T_2 \sigma_i(T_2)^2 = T_1 \sigma_1^2 + (T_2 - T_1) \sigma_2^2$$
+                            Substitute values:
+                            $$\frac{2}{12} (0.25)^2 = \frac{1}{12} (0.30)^2 + \frac{1}{12} \sigma_2^2$$
+                            Multiply through by $12$:
+                            $$2(0.0625) = 0.0900 + \sigma_2^2$$
+                            $$0.1250 = 0.0900 + \sigma_2^2 \implies \sigma_2^2 = 0.0350$$
+                            $$\sigma_2 = \sqrt{0.0350} \approx 18.71\%$$
+                            </p>
+
+                            <p><strong>Step 3: Third Month actual Volatility ($\sigma_3$)</strong><br>
+                            The variance over the first three months:
+                            $$T_3 \sigma_i(T_3)^2 = T_1 \sigma_1^2 + (T_2 - T_1) \sigma_2^2 + (T_3 - T_2) \sigma_3^2$$
+                            Substitute values:
+                            $$\frac{3}{12} (0.26)^2 = \frac{1}{12} (0.30)^2 + \frac{1}{12} (0.1871)^2 + \frac{1}{12} \sigma_3^2$$
+                            Multiply through by $12$:
+                            $$3(0.0676) = 0.0900 + 0.0350 + \sigma_3^2$$
+                            $$0.2028 = 0.1250 + \sigma_3^2 \implies \sigma_3^2 = 0.0778$$
+                            $$\sigma_3 = \sqrt{0.0778} \approx 27.89\%$$
+                            </p>
+                            <p style="background:var(--metric-bg); padding:0.75rem; border-radius:6px; border-left: 3px solid var(--accent); font-weight:600; text-align:center;">
+                                Results Summary: $\sigma_1 = 30\%$, $\sigma_2 = 18.71\%$, $\sigma_3 = 27.89\%$
+                            </p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Volatility Arbitrage Sandbox -->
+    <div id="secM3L6Sandbox" style="display: none;">
+        <div class="container" style="grid-template-columns: 325px 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <!-- Inputs Panel -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem; font-family: var(--font-family-sans); font-size: 0.85rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom:1rem;">Configuration</h3>
+                
+                <div style="display:flex; flex-direction:column; gap:1.1rem;">
+                    <!-- S0 -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Asset Price ($S_0$):</span>
+                            <span id="valM3L6Stock" style="color:var(--accent);">100</span>
+                        </div>
+                        <input id="slideM3L6Stock" type="range" min="80" max="120" step="1" value="100" style="width:100%; cursor:pointer;" oninput="updateM3L6Simulation()">
+                    </div>
+
+                    <!-- Strike -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Strike Price ($E$):</span>
+                            <span id="valM3L6Strike" style="color:var(--accent);">100</span>
+                        </div>
+                        <input id="slideM3L6Strike" type="range" min="80" max="120" step="1" value="100" style="width:100%; cursor:pointer;" oninput="updateM3L6Simulation()">
+                    </div>
+
+                    <!-- Forecast Actual Vol -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Forecast Vol ($\sigma_a$):</span>
+                            <span id="valM3L6VolA" style="color:var(--accent);">30%</span>
+                        </div>
+                        <input id="slideM3L6VolA" type="range" min="10" max="50" step="1" value="30" style="width:100%; cursor:pointer;" oninput="updateM3L6Simulation()">
+                    </div>
+
+                    <!-- Implied Vol -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Implied Vol ($\sigma_i$):</span>
+                            <span id="valM3L6VolI" style="color:var(--accent);">20%</span>
+                        </div>
+                        <input id="slideM3L6VolI" type="range" min="10" max="50" step="1" value="20" style="width:100%; cursor:pointer;" oninput="updateM3L6Simulation()">
+                    </div>
+
+                    <!-- Physical Drift -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Physical Drift ($\mu$):</span>
+                            <span id="valM3L6Drift" style="color:var(--accent);">10.0%</span>
+                        </div>
+                        <input id="slideM3L6Drift" type="range" min="-10" max="30" step="1.0" value="10" style="width:100%; cursor:pointer;" oninput="updateM3L6Simulation()">
+                    </div>
+
+                    <!-- Hedging Choice -->
+                    <div>
+                        <span style="font-weight:600; display:block; margin-bottom:0.4rem;">Hedging Strategy:</span>
+                        <select id="selectM3L6Hedge" style="width:100%; padding:0.4rem; border-radius:4px; border: 1px solid var(--input-border); background:var(--input-bg); color:var(--text-color); font-weight:700; cursor:pointer;" onchange="updateM3L6Simulation()">
+                            <option value="actual">Hedge with Actual Delta (σ_a)</option>
+                            <option value="implied">Hedge with Implied Delta (σ_i)</option>
+                        </select>
+                    </div>
+
+                    <button class="btn" style="background:var(--accent); color:#ffffff; font-weight:700; border:none; padding:0.5rem; border-radius:4px; cursor:pointer;" onclick="updateM3L6Simulation()">Regenerate Paths</button>
+                </div>
+            </div>
+
+            <!-- Visualization Canvas -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Mark-to-Market Arbitrage Profit Paths</h3>
+                    <div style="height: 200px; position: relative; margin-bottom: 0.5rem;">
+                        <canvas id="m3l6ArbChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Theory summary -->
+                <div id="m3l6OutcomeSummary" style="background: var(--metric-bg); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size:0.8rem; line-height:1.45; color:#374151;">
+                    Loading simulation...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching logic for CQF M3 L6
+    window.switchM3L6Tab = function(tab) {
+        const tabs = ['types', 'vega', 'calibration', 'smiles', 'guide', 'sandbox'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM3L6' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM3L6' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) {
+                sec.style.display = (t === tab ? 'block' : 'none');
+                if (t === tab && !sec.dataset.typeset) {
+                    if (typeof window.safeTypeset === 'function') {
+                        window.safeTypeset([sec]);
+                        sec.dataset.typeset = 'true';
+                    }
+                }
+            }
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        if (tab === 'sandbox') {
+            setTimeout(updateM3L6Simulation, 100);
+        }
+    };
+
+    let m3l6ArbChartInstance = null;
+
+    // Normal Cumulative Distribution Function
+    function m3l6NormCdf(x) {
+        const b1 =  0.319381530;
+        const b2 = -0.356563782;
+        const b3 =  1.781477937;
+        const b4 = -1.821255978;
+        const b5 =  1.330274429;
+        const p  =  0.2316419;
+        const c  =  0.39894228;
+
+        if (x >= 0.0) {
+            let k = 1.0 / (1.0 + p * x);
+            return 1.0 - c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        } else {
+            let k = 1.0 / (1.0 - p * x);
+            return c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        }
+    }
+
+    // Normal probability density function
+    function m3l6NormPdf(x) {
+        return (1 / Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * x * x);
+    }
+
+    // Box-Muller transform for normal distribution
+    function m3l6RandomNormal() {
+        let u = 0, v = 0;
+        while(u === 0) u = Math.random(); 
+        while(v === 0) v = Math.random();
+        return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    }
+
+    // Black-Scholes call option price
+    function m3l6BsCall(S, E, T, r, vol) {
+        if (T <= 1e-5) return Math.max(S - E, 0);
+        const d1 = (Math.log(S / E) + (r + 0.5 * vol * vol) * T) / (vol * Math.sqrt(T));
+        const d2 = d1 - vol * Math.sqrt(T);
+        return S * m3l6NormCdf(d1) - E * Math.exp(-r * T) * m3l6NormCdf(d2);
+    }
+
+    // Black-Scholes call option delta
+    function m3l6BsDelta(S, E, T, r, vol) {
+        if (T <= 1e-5) return S > E ? 1 : 0;
+        const d1 = (Math.log(S / E) + (r + 0.5 * vol * vol) * T) / (vol * Math.sqrt(T));
+        return m3l6NormCdf(d1);
+    }
+
+    // Black-Scholes call option gamma
+    function m3l6BsGamma(S, E, T, r, vol) {
+        if (T <= 1e-5) return 0;
+        const d1 = (Math.log(S / E) + (r + 0.5 * vol * vol) * T) / (vol * Math.sqrt(T));
+        return m3l6NormPdf(d1) / (S * vol * Math.sqrt(T));
+    }
+
+    window.updateM3L6Simulation = function() {
+        const S0 = parseFloat(document.getElementById('slideM3L6Stock').value);
+        const E = parseFloat(document.getElementById('slideM3L6Strike').value);
+        const volA = parseFloat(document.getElementById('slideM3L6VolA').value) / 100;
+        const volI = parseFloat(document.getElementById('slideM3L6VolI').value) / 100;
+        const mu = parseFloat(document.getElementById('slideM3L6Drift').value) / 100;
+        const hedgeStrat = document.getElementById('selectM3L6Hedge').value;
+
+        // Labels
+        document.getElementById('valM3L6Stock').innerText = S0.toFixed(0);
+        document.getElementById('valM3L6Strike').innerText = E.toFixed(0);
+        document.getElementById('valM3L6VolA').innerText = (volA * 100).toFixed(0) + "%";
+        document.getElementById('valM3L6VolI').innerText = (volI * 100).toFixed(0) + "%";
+        document.getElementById('valM3L6Drift').innerText = (mu * 100).toFixed(1) + "%";
+
+        const T = 0.5; // Expiry 6 months
+        const r = 0.05; // Risk-free rate 5%
+        const N_steps = 50;
+        const dt = T / N_steps;
+        const N_paths = 8;
+
+        let pathsArb = [];
+        let timeSteps = [];
+        for (let j = 0; j <= N_steps; j++) {
+            timeSteps.push(j * dt);
+        }
+
+        // Initialize BS option price profiles
+        const Va_0 = m3l6BsCall(S0, E, T, r, volA);
+        const Vi_0 = m3l6BsCall(S0, E, T, r, volI);
+        const guaranteedProfitVal = Va_0 - Vi_0;
+
+        for (let p = 0; p < N_paths; p++) {
+            let S = S0;
+            let portfolioArb = [];
+            
+            // Mark-to-market variables
+            // Start long the option (bought at Vi_0) and short the Delta shares
+            const delta_0 = hedgeStrat === 'actual' ? m3l6BsDelta(S0, E, T, r, volA) : m3l6BsDelta(S0, E, T, r, volI);
+            let cash = -Vi_0 + delta_0 * S0;
+            let currentDelta = delta_0;
+
+            portfolioArb.push(0.0); // Profit starts at zero
+
+            for (let j = 1; j <= N_steps; j++) {
+                const t = j * dt;
+                const t_remain = T - t;
+
+                // Move stock using Forecast actual volatility (physical dynamics)
+                const rand = m3l6RandomNormal();
+                const dS = S * mu * dt + S * volA * Math.sqrt(dt) * rand;
+                const prevS = S;
+                S += dS;
+
+                // Accumulate cash in bank with interest
+                cash = cash * (1 + r * dt);
+
+                // Option value changes under implied volatility
+                const Vi_next = m3l6BsCall(S, E, t_remain, r, volI);
+
+                // Calculate profit of the Delta Hedged Portfolio at this step
+                // Portfolio value = Option price + Cash - delta * Stock
+                const portVal = Vi_next + cash - currentDelta * S;
+                portfolioArb.push(portVal);
+
+                // Rehedge for the next step
+                currentDelta = hedgeStrat === 'actual' ? m3l6BsDelta(S, E, t_remain, r, volA) : m3l6BsDelta(S, E, t_remain, r, volI);
+                // Adjust cash balance for the rehedge shares adjustment
+                const nextDelta = hedgeStrat === 'actual' ? m3l6BsDelta(S, E, t_remain, r, volA) : m3l6BsDelta(S, E, t_remain, r, volI);
+                cash += (nextDelta - currentDelta) * S;
+            }
+
+            pathsArb.push(portfolioArb);
+        }
+
+        // Summary text explanation
+        const elOutcome = document.getElementById('m3l6OutcomeSummary');
+        if (hedgeStrat === 'actual') {
+            elOutcome.innerHTML = `
+                <strong>Strategy: Hedging with Actual Volatility ($\sigma_a$)</strong><br>
+                Theoretical guaranteed profit: <strong>$${guaranteedProfitVal.toFixed(2)}</strong> (represented by $V(\\sigma_a) - V(\\sigma_i)$).<br>
+                <span style="color:var(--accent); font-weight:700;">Wilmott Insight:</span> By hedging with the actual volatility, you are replicating a short position in a <em>correctly priced</em> option, perfectly canceling out the terminal payout. The paths are highly volatile during the lifetime of the option (exhibiting random mark-to-market fluctuations due to the $\mu - r$ drift terms), but converge to the exact same **deterministic final profit** at expiration!
+            `;
+        } else {
+            elOutcome.innerHTML = `
+                <strong>Strategy: Hedging with Implied Volatility ($\sigma_i$)</strong><br>
+                Accumulated profit SDE: $d\Pi = \\frac{1}{2}(\\sigma_a^2 - \\sigma_i^2) S^2 \\Gamma^i dt$<br>
+                <span style="color:#8b5cf6; font-weight:700;">Wilmott Insight:</span> By hedging with implied volatility, you balance the daily random fluctuations of option pricing with the stock. The portfolio's increment is **strictly positive at every step** (since $\\sigma_a > \\sigma_i$ and $\\Gamma \\ge 0$). However, the final profit is **highly path-dependent and uncertain** because option Gamma is non-constant and peaks severely near the strike!
+            `;
+        }
+
+        renderM3L6ArbPlot(timeSteps, pathsArb, hedgeStrat, guaranteedProfitVal);
+    };
+
+    function renderM3L6ArbPlot(timeSteps, paths, strategy, targetProfit) {
+        const ctx = document.getElementById('m3l6ArbChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+        
+        let datasets = [];
+
+        // Add Monte Carlo paths
+        paths.forEach((path, idx) => {
+            datasets.push({
+                label: 'Path ' + (idx + 1),
+                data: path.map((y, i) => ({ x: timeSteps[i], y: y })),
+                borderColor: strategy === 'actual' ? 'rgba(59, 130, 246, 0.4)' : 'rgba(139, 92, 246, 0.4)',
+                borderWidth: 1.5,
+                showLine: true,
+                pointRadius: 0,
+                fill: false
+            });
+        });
+
+        // Add reference lines for Actual strategy
+        if (strategy === 'actual') {
+            datasets.push({
+                label: 'Guaranteed Profit Target',
+                data: timeSteps.map(t => ({ x: t, y: targetProfit })),
+                borderColor: '#ef4444',
+                borderWidth: 2,
+                borderDash: [6, 6],
+                showLine: true,
+                pointRadius: 0,
+                fill: false
+            });
+        }
+
+        if (m3l6ArbChartInstance) {
+            m3l6ArbChartInstance.destroy();
+        }
+
+        m3l6ArbChartInstance = new Chart(ctx, {
+            type: 'scatter',
+            data: { datasets: datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom',
+                        title: { display: true, text: 'Time to Expiration (Years)', font: { size: 9 }, color: tickColor },
+                        ticks: { color: tickColor, font: { size: 8 } },
+                        grid: { color: gridColor }
+                    },
+                    y: {
+                        title: { display: true, text: 'Mark-to-Market Profit ($)', font: { size: 9 }, color: tickColor },
+                        ticks: { color: tickColor, font: { size: 8 } },
+                        grid: { color: gridColor }
+                    }
+                }
+            }
+        });
+    }
+</script>

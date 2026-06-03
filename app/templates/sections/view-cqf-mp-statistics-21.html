@@ -1,0 +1,254 @@
+<div id="view-cqf-mp-statistics-21" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">2.1 Sampling &amp; Estimators</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">2.1 Sampling &amp; Unbiased Estimators</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Populations vs. Samples, parameters vs. estimators, and the mathematical proof of Bessel's correction $(n-1)$.</div>
+    </header>
+
+    <!-- Populations vs Samples -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">2.1.1 Core Concepts</h3>
+        <p>So far we have been dealing with populations, however sometimes the population is too large to be able to analyse and we need to use a sample in order to estimate the population parameters, i.e. mean and variance.</p>
+        <p>Consider a population of $N$ data points and a sample taken from this population of $n$ data points.</p>
+        
+        <p>We know that the mean and variance of a population are given by:</p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
+            <li><strong>population mean</strong> ($\mu$):
+                $$\mu = \frac{\sum_{i=1}^{N} x_i}{N}$$
+            </li>
+            <li><strong>population variance</strong> ($\sigma^2$):
+                $$\sigma^2 = \frac{\sum_{i=1}^{N} (x_i - \bar{x})^2}{N}$$
+            </li>
+        </ul>
+
+        <p>But how can we use the sample to estimate our population parameters?</p>
+        <p>First we define an <strong>unbiased estimator</strong>. An unbiased estimator is when the expected value of the estimator is exactly equal to the corresponding population parameter.</p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--accent);">Sample Mean Estimator ($\bar{x}$)</h4>
+                <p style="margin: 0.25rem 0; font-size: 0.9rem;">Unbiased requirement: $E(\bar{x}) = \mu$</p>
+                <p style="font-size: 1.1rem; font-weight: bold; text-align: center;">$$\bar{x} = \frac{\sum_{i=1}^{n} x_i}{n}$$</p>
+            </div>
+            <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                <h4 style="margin: 0 0 0.5rem 0; color: #10b981;">Sample Variance Estimator ($S^2$)</h4>
+                <p style="margin: 0.25rem 0; font-size: 0.9rem;">Unbiased requirement: $E(S^2) = \sigma^2$</p>
+                <p style="font-size: 1.1rem; font-weight: bold; text-align: center;">$$S^2 = \frac{\sum_{i=1}^{n} (x_i - \bar{x})^2}{n - 1}$$</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- The Mathematical Proof -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">2.1.2 Mathematical Proof</h3>
+        <p>From the Central Limit Theorem (CLT), we know:</p>
+        <p style="text-align: center;">$$E(\bar{X}) = \mu \quad \text{and} \quad \text{Var}(\bar{X}) = \frac{\sigma^2}{n}$$</p>
+        
+        <p>Also, by the definition of variance:</p>
+        <p style="text-align: center;">$$\text{Var}(\bar{X}) = E(\bar{X}^2) - [E(\bar{X})]^2$$</p>
+        <p style="text-align: center;">$$\frac{\sigma^2}{n} = E(\bar{X}^2) - \mu^2 \implies E(\bar{X}^2) = \frac{\sigma^2}{n} + \mu^2$$</p>
+
+        <p>For a single independent sample point $X_i$, the sample size $n = 1$, which gives:</p>
+        <p style="text-align: center;">$$E(X_i^2) = \sigma^2 + \mu^2$$</p>
+
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color); margin-top: 1rem;">
+            <strong>Step-by-step Expected Value Expansion:</strong>
+            $$E\left[ \sum_{i=1}^n (X_i - \bar{X})^2 \right] = E\left[ \sum_{i=1}^n X_i^2 - n\bar{X}^2 \right]$$
+            $$= \sum_{i=1}^n E(X_i^2) - n E(\bar{X}^2)$$
+            $$= n(\sigma^2 + \mu^2) - n \left( \frac{\sigma^2}{n} + \mu^2 \right)$$
+            $$= n\sigma^2 + n\mu^2 - \sigma^2 - n\mu^2$$
+            $$= (n - 1)\sigma^2$$
+            
+            <p style="margin-top: 1rem; color: #10b981; font-weight: bold;">Taking the expectation to isolate $\sigma^2$:</p>
+            $$\therefore \sigma^2 = \frac{E\left[ \sum_{i=1}^n (X_i - \bar{X})^2 \right]}{n - 1}$$
+            <p style="margin: 0.5rem 0; color: #10b981; font-weight: bold;">Hence, the estimator dividing by $n-1$ is mathematically unbiased. $\blacksquare$</p>
+        </div>
+    </div>
+
+    <!-- Interactive Laboratory Sandbox -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">2.1.3 Interactive Sampling &amp; Bessel's Correction Laboratory</h3>
+        <p>This lab demonstrates the concrete effect of Bessel's correction. We generate hundreds of small random samples ($n = 5$) from a known normal population with standard deviation $\sigma = 10$ (true variance $\sigma^2 = 100$). Observe how the biased estimator ($1/n$) systematically underestimates the variance, while the unbiased estimator ($1/(n-1)$) converges perfectly to the truth.</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls -->
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Sample Size ($n$):</label>
+                    <input type="range" id="stats21SampleSize" min="3" max="15" value="5" step="1" oninput="runStats21Sampling()" style="width: 100%; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: -0.75rem; margin-bottom: 1rem; color: #6b7280;">
+                        <span>3</span>
+                        <span id="stats21NVal" style="font-weight: bold; color: var(--accent);">n = 5</span>
+                        <span>15</span>
+                    </div>
+
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Number of Trials:</label>
+                    <select id="stats21Trials" onchange="runStats21Sampling()" style="padding: 0.35rem 0.5rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600; outline: none; cursor: pointer; width: 100%; margin-bottom: 1.25rem;">
+                        <option value="500">500 trials</option>
+                        <option value="1000" selected>1,000 trials</option>
+                        <option value="5000">5,000 trials</option>
+                    </select>
+
+                    <button onclick="runStats21Sampling()" style="background: #10b981; color: #fff; border: none; padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; transition: background 0.2s;">Regenerate Population Samples</button>
+                </div>
+
+                <!-- Live Results -->
+                <div style="background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 1rem;">
+                    <canvas id="stats21Canvas" width="320" height="200" style="width: 100%; height: 200px; display: block;"></canvas>
+                </div>
+            </div>
+
+            <!-- Stats Readout Table -->
+            <div style="margin-top: 1.5rem; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; text-align: center;">
+                <div style="background: var(--card-bg); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--card-border);">
+                    <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">TRUE POPULATION VARIANCE</div>
+                    <div style="font-size: 1.3rem; font-weight: 800; color: var(--text-color); margin-top: 0.25rem;">100.00</div>
+                </div>
+                <div style="background: var(--card-bg); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--card-border); border-left: 4px solid var(--warning);">
+                    <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">BIASED VARIANCE AVG ($1/n$)</div>
+                    <div id="stats21BiasedAvg" style="font-size: 1.3rem; font-weight: 800; color: var(--warning); margin-top: 0.25rem;">--</div>
+                </div>
+                <div style="background: var(--card-bg); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--card-border); border-left: 4px solid #10b981;">
+                    <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">UNBIASED VARIANCE AVG ($1/(n-1)$)</div>
+                    <div id="stats21UnbiasedAvg" style="font-size: 1.3rem; font-weight: 800; color: #10b981; margin-top: 0.25rem;">--</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.runStats21Sampling = function() {
+                const n = parseInt(document.getElementById('stats21SampleSize').value);
+                const trials = parseInt(document.getElementById('stats21Trials').value);
+                document.getElementById('stats21NVal').innerText = `n = ${n}`;
+
+                const trueVariance = 100.0;
+                const trueStd = 10.0;
+
+                let biasedSum = 0;
+                let unbiasedSum = 0;
+
+                // Box-Muller transform helper to generate standard normal samples
+                function randn() {
+                    let u = 0, v = 0;
+                    while(u === 0) u = Math.random();
+                    while(v === 0) v = Math.random();
+                    return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+                }
+
+                // Simulate trials
+                for (let t = 0; t < trials; t++) {
+                    const sample = [];
+                    let sum = 0;
+                    for (let i = 0; i < n; i++) {
+                        // Generate sample from N(0, 10^2)
+                        const val = randn() * trueStd;
+                        sample.push(val);
+                        sum += val;
+                    }
+                    const mean = sum / n;
+
+                    let sqDevSum = 0;
+                    for (let i = 0; i < n; i++) {
+                        sqDevSum += Math.pow(sample[i] - mean, 2);
+                    }
+
+                    biasedSum += sqDevSum / n;
+                    unbiasedSum += sqDevSum / (n - 1);
+                }
+
+                const biasedAvg = biasedSum / trials;
+                const unbiasedAvg = unbiasedSum / trials;
+
+                document.getElementById('stats21BiasedAvg').innerText = biasedAvg.toFixed(2);
+                document.getElementById('stats21UnbiasedAvg').innerText = unbiasedAvg.toFixed(2);
+
+                drawSamplingGraph(trueVariance, biasedAvg, unbiasedAvg);
+
+                const parent = document.getElementById('view-cqf-mp-statistics-21');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawSamplingGraph(truth, biased, unbiased) {
+                const canvas = document.getElementById('stats21Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const margin = 20;
+                const topMargin = 30;
+                const bottomMargin = 20;
+                const width = canvas.width - 2 * margin;
+                const height = canvas.height - topMargin - bottomMargin;
+
+                // Draw background grid lines
+                ctx.strokeStyle = '#222';
+                ctx.lineWidth = 1;
+                for (let i = 1; i <= 4; i++) {
+                    const y = topMargin + (height / 4) * i;
+                    ctx.beginPath();
+                    ctx.moveTo(margin, y);
+                    ctx.lineTo(canvas.width - margin, y);
+                    ctx.stroke();
+                }
+
+                // Bar definitions
+                const barWidth = 50;
+                const barSpacing = (width - 3 * barWidth) / 4;
+
+                const maxVal = Math.max(truth, biased, unbiased, 110);
+                const scale = height / maxVal;
+
+                // Data mapping
+                const bars = [
+                    { label: 'Truth', val: truth, color: '#2563eb' },
+                    { label: 'Biased', val: biased, color: '#d97706' },
+                    { label: 'Unbiased', val: unbiased, color: '#10b981' }
+                ];
+
+                bars.forEach((bar, idx) => {
+                    const x = margin + barSpacing + idx * (barWidth + barSpacing);
+                    const barHeight = bar.val * scale;
+                    const y = canvas.height - bottomMargin - barHeight;
+
+                    // Draw bar
+                    ctx.fillStyle = bar.color;
+                    ctx.fillRect(x, y, barWidth, barHeight);
+
+                    // Draw label value above bar
+                    ctx.fillStyle = '#fff';
+                    ctx.font = '10px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(bar.val.toFixed(1), x + barWidth/2, y - 8);
+
+                    // Draw bar category label
+                    ctx.fillText(bar.label, x + barWidth/2, canvas.height - 5);
+                });
+
+                // Draw dashed line across the true value for reference
+                const trueY = canvas.height - bottomMargin - truth * scale;
+                ctx.strokeStyle = '#2563eb';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath();
+                ctx.moveTo(margin, trueY);
+                ctx.lineTo(canvas.width - margin, trueY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('stats21SampleSize')) runStats21Sampling();
+            }, 100);
+        })();
+    </script>
+</div>

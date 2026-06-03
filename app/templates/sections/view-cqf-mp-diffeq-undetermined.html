@@ -1,0 +1,194 @@
+<div id="view-cqf-mp-diffeq-undetermined" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #f59e0b; font-family: var(--font-family-sans);">6. Undetermined Coeffs</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Non-Homogeneous Case - Method of Undetermined Coefficients</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Guided guesswork methods for finding particular integrals, exponential/polynomial/trigonometric RHS, and failure case overrides.</div>
+    </header>
+
+    <!-- General Framework Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1. Particular Solutions &amp; Linearity</h3>
+        <p>For a non-homogeneous differential equation $Ly = g(x)$, the complete general solution is composed of two distinct components:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$y = y_c + y_p$$</p>
+        <p>where $y_c$ solves the homogeneous equation $Ly = 0$, and $y_p$ is a particular solution satisfying $Ly_p = g(x)$. Substituting $y_c + y_p$ into the operator confirms linearity: $L(y_c + y_p) = L(y_c) + L(y_p) = 0 + g(x) = g(x)$.</p>
+    </div>
+
+    <!-- Trial Solution Methods -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">2. Standard RHS Trial Functions</h3>
+        <p>The Method of Undetermined Coefficients is a guided guesswork approach where the form of the trial solution $y_p$ is determined by the mathematical category of the right-hand side function $g(x)$:</p>
+
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">
+            <strong style="color: var(--accent);">Category A: Exponential RHS $g(x) = M e^{kx}$</strong>
+            <p style="margin: 0.25rem 0;">Trial Solution: $y_p = C e^{kx}$ (provided $k$ is not a root of the auxiliary equation).</p>
+            <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #6b7280;"><em>Example:</em> For $y'' - 5y' + 6y = 3e^{5x}$, try $y_p = Ce^{5x}$. Subbing in yields $C = 1/14 \implies y_p = (1/14)e^{5x}$.</p>
+
+            <strong style="display: block; margin-top: 1rem; color: #10b981;">Category B: Polynomial RHS $g(x) = P_n(x)$</strong>
+            <p style="margin: 0.25rem 0;">Trial Solution: A general polynomial of the same degree: $y_p = p_0 + p_1 x + \dots + p_n x^n$.</p>
+            <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #6b7280;"><em>Example:</em> For $y'' - 5y' + 6y = x^2$, try $y_p = p_0 + p_1 x + p_2 x^2$. Substituting and equating coefficients yields $p_2 = 1/2$, $p_1 = -3/2$, and $p_0 = 7/4$.</p>
+
+            <strong style="display: block; margin-top: 1rem; color: var(--warning);">Category C: Trigonometric RHS $g(x) = M \cos\omega x$ or $N \sin\omega x$</strong>
+            <p style="margin: 0.25rem 0;">Trial Solution: Both sine and cosine must always be included together: $y_p = a \cos\omega x + b \sin\omega x$.</p>
+            <p style="margin: 0.25rem 0; font-size: 0.88rem; color: var(--text-color);"><em>Euler's Complex Shortcut:</em> Recognize $\cos\omega x = \text{Re}(e^{i\omega x})$. Solve for the complex particular solution using trial $y_p = K e^{i\omega x}$, then extract the real part. This is mathematically much more efficient.</p>
+        </div>
+    </div>
+
+    <!-- The Failure Case Overrides -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">3. Overcoming the Failure Case</h3>
+        <p>A **failure case** arises when the exponential parameter $k$ in $g(x)$ is already a root of the auxiliary equation, meaning it appears in the complementary function $y_c$. Substituting the standard trial solution would yield zero on the left-hand side, making it impossible to match the right-hand side.</p>
+        
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color); margin-top: 1rem;">
+            <strong>The Correction Principle:</strong>
+            <p style="margin: 0.5rem 0;">We scale the standard trial solution by multiplying it by $x$ to achieve linear independence:</p>
+            $$\text{New Trial } y_p = x \cdot \left( C e^{kx} \right)$$
+            <p style="margin: 0.5rem 0;">If $k$ is a double repeated root of the auxiliary equation, we scale the trial solution by multiplying by $x^2$:</p>
+            $$\text{New Trial } y_p = x^2 \cdot \left( C e^{kx} \right)$$
+            <p style="margin: 0.5rem 0; color: #10b981; font-weight: bold;">General Rule: The multiplying power of $x$ corresponds exactly to the multiplicity of the root.</p>
+        </div>
+    </div>
+
+    <!-- Interactive Undetermined Coefficients sandbox -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">4. Interactive Undetermined Coefficients sandbox</h3>
+        <p>Observe the solved particular integral $y_p(x)$ for the ODE $y'' - y = M e^{kx}$. If $k = 1$ or $k = -1$, the exponential matches the homogeneous complementary function $y_c = c_1 e^x + c_2 e^{-x}$ (Failure Case), triggering a multiplication by $x$: $y_p = C x e^{kx}$. Otherwise, it maps to the standard form $y_p = C e^{kx}$. Use the slider to adjust parameter $k$ and observe this transition:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls -->
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Exponential parameter ($k$):</label>
+                    <input type="range" id="diffeqUndetSliderK" min="0" max="3" value="2" step="1" oninput="runDiffeqUndeterminedSimulation()" style="width: 100%; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: -0.75rem; margin-bottom: 1.25rem; color: #6b7280;">
+                        <span>0 (Polynomial constant)</span>
+                        <span id="diffeqUndetKVal" style="font-weight: bold; color: var(--accent);">k = 2</span>
+                        <span>3</span>
+                    </div>
+
+                    <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); margin-bottom: 0.75rem;">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">ROOT MULTIPLICITY CLASS</div>
+                        <div id="diffeqUndetClass" style="font-size: 1.1rem; font-weight: 700; color: #10b981; margin-top: 0.25rem;">Standard (No root overlap)</div>
+                    </div>
+
+                    <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); border-left: 4px solid var(--warning);">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">PARTICULAR INTEGRAL y_p</div>
+                        <div id="diffeqUndetSol" style="font-size: 1.05rem; font-weight: 700; color: var(--warning); margin-top: 0.25rem;">y_p = (1/3) e^{2x}</div>
+                    </div>
+                </div>
+
+                <!-- Custom 2D Line Chart Canvas -->
+                <div style="background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 1rem;">
+                    <canvas id="diffeqUndetCanvas" width="320" height="200" style="width: 100%; height: 200px; display: block;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.runDiffeqUndeterminedSimulation = function() {
+                const k = parseInt(document.getElementById('diffeqUndetSliderK').value);
+                document.getElementById('diffeqUndetKVal').innerText = `k = ${k}`;
+
+                let classText = '';
+                let solFormula = '';
+                let isFailure = false;
+
+                if (k === 1) {
+                    isFailure = true;
+                    classText = 'Failure Case (Single Root Overlap)';
+                    solFormula = 'y_p = 0.5 * x * e^x';
+                } else if (k === 0) {
+                    classText = 'Standard (Polynomial constant)';
+                    solFormula = 'y_p = -1';
+                } else {
+                    classText = 'Standard (No root overlap)';
+                    const denom = k*k - 1;
+                    solFormula = `y_p = (1/${denom}) e^{${k}x}`;
+                }
+
+                document.getElementById('diffeqUndetClass').innerText = classText;
+                document.getElementById('diffeqUndetSol').innerText = solFormula;
+
+                drawUndeterminedGraph(k, isFailure);
+
+                const parent = document.getElementById('view-cqf-mp-diffeq-undetermined');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawUndeterminedGraph(k, isFailure) {
+                const canvas = document.getElementById('diffeqUndetCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const margin = 20;
+                const topMargin = 20;
+                const bottomMargin = 20;
+                const width = canvas.width - 2 * margin;
+                const height = canvas.height - topMargin - bottomMargin;
+
+                const minX = -1;
+                const maxX = 2;
+                const minY = -5.0;
+                const maxY = 15.0;
+
+                function getCX(x) {
+                    return margin + ((x - minX) / (maxX - minX)) * width;
+                }
+
+                function getCY(y) {
+                    return canvas.height - bottomMargin - ((y - minY) / (maxY - minY)) * height;
+                }
+
+                // Grid lines
+                ctx.strokeStyle = '#222';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(margin, getCY(0));
+                ctx.lineTo(canvas.width - margin, getCY(0));
+                ctx.stroke();
+
+                // Plot y_p function
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                let started = false;
+                for (let x = minX; x <= maxX; x += 0.05) {
+                    let y = 0;
+                    if (isFailure) {
+                        y = 0.5 * x * Math.exp(x);
+                    } else if (k === 0) {
+                        y = -1;
+                    } else {
+                        y = Math.exp(k * x) / (k*k - 1);
+                    }
+
+                    const cx = getCX(x);
+                    const cy = getCY(y);
+                    if (y >= minY && y <= maxY) {
+                        if (!started) {
+                            ctx.moveTo(cx, cy);
+                            started = true;
+                        } else {
+                            ctx.lineTo(cx, cy);
+                        }
+                    }
+                }
+                ctx.stroke();
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('diffeqUndetSliderK')) runDiffeqUndeterminedSimulation();
+            }, 100);
+        })();
+    </script>
+</div>

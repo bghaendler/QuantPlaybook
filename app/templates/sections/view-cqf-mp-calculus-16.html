@@ -1,0 +1,276 @@
+<div id="view-cqf-mp-calculus-16" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9; font-family: var(--font-family-sans);">1.6 Bivariate &amp; Chain Rules</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.6 Bivariate Derivatives &amp; Chain Rules</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Partial derivatives of multi-variable functions, total derivatives, and chain rules.</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
+        <button id="tabCalc16Theory" onclick="switchCalc16Tab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Theory</button>
+        <button id="tabCalc16Exercises" onclick="switchCalc16Tab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Solutions &amp; Proofs</button>
+    </div>
+
+    <!-- Tab: Core Theory -->
+    <div id="secCalc16Theory" style="display: block;">
+        <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #06b6d4; font-family: var(--font-family-sans); font-weight: 700;">1.6.1 Multivariable Derivatives &amp; Chain Rules</h3>
+            <p>In multivariate systems, partial derivatives measure rates of change holding other independent variables constant:</p>
+            <p style="text-align: center; font-size: 0.95rem; margin: 0.4rem 0;">
+                $$\frac{\partial f}{\partial x} = \lim_{\delta x \to 0} \frac{f(x+\delta x, y) - f(x, y)}{\delta x} \quad , \quad \frac{\partial f}{\partial y} = \lim_{\delta y \to 0} \frac{f(x, y+\delta y) - f(x, y)}{\delta y}$$
+            </p>
+            <p><strong>The Chain Rule (Case I):</strong> If $x = x(s)$ and $y = y(s)$, the total derivative with respect to $s$ is:</p>
+            <p style="text-align: center; font-weight: 700; margin: 0.4rem 0;">
+                $$\frac{dF}{ds} = \frac{\partial f}{\partial x}\frac{dx}{ds} + \frac{\partial f}{\partial y}\frac{dy}{ds}$$
+            </p>
+            <p><strong>The Chain Rule (Case II):</strong> If $x = x(u,v)$ and $y = y(u,v)$, the partials are:</p>
+            <p style="text-align: center; font-weight: 700; margin: 0.4rem 0;">
+                $$\frac{\partial F}{\partial u} = \frac{\partial f}{\partial x}\frac{\partial x}{\partial u} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial u} \quad , \quad \frac{\partial F}{\partial v} = \frac{\partial f}{\partial x}\frac{\partial x}{\partial v} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial v}$$
+            </p>
+            <p><strong>Total Differential ($df$):</strong> Signed change along the local tangent surface:</p>
+            <p style="text-align: center; font-weight: 700; margin: 0.4rem 0;">
+                $$df = \frac{\partial f}{\partial x}dx + \frac{\partial f}{\partial y}dy$$
+            </p>
+        </div>
+
+        <!-- Always Visible Side-by-Side Panel and Contour Plot -->
+        <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #06b6d4; font-family: var(--font-family-sans); font-weight: 700;">1.6.2 Interactive Surface Gradient Visualizer</h3>
+            <p>Evaluate exact values and partial derivatives for the surface $f(x,y) = x^2 y + y^3$ dynamically. The visualizer plots the 2D contour lines of the surface and shows the local **Steepest Ascent Gradient Vector $\nabla f = (\frac{\partial f}{\partial x}, \frac{\partial f}{\partial y})$** in real-time:</p>
+            <p style="font-size: 0.85rem; margin: -0.5rem 0 0.75rem 0; font-style: italic; color: #6b7280;">Analyzed function: $f(x,y) = x^2y + y^3 \implies \frac{\partial f}{\partial x} = 2xy , \frac{\partial f}{\partial y} = x^2 + 3y^2$</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; margin-top: 1rem;">
+                <!-- Inputs Column -->
+                <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); display: flex; flex-direction: column; gap: 1rem;">
+                    <div style="display: flex; gap: 1rem;">
+                        <div>
+                            <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Input $x$:</label>
+                            <input id="partInputX" type="number" value="2.0" step="0.5" style="width: 70px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;" oninput="calculateInteractivePartials()">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Input $y$:</label>
+                            <input id="partInputY" type="number" value="3.0" step="0.5" style="width: 70px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;" oninput="calculateInteractivePartials()">
+                        </div>
+                    </div>
+                    <div style="font-size: 0.88rem; line-height: 1.6; color: var(--text-color); background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid #06b6d4;">
+                        <div id="partOutputF"><strong>f(2.00, 3.00):</strong> 39.0000</div>
+                        <div id="partOutputPx" style="margin-top: 0.25rem;"><strong>df/dx = 2xy:</strong> 12.0000</div>
+                        <div id="partOutputPy" style="margin-top: 0.25rem;"><strong>df/dy = x² + 3y²:</strong> 31.0000</div>
+                    </div>
+                </div>
+
+                <!-- Graph Column -->
+                <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; position: relative;">
+                    <canvas id="calc16Canvas" width="400" height="200" style="width: 100%; height: 200px; background: #000; border-radius: 6px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab: Worked Solutions Sheet -->
+    <div id="secCalc16Exercises" style="display: none;">
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="card" style="padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #06b6d4; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Exercise 1: Bivariate Chain Rule Proof</h3>
+                <p>Let $F(x,y) = \ln(x^2 + y^2)$ where $x = \sin t$ and $y = \cos t$. Find the total derivative $\frac{dF}{dt}$ and prove it is identically zero.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6;">
+                    <strong>Step-by-Step Proof:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Calculate partial derivatives of $F$ with respect to $x$ and $y$:</strong>
+                            $$\frac{\partial F}{\partial x} = \frac{2x}{x^2 + y^2} \quad , \quad \frac{\partial F}{\partial y} = \frac{2y}{x^2 + y^2}$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Calculate derivatives of parameter functions with respect to $t$:</strong>
+                            $$\frac{dx}{dt} = \cos t = y \quad , \quad \frac{dy}{dt} = -\sin t = -x$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Assemble using Total Chain Rule Case I:</strong>
+                            $$\frac{dF}{dt} = \frac{\partial F}{\partial x}\frac{dx}{dt} + \frac{\partial F}{\partial y}\frac{dy}{dt}$$
+                            $$\frac{dF}{dt} = \left(\frac{2x}{x^2 + y^2}\right)(y) + \left(\frac{2y}{x^2 + y^2}\right)(-x)$$
+                            $$\frac{dF}{dt} = \frac{2xy - 2xy}{x^2 + y^2} = 0 \quad \blacksquare$$
+                        </li>
+                        <li style="margin: 0; font-style: italic;">
+                            Note: Geometrically, since $x^2 + y^2 = \sin^2 t + \cos^2 t = 1$, the function is evaluating along a constant circular path $F(t) = \ln(1) = 0$. Its derivative is naturally zero.
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.switchCalc16Tab = function(tab) {
+                const tabTheo = document.getElementById('tabCalc16Theory');
+                const tabExer = document.getElementById('tabCalc16Exercises');
+                const secTheo = document.getElementById('secCalc16Theory');
+                const secExer = document.getElementById('secCalc16Exercises');
+
+                if (tab === 'theory') {
+                    tabTheo.style.color = '#06b6d4';
+                    tabTheo.style.borderBottomColor = '#06b6d4';
+                    tabExer.style.color = '#6b7280';
+                    tabExer.style.borderBottomColor = 'transparent';
+                    secTheo.style.display = 'block';
+                    secExer.style.display = 'none';
+                } else {
+                    tabExer.style.color = '#06b6d4';
+                    tabExer.style.borderBottomColor = '#06b6d4';
+                    tabTheo.style.color = '#6b7280';
+                    tabTheo.style.borderBottomColor = 'transparent';
+                    secExer.style.display = 'block';
+                    secTheo.style.display = 'none';
+                }
+            };
+
+            window.calculateInteractivePartials = function() {
+                const xVal = parseFloat(document.getElementById('partInputX').value);
+                const yVal = parseFloat(document.getElementById('partInputY').value);
+                const elF = document.getElementById('partOutputF');
+                const elPx = document.getElementById('partOutputPx');
+                const elPy = document.getElementById('partOutputPy');
+
+                if (isNaN(xVal) || isNaN(yVal)) {
+                    elF.innerHTML = "<strong>f(x,y):</strong> Please input valid numbers!";
+                    elPx.innerHTML = "";
+                    elPy.innerHTML = "";
+                    return;
+                }
+
+                const fVal = (xVal * xVal * yVal) + (yVal * yVal * yVal);
+                const pxVal = 2 * xVal * yVal;
+                const pyVal = (xVal * xVal) + (3 * yVal * yVal);
+
+                elF.innerHTML = `<strong>f(${xVal.toFixed(2)}, ${yVal.toFixed(2)}):</strong> ${fVal.toFixed(4)}`;
+                elPx.innerHTML = `<strong>df/dx = 2xy:</strong> ${pxVal.toFixed(4)}`;
+                elPy.innerHTML = `<strong>df/dy = x² + 3y²:</strong> ${pyVal.toFixed(4)}`;
+
+                drawBivariateContour();
+
+                const parent = document.getElementById('view-cqf-mp-calculus-16');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            window.drawBivariateContour = function() {
+                const canvas = document.getElementById('calc16Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const x0 = parseFloat(document.getElementById('partInputX').value);
+                const y0 = parseFloat(document.getElementById('partInputY').value);
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Grid lines & axes
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= canvas.width; i += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, canvas.height);
+                    ctx.stroke();
+                }
+                for (let i = 0; i <= canvas.height; i += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(canvas.width, i);
+                    ctx.stroke();
+                }
+
+                // Coordinates Mapping
+                const xMin = -5.0, xMax = 5.0;
+                const yMin = -5.0, yMax = 5.0;
+
+                const toCanvasX = (x) => ((x - xMin) / (xMax - xMin)) * canvas.width;
+                const toCanvasY = (y) => canvas.height - ((y - yMin) / (yMax - yMin)) * canvas.height;
+
+                // Draw X and Y Axes
+                ctx.strokeStyle = '#52525b';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(0, toCanvasY(0));
+                ctx.lineTo(canvas.width, toCanvasY(0));
+                ctx.moveTo(toCanvasX(0), 0);
+                ctx.lineTo(toCanvasX(0), canvas.height);
+                ctx.stroke();
+
+                // Draw concentric contours of f(x,y) = x^2 y + y^3
+                ctx.strokeStyle = 'rgba(6, 182, 212, 0.25)';
+                ctx.lineWidth = 1;
+                const levels = [-20, -10, -5, 0, 5, 10, 20, 40];
+                
+                levels.forEach(level => {
+                    ctx.beginPath();
+                    let started = false;
+                    for (let px = 0; px <= canvas.width; px += 2) {
+                        const x = xMin + (px / canvas.width) * (xMax - xMin);
+                        // Solve cubic y^3 + x^2 y - level = 0 using numerical approximation
+                        let lowY = -5.0, highY = 5.0;
+                        for (let iter = 0; iter < 12; iter++) {
+                            const midY = (lowY + highY) / 2;
+                            const val = x * x * midY + midY * midY * midY;
+                            if (val < level) lowY = midY;
+                            else highY = midY;
+                        }
+                        const y = (lowY + highY) / 2;
+
+                        if (y >= yMin && y <= yMax) {
+                            if (!started) {
+                                ctx.moveTo(px, toCanvasY(y));
+                                started = true;
+                            } else {
+                                ctx.lineTo(px, toCanvasY(y));
+                            }
+                        }
+                    }
+                    ctx.stroke();
+                });
+
+                // Highlight active point indicator
+                if (!isNaN(x0) && !isNaN(y0) && x0 >= xMin && x0 <= xMax && y0 >= yMin && y0 <= yMax) {
+                    ctx.fillStyle = '#06b6d4'; // Cyan
+                    ctx.beginPath();
+                    ctx.arc(toCanvasX(x0), toCanvasY(y0), 6, 0, 2 * Math.PI);
+                    ctx.fill();
+
+                    // Calculate local partial rates
+                    const pxVal = 2 * x0 * y0;
+                    const pyVal = (x0 * x0) + (3 * y0 * y0);
+
+                    // Draw Gradient Vector arrow (blue) indicating steepest ascent
+                    const gradScale = 0.15; // Scaled down for plot boundaries
+                    const targetX = x0 + pxVal * gradScale;
+                    const targetY = y0 + pyVal * gradScale;
+
+                    ctx.strokeStyle = '#00e1ff';
+                    ctx.lineWidth = 2.5;
+                    ctx.beginPath();
+                    ctx.moveTo(toCanvasX(x0), toCanvasY(y0));
+                    ctx.lineTo(toCanvasX(targetX), toCanvasY(targetY));
+                    ctx.stroke();
+
+                    // Arrowhead
+                    const angle = Math.atan2(toCanvasY(targetY) - toCanvasY(y0), toCanvasX(targetX) - toCanvasX(x0));
+                    ctx.fillStyle = '#00e1ff';
+                    ctx.beginPath();
+                    ctx.moveTo(toCanvasX(targetX), toCanvasY(targetY));
+                    ctx.lineTo(toCanvasX(targetX) - 10 * Math.cos(angle - Math.PI / 6), toCanvasY(targetY) - 10 * Math.sin(angle - Math.PI / 6));
+                    ctx.lineTo(toCanvasX(targetX) - 10 * Math.cos(angle + Math.PI / 6), toCanvasY(targetY) - 10 * Math.sin(angle + Math.PI / 6));
+                    ctx.fill();
+                }
+            };
+
+            setTimeout(() => {
+                if (document.getElementById('partInputX')) calculateInteractivePartials();
+            }, 100);
+        })();
+    </script>
+</div>

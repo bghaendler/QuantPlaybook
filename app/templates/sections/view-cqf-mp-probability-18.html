@@ -1,0 +1,157 @@
+<div id="view-cqf-mp-probability-18" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">1.8 Cumulative CDF</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.8 Cumulative Distribution Functions (CDF)</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Cumulative summation, integration bounds, PDF mapping derivatives, and boundary limits.</div>
+    </header>
+
+    <!-- Core Theory Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1.8.1 CDF Mathematical Formulations</h3>
+        <p>The Cumulative Distribution Function, denoted $F(x)$, represents the probability that a random variable $X$ takes a value less than or equal to $x$:</p>
+        <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+            $$F(x) = P(X \le x)$$
+        </p>
+        <p><strong>For Continuous Variables:</strong> The CDF is the integral of the PDF up to the boundary $x$:</p>
+        <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+            $$F(x) = \int_{-\infty}^{x} f(t) \, dt$$
+        </p>
+        <p>Conversely, by the Fundamental Theorem of Calculus, the probability density function is the local derivative of the CDF:</p>
+        <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+            $$f(x) = \frac{d}{dx} F(x)$$
+        </p>
+        <p><strong>CDFs must satisfy:</strong> $\lim_{x \to -\infty} F(x) = 0$ and $\lim_{x \to +\infty} F(x) = 1$.</p>
+    </div>
+
+    <!-- CDF Curve visualizer -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1.8.2 Interactive CDF &amp; PDF Dual Chart Explorer</h3>
+        <p>Observe how the CDF curve maps the accumulated area of the PDF for an exponential distribution:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls -->
+                <div>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Rate parameter $\lambda$:</label>
+                            <input id="prob18Lambda" type="number" value="1.0" step="0.2" min="0.2" max="3" oninput="calculateInteractiveCDF()" style="width: 60px; padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 700;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Realization value $x$:</label>
+                            <input id="prob18X" type="number" value="1.5" step="0.1" min="0" max="4" oninput="calculateInteractiveCDF()" style="width: 60px; padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 700;">
+                        </div>
+                    </div>
+
+                    <div style="font-size: 0.85rem; line-height: 1.6; color: var(--text-color); background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid #ec4899;">
+                        <div id="prob18OutputVal"><strong>CDF value:</strong> $F(1.50) = 1 - e^{-1.5} = 0.7769$</div>
+                    </div>
+                </div>
+
+                <!-- Canvas Visualizer -->
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
+                    <canvas id="prob18Canvas" width="300" height="180" style="width: 100%; height: 180px; background: #000; border-radius: 6px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.calculateInteractiveCDF = function() {
+                const lambda = parseFloat(document.getElementById('prob18Lambda').value);
+                const x = parseFloat(document.getElementById('prob18X').value);
+
+                const elVal = document.getElementById('prob18OutputVal');
+
+                if (isNaN(lambda) || isNaN(x) || lambda <= 0) {
+                    return;
+                }
+
+                // Cumulative CDF F(x) = 1 - e^{-\lambda x}
+                const FVal = 1 - Math.exp(-lambda * x);
+
+                elVal.innerHTML = `<strong>Cumulative CDF:</strong> $F(${x.toFixed(2)}) = P(X \\le ${x.toFixed(2)}) = 1 - e^{-${lambda.toFixed(1)} x} = ${FVal.toFixed(4)}$`;
+
+                drawCDFGraph(lambda, x);
+
+                const parent = document.getElementById('view-cqf-mp-probability-18');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawCDFGraph(lambda, xVal) {
+                const canvas = document.getElementById('prob18Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Grid
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= canvas.width; i += 30) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, canvas.height);
+                    ctx.stroke();
+                }
+
+                const xMin = 0, xMax = 4.0;
+                const yMin = 0, yMax = 1.0;
+
+                const toCanvasX = (x) => ((x - xMin) / (xMax - xMin)) * canvas.width;
+                const toCanvasY = (y) => canvas.height - ((y - yMin) / (yMax - yMin)) * canvas.height;
+
+                const F = (x) => 1 - Math.exp(-lambda * x);
+
+                // Plot CDF Curve (Purple)
+                ctx.strokeStyle = '#ec4899';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                let first = true;
+                for (let px = 0; px <= canvas.width; px++) {
+                    const x = xMin + (px / canvas.width) * (xMax - xMin);
+                    const y = F(x);
+                    if (first) {
+                        ctx.moveTo(px, toCanvasY(y));
+                        first = false;
+                    } else {
+                        ctx.lineTo(px, toCanvasY(y));
+                    }
+                }
+                ctx.stroke();
+
+                // Highlight active point on the CDF
+                const activeY = F(xVal);
+                ctx.fillStyle = '#ec4899';
+                ctx.beginPath();
+                ctx.arc(toCanvasX(xVal), toCanvasY(activeY), 6, 0, 2 * Math.PI);
+                ctx.fill();
+
+                // Draw dashed projections
+                ctx.strokeStyle = '#a1a1aa';
+                ctx.lineWidth = 1.0;
+                ctx.setLineDash([3, 3]);
+                ctx.beginPath();
+                ctx.moveTo(toCanvasX(xVal), toCanvasY(activeY));
+                ctx.lineTo(toCanvasX(xVal), toCanvasY(0));
+                ctx.moveTo(toCanvasX(xVal), toCanvasY(activeY));
+                ctx.lineTo(toCanvasX(0), toCanvasY(activeY));
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('prob18Lambda')) calculateInteractiveCDF();
+            }, 100);
+        })();
+    </script>
+</div>

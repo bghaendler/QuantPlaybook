@@ -1,0 +1,161 @@
+<div id="view-quiz-forward-measures" style="display: none;">
+    <header>
+        <h1>Quiz: Forward Measures</h1>
+        <div class="subtitle" style="color: #6b7280;">Practice assignment covering Change of Numeraire and Martingale Properties</div>
+    </header>
+
+    <div class="container" style="max-width: 900px; grid-template-columns: 1fr;">
+        <p style="margin-bottom: 2rem; font-size: 1.1rem; color: #475569;">
+            Verify your mastery of Change of Numeraire and terminal forward measures. Click on any question card to display the complete analytical breakdown.
+        </p>
+
+        <!-- Q1 -->
+        <details class="quiz-card">
+            <summary class="quiz-question">
+                <strong>Q1.</strong> Under which of the following measures is the simple forward rate process $F(t, T_0, T_1)$ a martingale?
+                <span style="font-size: 0.95rem; font-weight: normal; color: #64748b; margin-top: 1rem; display: block; line-height: 2;">
+                    $\square \text{ risk-neutral measure } \mathbb{Q}$ <br/>
+                    $\square \ T_0\text{-forward measure } \mathbb{Q}^{T_0}$ <br/>
+                    $\square \ T_1\text{-forward measure } \mathbb{Q}^{T_1}$ <br/>
+                    $\square \text{ objective measure } \mathbb{P}$
+                </span>
+            </summary>
+            <div class="quiz-solution">
+                <p><strong>Solution:</strong></p>
+                <p>According to the change of numeraire framework, the $T_0$-bond price process discounted by the $T_1$-bond numeraire is a martingale under the corresponding $T_1$-forward measure $\mathbb{Q}^{T_1}$:</p>
+                <p style="text-align: center;">$$\frac{P(t, T_0)}{P(t, T_1)} \text{ is a } \mathbb{Q}^{T_1}\text{-martingale}$$</p>
+                <p>The simple forward rate $F(t, T_0, T_1)$ is defined by a linear transform of this ratio:</p>
+                <p style="text-align: center;">$$F(t, T_0, T_1) = \frac{1}{T_1 - T_0} \left( \frac{P(t, T_0)}{P(t, T_1)} - 1 \right)$$</p>
+                <p>Because the ratio process is a $\mathbb{Q}^{T_1}$-martingale, any linear combination of it maintains the martingale property under the same probability measure. Therefore, $F(t, T_0, T_1)$ is a martingale under $\mathbb{Q}^{T_1}$.</p>
+                <p style="margin-bottom: 0;"><strong>Correct Answer:</strong> $T_1$-forward measure $\mathbb{Q}^{T_1}$</p>
+            </div>
+        </details>
+
+        <!-- Q2 -->
+        <details class="quiz-card">
+            <summary class="quiz-question">
+                <strong>Q2.</strong> Which of the following statements are true? (Select all that apply)
+                <span style="font-size: 0.95rem; font-weight: normal; color: #64748b; margin-top: 1rem; display: block; line-height: 2;">
+                    $\square$ The instantaneous $T$-forward rate process $f(t, T)$ is a martingale under the risk-neutral measure $\mathbb{Q}$.<br/>
+                    $\square$ The instantaneous $T$-forward rate process $f(t, T)$ is a martingale under the $T$-forward measure $\mathbb{Q}^T$.<br/>
+                    $\square$ The $T$-yield process $y(t, T)$ is a martingale under the $T$-forward measure $\mathbb{Q}^T$.<br/>
+                    $\square$ The money market account discounted by the $T$-bond price process, $\frac{B(t)}{P(t,T)}$, is a martingale under the $T$-forward measure $\mathbb{Q}^T$.
+                </span>
+            </summary>
+            <div class="quiz-solution">
+                <p><strong>Solution:</strong></p>
+                <ul style="padding-left: 1.5rem; line-height: 1.8;">
+                    <li style="margin-bottom: 1rem;">
+                        <strong>Statement 1 is False:</strong> Under the risk-neutral measure $\mathbb{Q}$, the instantaneous forward rate $f(t,T)$ has a non-zero drift dictated by the HJM drift condition: $\alpha(t, T) = \sigma(t,T) \int_t^T \sigma(t,u)^T du$. Therefore, it cannot be a martingale under $\mathbb{Q}$.
+                    </li>
+                    <li style="margin-bottom: 1rem;">
+                        <strong>Statement 2 is True:</strong> Under the $T$-forward measure $\mathbb{Q}^T$, the Girsanov drift adjustment cancels the HJM drift term, meaning the instantaneous $T$-forward rate process $f(t, T)$ is indeed a martingale under its corresponding $T$-forward measure $\mathbb{Q}^T$.
+                    </li>
+                    <li style="margin-bottom: 1rem;">
+                        <strong>Statement 3 is False:</strong> The yield process $y(t,T) = \frac{1}{T-t}\int_t^T f(t,u)du$ is an average of instantaneous forward rates across a continuum of maturities $u \in [t, T]$. Each rate $f(t,u)$ is a martingale under its own individual forward measure $\mathbb{Q}^u$, not broadly under $\mathbb{Q}^T$.
+                    </li>
+                    <li style="margin-bottom: 0;">
+                        <strong>Statement 4 is True:</strong> This is a foundational rule of the change of numeraire technique. If the $T$-bond $P(t, T)$ is chosen as the numeraire (which defines the $T$-forward measure $\mathbb{Q}^T$), then any tradable asset price process divided by the numeraire must be a martingale under $\mathbb{Q}^T$. Since the money market account $B(t)$ represents a tradable asset, $\frac{B(t)}{P(t, T)}$ is a martingale under $\mathbb{Q}^T$.
+                    </li>
+                </ul>
+                <p style="margin-top: 1.5rem; margin-bottom: 0;">
+                    <strong>Correct Answers:</strong>
+                    <ol>
+                        <li>The instantaneous $T$-forward rate process $f(t, T)$ is a martingale under the $T$-forward measure $\mathbb{Q}^T$.</li>
+                        <li>The money market account discounted by the $T$-bond price process, $\frac{B(t)}{P(t,T)}$, is a martingale under the $T$-forward measure $\mathbb{Q}^T$.</li>
+                    </ol>
+                </p>
+            </div>
+        </details>
+
+        <!-- Q3 -->
+        <details class="quiz-card">
+            <summary class="quiz-question">
+                <strong>Q3.</strong> Assume that the short rate process is constant $r(t) \equiv r$. Which of the following statements are true? (Select all that apply)
+                <span style="font-size: 0.95rem; font-weight: normal; color: #64748b; margin-top: 1rem; display: block; line-height: 2;">
+                    $\square \text{ Any } T\text{-forward measure equals the risk-neutral measure } \mathbb{Q}^T = \mathbb{Q}$.<br/>
+                    $\square \text{ Any } T\text{-forward rate process is constant } f(t, T) \equiv r$.<br/>
+                    $\square \text{ The time-0 forward curve is linear } f(0, T) = r + T$.<br/>
+                    $\square \text{ The risk-neutral measure equals the objective measure } \mathbb{Q} = \mathbb{P}$.
+                </span>
+            </summary>
+            <div class="quiz-solution">
+                <p><strong>Solution:</strong></p>
+                <ul style="padding-left: 1.5rem; line-height: 1.8;">
+                    <li style="margin-bottom: 1rem;">
+                        <strong>Statement 1 is True:</strong> The Radon-Nikodym density that changes the probability measure from $\mathbb{Q}$ to $\mathbb{Q}^T$ is:
+                        $$\frac{d\mathbb{Q}^T}{d\mathbb{Q}} = \frac{e^{-\int_0^T r(s)ds}}{P(0, T)}$$
+                        If $r(t) \equiv r$ is constant, then $P(0, T) = e^{-rT}$ and the integral is $\int_0^T r(s)ds = rT$. This yields:
+                        $$\frac{d\mathbb{Q}^T}{d\mathbb{Q}} = \frac{e^{-rT}}{e^{-rT}} = 1$$
+                        Since the density derivative is exactly 1, no probability distortion occurs, meaning $\mathbb{Q}^T = \mathbb{Q}$.
+                    </li>
+                    <li style="margin-bottom: 1rem;">
+                        <strong>Statement 2 is True:</strong> The relation between the ZCB price and forward rates is $P(t, T) = \exp\left(-\int_t^T f(t, u)du\right)$. Under a constant rate $r$, the bond price is $P(t, T) = e^{-r(T-t)}$. Taking the derivative yields $f(t, T) = r$ for all $t$ and $T$.
+                    </li>
+                    <li style="margin-bottom: 1rem;">
+                        <strong>Statement 3 is False:</strong> As shown above, the forward curve is a flat constant line $f(0, T) \equiv r$, not linear.
+                    </li>
+                    <li style="margin-bottom: 0;">
+                        <strong>Statement 4 is False:</strong> The change of measure between the objective measure $\mathbb{P}$ and the risk-neutral measure $\mathbb{Q}$ is dictated by Girsanov's theorem and relies on the market price of risk $\lambda(t)$. Even if the short rate is constant, the market can assign a non-zero risk premium, keeping $\mathbb{Q} \neq \mathbb{P}$.
+                    </li>
+                </ul>
+                <p style="margin-top: 1.5rem; margin-bottom: 0;">
+                    <strong>Correct Answers:</strong>
+                    <ol>
+                        <li>Any $T$-forward measure equals the risk-neutral measure $\mathbb{Q}^T = \mathbb{Q}$.</li>
+                        <li>Any $T$-forward rate process is constant $f(t, T) \equiv r$.</li>
+                    </ol>
+                </p>
+            </div>
+        </details>
+
+        <!-- Q4 -->
+        <details class="quiz-card">
+            <summary class="quiz-question">
+                <strong>Q4.</strong> Assume that the short rate process is a standard Brownian motion $r(t) = W^*(t)$ under the risk-neutral measure $\mathbb{Q}$. Which of the following statements are true? (Select all that apply)
+                <span style="font-size: 0.95rem; font-weight: normal; color: #64748b; margin-top: 1rem; display: block; line-height: 2;">
+                    $\square$ This is a special case of the CIR short rate model.<br/>
+                    $\square$ This is a special case of the Vasicek short rate model.<br/>
+                    $\square$ The $T$-forward rate volatility is a constant $\sigma(t, T) = 1$.<br/>
+                    $\square$ The $T$-forward rate volatility is linear $\sigma(t, T) = T - t$.<br/>
+                    $\square$ The volatility of the $T$-bond return process is linear $v(t, T) = -(T - t)$.<br/>
+                    $\square$ The drift of the short rate process under the objective measure $\mathbb{P}$ can be mean-reverting of the form $dr(t) = \kappa(\theta - r(t))dt + dW(t)$ for a $\mathbb{P}$-standard Brownian motion $W(t)$.
+                </span>
+            </summary>
+            <div class="quiz-solution">
+                <p><strong>Solution:</strong></p>
+                <p>The short rate dynamics are given by $dr(t) = dW^*(t)$, which implies drift $\mu = 0$ and volatility $\sigma = 1$.</p>
+                <ul style="padding-left: 1.5rem; line-height: 1.8;">
+                    <li style="margin-bottom: 1rem;">
+                        <strong>Statement 1 is False:</strong> The CIR model has volatility proportional to $\sigma \sqrt{r(t)}$, not a constant 1.
+                    </li>
+                    <li style="margin-bottom: 1rem;">
+                        <strong>Statement 2 is True:</strong> The Vasicek model is defined by $dr(t) = \kappa(\theta - r(t))dt + \sigma_V dW^*(t)$. Setting $\kappa = 0$ and $\sigma_V = 1$ gives exactly $dr(t) = dW^*(t)$.
+                    </li>
+                    <li style="margin-bottom: 1rem;">
+                        <strong>Statement 3 is True:</strong> The forward rate volatility in the Vasicek model is $\sigma(t, T) = \sigma_V e^{-\kappa(T-t)}$. Since $\kappa = 0$ and $\sigma_V = 1$, this simplifies to $\sigma(t, T) = 1 \cdot e^0 = 1$.
+                    </li>
+                    <li style="margin-bottom: 1rem;">
+                        <strong>Statement 4 is False:</strong> As shown in Statement 3, the volatility is a constant 1, not linear.
+                    </li>
+                    <li style="margin-bottom: 1rem;">
+                        <strong>Statement 5 is True:</strong> The bond return volatility in the HJM framework is $v(t, T) = -\int_t^T \sigma(t, u)du$. Substituting the constant $\sigma(t, u) = 1$ yields:
+                        $$v(t, T) = -\int_t^T 1 du = -(T-t)$$
+                    </li>
+                    <li style="margin-bottom: 0;">
+                        <strong>Statement 6 is True:</strong> Under Girsanov's theorem, we change measure between $\mathbb{Q}$ and $\mathbb{P}$ via standard Brownian transformation: $dW^*(t) = dW(t) + \lambda(t)dt$, where $\lambda(t)$ is the market price of risk. Under $\mathbb{P}$, the dynamics of the short rate become $dr(t) = \lambda(t)dt + dW(t)$. If the market price of risk $\lambda(t)$ takes the form $\kappa(\theta - r(t))$, the short rate under $\mathbb{P}$ is mean-reverting.
+                    </li>
+                </ul>
+                <p style="margin-top: 1.5rem; margin-bottom: 0;">
+                    <strong>Correct Answers:</strong>
+                    <ol>
+                        <li>This is a special case of the Vasicek short rate model.</li>
+                        <li>The $T$-forward rate volatility is a constant $\sigma(t, T) = 1$.</li>
+                        <li>The volatility of the $T$-bond return process is linear $v(t, T) = -(T - t)$.</li>
+                        <li>The drift of the short rate process under the objective measure $\mathbb{P}$ can be mean-reverting of the form $dr(t) = \kappa(\theta - r(t))dt + dW(t)$ for a $\mathbb{P}$-standard Brownian motion $W(t)$.</li>
+                    </ol>
+                </p>
+            </div>
+        </details>
+    </div>
+</div>

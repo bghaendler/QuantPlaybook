@@ -1,0 +1,1034 @@
+<div id="view-cqf-mp-calculus" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9; font-family: var(--font-family-sans);">Calculus &amp; Analysis</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Calculus &amp; Taylor Series</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Taylor Expansions, Complex Euler Form, Integration, and Multivariable Optimization</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
+        <button id="tabCalculusTheory" onclick="switchCalculusTab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Calculus Theory</button>
+        <button id="tabCalculusSandbox" onclick="switchCalculusTab('sandbox')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Taylor Approximation Sandbox</button>
+        <button id="tabCalculusExercises" onclick="switchCalculusTab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Solutions Sheet</button>
+    </div>
+
+    <!-- Tab B: Core Calculus Theory -->
+    <div id="secCalculusTheory" style="display: block;">
+        <div style="margin-bottom: 1.5rem; background: var(--accent-glow); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--accent); font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.5; color: var(--text-color);">
+            Based on the <strong>Mathematics Primer Exercises</strong> and lecture notes, the calculus portion of the preparatory material establishes the essential mathematical notation, function mappings, limits, differential systems, integrations, and complex variables for quantitative finance.
+        </div>
+
+        <!-- Chapter Sub-tabs Navigation -->
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; font-family: var(--font-family-sans);">
+            <button id="btnSubCalculus1" onclick="switchCalculusSubtab(1)" style="padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--accent); background: var(--accent-glow); color: var(--accent); font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s;">Foundations (1.1 - 1.4)</button>
+            <button id="btnSubCalculus2" onclick="switchCalculusSubtab(2)" style="padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); background: var(--card-bg); color: #6b7280; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">Functions &amp; Partials (1.5 - 1.6)</button>
+            <button id="btnSubCalculus3" onclick="switchCalculusSubtab(3)" style="padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); background: var(--card-bg); color: #6b7280; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">Advanced Derivatives (1.7 - 1.9)</button>
+            <button id="btnSubCalculus4" onclick="switchCalculusSubtab(4)" style="padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); background: var(--card-bg); color: #6b7280; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">Integrals &amp; Complex (1.10 - 1.11)</button>
+        </div>
+
+        <!-- Chapter 1: Foundations -->
+        <div id="subsecCalculus1" style="display: block;">
+            <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
+                <!-- Card 1: Mathematical Shorthand & Number Systems -->
+                <div class="card" style="margin-bottom: 0;">
+                    <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700;">1.1 Mathematical Shorthand &amp; Number Systems</h3>
+                    <p>We establish standard shorthand logic notation frequently used in derivations:</p>
+                    <div style="background: var(--metric-bg); padding: 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-bottom: 1rem; line-height: 1.4;">
+                        &exist; : there exists &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &forall; : for all<br>
+                        &there4; : therefore &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &because; : because<br>
+                        &rArr; : which gives &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s.t. : such that<br>
+                        &iff; : if and only if &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &equiv; : equivalent<br>
+                        &in; : element of &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; !x : unique x
+                    </div>
+                    <p>Standard numbers fields and sets are classified as:</p>
+                    <ul style="padding-left: 1.2rem; font-size: 0.88rem; line-height: 1.5; margin: 0;">
+                        <li><strong>Natural Numbers ($\mathbb{N}$):</strong> $\{0, 1, 2, 3, \dots\}$</li>
+                        <li><strong>Integers ($\mathbb{Z}$):</strong> $\{0, \pm 1, \pm 2, \pm 3, \dots\}$</li>
+                        <li><strong>Rationals ($\mathbb{Q}$):</strong> $\{p/q : p,q \in \mathbb{Z}\} = \{0.5, 0.76, 2.25, 0.333\dots\}$</li>
+                        <li><strong>Irrationals ($\mathbb{Q}$'):</strong> $\{\sqrt{2}, 0.010010001\dots, \pi, e\}$</li>
+                        <li><strong>Reals ($\mathbb{R}$):</strong> Union of all rational and irrational fields.</li>
+                        <li><strong>Complex ($\mathbb{C}$):</strong> $\{x + iy : i = \sqrt{-1}, x,y \in \mathbb{R}\}$</li>
+                    </ul>
+                    <p style="margin-top: 0.75rem; font-size: 0.88rem;"><strong>Intervals notation:</strong> Open $(a,b) \equiv a < x < b$; Closed $[a,b] \equiv a \le x \le b$; Semi-open/closed $[a,b) \equiv a \le x < b$.</p>
+                </div>
+
+                <!-- Card 2: Mappings, Functions & Inverses -->
+                <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">1.2 Mapping Theory, Domains &amp; Inverses</h3>
+                        <p>A function $f: X \to Y$ maps elements of a domain $X$ uniquely to an image/range set $Y$:</p>
+                        <ul style="padding-left: 1.2rem; font-size: 0.88rem; line-height: 1.5; margin: 0.5rem 0;">
+                            <li><strong>One-to-One (1-1):</strong> Each $x \in X$ maps to exactly one unique $y \in Y$ (e.g. $y = 3x+1$).</li>
+                            <li><strong>Many-to-One:</strong> Multiple distinct $x_i$ map to the same $y$ (e.g. $y = 2x^2-1$, where $x = \pm 2 \implies y = 7$).</li>
+                            <li><strong>One-to-Many:</strong> Maps a single $x$ to multiple $y$ values (e.g., $y = \pm\sqrt{x}$). <em>Note: A one-to-many mapping is multivalued and is NOT a strict mathematical function unless a single branch (e.g. positive) is selected.</em></li>
+                        </ul>
+                        <p><strong>Inverse Functions ($f^{-1}(x)$):</strong> Maps the image back to the domain. Must satisfy $f(f^{-1}(x)) = x$ and $f^{-1}(f(x)) = x$.</p>
+                        <p style="font-size: 0.88rem; background: var(--metric-bg); padding: 0.5rem; border-radius: 4px; font-family: monospace;">
+                            f(x) = 2x&sup2; - 1 &rArr; f&macr;&sup1;(x) = &radic;((x+1)/2)<br>
+                            Domain restrictions exist, e.g. for &radic;((x+1)/2) &rArr; x &ge; -1
+                        </p>
+                        <p style="margin-top: 0.5rem; font-size: 0.88rem;"><strong>Even vs. Odd Functions:</strong> Even: $f(-x) = f(x)$ (e.g., $x^2$, $\cos x$). Odd: $f(-x) = -f(x)$ (e.g., $x^3$, $\sin x$). All functions can be written as a sum of even and odd functions.</p>
+                        
+                        <!-- Interactive Mapping Laboratory -->
+                        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; margin-top: 1rem; font-family: var(--font-family-sans);">
+                            <h4 style="margin: 0 0 0.5rem 0; font-size: 0.88rem; font-weight: 700; color: var(--accent);">Interactive Mapping &amp; Inverse Laboratory</h4>
+                            <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 0.75rem;">
+                                <div>
+                                    <label style="font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Select Function $f(x)$:</label>
+                                    <select id="mapFuncSelect" onchange="calculateInteractiveMapping()" style="padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600;">
+                                        <option value="linear">1-1 Linear: 3x + 1</option>
+                                        <option value="quadratic">Many-1 Quadratic: 2x² - 1</option>
+                                        <option value="multivalued">One-Many: ±√x (x ≥ 0)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Input $x$ Value:</label>
+                                    <input id="mapFuncInputX" type="number" value="2" step="0.5" oninput="calculateInteractiveMapping()" style="width: 70px; padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none;">
+                                </div>
+                            </div>
+                            <div style="font-size: 0.82rem; line-height: 1.5; color: var(--text-color); background: var(--card-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid var(--accent);">
+                                <div id="mapOutputF"><strong>Mapping:</strong> $f(2) = 7$</div>
+                                <div id="mapOutputInv"><strong>Inverse Mapping:</strong> $f^{-1}(7) = 2$ &amp; $-2$ (multivalued)</div>
+                                <div id="mapOutputStatus" style="font-weight: 700; color: #10b981; margin-top: 0.25rem;">Status: Valid Many-to-One Function</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Explicit/Implicit Representations & Quadratic Form -->
+                <div class="card" style="margin-bottom: 0;">
+                    <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.3 Function Types, Implicit Form &amp; Quadratics</h3>
+                    <p><strong>Explicit vs. Implicit:</strong> Explicit has the dependent variable isolated ($y = f(x)$). Implicit has variables bundled ($f(x,y) = 0$).</p>
+                    <p style="font-size: 0.85rem; font-style: italic; margin-bottom: 0.5rem;">Example: $y^2 + x^2 - 16 = 0$ is implicit. Solving gives $y = \pm\sqrt{16-x^2}$ (which is one-to-many, representing two functional branches).</p>
+                    
+                    <p><strong>Polynomials:</strong> $f(x) = \sum_{k=0}^{n} a_k x^k$ is a polynomial of degree $n$.</p>
+                    <p><strong>Solving the Quadratic Equation $ax^2 + bx + c = 0$:</strong> We complete the square to derive the quadratic formula:</p>
+                    <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+                        $$\left(x + \frac{b}{2a}\right)^2 = \frac{b^2 - 4ac}{4a^2} \implies x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$$
+                    </p>
+                    <ul style="padding-left: 1.2rem; font-size: 0.85rem; line-height: 1.5; margin: 0.5rem 0 0 0;">
+                        <li><strong>$b^2 - 4ac > 0$:</strong> 2 distinct real roots</li>
+                        <li><strong>$b^2 - 4ac = 0$:</strong> 1 repeated real root ($x = -b/2a$)</li>
+                        <li><strong>$b^2 - 4ac < 0$:</strong> Complex conjugate pair roots ($x \in \mathbb{C}$)</li>
+                    </ul>
+
+                    <!-- Interactive Quadratic Solver Panel -->
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; margin-top: 1rem; font-family: var(--font-family-sans);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-size: 0.88rem; font-weight: 700; color: #10b981;">Interactive Quadratic &amp; Discriminant Solver</h4>
+                        <div style="display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.75rem;">
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 600; display: block;">Coeff $a$:</label>
+                                <input id="quadInputA" type="number" value="1" style="width: 45px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveQuadratic()">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 600; display: block;">Coeff $b$:</label>
+                                <input id="quadInputB" type="number" value="-5" style="width: 45px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveQuadratic()">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 600; display: block;">Coeff $c$:</label>
+                                <input id="quadInputC" type="number" value="6" style="width: 45px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveQuadratic()">
+                            </div>
+                        </div>
+                        <div style="font-size: 0.82rem; line-height: 1.5; color: var(--text-color); background: var(--card-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid #10b981;">
+                            <div id="quadOutputDisc"><strong>Discriminant ($b^2 - 4ac$):</strong> $25 - 24 = 1$ ($>0$)</div>
+                            <div id="quadOutputRoots"><strong>Roots:</strong> $x_1 = 3.00$, $x_2 = 2.00$</div>
+                            <div id="quadOutputExplanation" style="font-weight: 700; color: #10b981; margin-top: 0.25rem;">Status: Two distinct real roots</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Exponential, Logarithmic & Limits -->
+                <div class="card" style="margin-bottom: 0;">
+                    <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1.4 Exponentials, Logarithms &amp; Limit Rules</h3>
+                    <p>The number $e$ is defined as the continuous limit: $e = \lim_{n \to \infty} (1 + 1/n)^n \approx 2.718281828$.</p>
+                    <p>The natural logarithm $\ln(x)$ and exponential $e^x$ are mutual inverses ($\ln(e^x) = e^{\ln(x)} = x$).</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; background: var(--metric-bg); padding: 0.6rem; border-radius: 6px; font-size: 0.85rem; font-family: monospace; margin: 0.5rem 0;">
+                        <div>e<sup>x</sup>e<sup>y</sup> = e<sup>x+y</sup>, e⁰ = 1<br>log(xy) = log x + log y</div>
+                        <div>log(x/y) = log x - log y<br>log(1/x) = -log x</div>
+                    </div>
+                    <p><strong>The Modulus Function (Piecewise):</strong> $|x| = x$ if $x \ge 0$, and $-x$ if $x < 0$.</p>
+                    <p><strong>Limits and Continuity:</strong> A function $f(x)$ is continuous at $x_0$ if $\lim_{x \to x_0} f(x) = f(x_0)$. The limit exists if and only if left-hand and right-hand limits are equal:</p>
+                    <p style="text-align: center; margin: 0.5rem 0;">$$\lim_{x \to x_0^-} f(x) = \lim_{x \to x_0^2+} f(x) = l$$</p>
+                    <p style="font-size: 0.85rem; font-style: italic;">Note: $\frac{|x|}{x}$ has no limit at $x \to 0$ because $\lim_{x \to 0^+} = +1$ and $\lim_{x \to 0^-} = -1$.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chapter 2: Functions & Partials -->
+        <div id="subsecCalculus2" style="display: none;">
+            <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
+                <!-- Card 5: Trigonometric & Hyperbolic Functions -->
+                <div class="card" style="margin-bottom: 0;">
+                    <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1.5 Trigonometric &amp; Hyperbolic Mappings</h3>
+                    <p>Trigonometric periodicities are defined for period $2\pi$. The reciprocal functions are $\sec x = 1/\cos x$, $\csc x = 1/\sin x$, and $\cot x = 1/\tan x$. Key circular identity: $\cos^2 x + \sin^2 x = 1$.</p>
+                    <p><strong>Hyperbolic Functions:</strong> Defined via exponentials:</p>
+                    <p style="text-align: center; font-size: 0.95rem; margin: 0.4rem 0;">
+                        $$\sinh x = \frac{e^x - e^{-x}}{2} \quad , \quad \cosh x = \frac{e^x + e^{-x}}{2} \quad , \quad \tanh x = \frac{\sinh x}{\cosh x}$$
+                    </p>
+                    <p><strong>Hyperbolic Identities:</strong> $\cosh^2 x - \sinh^2 x = 1$, and $\sinh(x+y) = \sinh x\cosh y + \cosh x\sinh y$.</p>
+                    <p><strong>Inverse Hyperbolic Functions (Logarithmic Proof):</strong> By treating $y = \sinh^{-1} x \implies x = \frac{e^y - e^{-y}}{2}$, multiplying by $e^y$ yields the quadratic $(e^y)^2 - 2x(e^y) - 1 = 0$. Solving and taking the positive root yields:</p>
+                    <p style="text-align: center; font-size: 1rem; font-weight: 700; margin: 0.5rem 0;">
+                        $$\sinh^{-1} x = \ln\left(x + \sqrt{x^2 + 1}\right) \quad , \quad \cosh^{-1} x = \ln\left(x + \sqrt{x^2 - 1}\right)$$
+                        $$\tanh^{-1} x = \frac{1}{2}\ln\left(\frac{1+x}{1-x}\right)$$
+                    </p>
+
+                    <!-- Interactive Hyperbolic Panel -->
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; margin-top: 1rem; font-family: var(--font-family-sans);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-size: 0.88rem; font-weight: 700; color: #ec4899;">Interactive Hyperbolic &amp; Inverse Laboratory</h4>
+                        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 0.75rem;">
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Input Value $x$:</label>
+                                <input id="hypInputX" type="number" value="1.0" step="0.2" style="width: 60px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveHyperbolic()">
+                            </div>
+                        </div>
+                        <div style="font-size: 0.82rem; line-height: 1.5; color: var(--text-color); background: var(--card-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid #ec4899;">
+                            <div id="hypOutputSinh"><strong>sinh(1.00):</strong> 1.1752</div>
+                            <div id="hypOutputCosh"><strong>cosh(1.00):</strong> 1.5431</div>
+                            <div id="hypOutputInvSinh"><strong>sinh⁻¹(1.00):</strong> 0.8814</div>
+                        </div>
+                    </div>
+                </div>
+     
+                <!-- Card 6: Bivariate Derivatives & Total Differentials -->
+                <div class="card" style="margin-bottom: 0;">
+                    <h3 style="margin-top: 0; color: #06b6d4; font-family: var(--font-family-sans); font-weight: 700;">1.6 Bivariate Derivatives &amp; Chain Rules</h3>
+                    <p>In multivariate calculus, partial derivatives evaluate rates of change holding other independent variables fixed:</p>
+                    <p style="text-align: center; font-size: 0.95rem; margin: 0.4rem 0;">
+                        $$\frac{\partial f}{\partial x} = \lim_{\delta x \to 0} \frac{f(x+\delta x, y) - f(x, y)}{\delta x} \quad , \quad \frac{\partial f}{\partial y} = \lim_{\delta y \to 0} \frac{f(x, y+\delta y) - f(x, y)}{\delta y}$$
+                    </p>
+                    <p><strong>The Chain Rule (Case I):</strong> If $x = x(s)$ and $y = y(s)$, the total derivative with respect to $s$ is:</p>
+                    <p style="text-align: center; font-weight: 700; margin: 0.4rem 0;">
+                        $$\frac{dF}{ds} = \frac{\partial f}{\partial x}\frac{dx}{ds} + \frac{\partial f}{\partial y}\frac{dy}{ds}$$
+                    </p>
+                    <p><strong>The Chain Rule (Case II):</strong> If $x = x(u,v)$ and $y = y(u,v)$, the partials are:</p>
+                    <p style="text-align: center; font-weight: 700; margin: 0.4rem 0;">
+                        $$\frac{\partial F}{\partial u} = \frac{\partial f}{\partial x}\frac{\partial x}{\partial u} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial u} \quad , \quad \frac{\partial F}{\partial v} = \frac{\partial f}{\partial x}\frac{\partial x}{\partial v} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial v}$$
+                    </p>
+                    <p><strong>Total Differential ($df$):</strong> Examining the linear surface changes:</p>
+                    <p style="text-align: center; font-weight: 700; margin: 0.4rem 0;">
+                        $$df = \frac{\partial f}{\partial x}dx + \frac{\partial f}{\partial y}dy$$
+                    </p>
+
+                    <!-- Interactive Partial Derivative Solver -->
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; margin-top: 1rem; font-family: var(--font-family-sans);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-size: 0.88rem; font-weight: 700; color: #06b6d4;">Interactive Surface &amp; Partials Laboratory</h4>
+                        <p style="font-size: 0.8rem; margin: 0 0 0.5rem 0;">For the surface: $f(x,y) = x^2 y + y^3$</p>
+                        <div style="display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.75rem;">
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 600; display: block;">Input $x$:</label>
+                                <input id="partInputX" type="number" value="2.0" step="0.5" style="width: 50px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractivePartials()">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 600; display: block;">Input $y$:</label>
+                                <input id="partInputY" type="number" value="3.0" step="0.5" style="width: 50px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractivePartials()">
+                            </div>
+                        </div>
+                        <div style="font-size: 0.82rem; line-height: 1.5; color: var(--text-color); background: var(--card-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid #06b6d4;">
+                            <div id="partOutputF"><strong>f(2.00, 3.00):</strong> 39.00</div>
+                            <div id="partOutputPx"><strong>df/dx = 2xy:</strong> 12.00</div>
+                            <div id="partOutputPy"><strong>df/dy = x² + 3y²:</strong> 31.00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chapter 3: Advanced Derivatives -->
+        <div id="subsecCalculus3" style="display: none;">
+            <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
+                <!-- Card 7: Single-Variable Derivatives & Standard Results -->
+                <div class="card" style="margin-bottom: 0;">
+                    <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700;">1.7 Derivatives &amp; Standard Calculus Results</h3>
+                    <p>The derivative of $f(x)$ represents its local slope and is defined via the Lagrange or Leibniz limits. Common standard results used as structural building blocks are:</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; background: var(--metric-bg); padding: 0.6rem; border-radius: 6px; font-size: 0.85rem; font-family: monospace; margin-bottom: 0.75rem;">
+                        <div>d/dx(xⁿ) = n xⁿ⁻¹<br>d/dx(eᵃˣ) = a eᵃˣ<br>d/dx(ln x) = 1/x</div>
+                        <div>d/dx(sin x) = cos x<br>d/dx(cos x) = -sin x<br>d/dx(tan x) = sec² x</div>
+                    </div>
+                    <p><strong>Linearity of Derivatives:</strong> If $\alpha, \beta$ are constants, then $\frac{d}{dx}(\alpha f + \beta g) = \alpha f' + \beta g'$.</p>
+                    <p><strong>Bivariate Implicit Differentiation:</strong> Allows finding derivatives when functions are bundled. For $f(x,y)=0$ (e.g. $4y^4 - 2y^2x^2 - yx^2 + x^2 + 3 = 0$):</p>
+                    <p style="text-align: center; font-size: 0.88rem; font-family: monospace;">
+                        16y³y' - 2(2yy'x² + 2y²x) - (y'x² + 2xy) + 2x = 0
+                    </p>
+                    <p>Solving for $y'$ yields the implicit rate of change as a function of both $x$ and $y$.</p>
+
+                    <!-- Interactive Derivative Laboratory -->
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; margin-top: 1rem; font-family: var(--font-family-sans);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-size: 0.88rem; font-weight: 700; color: var(--accent);">Interactive Derivative &amp; Implicit Rate Laboratory</h4>
+                        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 0.75rem;">
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Select Mode:</label>
+                                <select id="derivModeSelect" onchange="calculateInteractiveDerivative()" style="padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600;">
+                                    <option value="implicit">Implicit: y' for f(x,y)=0</option>
+                                    <option value="polynomial">Polynomial: d/dx(xⁿ)</option>
+                                </select>
+                            </div>
+                            <div id="derivInputsImplicit" style="display: flex; gap: 0.5rem;">
+                                <div>
+                                    <label style="font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Input $x$:</label>
+                                    <input id="derivInputX" type="number" value="1.0" step="0.5" style="width: 50px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveDerivative()">
+                                </div>
+                                <div>
+                                    <label style="font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Input $y$:</label>
+                                    <input id="derivInputY" type="number" value="1.0" step="0.5" style="width: 50px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveDerivative()">
+                                </div>
+                            </div>
+                            <div id="derivInputsPoly" style="display: none; gap: 0.5rem;">
+                                <div>
+                                    <label style="font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Exponent $n$:</label>
+                                    <input id="derivInputN" type="number" value="3" step="1" style="width: 50px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveDerivative()">
+                                </div>
+                                <div>
+                                    <label style="font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">At $x$:</label>
+                                    <input id="derivInputPolyX" type="number" value="2.0" step="0.5" style="width: 50px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveDerivative()">
+                                </div>
+                            </div>
+                        </div>
+                        <div style="font-size: 0.82rem; line-height: 1.5; color: var(--text-color); background: var(--card-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid var(--accent);">
+                            <div id="derivOutputFormula"><strong>Formula:</strong> $y' = \frac{4y^2x + 2xy - 2x}{16y^3 - 4yx^2 - x^2}$</div>
+                            <div id="derivOutputResult"><strong>Result:</strong> $y' = 0.3636$</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 8: Higher Derivatives, Leibniz Rule & Singularities -->
+                <div class="card" style="margin-bottom: 0;">
+                    <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">1.8 Higher-Order Derivatives &amp; Leibniz Rule</h3>
+                    <p>Higher-order derivatives are defined recursively: $f^{(n)}(x) = \frac{d}{dx}[f^{(n-1)}(x)]$. For an $n$-th degree polynomial, the $(n+1)$-th derivative is zero.</p>
+                    <p><strong>Leibniz Rule (Product Derivatives):</strong> Generalizes the product rule to find the $n$-th derivative of a product $y = uv$:</p>
+                    <p style="text-align: center; font-size: 0.98rem; font-weight: 700; margin: 0.5rem 0;">
+                        $$D^n(uv) = \sum_{r=0}^{n} \binom{n}{r} D^r u \, D^{n-r} v \quad \text{where} \quad \binom{n}{r} = \frac{n!}{r!(n-r)!}$$
+                    </p>
+                    <p style="font-size: 0.85rem; font-style: italic;">
+                        Example: Find $D^n(x^3 e^{ax})$. Setting $u=x^3$ and $v=e^{ax}$, only $u_0, u_1, u_2, u_3$ are non-zero, truncating the sum to four active terms.
+                    </p>
+                    <p><strong>Singularities:</strong> A function is singular where it is undefined or its derivative does not exist (e.g., $f(x) = \frac{1}{x-2}$ is singular at $x=2$, representing a vertical asymptote).</p>
+                </div>
+
+                <!-- Card 9: Parabolic Tangents & Higher-Order Taylor Polynomials -->
+                <div class="card" style="margin-bottom: 0;">
+                    <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.9 Taylor Series, Parabolic Fit &amp; Binomial Theorem</h3>
+                    <p>The Taylor series builds a local polynomial approximation of $f(x)$ around $x_0$:</p>
+                    <ul style="padding-left: 1.2rem; font-size: 0.88rem; line-height: 1.5; margin: 0.5rem 0;">
+                        <li><strong>Linear Approximation (Tangent):</strong> $f(x) \approx f(x_0) + (x-x_0)f'(x_0)$</li>
+                        <li><strong>Quadratic Parabolic Fit:</strong> $f(x) \approx f(x_0) + (x-x_0)f'(x_0) + \frac{1}{2}(x-x_0)^2 f''(x_0)$ (matches curvature).</li>
+                    </ul>
+                    <p><strong>The Binomial Theorem:</strong> Maclaurin expansion of $(1+x)^n$ for any real number $n$:</p>
+                    <p style="text-align: center; font-size: 0.95rem; font-weight: 700; margin: 0.4rem 0;">
+                        $$(1+x)^n = 1 + nx + \frac{n(n-1)}{2!}x^2 + \frac{n(n-1)(n-2)}{3!}x^3 + \dots$$
+                    </p>
+                    <p style="font-size: 0.88rem;">For negative or fractional exponents (e.g., $(1+x)^{-1} = 1-x+x^2-x^3+\dots$), this series has infinite terms and converges strictly within $|x| < 1$.</p>
+
+                    <!-- Interactive Taylor Parabolic Shock Laboratory -->
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; margin-top: 1rem; font-family: var(--font-family-sans);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-size: 0.88rem; font-weight: 700; color: #10b981;">Interactive Taylor Parabolic Shock Laboratory</h4>
+                        <div style="display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap;">
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Curve $f(x)$:</label>
+                                <select id="shockFuncSelect" onchange="calculateInteractiveShock()" style="padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600;">
+                                    <option value="exp">Exponential Asset Curve: e^x</option>
+                                    <option value="ln">Log Asset Curve: ln(1+x)</option>
+                                    <option value="cos">Oscillatory Curve: cos(x)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Baseline $x_0$:</label>
+                                <input id="shockInputX0" type="number" value="0.0" step="0.2" style="width: 55px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveShock()">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Shock $\delta x$:</label>
+                                <input id="shockInputDx" type="number" value="0.5" step="0.1" style="width: 55px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveShock()">
+                            </div>
+                        </div>
+                        <div style="font-size: 0.82rem; line-height: 1.5; color: var(--text-color); background: var(--card-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid #10b981;">
+                            <div id="shockOutputExact"><strong>Exact Value $f(x_0 + \delta x)$:</strong> 1.6487</div>
+                            <div id="shockOutputLinear"><strong>Linear (Delta) Fit:</strong> 1.5000 (Error: -9.02%)</div>
+                            <div id="shockOutputParabolic"><strong>Parabolic (Delta-Gamma) Fit:</strong> 1.6250 (Error: -1.44%)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chapter 4: Integrals & Complex -->
+        <div id="subsecCalculus4" style="display: none;">
+            <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
+                <!-- Card 10: Definite Integrals & substitution Pitfalls -->
+                <div class="card" style="margin-bottom: 0;">
+                    <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1.10 Definite Integrals &amp; Substitution Pitfalls</h3>
+                    <p>The definite integral $\int_a^b f(x)dx$ represents the signed area under $f(x)$ between boundaries. Since the variable of integration is a "dummy" variable:</p>
+                    <p style="text-align: center; font-weight: 700;">$$\int_a^b f(x)dx = \int_a^b f(y)dy$$</p>
+                    <p><strong>Substitution Rule for Definite Integrals:</strong> Must transform boundary limits. When letting $z = g(x) \implies dz = g'(x)dx$:</p>
+                    <p style="text-align: center; font-size: 0.95rem; font-weight: 700; margin: 0.4rem 0;">
+                        $$\int_a^b f(g(x))g'(x)dx = \int_{g(a)}^{g(b)} f(z)dz$$
+                    </p>
+                    <p style="font-size: 0.88rem; color: #b45309; font-weight: 600;">
+                        &lambda; CRITICAL WARNING: Substitutions like $z = x^2$ fail on intervals containing $x=0$ (e.g. $[-1,1]$) because $dz/dx = 2x = 0$ at the origin, breaking invertibility and changing signs! Always verify $dz/dx \ne 0$ across the integration range.
+                    </p>
+                </div>
+
+                <!-- Card 11: Complex Conjugates & Euler Integral Proofs -->
+                <div class="card" style="margin-bottom: 0;">
+                    <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1.11 Complex Algebra &amp; Euler Integral Proofs</h3>
+                    <p>For any complex number $z = x + iy \in \mathbb{C}$, its complex conjugate is $\bar{z} = x - iy$, representing a reflection in the real axis. Key algebraic identities:</p>
+                    <div style="background: var(--metric-bg); padding: 0.6rem; border-radius: 6px; font-size: 0.85rem; font-family: monospace; margin-bottom: 0.75rem; line-height: 1.4;">
+                        Re z = (z + z̄)/2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Im z = (z - z̄)/(2i)<br>
+                        z z̄ = |z|&sup2; = x&super2; + y&super2; &nbsp;&nbsp;&nbsp; |z₁ z₂| = |z₁||z₂|
+                    </div>
+                    <p><strong>Euler's Series Expansion Proof:</strong> Substituting $x = i\theta$ in the Maclaurin series of $e^x$ and grouping real/imaginary parts proves Euler's formula:</p>
+                    <p style="text-align: center; font-size: 0.92rem; font-weight: 700; margin: 0.4rem 0;">
+                        $$e^{i\theta} = \sum_{n=0}^{\infty} \frac{(i\theta)^n}{n!} = \sum_{even} \frac{(-1)^k \theta^{2k}}{(2k)!} + i\sum_{odd} \frac{(-1)^k \theta^{2k+1}}{(2k+1)!} = \cos\theta + i\sin\theta$$
+                    </p>
+                    <p style="font-size: 0.88rem; line-height: 1.4;">
+                        <strong>Application to Integrals:</strong> We can solve complex trigonometric integrals like $\int e^x \sin x \, dx$ cleanly by taking the imaginary component: $\int e^x \text{Im}[e^{ix}]dx = \text{Im}\left[\frac{e^{(1+i)x}}{1+i}\right] = \frac{1}{2}e^x(\sin x - \cos x)$.
+                    </p>
+                </div>
+            </div>
+        </div>      </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab C: Sandbox -->
+    <div id="secCalculusSandbox" style="display: none;">
+        <div class="card" style="margin-bottom: 2rem;">
+            <div style="margin-bottom: 1.5rem;">
+                <h2 style="margin: 0; font-family: var(--font-family-sans); font-weight: 800; font-size: 1.4rem;">Taylor Series Approximation Sandbox</h2>
+                <div style="color: #6b7280; font-size: 0.95rem; margin-top: 0.25rem;">Visualize how adding polynomial degrees allows the Taylor series to replicate transcendental functions locally. Choose a function, drag the order slider, and observe convergence of the approximation to the exact curve.</div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 280px 1fr; gap: 2rem; align-items: start;">
+                <!-- Controls Column -->
+                <div style="background: var(--metric-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-family-sans);">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">Inputs &amp; Functions</h3>
+                    
+                    <!-- Function Selector -->
+                    <div>
+                        <span style="font-weight: 600; display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-color);">Target Function $f(x)$</span>
+                        <select id="taylorFuncSelect" onchange="updateTaylorApproximation()" style="width: 100%; padding: 0.4rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; cursor: pointer; font-family: var(--font-family-sans); font-weight: 600;">
+                            <option value="exp">Exponential: e^x</option>
+                            <option value="sin">Trigonometric: sin(x)</option>
+                            <option value="cos">Trigonometric: cos(x)</option>
+                            <option value="ln">Logarithmic: ln(1+x)</option>
+                        </select>
+                    </div>
+
+                    <!-- Polynomial Order Slider -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label for="taylorOrderSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Order (Degree N)</label>
+                            <span id="taylorOrderVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">N = 2</span>
+                        </div>
+                        <input id="taylorOrderSlider" type="range" min="1" max="10" step="1" value="2" style="width: 100%; cursor: pointer;" oninput="updateTaylorApproximation()">
+                    </div>
+
+                    <!-- Expansion Point Slider -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label for="taylorCenterSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Expansion Center ($x_0$)</label>
+                            <span id="taylorCenterVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">0.0</span>
+                        </div>
+                        <input id="taylorCenterSlider" type="range" min="-1.5" max="1.5" step="0.1" value="0" style="width: 100%; cursor: pointer;" oninput="updateTaylorApproximation()">
+                    </div>
+                </div>
+
+                <!-- Plot Column -->
+                <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; min-height: 320px; position: relative;">
+                    <h4 style="margin: 0 0 0.75rem 0; font-family: var(--font-family-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-color); text-transform: uppercase; letter-spacing: 0.05em;">Taylor Expansion Convergence Plot</h4>
+                    <div style="width: 100%; height: 260px;">
+                        <canvas id="taylorPlotChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tab D: Worked Solutions Sheet -->
+    <div id="secCalculusExercises" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Problem 1: Limits & L'Hôpital's Rule -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem 1: Limits &amp; L'Hôpital's Rule</h3>
+                <p>Evaluate the limit $\lim_{x \to 0} \frac{\cos x + 2x - 1}{3x}$ using L'Hôpital's Rule and explain the step-by-step calculus methodology.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Identify the Indeterminate Form:</strong>
+                            Evaluate the limit directly by substituting $x = 0$ into the numerator and denominator:
+                            $$\text{Numerator: } \cos(0) + 2(0) - 1 = 1 + 0 - 1 = 0$$
+                            $$\text{Denominator: } 3(0) = 0$$
+                            This results in the indeterminate form $\frac{0}{0}$. Therefore, **L'Hôpital's Rule** is applicable.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Differentiate Numerator and Denominator:</strong>
+                            According to L'Hôpital's Rule, $\lim_{x \to a} \frac{f(x)}{g(x)} = \lim_{x \to a} \frac{f'(x)}{g'(x)}$ when an indeterminate form exists.
+                            Let $f(x) = \cos x + 2x - 1 \implies f'(x) = -\sin x + 2$.
+                            Let $g(x) = 3x \implies g'(x) = 3$.
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Evaluate the Limit of the Derivatives:</strong>
+                            Substitute $x = 0$ into the ratio of the derivatives:
+                            $$\lim_{x \to 0} \frac{f'(x)}{g'(x)} = \lim_{x \to 0} \frac{-\sin x + 2}{3} = \frac{-\sin(0) + 2}{3} = \frac{0 + 2}{3} = \frac{2}{3}$$
+                            Therefore, the limit is $\frac{2}{3}$.
+                        </li>
+                    </ol>
+                </div>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid var(--accent); padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. What is an indeterminate form?</strong> Plugging in zero directly gives $\frac{0}{0}$. In mathematics, dividing by zero is forbidden, and zero divided by zero is completely undefined because it could represent any number. It means the direct approach has failed and we need a smarter tool.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. What is L'Hôpital's Rule?</strong> Instead of looking at the static values at $x = 0$, we look at the **speed** (rate of change) at which the numerator and denominator are shrinking towards zero. The ratio of their speeds (derivatives) gives us the true, fair limit of their ratio.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. Why differentiate?</strong> Differentiating $\cos x + 2x - 1$ gives us $-\sin x + 2$, and differentiating $3x$ gives $3$. The denominator's speed is now a constant rate of $3$, which is no longer zero, removing the division-by-zero crisis.</p>
+                        <p style="margin: 0;"><strong>4. Why substitute $x=0$ at the end?</strong> Now that the denominator is a safe, non-zero number ($3$), we can safely plug in $x = 0$. Since $\sin(0) = 0$, the numerator's speed is $2$, leading to our final, stable ratio of $\frac{2}{3}$.</p>
+                    </div>
+                </details>
+            </div>
+            
+            <!-- Problem 2: Taylor Series Approximation -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem 2: Taylor Series Expansion</h3>
+                <p>Derive the Taylor series expansion of $f(x) = \ln(1+x)$ up to the third order around $x_0 = 0$, and explain its financial application.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>State the Taylor expansion formula:</strong>
+                            Around $x_0 = 0$ (Maclaurin series):
+                            $$f(x) \approx f(0) + f'(0)x + \frac{f''(0)}{2!}x^2 + \frac{f'''(0)}{3!}x^3$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Calculate successive derivatives at $x$:</strong>
+                            $$f(x) = \ln(1+x)$$
+                            $$f'(x) = \frac{1}{1+x} = (1+x)^{-1}$$
+                            $$f''(x) = -(1+x)^{-2}$$
+                            $$f'''(x) = 2(1+x)^{-3}$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Evaluate derivatives at $x_0 = 0$:</strong>
+                            $$f(0) = \ln(1) = 0$$
+                            $$f'(0) = (1+0)^{-1} = 1$$
+                            $$f''(0) = -(1+0)^{-2} = -1$$
+                            $$f'''(0) = 2(1+0)^{-3} = 2$$
+                        </li>
+                        <li style="margin: 0;">
+                            <strong>Assemble the Taylor polynomial:</strong>
+                            Substitute the coefficients back into the expansion:
+                            $$\ln(1+x) \approx 0 + (1)x + \frac{-1}{2}x^2 + \frac{2}{6}x^3 = x - \frac{1}{2}x^2 + \frac{1}{3}x^3$$
+                        </li>
+                    </ol>
+                </div>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: #8b5cf6; font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid #8b5cf6; padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. Why use a Taylor Series?</strong> Some functions (like logarithms or exponentials) are curved and difficult to calculate or use in complex financial models. A Taylor series breaks a curved function down into a simpler polynomial (like $x - x^2/2 + x^3/3$) which only uses basic addition, subtraction, and multiplication.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. Why take successive derivatives?</strong> Derivatives measure the shape of the curve. The first derivative captures the **slope**, the second derivative captures the **bending (curvature)**, and the third derivative captures the **warp (rate at which bending changes)**. Matching these shapes at a single point ($x=0$) forces the polynomial to mimic the curve perfectly nearby.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. What is the division by factorials ($n!$)?</strong> As we go to higher powers ($x^2, x^3$), the power rule generates multiplier constants when differentiated. Dividing by factorials ($1!, 2!, 3!$) cancels out these artificial multipliers, keeping the polynomial's shape calibrated to the target function.</p>
+                        <p style="margin: 0;"><strong>4. How is this used in quantitative finance?</strong> This is the exact engine behind SDE path approximations. When evaluating returns or portfolio shocks over tiny steps, we approximate the curved asset change locally as a linear term (Delta) plus a quadratic bending term (Gamma), which is a second-order Taylor expansion!</p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            let taylorChartInstance = null;
+
+            window.switchCalculusTab = function(tab) {
+                const tabTheo = document.getElementById('tabCalculusTheory');
+                const tabSand = document.getElementById('tabCalculusSandbox');
+                const tabExer = document.getElementById('tabCalculusExercises');
+                const secTheo = document.getElementById('secCalculusTheory');
+                const secSand = document.getElementById('secCalculusSandbox');
+                const secExer = document.getElementById('secCalculusExercises');
+
+                if (tab === 'theory') {
+                    tabTheo.style.color = 'var(--accent)';
+                    tabTheo.style.borderBottomColor = 'var(--accent)';
+                    tabSand.style.color = tabExer.style.color = '#6b7280';
+                    tabSand.style.borderBottomColor = tabExer.style.borderBottomColor = 'transparent';
+                    secTheo.style.display = 'block';
+                    secSand.style.display = secExer.style.display = 'none';
+                } else if (tab === 'sandbox') {
+                    tabSand.style.color = 'var(--accent)';
+                    tabSand.style.borderBottomColor = 'var(--accent)';
+                    tabTheo.style.color = tabExer.style.color = '#6b7280';
+                    tabTheo.style.borderBottomColor = tabExer.style.borderBottomColor = 'transparent';
+                    secSand.style.display = 'block';
+                    secTheo.style.display = secExer.style.display = 'none';
+                    setTimeout(() => { updateTaylorApproximation(); }, 50);
+                } else {
+                    tabExer.style.color = 'var(--accent)';
+                    tabExer.style.borderBottomColor = 'var(--accent)';
+                    tabTheo.style.color = tabSand.style.color = '#6b7280';
+                    tabTheo.style.borderBottomColor = tabSand.style.borderBottomColor = 'transparent';
+                    secExer.style.display = 'block';
+                    secTheo.style.display = secSand.style.display = 'none';
+                }
+            };
+
+            window.switchCalculusSubtab = function(chapNum) {
+                for (let i = 1; i <= 4; i++) {
+                    const btn = document.getElementById('btnSubCalculus' + i);
+                    const sec = document.getElementById('subsecCalculus' + i);
+                    if (i === chapNum) {
+                        btn.style.borderColor = 'var(--accent)';
+                        btn.style.background = 'var(--accent-glow)';
+                        btn.style.color = 'var(--accent)';
+                        btn.style.fontWeight = '700';
+                        sec.style.display = 'block';
+                    } else {
+                        btn.style.borderColor = 'var(--card-border)';
+                        btn.style.background = 'var(--card-bg)';
+                        btn.style.color = '#6b7280';
+                        btn.style.fontWeight = '600';
+                        sec.style.display = 'none';
+                    }
+                }
+                
+                if (window.MathJax && typeof window.MathJax.typeset === 'function') {
+                    window.MathJax.typeset();
+                }
+            };
+
+            // Factorial function
+            function fact(n) {
+                if (n <= 1) return 1;
+                let res = 1;
+                for (let i = 2; i <= n; i++) res *= i;
+                return res;
+            }
+
+            window.updateTaylorApproximation = function() {
+                const fn = document.getElementById('taylorFuncSelect').value;
+                const N = parseInt(document.getElementById('taylorOrderSlider').value);
+                const x0 = parseFloat(document.getElementById('taylorCenterSlider').value);
+
+                document.getElementById('taylorOrderVal').innerText = 'N = ' + N;
+                document.getElementById('taylorCenterVal').innerText = x0.toFixed(1);
+
+                const minX = -3.0;
+                const maxX = 3.0;
+                const steps = 100;
+                const dx = (maxX - minX) / steps;
+
+                const exactPoints = [];
+                const approxPoints = [];
+                const labels = [];
+
+                // Function evaluators & derivatives
+                const evalExact = (x) => {
+                    if (fn === 'exp') return Math.exp(x);
+                    if (fn === 'sin') return Math.sin(x);
+                    if (fn === 'cos') return Math.cos(x);
+                    if (fn === 'ln') return Math.log(Math.max(0.001, 1 + x));
+                    return 0;
+                };
+
+                const getDerivative = (n, center) => {
+                    if (fn === 'exp') return Math.exp(center);
+                    if (fn === 'sin') {
+                        const rem = n % 4;
+                        if (rem === 0) return Math.sin(center);
+                        if (rem === 1) return Math.cos(center);
+                        if (rem === 2) return -Math.sin(center);
+                        return -Math.cos(center);
+                    }
+                    if (fn === 'cos') {
+                        const rem = n % 4;
+                        if (rem === 0) return Math.cos(center);
+                        if (rem === 1) return -Math.sin(center);
+                        if (rem === 2) return -Math.cos(center);
+                        return Math.sin(center);
+                    }
+                    if (fn === 'ln') {
+                        if (n === 0) return Math.log(Math.max(0.001, 1 + center));
+                        // nth derivative of ln(1+x) is (-1)^{n-1} * (n-1)! / (1+x)^n
+                        const sgn = (n % 2 === 0) ? -1 : 1;
+                        return sgn * fact(n - 1) / Math.pow(1 + center, n);
+                    }
+                    return 0;
+                };
+
+                const evalApprox = (x) => {
+                    let sum = 0;
+                    for (let n = 0; n <= N; n++) {
+                        const coeff = getDerivative(n, x0) / fact(n);
+                        sum += coeff * Math.pow(x - x0, n);
+                    }
+                    return sum;
+                };
+
+                for (let i = 0; i <= steps; i++) {
+                    const x = minX + i * dx;
+                    exactPoints.push({ x: x, y: evalExact(x) });
+                    approxPoints.push({ x: x, y: evalApprox(x) });
+                }
+
+                // Render Chart.js Plot
+                const isDark = document.body.classList.contains('dark-theme');
+                const gridColor = isDark ? 'rgba(68, 76, 86, 0.2)' : 'rgba(203, 213, 225, 0.2)';
+                const labelColor = isDark ? '#adbac7' : '#475569';
+
+                if (taylorChartInstance) taylorChartInstance.destroy();
+
+                const ctx = document.getElementById('taylorPlotChart').getContext('2d');
+                taylorChartInstance = new Chart(ctx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [
+                            {
+                                label: 'Exact Function f(x)',
+                                data: exactPoints,
+                                showLine: true,
+                                borderColor: '#10b981',
+                                borderWidth: 3,
+                                pointRadius: 0,
+                                fill: false
+                            },
+                            {
+                                label: 'Taylor Approximation (Order N)',
+                                data: approxPoints,
+                                showLine: true,
+                                borderColor: '#ea580c',
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                pointRadius: 0,
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: labelColor } } },
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                position: 'bottom',
+                                min: -3.0,
+                                max: 3.0,
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor }
+                            },
+                            y: {
+                                min: fn === 'ln' ? -2.0 : -3.0,
+                                max: fn === 'ln' ? 2.5 : 3.0,
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor }
+                            }
+                        }
+                    }
+                });
+            };
+            window.calculateInteractiveMapping = function() {
+                const fn = document.getElementById('mapFuncSelect').value;
+                const xVal = parseFloat(document.getElementById('mapFuncInputX').value);
+
+                const elF = document.getElementById('mapOutputF');
+                const elInv = document.getElementById('mapOutputInv');
+                const elStat = document.getElementById('mapOutputStatus');
+
+                if (isNaN(xVal)) {
+                    elF.innerHTML = "<strong>Mapping:</strong> Please input a valid number!";
+                    elInv.innerHTML = "";
+                    elStat.innerText = "Status: Awaiting Input";
+                    elStat.style.color = "#ea580c";
+                    return;
+                }
+
+                if (fn === 'linear') {
+                    const yVal = 3 * xVal + 1;
+                    const xInv = (yVal - 1) / 3;
+                    elF.innerHTML = `<strong>Mapping:</strong> $f(${xVal}) = 3(${xVal}) + 1 = ${yVal}$`;
+                    elInv.innerHTML = `<strong>Unique Inverse:</strong> $f^{-1}(${yVal}) = (${yVal} - 1)/3 = ${xInv.toFixed(2)}$`;
+                    elStat.innerText = "Status: Valid One-to-One (1-1) Function";
+                    elStat.style.color = "#10b981";
+                } else if (fn === 'quadratic') {
+                    const yVal = 2 * xVal * xVal - 1;
+                    if (yVal < -1) {
+                        elF.innerHTML = `<strong>Mapping:</strong> $f(${xVal}) = 2(${xVal})^2 - 1 = ${yVal}$`;
+                        elInv.innerHTML = `<strong>Inverse:</strong> Complex conjugate roots (undefined on $\\mathbb{R}$)`;
+                        elStat.innerText = "Status: Domain Restriction Exceeded";
+                        elStat.style.color = "#ef4444";
+                    } else {
+                        const root1 = Math.sqrt((yVal + 1) / 2);
+                        const root2 = -root1;
+                        elF.innerHTML = `<strong>Mapping:</strong> $f(${xVal}) = 2(${xVal})^2 - 1 = ${yVal}$`;
+                        elInv.innerHTML = `<strong>Inverse (Multivalued Branches):</strong> $f^{-1}(${yVal}) = \\pm\\sqrt{(${yVal} + 1)/2} = ${root1.toFixed(2)}$ and ${root2.toFixed(2)}$`;
+                        elStat.innerText = "Status: Valid Many-to-One Function";
+                        elStat.style.color = "#10b981";
+                    }
+                } else if (fn === 'multivalued') {
+                    if (xVal < 0) {
+                        elF.innerHTML = `<strong>Mapping:</strong> $f(${xVal}) = \\pm\\sqrt{${xVal}}$ (Undefined for $x < 0$)`;
+                        elInv.innerHTML = `<strong>Inverse:</strong> $f^{-1}(y) = y^2$`;
+                        elStat.innerText = "Status: Out of Domain ($x < 0$)";
+                        elStat.style.color = "#ef4444";
+                    } else {
+                        const root1 = Math.sqrt(xVal);
+                        const root2 = -root1;
+                        elF.innerHTML = `<strong>Multivalued Mapping (2 Branches):</strong> $f(${xVal}) = +${root1.toFixed(2)}$ and $-${root2.toFixed(2)}$`;
+                        elInv.innerHTML = `<strong>Inverse Mapping:</strong> $f^{-1}(y) = y^2$ (maps both back to $x = ${xVal}$)`;
+                        elStat.innerText = "Status: One-to-Many Relation (NOT a single-valued function!)";
+                        elStat.style.color = "#ea580c";
+                    }
+                }
+
+                // Trigger MathJax typeset to render LaTeX
+                if (window.MathJax && typeof window.MathJax.typeset === 'function') {
+                    window.MathJax.typeset();
+                }
+            };
+
+            window.calculateInteractiveQuadratic = function() {
+                const a = parseFloat(document.getElementById('quadInputA').value);
+                const b = parseFloat(document.getElementById('quadInputB').value);
+                const c = parseFloat(document.getElementById('quadInputC').value);
+
+                const elD = document.getElementById('quadOutputDisc');
+                const elR = document.getElementById('quadOutputRoots');
+                const elE = document.getElementById('quadOutputExplanation');
+
+                if (isNaN(a) || isNaN(b) || isNaN(c)) {
+                    elD.innerHTML = "<strong>Discriminant:</strong> Please input valid numbers!";
+                    elR.innerHTML = "";
+                    elE.innerText = "Status: Awaiting Coefficients";
+                    elE.style.color = "#ea580c";
+                    return;
+                }
+
+                if (a === 0) {
+                    // Linear equation
+                    const root = -c / b;
+                    elD.innerHTML = "<strong>Discriminant:</strong> N/A (Linear, $a=0$)";
+                    elR.innerHTML = `<strong>Linear Root:</strong> $x = -c/b = ${root.toFixed(2)}$`;
+                    elE.innerText = "Status: Degenerate Linear Equation";
+                    elE.style.color = "#ea580c";
+                    return;
+                }
+
+                const disc = b * b - 4 * a * c;
+                elD.innerHTML = `<strong>Discriminant ($b^2 - 4ac$):</strong> $(${b})^2 - 4(${a})(${c}) = ${disc}$`;
+
+                if (disc > 0) {
+                    const r1 = (-b + Math.sqrt(disc)) / (2 * a);
+                    const r2 = (-b - Math.sqrt(disc)) / (2 * a);
+                    elR.innerHTML = `<strong>Roots:</strong> $x_1 = ${r1.toFixed(2)}$, $x_2 = ${r2.toFixed(2)}$`;
+                    elE.innerText = "Status: Two Distinct Real Roots";
+                    elE.style.color = "#10b981";
+                } else if (disc === 0) {
+                    const r = -b / (2 * a);
+                    elR.innerHTML = `<strong>Root:</strong> $x_1 = x_2 = ${r.toFixed(2)}$`;
+                    elE.innerText = "Status: One Double Real Root";
+                    elE.style.color = "#0ea5e9";
+                } else {
+                    const realPart = -b / (2 * a);
+                    const imagPart = Math.sqrt(-disc) / (2 * a);
+                    elR.innerHTML = `<strong>Complex Roots:</strong> $x_1, x_2 = ${realPart.toFixed(2)} \\pm ${imagPart.toFixed(2)}i$`;
+                    elE.innerText = "Status: Complex Conjugate Pair Roots";
+                    elE.style.color = "#8b5cf6";
+                }
+
+                if (window.MathJax && typeof window.MathJax.typeset === 'function') {
+                    window.MathJax.typeset();
+                }
+            };
+
+            window.calculateInteractiveHyperbolic = function() {
+                const xVal = parseFloat(document.getElementById('hypInputX').value);
+                const elSinh = document.getElementById('hypOutputSinh');
+                const elCosh = document.getElementById('hypOutputCosh');
+                const elInvSinh = document.getElementById('hypOutputInvSinh');
+
+                if (isNaN(xVal)) {
+                    elSinh.innerHTML = "<strong>sinh(x):</strong> Please input a valid number!";
+                    elCosh.innerHTML = "";
+                    elInvSinh.innerHTML = "";
+                    return;
+                }
+
+                const sinhVal = Math.sinh(xVal);
+                const coshVal = Math.cosh(xVal);
+                const invSinhVal = Math.asinh(xVal);
+
+                elSinh.innerHTML = `<strong>sinh(${xVal.toFixed(2)}):</strong> ${sinhVal.toFixed(4)}`;
+                elCosh.innerHTML = `<strong>cosh(${xVal.toFixed(2)}):</strong> ${coshVal.toFixed(4)}`;
+                elInvSinh.innerHTML = `<strong>sinh⁻¹(${xVal.toFixed(2)}):</strong> ${invSinhVal.toFixed(4)}`;
+
+                if (window.MathJax && typeof window.MathJax.typeset === 'function') {
+                    window.MathJax.typeset();
+                }
+            };
+
+            window.calculateInteractivePartials = function() {
+                const xVal = parseFloat(document.getElementById('partInputX').value);
+                const yVal = parseFloat(document.getElementById('partInputY').value);
+                const elF = document.getElementById('partOutputF');
+                const elPx = document.getElementById('partOutputPx');
+                const elPy = document.getElementById('partOutputPy');
+
+                if (isNaN(xVal) || isNaN(yVal)) {
+                    elF.innerHTML = "<strong>f(x,y):</strong> Please input valid numbers!";
+                    elPx.innerHTML = "";
+                    elPy.innerHTML = "";
+                    return;
+                }
+
+                const fVal = (xVal * xVal * yVal) + (yVal * yVal * yVal);
+                const pxVal = 2 * xVal * yVal;
+                const pyVal = (xVal * xVal) + (3 * yVal * yVal);
+
+                elF.innerHTML = `<strong>f(${xVal.toFixed(2)}, ${yVal.toFixed(2)}):</strong> ${fVal.toFixed(4)}`;
+                elPx.innerHTML = `<strong>df/dx = 2xy:</strong> ${pxVal.toFixed(4)}`;
+                elPy.innerHTML = `<strong>df/dy = x² + 3y²:</strong> ${pyVal.toFixed(4)}`;
+
+                if (window.MathJax && typeof window.MathJax.typeset === 'function') {
+                    window.MathJax.typeset();
+                }
+            };
+
+            window.calculateInteractiveDerivative = function() {
+                const mode = document.getElementById('derivModeSelect').value;
+                const elFormula = document.getElementById('derivOutputFormula');
+                const elResult = document.getElementById('derivOutputResult');
+                const pImplicit = document.getElementById('derivInputsImplicit');
+                const pPoly = document.getElementById('derivInputsPoly');
+
+                if (mode === 'implicit') {
+                    pImplicit.style.display = 'flex';
+                    pPoly.style.display = 'none';
+
+                    const xVal = parseFloat(document.getElementById('derivInputX').value);
+                    const yVal = parseFloat(document.getElementById('derivInputY').value);
+
+                    if (isNaN(xVal) || isNaN(yVal)) {
+                        elResult.innerHTML = "Please input valid numbers!";
+                        return;
+                    }
+
+                    const num = 4 * yVal * yVal * xVal + 2 * xVal * yVal - 2 * xVal;
+                    const den = 16 * yVal * yVal * yVal - 4 * yVal * xVal * xVal - xVal * xVal;
+
+                    elFormula.innerHTML = `<strong>Formula:</strong> $y' = \\frac{4y^2x + 2xy - 2x}{16y^3 - 4yx^2 - x^2}$`;
+                    
+                    if (Math.abs(den) < 1e-9) {
+                        elResult.innerHTML = `<strong>y'(${xVal.toFixed(2)}, ${yVal.toFixed(2)}):</strong> Undefined (Denominator is zero)`;
+                    } else {
+                        const yPrime = num / den;
+                        elResult.innerHTML = `<strong>y'(${xVal.toFixed(2)}, ${yVal.toFixed(2)}):</strong> ${yPrime.toFixed(4)}`;
+                    }
+                } else {
+                    pImplicit.style.display = 'none';
+                    pPoly.style.display = 'flex';
+
+                    const nVal = parseFloat(document.getElementById('derivInputN').value);
+                    const xVal = parseFloat(document.getElementById('derivInputPolyX').value);
+
+                    if (isNaN(nVal) || isNaN(xVal)) {
+                        elResult.innerHTML = "Please input valid numbers!";
+                        return;
+                    }
+
+                    elFormula.innerHTML = `<strong>Formula:</strong> $\\frac{d}{dx}(x^n) = n x^{n-1}$`;
+
+                    if (xVal === 0 && nVal - 1 < 0) {
+                        elResult.innerHTML = `<strong>Result:</strong> Undefined (Division by zero)`;
+                    } else {
+                        const derivVal = nVal * Math.pow(xVal, nVal - 1);
+                        elResult.innerHTML = `<strong>Derivative at $x=${xVal.toFixed(2)}$:</strong> ${derivVal.toFixed(4)}`;
+                    }
+                }
+
+                if (window.MathJax && typeof window.MathJax.typeset === 'function') {
+                    window.MathJax.typeset();
+                }
+            };
+
+            window.calculateInteractiveShock = function() {
+                const fn = document.getElementById('shockFuncSelect').value;
+                const x0 = parseFloat(document.getElementById('shockInputX0').value);
+                const dx = parseFloat(document.getElementById('shockInputDx').value);
+
+                const elExact = document.getElementById('shockOutputExact');
+                const elLinear = document.getElementById('shockOutputLinear');
+                const elParabolic = document.getElementById('shockOutputParabolic');
+
+                if (isNaN(x0) || isNaN(dx)) {
+                    elExact.innerHTML = "Please input valid baseline and shock values!";
+                    elLinear.innerHTML = "";
+                    elParabolic.innerHTML = "";
+                    return;
+                }
+
+                const targetX = x0 + dx;
+                let exactVal, f0, fPrime, fDoublePrime;
+
+                if (fn === 'exp') {
+                    exactVal = Math.exp(targetX);
+                    f0 = Math.exp(x0);
+                    fPrime = Math.exp(x0);
+                    fDoublePrime = Math.exp(x0);
+                } else if (fn === 'ln') {
+                    if (x0 <= -1 || targetX <= -1) {
+                        elExact.innerHTML = "<strong>Exact Value:</strong> Out of domain ($x \\le -1$)";
+                        elLinear.innerHTML = "";
+                        elParabolic.innerHTML = "";
+                        return;
+                    }
+                    exactVal = Math.log(1 + targetX);
+                    f0 = Math.log(1 + x0);
+                    fPrime = 1 / (1 + x0);
+                    fDoublePrime = -1 / ((1 + x0) * (1 + x0));
+                } else if (fn === 'cos') {
+                    exactVal = Math.cos(targetX);
+                    f0 = Math.cos(x0);
+                    fPrime = -Math.sin(x0);
+                    fDoublePrime = -Math.cos(x0);
+                }
+
+                const linearVal = f0 + dx * fPrime;
+                const parabolicVal = f0 + dx * fPrime + 0.5 * dx * dx * fDoublePrime;
+
+                const errLin = ((linearVal - exactVal) / exactVal) * 100;
+                const errPara = ((parabolicVal - exactVal) / exactVal) * 100;
+
+                elExact.innerHTML = `<strong>Exact Value $f(${x0.toFixed(2)} + ${dx.toFixed(2)})$:</strong> ${exactVal.toFixed(5)}`;
+                elLinear.innerHTML = `<strong>Linear (Delta) Fit:</strong> ${linearVal.toFixed(5)} <span style="color: ${errLin >= 0 ? '#ef4444' : '#ea580c'}; font-weight:600;">(Error: ${errLin.toFixed(2)}%)</span>`;
+                elParabolic.innerHTML = `<strong>Parabolic (Delta-Gamma) Fit:</strong> ${parabolicVal.toFixed(5)} <span style="color: #10b981; font-weight:600;">(Error: ${errPara.toFixed(2)}%)</span>`;
+
+                if (window.MathJax && typeof window.MathJax.typeset === 'function') {
+                    window.MathJax.typeset();
+                }
+            };
+
+            // Initialize on load
+            setTimeout(() => {
+                if (document.getElementById('mapFuncSelect')) {
+                    calculateInteractiveMapping();
+                }
+                if (document.getElementById('quadInputA')) {
+                    calculateInteractiveQuadratic();
+                }
+                if (document.getElementById('hypInputX')) {
+                    calculateInteractiveHyperbolic();
+                }
+                if (document.getElementById('partInputX')) {
+                    calculateInteractivePartials();
+                }
+                if (document.getElementById('derivModeSelect')) {
+                    calculateInteractiveDerivative();
+                }
+                if (document.getElementById('shockFuncSelect')) {
+                    calculateInteractiveShock();
+                }
+            }, 100);
+        })();
+    </script>
+</div>

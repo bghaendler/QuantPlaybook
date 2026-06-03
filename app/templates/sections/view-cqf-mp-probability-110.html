@@ -1,0 +1,94 @@
+<div id="view-cqf-mp-probability-110" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">1.10 Expectation Algebra</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.10 Expectation Algebra</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Linearity rules, variance shift constraints, independence simplifications, and portfolio combination properties.</div>
+    </header>
+
+    <!-- Core Theory Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.10.1 Expectation &amp; Variance Scaling Rules</h3>
+        <p>Expectation $\mathbb{E}[X]$ behaves as a strict linear operator, while Variance $\text{Var}(X)$ scales quadratically under constant shift transformations. Let $a, b, c$ be real constants:</p>
+        <p style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+            $\bullet \ \mathbb{E}[X + a] = \mathbb{E}[X] + a$<br>
+            $\bullet \ \mathbb{E}[aX] = a\mathbb{E}[X]$<br>
+            $\bullet \ \mathbb{E}[X + Y] = \mathbb{E}[X] + \mathbb{E}[Y]$ (always holds, even for dependent variables)<br>
+            $\bullet \ \text{Var}(X + a) = \text{Var}(X)$ (constant translations do not affect dispersion)<br>
+            $\bullet \ \text{Var}(aX) = a^2\text{Var}(X)$ (quadratic scaling)<br>
+            $\bullet \ \text{Var}(b) = 0$
+        </p>
+        <p><strong>Under Independence:</strong> If $X$ and $Y$ are statistically independent:</p>
+        <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+            $$\mathbb{E}[XY] = \mathbb{E}[X]\mathbb{E}[Y]$$
+            $$\text{Var}(X + Y) = \text{Var}(X) + \text{Var}(Y)$$
+        </p>
+    </div>
+
+    <!-- Expectation Algebra Solver -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.10.2 Interactive Portfolio Combination &amp; Variance Solver</h3>
+        <p>Input parameters to solve expectation and variance for a linear combination of two assets $P = aX + bY$:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; align-items: center;">
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Weight $a$:</label>
+                    <input id="prob10WeightA" type="number" value="0.5" step="0.1" oninput="solveCombinationAlgebra()" style="width: 60px; padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);">
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Weight $b$:</label>
+                    <input id="prob10WeightB" type="number" value="0.5" step="0.1" oninput="solveCombinationAlgebra()" style="width: 60px; padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);">
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Covariance $\text{Cov}(X,Y)$:</label>
+                    <input id="prob10Cov" type="number" value="0.0" step="0.1" oninput="solveCombinationAlgebra()" style="width: 60px; padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);">
+                </div>
+            </div>
+            <div style="font-size: 0.85rem; line-height: 1.5; background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid var(--accent);">
+                <div id="prob10OutputResult"><strong>Portfolio Expectation:</strong> E[P] = a E[X] + b E[Y]<br><strong>Portfolio Variance:</strong> Var(P) = a²Var(X) + b²Var(Y) + 2abCov(X,Y)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.solveCombinationAlgebra = function() {
+                const a = parseFloat(document.getElementById('prob10WeightA').value);
+                const b = parseFloat(document.getElementById('prob10WeightB').value);
+                const cov = parseFloat(document.getElementById('prob10Cov').value);
+
+                const elResult = document.getElementById('prob10OutputResult');
+
+                if (isNaN(a) || isNaN(b) || isNaN(cov)) return;
+
+                // Hypothetical asset returns: E[X] = 10%, E[Y] = 15%, Var(X) = 0.04, Var(Y) = 0.09
+                const eX = 0.10, eY = 0.15;
+                const varX = 0.04, varY = 0.09;
+
+                const ePortfolio = a * eX + b * eY;
+                const varPortfolio = (a * a * varX) + (b * b * varY) + (2 * a * b * cov);
+
+                elResult.innerHTML = `
+                    <strong>E[X] = 10%, E[Y] = 15%, Var(X) = 4%, Var(Y) = 9%</strong><br>
+                    • **Portfolio Expectation $\\mathbb{E}[P]$:** ${(ePortfolio*100).toFixed(2)}%
+                    <br>• **Portfolio Variance $\\text{Var}(P)$:** ${(varPortfolio*100).toFixed(2)}% (St. Dev: ${(Math.sqrt(varPortfolio)*100).toFixed(2)}%)
+                `;
+
+                const parent = document.getElementById('view-cqf-mp-probability-110');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            setTimeout(() => {
+                if (document.getElementById('prob10WeightA')) solveCombinationAlgebra();
+            }, 100);
+        })();
+    </script>
+</div>

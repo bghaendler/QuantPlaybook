@@ -1,0 +1,629 @@
+<div id="view-cqf-m3-l3" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 03: Equities &amp; Currencies</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 03</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L3: Option Pricing Models: Connecting the Dots</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">A comprehensive unification of the Binomial Model, the PDE Approach, and the Martingale Method</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM3L3Foundations" onclick="switchM3L3Tab('foundations')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. Binomial Foundations &amp; EMM</button>
+        <button id="tabM3L3PdeLimit" onclick="switchM3L3Tab('pdeLimit')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. CRR to Black-Scholes PDE</button>
+        <button id="tabM3L3MultiPeriod" onclick="switchM3L3Tab('multiPeriod')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Multi-Period Induction &amp; Limit</button>
+        <button id="tabM3L3BigIdea" onclick="switchM3L3Tab('bigIdea')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. The BIG Idea &amp; Completeness</button>
+        <button id="tabM3L3Sandbox" onclick="switchM3L3Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Dynamic Tree Sandbox</button>
+        <button id="tabM3L3Exercises" onclick="switchM3L3Tab('exercises')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Solved Exercises</button>
+    </div>
+
+    <!-- TAB 1: Binomial Foundations & EMM -->
+    <div id="secM3L3Foundations" style="display: block;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom:0.5rem;">One-Period Foundations: Delta Hedging vs. Risk Neutrality</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom:0.75rem;">
+                        Let $S_0$ be the stock price at time $0$. Over a time period $\delta t$, the stock can move to either $S_u = u S_0$ with physical probability $p$ or down to $S_d = d S_0$ with probability $1-p$, such that $d < 1 < u$. Let the discount factor be $D = (1 + r\delta t)^{-1}$ and the bank factor be $B = 1/D = 1 + r\delta t$.
+                    </p>
+
+                    <h4 style="font-family: var(--font-family-sans); font-size: 1.05rem; font-weight: 700; color: var(--accent); margin-top: 1rem; margin-bottom: 0.5rem;">Method 1: Delta Hedging</h4>
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                        We construct a portfolio $\Pi_0 = V_0 - \Delta S_0$. To make it perfectly risk-free, we choose $\Delta$ so that the portfolio value in the upper and lower state is equal:
+                        $$V_u - \Delta u S_0 = V_d - \Delta d S_0 \implies \Delta = \frac{V_u - V_d}{(u - d)S_0}$$
+                        To prevent arbitrage, this risk-free portfolio must return the risk-free rate:
+                        $$V_u - \Delta S_u = \frac{1}{B}(V_0 - \Delta S_0) \implies V_0 = \frac{(1 - Dd)V_u - (Du - 1)V_d}{u - d}$$
+                    </p>
+
+                    <h4 style="font-family: var(--font-family-sans); font-size: 1.05rem; font-weight: 700; color: var(--accent); margin-top: 1rem; margin-bottom: 0.5rem;">Method 2: Risk-Neutral Valuation</h4>
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.5rem;">
+                        Under the risk-neutral measure $\mathbb{P}^*$ defined by probability $p^*$, the expected stock growth must equal the risk-free rate:
+                        $$S_0 = D \left[ p^* S_u + (1-p^*)S_d \right] \implies p^* = \frac{1/D - d}{u - d}$$
+                        Option pricing matches exactly: $V_0 = D \left[ p^* V_u + (1 - p^*)V_d \right]$.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Martingale Properties</h3>
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563; margin-bottom: 1rem;">
+                        The parameters $p \in (0, 1)$ define a probability measure $\mathbb{P}$ over the sample space $\Omega = \{\text{up move, down move}\}$.
+                    </p>
+
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1rem;">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.9rem;">Equivalent Martingale Measure (EMM)</h4>
+                        <p style="font-size: 0.78rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                            The martingale measure $\mathbb{Q}$ is the equivalent probability measure such that the discounted stock price follows a martingale:
+                            $$S_0 = \mathbb{E}^{\mathbb{Q}}[D S_T] \implies S_0 = D \left[ q S_u + (1-q)S_d \right]$$
+                            Solving for $q$ yields the unique equivalent martingale probability:
+                            $$q = \frac{1/D - d}{u - d} = p^*$$
+                            Thus, there is <strong>one and only one</strong> equivalent martingale measure in the one-period binomial model, and it matches the risk-neutral probability $p^*$.
+                        </p>
+                    </div>
+
+                    <p style="font-size: 0.8rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                        <strong>Bayes Formula for Expectations</strong>: Clarifies that the price computed under $\mathbb{Q}$ holds in the real world. We also define the **Q-bar measure ($\bar{\mathbb{Q}}$)** where the stock itself acts as the discounting numeraire (groceries paid in stocks analogy). Black-Scholes risk-neutral measure is unique among all equivalent measures.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: CRR to Black-Scholes PDE -->
+    <div id="secM3L3PdeLimit" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Connecting Binomial Delta-Hedging to Continuous PDEs</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1.25rem;">
+                    In the Cox-Ross-Rubinstein (CRR) model, the parameters are chosen to be consistent with continuous Geometric Brownian Motion as $\delta t \to 0$:
+                    $$u = e^{\sigma \sqrt{\delta t}}, \quad d = e^{-\sigma \sqrt{\delta t}} = \frac{1}{u}, \quad D = e^{-r \delta t}$$
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-family:var(--font-family-sans); margin-bottom:1.5rem;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Taylor Expansions of Parameters &amp; Differences</h4>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color:#4b5563;">
+                        We expand the CRR parameters up to order $\delta t$:
+                        $$u \approx 1 + \sigma \sqrt{\delta t} + \frac{1}{2}\sigma^2 \delta t, \quad d \approx 1 - \sigma \sqrt{\delta t} + \frac{1}{2}\sigma^2 \delta t, \quad 1/D = e^{r \delta t} \approx 1 + r \delta t$$
+                        This yields the parameter differences:
+                        $$u - d \approx 2\sigma \sqrt{\delta t}, \quad 1/D - d \approx r\delta t + \sigma \sqrt{\delta t} - \frac{1}{2}\sigma^2\delta t, \quad u - 1/D \approx \sigma \sqrt{\delta t} + \frac{1}{2}\sigma^2\delta t - r\delta t$$
+                    </p>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; font-size:0.85rem; line-height:1.6; color:#4b5563; margin-bottom:1.5rem;">
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong>Expansion of $V_u$:</strong>
+                        $$V_u \approx V + \frac{\partial V}{\partial t} \delta t + \frac{\partial V}{\partial S}\delta S_u + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} (\delta S_u)^2$$
+                        $$\text{where } \delta S_u = S(u - 1) \approx S \left( \sigma \sqrt{\delta t} + \frac{1}{2}\sigma^2 \delta t \right)$$
+                        $$(\delta S_u)^2 \approx S^2 \sigma^2 \delta t$$
+                    </div>
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong>Expansion of $V_d$:</strong>
+                        $$V_d \approx V + \frac{\partial V}{\partial t} \delta t + \frac{\partial V}{\partial S}\delta S_d + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} (\delta S_d)^2$$
+                        $$\text{where } \delta S_d = S(d - 1) \approx S \left( -\sigma \sqrt{\delta t} + \frac{1}{2}\sigma^2 \delta t \right)$$
+                        $$(\delta S_d)^2 \approx S^2 \sigma^2 \delta t$$
+                    </div>
+                </div>
+
+                <div style="font-size:0.85rem; line-height:1.6; color:#4b5563;">
+                    <h4>Substituting into Equation (5):</h4>
+                    <p style="margin-bottom: 1rem;">
+                        Substituting all expanded terms into $(1/D)(u-d)V = (1/D)(V_u - V_d) + (uV_d - dV_u)$, we obtain:
+                        $$(2\sigma \sqrt{\delta t})(1 + r\delta t)V \approx \left( V_u \right)\left( r\delta t + \sigma \sqrt{\delta t} - \frac{1}{2}\sigma^2\delta t \right) + \left( V_d \right)\left( \sigma \sqrt{\delta t} + \frac{1}{2}\sigma^2\delta t - r\delta t \right)$$
+                        Developing and dividing through by $2\sigma \sqrt{\delta t}\delta t$ yields:
+                        $$\frac{\partial V}{\partial t} + rS \frac{\partial V}{\partial S} + \frac{1}{2} \sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} - rV \approx 0$$
+                    </p>
+                    <p style="background: rgba(16, 185, 129, 0.05); border-left: 3px solid #10b981; padding: 0.75rem 1rem; border-radius: 6px; font-weight: 700; color: #047857; text-align: center; margin: 0;">
+                        Taking the limit as $\delta t \to 0$, we retrieve the continuous Black-Scholes PDE exactly!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Multi-Period Induction & Limit -->
+    <div id="secM3L3MultiPeriod" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">The $N$-Period Recombining Binomial Model</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    We split the lifetime $T$ into $N$ steps of length $\delta t = T/N$. Let's trace how the recursive formula generalizes to time $0$ via mathematical induction.
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-family:var(--font-family-sans); margin-bottom:1.5rem;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Mathematical Induction Proof</h4>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color:#4b5563; margin-bottom: 0.75rem;">
+                        <strong>1. Conjectured Step Pricing</strong>: $V(N - k, j) = D^k \sum_{i=0}^k \binom{k}{i} (p^*)^i (1 - p^*)^{k - i} V(N, j + i)$.
+                        <br>
+                        <strong>2. One-Step Relationship</strong>: $V(N-k, j) = D \left[ p^* V(N - (k-1), j+1) + (1-p^*) V(N - (k-1), j) \right]$.
+                        <br>
+                        <strong>3. Substituting Inductive Hypotheses</strong>:
+                        $$V(N-k, j) = D^k \left[ \sum_{i=0}^{k-1} \binom{k-1}{i} (p^*)^{i+1} (1-p^*)^{k-1-i} V_{j+1+i} + \sum_{i=0}^{k-1} \binom{k-1}{i} (p^*)^i (1-p^*)^{k-i} V_{j+i} \right]$$
+                        <strong>4. Realignment of Index (Shift $i+1 \to i$)</strong>:
+                        $$= D^k \left[ \sum_{i=1}^{k} \binom{k-1}{i-1} (p^*)^i (1-p^*)^{k-i} V_{j+i} + \sum_{i=0}^{k-1} \binom{k-1}{i} (p^*)^i (1-p^*)^{k-i} V_{j+i} \right]$$
+                        <strong>5. Isolating Endpoints &amp; Applying Combinatorial Identity $\binom{k-1}{i-1} + \binom{k-1}{i} = \binom{k}{i}$</strong>:
+                        $$V(N - k, j) = D^k \sum_{i=0}^{k} \binom{k}{i} (p^*)^i (1 - p^*)^{k - i} \max[S(N, j + i) - E, 0]$$
+                    </p>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; font-size:0.85rem; line-height:1.6; color:#4b5563;">
+                    <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Term 2: Cash strike payment</h4>
+                        <p style="font-size: 0.8rem; margin: 0; line-height: 1.5;">
+                            $$E D^N \sum_{i=0}^N \binom{N}{i} (p^*)^i (1 - p^*)^{N - i} \mathbf{1}_{S(N, i) > E}$$
+                            Simplifies to $E e^{-rT} \mathbb{P}^*[S_T > E]$, which is the binomial analogue of $E e^{-rT} N(d_2)$.
+                        </p>
+                    </div>
+                    <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Term 1: Stock delivery &amp; $\bar{p}$</h4>
+                        <p style="font-size: 0.8rem; margin: 0; line-height: 1.5;">
+                            $$S_0 \sum_{i=0}^N \binom{N}{i} (\bar{p})^i (1 - \bar{p})^{N - i} \mathbf{1}_{S(N, i) > E}$$
+                            where $\bar{p} = D u p^*$. This is the binomial analogue of $S_0 N(d_1)$, representing the Q-bar stock measure probability of expiring in-the-money.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Complete Markets & The BIG Idea -->
+    <div id="secM3L3BigIdea" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">The BIG Idea: Equivalence of Methods</h3>
+                    <p style="font-size: 0.85rem; line-height: 1.6; color: #4b5563;">
+                        In the Black-Scholes setting, the **no-arbitrage replication approach** and the **equivalent martingale measure approach** are strictly equivalent!
+                        <br><br>
+                        - **No Arbitrage implies EMM**: To prevent arbitrage, we can rewrite the delta hedging equation to define a risk-neutral EMM probability $p^*$.
+                        <br>
+                        - **EMM implies No Arbitrage**: For an equivalent martingale measure to exist, we require $0 < p^* < 1$, which translates to $d < 1/D < u$.
+                    </p>
+
+                    <h4 style="font-family: var(--font-family-sans); font-size: 0.95rem; font-weight: 700; color: var(--accent); margin-top: 0.75rem; margin-bottom: 0.25rem;">Arbitrage Boundaries:</h4>
+                    <ul style="padding-left: 1.2rem; line-height: 1.5; font-size: 0.8rem; color: #4b5563; margin-bottom: 0;">
+                        <li><strong>If $p^* \ge 1 \iff u \le 1/D$</strong>: Arbitrage opportunity exists by short-selling the stock and investing in cash (guaranteed minimum return).</li>
+                        <li><strong>If $p^* \le 0 \iff 1/D \le d$</strong>: Arbitrage opportunity exists by borrowing cash to buy the stock.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Complete vs. Incomplete Markets</h3>
+                    <p style="font-size: 0.85rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        <strong>Complete Markets</strong>: A market where there are enough tradeable instruments to perfectly replicate and hedge all risk sources.
+                    </p>
+                    
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 0.75rem;">
+                        <div style="font-size: 0.82rem; font-weight: 700; color: var(--accent); margin-bottom: 0.25rem;">Redundancy &amp; Hedging</div>
+                        <p style="font-size: 0.78rem; line-height: 1.4; color: #4b5563; margin: 0;">
+                            In the Black-Scholes world, options are **redundant securities**: they do not introduce new risk factors and can be perfectly replicated by trading the underlying stock. This is why no-arbitrage replication pricing works flawlessly.
+                        </p>
+                    </div>
+
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0;">
+                        <strong>Incomplete Markets</strong>: Markets where we cannot find enough tradeable assets to hedge the risk sources (e.g. interest rate bond markets, where rates are not directly tradeable, requiring us to hedge with other bonds). We will explore this extensively in <strong>Module 4</strong>!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: Dynamic Tree Sandbox -->
+    <div id="secM3L3Sandbox" style="display: none;">
+        <div class="container" style="grid-template-columns: 330px 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <!-- Inputs Panel -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem; font-family: var(--font-family-sans); font-size: 0.85rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom:1rem;">Inputs</h3>
+                
+                <div style="display:flex; flex-direction:column; gap:1.1rem;">
+                    <!-- Option Type -->
+                    <div>
+                        <span style="font-weight:700; display:block; margin-bottom:0.25rem;">Option Type</span>
+                        <select id="selectM3L3OptType" onchange="updateM3L3Sandbox()" style="width:100%; padding:0.4rem; border-radius:6px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color); font-weight:600;">
+                            <option value="call">European Call</option>
+                            <option value="put">European Put</option>
+                        </select>
+                    </div>
+
+                    <!-- Stock Price -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Stock Price ($S_0$):</span>
+                            <span id="valM3L3Stock" style="color:var(--accent);">100</span>
+                        </div>
+                        <input id="slideM3L3Stock" type="range" min="30" max="170" step="5" value="100" style="width:100%; cursor:pointer;" oninput="updateM3L3Sandbox()">
+                    </div>
+
+                    <!-- Strike Price -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Strike Price ($E$):</span>
+                            <span id="valM3L3Strike" style="color:var(--accent);">100</span>
+                        </div>
+                        <input id="slideM3L3Strike" type="range" min="30" max="170" step="5" value="100" style="width:100%; cursor:pointer;" oninput="updateM3L3Sandbox()">
+                    </div>
+
+                    <!-- Volatility -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Volatility ($\sigma$):</span>
+                            <span id="valM3L3Vol" style="color:var(--accent);">20%</span>
+                        </div>
+                        <input id="slideM3L3Vol" type="range" min="5" max="80" step="5" value="20" style="width:100%; cursor:pointer;" oninput="updateM3L3Sandbox()">
+                    </div>
+
+                    <!-- Time to Expiry -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Time to Expiry ($T$):</span>
+                            <span id="valM3L3Time" style="color:var(--accent);">1.00 Year</span>
+                        </div>
+                        <input id="slideM3L3Time" type="range" min="0.2" max="2.0" step="0.1" value="1.0" style="width:100%; cursor:pointer;" oninput="updateM3L3Sandbox()">
+                    </div>
+
+                    <!-- Rate -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Risk-Free Rate ($r$):</span>
+                            <span id="valM3L3Rate" style="color:var(--accent);">5.0%</span>
+                        </div>
+                        <input id="slideM3L3Rate" type="range" min="0" max="12" step="0.5" value="5" style="width:100%; cursor:pointer;" oninput="updateM3L3Sandbox()">
+                    </div>
+
+                    <!-- Tree Steps -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Steps ($N$):</span>
+                            <span id="valM3L3Steps" style="color:var(--accent);">4 Steps</span>
+                        </div>
+                        <input id="slideM3L3Steps" type="range" min="1" max="6" step="1" value="4" style="width:100%; cursor:pointer;" oninput="updateM3L3Sandbox()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visualization Canvas -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.75rem;">
+                        <h3 style="margin: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Recombining Binomial Tree</h3>
+                        <div style="display:flex; gap:0.5rem; font-size:0.75rem; color:#4b5563; font-weight:700;">
+                            <span>$u = <span id="outM3L3ValU">1.10</span>$</span>
+                            <span>$d = <span id="outM3L3ValD">0.91</span>$</span>
+                            <span>$p^* = <span id="outM3L3ValP">0.53</span>$</span>
+                        </div>
+                    </div>
+                    
+                    <div style="border: 1px solid var(--card-border); border-radius: 8px; background: #0f172a; padding: 0.5rem; overflow-x: auto;">
+                        <svg id="m3l3TreeSvg" width="620" height="340" style="display:block; margin:auto;"></svg>
+                    </div>
+                </div>
+
+                <div style="background: var(--metric-bg); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin-top: 0.75rem; text-align:center;">
+                    <div>
+                        <div style="font-size: 0.65rem; color:#6b7280; font-weight:700; text-transform:uppercase;">Binomial Option Value:</div>
+                        <div id="outM3L3Price" style="font-size:1.15rem; font-weight:800; color:var(--accent);">0.00</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.65rem; color:#6b7280; font-weight:700; text-transform:uppercase;">Initial Delta ($\Delta_0$):</div>
+                        <div id="outM3L3Delta" style="font-size:1.15rem; font-weight:800; color:var(--text-color);">0.000</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.65rem; color:#6b7280; font-weight:700; text-transform:uppercase;">Recombination Check:</div>
+                        <div style="font-size:1.15rem; font-weight:800; color:#10b981;">u &times; d = 1.00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Solved Exercises -->
+    <div id="secM3L3Exercises" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Option Pricing Models Solved Exercises</h3>
+                <p style="font-size: 0.88rem; line-height: 1.5; color: #4b5563; margin-bottom: 1.5rem;">
+                    Examine detailed mathematical proofs and quantitative solutions connecting discrete and continuous pricing:
+                </p>
+
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    
+                    <!-- Exercise 1 -->
+                    <details style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden;">
+                        <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
+                            Exercise 1: Feynman-Kac Bridge Verification
+                        </summary>
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                            <strong>Problem:</strong><br>
+                            Prove that the solution to the custom PDE:
+                            $$\frac{\partial V}{\partial t} + \alpha S \frac{\partial V}{\partial S} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} - r V = 0$$
+                            with terminal payoff $V(S, T) = S^k$ is given by $V(S, t) = S^k \exp\left( \left[ k\alpha + \frac{1}{2}k(k-1)\sigma^2 - r \right](T-t) \right)$ using both:
+                            1. Direct SDE integration via Geometric Brownian Motion expectation.
+                            2. Substitution of the ansatz into the PDE.
+                            <hr style="border:0; border-top:1px solid var(--card-border); margin:1rem 0;">
+                            <strong>Detailed Solution:</strong><br>
+                            <p><strong>Part 1: Expectation Method</strong><br>
+                            Under the stochastic process, the stock evolves under drift $\alpha$:
+                            $$S_T = S_t \exp\left( \left( \alpha - \frac{1}{2}\sigma^2 \right)(T-t) + \sigma (W_T - W_t) \right)$$
+                            Taking the expectation of the discounted payoff $V(S, t) = e^{-r(T-t)} \mathbb{E}[ S_T^k \mid S_t ]$:
+                            $$V(S, t) = e^{-r(T-t)} S_t^k \exp\left( k\left( \alpha - \frac{1}{2}\sigma^2 \right)(T-t) \right) \mathbb{E}\left[ \exp(k \sigma (W_T - W_t)) \right]$$
+                            Using the normal moment generating function $\mathbb{E}[e^{\theta Z}] = e^{\frac{1}{2}\theta^2 \text{Var}(Z)}$:
+                            $$\mathbb{E}\left[ \exp(k \sigma (W_T - W_t)) \right] = \exp\left( \frac{1}{2} k^2 \sigma^2 (T-t) \right)$$
+                            Multiplying terms:
+                            $$V(S, t) = S_t^k \exp\left( \left[ k\alpha - \frac{1}{2}k\sigma^2 + \frac{1}{2}k^2\sigma^2 - r \right](T-t) \right)$$
+                            Simplifying the exponent gives exactly the stated solution.
+                            </p>
+                            <p><strong>Part 2: PDE Substitution Method</strong><br>
+                            Let $V(S, t) = S^k e^{\gamma(T-t)}$. Calculate partial derivatives:
+                            $$\frac{\partial V}{\partial t} = -\gamma S^k e^{\gamma(T-t)} = -\gamma V \quad , \quad \frac{\partial V}{\partial S} = k S^{k-1} e^{\gamma(T-t)} = \frac{k}{S} V$$
+                            $$\frac{\partial^2 V}{\partial S^2} = k(k-1) S^{k-2} e^{\gamma(T-t)} = \frac{k(k-1)}{S^2} V$$
+                            Substitute these into the custom PDE:
+                            $$-\gamma V + \alpha S \left( \frac{k}{S} V \right) + \frac{1}{2}\sigma^2 S^2 \left( \frac{k(k-1)}{S^2} V \right) - r V = 0$$
+                            Dividing by non-zero $V$:
+                            $$-\gamma + k\alpha + \frac{1}{2}k(k-1)\sigma^2 - r = 0 \implies \gamma = k\alpha + \frac{1}{2}k(k-1)\sigma^2 - r$$
+                            The PDE is perfectly satisfied.
+                            </p>
+                        </div>
+                    </details>
+
+                    <!-- Exercise 2 -->
+                    <details style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden;">
+                        <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
+                            Exercise 2: Discrete Replicating Portfolio Construction
+                        </summary>
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                            <strong>Problem:</strong><br>
+                            In a one-period model, let $S_0 = 100$, strike $E = 100$, up factor $u = 1.15$, down factor $d = 0.85$, and risk-free rate $r = 5.0\%$ per period.
+                            Calculate:
+                            1. The exact replicating stock holdings ($\Delta$) and cash bond holdings ($B$) for a European Call.
+                            2. Verify that replicating wealth exactly covers Call payoffs in both states.
+                            <hr style="border:0; border-top:1px solid var(--card-border); margin:1rem 0;">
+                            <strong>Detailed Solution:</strong><br>
+                            <p><strong>Part 1: Portfolio Variables</strong><br>
+                            First, evaluate stock prices and Call payoffs:
+                            * Up State: $S_u = 115 \implies V_u = \max(115 - 100, 0) = 15$.
+                            * Down State: $S_d = 85 \implies V_d = \max(85 - 100, 0) = 0$.
+                            Calculate delta:
+                            $$\Delta = \frac{V_u - V_d}{(u-d)S_0} = \frac{15 - 0}{(1.15 - 0.85) \times 100} = \frac{15}{30} = 0.50 \text{ shares}$$
+                            Replicating cash bond holdings ($B$) must satisfy:
+                            $$B = e^{-r \Delta t} \frac{u V_d - d V_u}{u - d} = e^{-0.05} \frac{1.15 \times 0 - 0.85 \times 15}{1.15 - 0.85} = e^{-0.05} \frac{-12.75}{0.30} \approx 0.95123 \times (-42.50) \approx -40.427$$
+                            </p>
+                            <p><strong>Part 2: Value Verification</strong><br>
+                            Initial replicating portfolio cost:
+                            $$V_0 = \Delta S_0 + B = 0.50 \times 100 - 40.427 = \$9.573$$
+                            Let's verify terminal state values:
+                            * **Up State terminal wealth:**
+                              $$\Delta S_u + B e^{r \Delta t} = 0.50 \times 115 - 40.427 \times e^{0.05} = 57.50 - 42.50 = \$15.00 \quad (\text{Perfect matches } V_u)$$
+                            * **Down State terminal wealth:**
+                              $$\Delta S_d + B e^{r \Delta t} = 0.50 \times 85 - 40.427 \times e^{0.05} = 42.50 - 42.50 = \$0.00 \quad (\text{Perfect matches } V_d)$$
+                            This matches option payoffs exactly, proving replication correctness.
+                            </p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching logic for CQF M3 L3
+    window.switchM3L3Tab = function(tab) {
+        const tabs = ['foundations', 'pdeLimit', 'multiPeriod', 'bigIdea', 'sandbox', 'exercises'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM3L3' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM3L3' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) {
+                sec.style.display = (t === tab ? 'block' : 'none');
+                if (t === tab && !sec.dataset.typeset) {
+                    if (typeof window.safeTypeset === 'function') {
+                        window.safeTypeset([sec]);
+                        sec.dataset.typeset = 'true';
+                    }
+                }
+            }
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        if (tab === 'sandbox') {
+            setTimeout(updateM3L3Sandbox, 100);
+        }
+    };
+
+    window.updateM3L3Sandbox = function() {
+        // Inputs
+        const S0 = parseFloat(document.getElementById('slideM3L3Stock').value);
+        const E = parseFloat(document.getElementById('slideM3L3Strike').value);
+        const vol = parseFloat(document.getElementById('slideM3L3Vol').value) / 100;
+        const T = parseFloat(document.getElementById('slideM3L3Time').value);
+        const r = parseFloat(document.getElementById('slideM3L3Rate').value) / 100;
+        const N = parseInt(document.getElementById('slideM3L3Steps').value);
+        const optType = document.getElementById('selectM3L3OptType').value;
+
+        // Labels
+        document.getElementById('valM3L3Stock').innerText = S0.toFixed(0);
+        document.getElementById('valM3L3Strike').innerText = E.toFixed(0);
+        document.getElementById('valM3L3Vol').innerText = (vol * 100).toFixed(0) + "%";
+        document.getElementById('valM3L3Time').innerText = T.toFixed(2) + (T === 1 ? " Year" : " Years");
+        document.getElementById('valM3L3Rate').innerText = (r * 100).toFixed(1) + "%";
+        document.getElementById('valM3L3Steps').innerText = N + (N === 1 ? " Step" : " Steps");
+
+        // CRR variables
+        const dt = T / N;
+        const u = Math.exp(vol * Math.sqrt(dt));
+        const d = 1 / u;
+        const df = Math.exp(-r * dt);
+        const p = (Math.exp(r * dt) - d) / (u - d);
+
+        // Update CRR labels
+        document.getElementById('outM3L3ValU').innerText = u.toFixed(4);
+        document.getElementById('outM3L3ValD').innerText = d.toFixed(4);
+        document.getElementById('outM3L3ValP').innerText = p.toFixed(4);
+
+        // Pre-build Stock Tree
+        let stockTree = [];
+        for (let i = 0; i <= N; i++) {
+            stockTree[i] = [];
+            for (let j = 0; j <= i; j++) {
+                stockTree[i][j] = S0 * Math.pow(u, j) * Math.pow(d, i - j);
+            }
+        }
+
+        // Backward option induction
+        let optionTree = [];
+        for (let i = 0; i <= N; i++) {
+            optionTree[i] = [];
+        }
+
+        // Terminal options
+        for (let j = 0; j <= N; j++) {
+            if (optType === 'call') {
+                optionTree[N][j] = Math.max(stockTree[N][j] - E, 0);
+            } else {
+                optionTree[N][j] = Math.max(E - stockTree[N][j], 0);
+            }
+        }
+
+        // Induct backward
+        for (let i = N - 1; i >= 0; i--) {
+            for (let j = 0; j <= i; j++) {
+                optionTree[i][j] = df * (p * optionTree[i+1][j+1] + (1 - p) * optionTree[i+1][j]);
+            }
+        }
+
+        // Initial Delta
+        let delta0 = 0;
+        if (N >= 1) {
+            delta0 = (optionTree[1][1] - optionTree[1][0]) / (stockTree[1][1] - stockTree[1][0]);
+        }
+
+        // Outputs
+        document.getElementById('outM3L3Price').innerText = "$" + optionTree[0][0].toFixed(2);
+        document.getElementById('outM3L3Delta').innerText = delta0.toFixed(3);
+
+        // Render Tree in SVG
+        renderM3L3BinomialTree(stockTree, optionTree, N);
+    };
+
+    function renderM3L3BinomialTree(stock, option, N) {
+        const svg = document.getElementById('m3l3TreeSvg');
+        if (!svg) return;
+        svg.innerHTML = ''; // clear
+
+        const width = 620;
+        const height = 340;
+        
+        // Node layout scaling
+        const colWidth = width / (N + 0.6);
+        const startX = colWidth * 0.4;
+        const cy = height / 2;
+        const rowHeight = 44;
+
+        // Group element for drawings
+        const gLines = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        const gNodes = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        svg.appendChild(gLines);
+        svg.appendChild(gNodes);
+
+        // Nodes coordinates array
+        let coords = [];
+
+        for (let i = 0; i <= N; i++) {
+            coords[i] = [];
+            const x = startX + i * colWidth;
+            for (let j = 0; j <= i; j++) {
+                // Centering nodes
+                const y = cy + (j - i / 2) * rowHeight;
+                coords[i][j] = {x: x, y: y};
+            }
+        }
+
+        // 1. Draw connecting lines
+        for (let i = 0; i < N; i++) {
+            for (let j = 0; j <= i; j++) {
+                const n0 = coords[i][j];
+                const nUp = coords[i+1][j+1];
+                const nDn = coords[i+1][j];
+
+                // Up line
+                const lUp = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                lUp.setAttribute('x1', n0.x);
+                lUp.setAttribute('y1', n0.y);
+                lUp.setAttribute('x2', nUp.x);
+                lUp.setAttribute('y2', nUp.y);
+                lUp.setAttribute('stroke', '#475569');
+                lUp.setAttribute('stroke-width', '1.5');
+                gLines.appendChild(lUp);
+
+                // Down line
+                const lDn = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                lDn.setAttribute('x1', n0.x);
+                lDn.setAttribute('y1', n0.y);
+                lDn.setAttribute('x2', nDn.x);
+                lDn.setAttribute('y2', nDn.y);
+                lDn.setAttribute('stroke', '#475569');
+                lDn.setAttribute('stroke-width', '1.5');
+                gLines.appendChild(lDn);
+            }
+        }
+
+        // 2. Draw nodes and label values
+        for (let i = 0; i <= N; i++) {
+            for (let j = 0; j <= i; j++) {
+                const coord = coords[i][j];
+                const S_val = stock[i][j];
+                const V_val = option[i][j];
+
+                // Node Circle
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', coord.x);
+                circle.setAttribute('cy', coord.y);
+                circle.setAttribute('r', '8');
+                circle.setAttribute('fill', '#1e293b');
+                circle.setAttribute('stroke', i === 0 ? 'var(--accent)' : '#8b5cf6');
+                circle.setAttribute('stroke-width', '2.5');
+                circle.setAttribute('cursor', 'pointer');
+                
+                // Add hover title for quick check
+                const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+                title.textContent = `Node (${i}, ${j})\nStock: $${S_val.toFixed(2)}\nOption: $${V_val.toFixed(2)}`;
+                circle.appendChild(title);
+                gNodes.appendChild(circle);
+
+                // Values display
+                // Since N can make drawing tight, we offset labels beautifully
+                const txtS = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                txtS.setAttribute('x', coord.x + 10);
+                txtS.setAttribute('y', coord.y - 3);
+                txtS.setAttribute('fill', '#f8fafc');
+                txtS.setAttribute('font-size', '8px');
+                txtS.setAttribute('font-weight', '700');
+                txtS.setAttribute('font-family', 'monospace');
+                txtS.textContent = S_val.toFixed(1);
+                gNodes.appendChild(txtS);
+
+                const txtV = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                txtV.setAttribute('x', coord.x + 10);
+                txtV.setAttribute('y', coord.y + 7);
+                txtV.setAttribute('fill', 'var(--accent)');
+                txtV.setAttribute('font-size', '8px');
+                txtV.setAttribute('font-weight', '700');
+                txtV.setAttribute('font-family', 'monospace');
+                txtV.textContent = V_val.toFixed(1);
+                gNodes.appendChild(txtV);
+            }
+        }
+    }
+</script>

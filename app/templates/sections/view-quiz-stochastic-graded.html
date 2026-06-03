@@ -1,0 +1,628 @@
+<div id="view-quiz-stochastic-graded" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: #1e293b; margin-bottom: 0.5rem; letter-spacing: -0.025em;">Quiz: Stochastic Models</h1>
+        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Graded Assignment covering CIR processes, Vasicek yield limits, arbitrage construction, and bond option pricing</div>
+    </header>
+    
+    <div class="container" style="max-width: 900px; grid-template-columns: 1fr; gap: 2rem;">
+        <p style="margin-bottom: 2rem; font-size: 1.15rem; color: #475569; line-height: 1.7;">
+            Test your understanding with these exam-style problems from Coursera. Select your options or enter your numerical answers, then click <strong>Submit</strong> to get instant feedback. Expand the <strong>Show Mathematical Solution & Derivation</strong> card at the bottom of each question to review the full step-by-step analytical proof.
+        </p>
+
+        <!-- QUESTION 1 -->
+        <div class="quiz-interactive-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #6366f1;">Question 1</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: #1e293b; line-height: 1.7; margin-bottom: 1.5rem;">
+                Consider two CIR-type processes $X_1(t)$ and $X_2(t)$ with dynamics of the form
+                <span style="display: block; text-align: center; margin: 1.5rem 0; font-size: 1.2rem; font-weight: normal; color: #0f172a;">
+                    $$dX_i(t) = \kappa_i(\theta_i - X_i(t)) dt + \sigma_i\sqrt{X_i(t)} dW_i(t)$$
+                </span>
+                for mean-reversion level and speed parameters $\theta_i$ and $\kappa_i$, respectively, volatility parameters $\sigma_i$, and where $W_1(t)$ and $W_2(t)$ are two independent standard Brownian motions. Which of the following statements about the sum $X(t) = X_1(t) + X_2(t)$ is true?
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#6366f1'; this.style.background='#f8fafc'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='#ffffff'">
+                    <input type="radio" name="q1_option" value="q1_1" style="margin-top: 0.25rem; accent-color: #4f46e5;" />
+                    <span style="font-size: 1rem; color: #334155; line-height: 1.5;">$X(t)$ is a CIR-type process for any choice of parameters $\theta_i, \kappa_i, \sigma_i$.</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#6366f1'; this.style.background='#f8fafc'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='#ffffff'">
+                    <input type="radio" name="q1_option" value="q1_2" style="margin-top: 0.25rem; accent-color: #4f46e5;" />
+                    <span style="font-size: 1rem; color: #334155; line-height: 1.5;">$X(t)$ is a CIR-type process if $\kappa_1 = \kappa_2$ and $\theta_1 = \theta_2$.</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#6366f1'; this.style.background='#f8fafc'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='#ffffff'">
+                    <input type="radio" name="q1_option" value="q1_3" style="margin-top: 0.25rem; accent-color: #4f46e5;" />
+                    <span style="font-size: 1rem; color: #334155; line-height: 1.5;">$X(t)$ is a CIR-type process if $\kappa_1 = \kappa_2$ and $\sigma_1 = \sigma_2$.</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQ1()" style="background: #4f46e5; color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#4338ca'" onmouseout="this.style.background='#4f46e5'">Submit Answer</button>
+                </div>
+                <div id="q1-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid #cbd5e1; border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: #f8fafc; cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid #cbd5e1; background: #ffffff; font-size: 1rem; color: #334155; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Derivation:</strong></p>
+                    <p>Let's define the sum process $X(t) = X_1(t) + X_2(t)$. Applying the linearity of stochastic differentials, the SDE of the sum is:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto;">
+                        $$ dX(t) = dX_1(t) + dX_2(t) = \left[ \kappa_1(\theta_1 - X_1(t)) + \kappa_2(\theta_2 - X_2(t)) \right] dt + \sigma_1 \sqrt{X_1(t)} dW_1(t) + \sigma_2 \sqrt{X_2(t)} dW_2(t) $$
+                    </div>
+                    <p>For $X(t)$ to be a valid CIR-type process, it must satisfy two conditions:</p>
+                    <ol style="margin-left: 1.5rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <li>
+                            <strong>Drift Condition:</strong> The drift must be of the form $\kappa_X(\theta_X - X(t)) = \kappa_X(\theta_X - (X_1(t) + X_2(t)))$. 
+                            Comparing this to the actual drift:
+                            $$\kappa_1\theta_1 + \kappa_2\theta_2 - \kappa_1 X_1(t) - \kappa_2 X_2(t) \equiv \kappa_X\theta_X - \kappa_X X_1(t) - \kappa_X X_2(t)$$
+                            This identity holds for all values of $X_1(t)$ and $X_2(t)$ if and only if the speed parameters are identical:
+                            $$\kappa_1 = \kappa_2 = \kappa_X$$
+                            Under this restriction, the drift simplifies to $\kappa_1((\theta_1 + \theta_2) - X(t))$, which matches the CIR drift form with speed $\kappa_1$ and long-term mean $\theta_1 + \theta_2$.
+                        </li>
+                        <li>
+                            <strong>Diffusion Condition (Quadratic Variation):</strong> The diffusion term must be of the form $\sigma_X \sqrt{X(t)} dW^*(t)$ for a new Brownian motion $W^*(t)$. Its quadratic variation must satisfy:
+                            $$ d[X, X]_t = \sigma_X^2 X(t) dt = \sigma_X^2 (X_1(t) + X_2(t)) dt $$
+                            Using the independence of $W_1(t)$ and $W_2(t)$ ($d[W_1, W_2]_t = 0$), the actual quadratic variation of the sum's diffusion is:
+                            $$ d[X, X]_t = \sigma_1^2 X_1(t) dt + \sigma_2^2 X_2(t) dt $$
+                            Comparing the coefficients of $X_1(t)$ and $X_2(t)$, we must have:
+                            $$\sigma_1^2 = \sigma_2^2 = \sigma_X^2 \implies \sigma_1 = \sigma_2$$
+                        </li>
+                    </ol>
+                    <p>Thus, $X(t)$ is a CIR process if and only if the speed parameters are identical ($\kappa_1 = \kappa_2$) and the volatility parameters are identical ($\sigma_1 = \sigma_2$).</p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: $X(t)$ is a CIR-type process if $\kappa_1 = \kappa_2$ and $\sigma_1 = \sigma_2$.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 2 -->
+        <div class="quiz-interactive-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #6366f1;">Question 2</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: #1e293b; line-height: 1.7; margin-bottom: 1.5rem;">
+                Consider the Vasicek model for the short rate $r(t)$:
+                <span style="display: block; text-align: center; margin: 1.5rem 0; font-size: 1.2rem; font-weight: normal; color: #0f172a;">
+                    $$dr(t) = \kappa(\theta - r(t)) dt + \sigma dW^*(t)$$
+                </span>
+                where $W^*(t)$ is a standard Brownian motion under the risk-neutral probability measure $\mathbb{Q}$ and $\kappa > 0$. Which of the following statements about the infinite maturity yield is correct?
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#6366f1'; this.style.background='#f8fafc'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='#ffffff'">
+                    <input type="radio" name="q2_option" value="q2_1" style="margin-top: 0.25rem; accent-color: #4f46e5;" />
+                    <span style="font-size: 1rem; color: #334155; line-height: 1.5;">The yield curve $T \mapsto y(t, T)$ does not converge for $T \to \infty$.</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#6366f1'; this.style.background='#f8fafc'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='#ffffff'">
+                    <input type="radio" name="q2_option" value="q2_2" style="margin-top: 0.25rem; accent-color: #4f46e5;" />
+                    <span style="font-size: 1rem; color: #334155; line-height: 1.5;">$\lim_{T \to \infty} y(t, T) = \theta - \frac{\sigma^2}{2\kappa^2}$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#6366f1'; this.style.background='#f8fafc'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='#ffffff'">
+                    <input type="radio" name="q2_option" value="q2_3" style="margin-top: 0.25rem; accent-color: #4f46e5;" />
+                    <span style="font-size: 1rem; color: #334155; line-height: 1.5;">$\lim_{T \to \infty} y(t, T) = \theta$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#6366f1'; this.style.background='#f8fafc'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='#ffffff'">
+                    <input type="radio" name="q2_option" value="q2_4" style="margin-top: 0.25rem; accent-color: #4f46e5;" />
+                    <span style="font-size: 1rem; color: #334155; line-height: 1.5;">$\lim_{T \to \infty} y(t, T) = \theta + \frac{1}{\kappa} r(t)$</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQ2()" style="background: #4f46e5; color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#4338ca'" onmouseout="this.style.background='#4f46e5'">Submit Answer</button>
+                </div>
+                <div id="q2-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid #cbd5e1; border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: #f8fafc; cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid #cbd5e1; background: #ffffff; font-size: 1rem; color: #334155; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Derivation:</strong></p>
+                    <p>Under the Vasicek model, zero-coupon bond prices are exponential affine: $P(t, T) = \exp(A(t, T) - B(t, T)r(t))$, where $\tau = T-t$ and the pre-calculated sensitivity functions are:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto;">
+                        $$ B(t, T) = \frac{1 - e^{-\kappa\tau}}{\kappa} $$
+                        $$ A(t, T) = \left(\theta - \frac{\sigma^2}{2\kappa^2}\right)(B(t, T) - \tau) - \frac{\sigma^2}{4\kappa}B(t, T)^2 $$
+                    </div>
+                    <p>The continuously compounded yield to maturity $y(t, T)$ is given by:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto;">
+                        $$ y(t, T) = -\frac{\ln P(t, T)}{T - t} = \frac{B(t, T)r(t) - A(t, T)}{\tau} $$
+                    </div>
+                    <p>Now, let's analyze the limit of each term as maturity goes to infinity ($\tau \to \infty$):</p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <li>
+                            <strong>Short Rate Term:</strong> Since $\lim_{\tau \to \infty} B(t, T) = \frac{1}{\kappa}$, the short rate coefficient vanishes:
+                            $$\lim_{\tau \to \infty} \frac{B(t, T)r(t)}{\tau} = \lim_{\tau \to \infty} \frac{r(t)}{\kappa \tau} = 0$$
+                        </li>
+                        <li>
+                            <strong>Yield Factor Term:</strong> Substituting the definition of $A(t, T)$:
+                            $$\lim_{\tau \to \infty} \frac{-A(t, T)}{\tau} = \lim_{\tau \to \infty} \left[ -\left(\theta - \frac{\sigma^2}{2\kappa^2}\right)\left(\frac{B(t,T)}{\tau} - 1\right) + \frac{\sigma^2}{4\kappa} \frac{B(t,T)^2}{\tau} \right]$$
+                            Substituting $\lim_{\tau \to \infty} \frac{B(t, T)}{\tau} = 0$ and $\lim_{\tau \to \infty} B(t, T)^2 = \frac{1}{\kappa^2}$:
+                            $$\lim_{\tau \to \infty} \frac{-A(t, T)}{\tau} = -\left(\theta - \frac{\sigma^2}{2\kappa^2}\right)(-1) + 0 = \theta - \frac{\sigma^2}{2\kappa^2}$$
+                        </li>
+                    </ul>
+                    <p>Combining the terms yields the infinite maturity yield limit:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto;">
+                        $$ \lim_{T \to \infty} y(t, T) = \theta - \frac{\sigma^2}{2\kappa^2} $$
+                    </div>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: $\lim_{T \to \infty} y(t, T) = \theta - \frac{\sigma^2}{2\kappa^2}$</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- PORTFOLIO PREAMBLE CARD -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 2rem; margin-bottom: 2rem; border-left: 4px solid #4f46e5;">
+            <h3 style="font-size: 1.2rem; font-weight: 700; color: #1e293b; margin-bottom: 0.75rem;">One-Period Forward Curve Arbitrage Construction (Q3, Q4, Q5)</h3>
+            <p style="font-size: 1rem; color: #475569; line-height: 1.7; margin-bottom: 1.25rem;">
+                Consider the following one-period model for the forward curve:
+                $$f(0, T) = 0.04, \quad T \ge 0$$
+                $$f(\omega, 1, T) = \begin{cases} 0.06, & T \ge 1, \omega = \omega_1 \\ 0.02, & T \ge 1, \omega = \omega_2 \end{cases}$$
+                where $\Omega = \{\omega_1, \omega_2\}$ with objective probabilities $\mathbb{P}[\omega_i] > 0, i = 1, 2$.
+            </p>
+            <p style="font-size: 1rem; color: #475569; line-height: 1.7; margin-bottom: 0;">
+                Show that this model allows for arbitrage. Construct a portfolio consisting of three zero-coupon bonds maturing in 1, 2, and 3 years with initial value zero and such that its value at time $t = 1$ equals 1 in both states $\omega_1$ and $\omega_2$. Answer the following three questions (Q3, Q4, and Q5).
+            </p>
+        </div>
+
+        <!-- QUESTION 3 -->
+        <div class="quiz-interactive-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #6366f1;">Question 3</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numerical Input</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: #1e293b; line-height: 1.7; margin-bottom: 1.5rem;">
+                a) How many units of the zero-coupon bond maturing in 1 year do you need? Round your answer to the nearest integer.
+            </p>
+
+            <!-- Text Input -->
+            <div style="margin-bottom: 1.5rem;">
+                <input type="text" id="q3_input" placeholder="Enter answer here" style="width: 100%; max-width: 320px; padding: 0.75rem 1rem; font-size: 1rem; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#4f46e5'" onblur="this.style.borderColor='#cbd5e1'" />
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQ3()" style="background: #4f46e5; color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#4338ca'" onmouseout="this.style.background='#4f46e5'">Submit Answer</button>
+                </div>
+                <div id="q3-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid #cbd5e1; border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: #f8fafc; cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid #cbd5e1; background: #ffffff; font-size: 1rem; color: #334155; line-height: 1.75;">
+                    <p><strong>Step-by-Step Portfolio Solver:</strong></p>
+                    <p>First, let's calculate the pricing of the zero-coupon bonds $P(t, T)$ using the forward rate relationship $P(t, T) = \exp\left( -\int_t^T f(t, s) ds \right)$:</p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <li>
+                            <strong>At time $t = 0$:</strong>
+                            $$P(0, 1) = e^{-0.04 \times 1} = e^{-0.04} \approx 0.960789$$
+                            $$P(0, 2) = e^{-0.04 \times 2} = e^{-0.08} \approx 0.923116$$
+                            $$P(0, 3) = e^{-0.04 \times 3} = e^{-0.12} \approx 0.886920$$
+                        </li>
+                        <li>
+                            <strong>At time $t = 1$ (where the 1-year bond matures: $P(1, 1) = 1$):</strong>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.25rem; display: flex; flex-direction: column; gap: 0.25rem;">
+                                <li>
+                                    <strong>State $\omega_1$:</strong>
+                                    $$P(\omega_1, 1, 2) = e^{-0.06 \times (2 - 1)} = e^{-0.06} \approx 0.941765$$
+                                    $$P(\omega_1, 1, 3) = e^{-0.06 \times (3 - 1)} = e^{-0.12} \approx 0.886920$$
+                                </li>
+                                <li>
+                                    <strong>State $\omega_2$:</strong>
+                                    $$P(\omega_2, 1, 2) = e^{-0.02 \times (2 - 1)} = e^{-0.02} \approx 0.980199$$
+                                    $$P(\omega_2, 1, 3) = e^{-0.02 \times (3 - 1)} = e^{-0.04} \approx 0.960789$$
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <p>Let $h_1, h_2, h_3$ be the units of 1-year, 2-year, and 3-year bonds respectively. We form a system of 3 linear equations based on the portfolio conditions:</p>
+                    <ol style="margin-left: 1.5rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <li>
+                            <strong>Initial Cost is Zero:</strong>
+                            $$ h_1 P(0, 1) + h_2 P(0, 2) + h_3 P(0, 3) = 0 \implies h_1 e^{-0.04} + h_2 e^{-0.08} + h_3 e^{-0.12} = 0 \quad \text{--- (Eq 1)} $$
+                        </li>
+                        <li>
+                            <strong>Portfolio Value at $t=1$ in State $\omega_1$ is 1:</strong>
+                            $$ h_1 \cdot 1 + h_2 e^{-0.06} + h_3 e^{-0.12} = 1 \quad \text{--- (Eq 2)} $$
+                        </li>
+                        <li>
+                            <strong>Portfolio Value at $t=1$ in State $\omega_2$ is 1:</strong>
+                            $$ h_1 \cdot 1 + h_2 e^{-0.02} + h_3 e^{-0.04} = 1 \quad \text{--- (Eq 3)} $$
+                        </li>
+                    </ol>
+                    <p>To solve this system:</p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <li>
+                            Subtract Eq 2 from Eq 3 to eliminate $h_1$:
+                            $$ h_2 \left( e^{-0.02} - e^{-0.06} \right) + h_3 \left( e^{-0.04} - e^{-0.12} \right) = 0 $$
+                            $$ h_2 (0.038434) + h_3 (0.073869) = 0 \implies h_2 \approx -1.921963 h_3 $$
+                        </li>
+                        <li>
+                            From Eq 1, express $h_1$ in terms of $h_2$ and $h_3$:
+                            $$ h_1 = -h_2 e^{-0.04} - h_3 e^{-0.08} $$
+                        </li>
+                        <li>
+                            Substitute $h_1$ into Eq 2:
+                            $$ -h_2 e^{-0.04} - h_3 e^{-0.08} + h_2 e^{-0.06} + h_3 e^{-0.12} = 1 \implies h_2 \left( e^{-0.06} - e^{-0.04} \right) + h_3 \left( e^{-0.12} - e^{-0.08} \right) = 1 $$
+                        </li>
+                        <li>
+                            Substitute $h_2 \approx -1.921963 h_3$:
+                            $$ h_3 \left[ -1.921963 \left( e^{-0.06} - e^{-0.04} \right) + \left( e^{-0.12} - e^{-0.08} \right) \right] = 1 $$
+                            $$ h_3 \left[ -1.921963 \times (-0.019025) - 0.036196 \right] = 1 $$
+                            $$ h_3 \left[ 0.036565 - 0.036196 \right] = 1 \implies 0.000369 \times h_3 = 1 \implies h_3 \approx 2708.13 $$
+                        </li>
+                        <li>
+                            Solve for $h_2$ and $h_1$:
+                            $$ h_2 \approx -1.921963 \times 2708.13 \approx -5204.92 $$
+                            $$ h_1 = -(-5204.92) e^{-0.04} - 2708.13 e^{-0.08} \approx 2500.92 $$
+                        </li>
+                    </ul>
+                    <p>Rounding to the nearest integer, we find:</p>
+                    <p><strong>$h_1 = 2501$ units</strong></p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: 2501</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 4 -->
+        <div class="quiz-interactive-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #6366f1;">Question 4</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numerical Input</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: #1e293b; line-height: 1.7; margin-bottom: 1.5rem;">
+                b) How many units of the zero-coupon bond maturing in 2 years do you need? Round your answer to the nearest integer.
+            </p>
+
+            <!-- Text Input -->
+            <div style="margin-bottom: 1.5rem;">
+                <input type="text" id="q4_input" placeholder="Enter answer here" style="width: 100%; max-width: 320px; padding: 0.75rem 1rem; font-size: 1rem; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#4f46e5'" onblur="this.style.borderColor='#cbd5e1'" />
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQ4()" style="background: #4f46e5; color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#4338ca'" onmouseout="this.style.background='#4f46e5'">Submit Answer</button>
+                </div>
+                <div id="q4-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid #cbd5e1; border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: #f8fafc; cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid #cbd5e1; background: #ffffff; font-size: 1rem; color: #334155; line-height: 1.75;">
+                    <p><strong>Step-by-Step Portfolio Solver:</strong></p>
+                    <p>Refer to Question 3's detailed mathematical derivation for ZCB pricing and system equations.</p>
+                    <p>By solving the linear matrix equation:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto;">
+                        $$ \begin{bmatrix} e^{-0.04} & e^{-0.08} & e^{-0.12} \\ 1 & e^{-0.06} & e^{-0.12} \\ 1 & e^{-0.02} & e^{-0.04} \end{bmatrix} \begin{bmatrix} h_1 \\ h_2 \\ h_3 \end{bmatrix} = \begin{bmatrix} 0 \\ 1 \\ 1 \end{bmatrix} $$
+                    </div>
+                    <p>We obtain the exact continuous values:</p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem;">
+                        <li>$h_1 \approx 2500.92$</li>
+                        <li>$h_2 \approx -5204.92$</li>
+                        <li>$h_3 \approx 2708.13$</li>
+                    </ul>
+                    <p>Rounding to the nearest integer, we find:</p>
+                    <p><strong>$h_2 = -5205$ units</strong> (a short position of 5205 units of the 2-year bond).</p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: -5205</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 5 -->
+        <div class="quiz-interactive-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #6366f1;">Question 5</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numerical Input</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: #1e293b; line-height: 1.7; margin-bottom: 1.5rem;">
+                c) How many units of the zero-coupon bond maturing in 3 years do you need? Round your answer to the nearest integer.
+            </p>
+
+            <!-- Text Input -->
+            <div style="margin-bottom: 1.5rem;">
+                <input type="text" id="q5_input" placeholder="Enter answer here" style="width: 100%; max-width: 320px; padding: 0.75rem 1rem; font-size: 1rem; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#4f46e5'" onblur="this.style.borderColor='#cbd5e1'" />
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQ5()" style="background: #4f46e5; color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#4338ca'" onmouseout="this.style.background='#4f46e5'">Submit Answer</button>
+                </div>
+                <div id="q5-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid #cbd5e1; border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: #f8fafc; cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid #cbd5e1; background: #ffffff; font-size: 1rem; color: #334155; line-height: 1.75;">
+                    <p><strong>Step-by-Step Portfolio Solver:</strong></p>
+                    <p>Refer to Question 3's detailed mathematical derivation for ZCB pricing and system equations.</p>
+                    <p>By solving the linear matrix equation, we obtain:</p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem;">
+                        <li>$h_1 \approx 2500.92$</li>
+                        <li>$h_2 \approx -5204.92$</li>
+                        <li>$h_3 \approx 2708.13$</li>
+                    </ul>
+                    <p>Rounding to the nearest integer, we find:</p>
+                    <p><strong>$h_3 = 2708$ units</strong></p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: 2708</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 6 -->
+        <div class="quiz-interactive-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #6366f1;">Question 6</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numerical Input</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: #1e293b; line-height: 1.7; margin-bottom: 1.5rem;">
+                Consider the following Vasicek model for the short rate $r(t)$:
+                <span style="display: block; text-align: center; margin: 1.5rem 0; font-size: 1.2rem; font-weight: normal; color: #0f172a;">
+                    $$dr(t) = 0.86(0.08 - r(t))dt + 0.01 dW^*(t), \quad r(0) = 6\%,$$
+                </span>
+                where $W^*(t)$ is a standard Brownian motion under the risk-neutral probability measure $\mathbb{Q}$. Compute the time-0 price of a put option on the 6-month bond ($T_1 = 1/2$) with expiry date in 3 months ($T_0 = 1/4$) and ATM strike price $K_1 = P(0, T_1)/P(0, T_0)$. Express your answer in basis points and round to 2 decimal places.
+            </p>
+
+            <!-- Text Input -->
+            <div style="margin-bottom: 1.5rem;">
+                <input type="text" id="q6_input" placeholder="Enter answer here" style="width: 100%; max-width: 320px; padding: 0.75rem 1rem; font-size: 1rem; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='#4f46e5'" onblur="this.style.borderColor='#cbd5e1'" />
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQ6()" style="background: #4f46e5; color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#4338ca'" onmouseout="this.style.background='#4f46e5'">Submit Answer</button>
+                </div>
+                <div id="q6-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid #cbd5e1; border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: #f8fafc; cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid #cbd5e1; background: #ffffff; font-size: 1rem; color: #334155; line-height: 1.75;">
+                    <p><strong>Step-by-Step Pricing Derivation:</strong></p>
+                    <p>The price of a European put option with expiry $T_0$ and strike $K$ on a zero-coupon bond maturing at $T_1$ under the Vasicek model is given by the standard pricing formula:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto;">
+                        $$ Put(0, T_0, T_1, K) = K P(0, T_0) N(-d_2) - P(0, T_1) N(-d_1) $$
+                    </div>
+                    <p>where the standardized limits are:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto;">
+                        $$ d_1 = \frac{\ln\left( \frac{P(0, T_1)}{K P(0, T_0)} \right) + \frac{1}{2}\sigma_p^2}{\sigma_p}, \quad d_2 = d_1 - \sigma_p $$
+                    </div>
+                    <p>Because the option is struck exactly <strong>at-the-money (ATM)</strong>, we are given $K = \frac{P(0, T_1)}{P(0, T_0)}$. This simplifies the equations dramatically:</p>
+                    <ol style="margin-left: 1.5rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <li>
+                            <strong>Strike Product:</strong> $K P(0, T_0) = \frac{P(0, T_1)}{P(0, T_0)} P(0, T_0) = P(0, T_1)$.
+                        </li>
+                        <li>
+                            <strong>Log Term:</strong> $\ln\left( \frac{P(0, T_1)}{K P(0, T_0)} \right) = \ln(1) = 0$.
+                        </li>
+                        <li>
+                            <strong>Standardized Limits:</strong> $d_1 = \frac{1}{2}\sigma_p$ and $d_2 = -\frac{1}{2}\sigma_p$.
+                        </li>
+                    </ol>
+                    <p>Substituting these back into the put option pricing formula yields:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto;">
+                        $$ Put(0, T_0, T_1, K) = P(0, T_1) \left( N\left( \frac{1}{2}\sigma_p \right) - N\left( -\frac{1}{2}\sigma_p \right) \right) = P(0, T_1) \left( 2 N\left( \frac{1}{2}\sigma_p \right) - 1 \right) $$
+                    </div>
+                    <p>Now, let's compute the parameter values step-by-step using $\kappa = 0.86, \theta = 0.08, \sigma = 0.01, r(0) = 0.06, T_0 = 0.25, T_1 = 0.50$:</p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <li>
+                            <strong>Bond Volatility Component ($B(T_0, T_1)$):</strong> Since Vasicek is time-homogeneous, $B(T_0, T_1) = B(0, T_1 - T_0) = B(0.25)$:
+                            $$ B(0.25) = \frac{1 - e^{-0.86 \times 0.25}}{0.86} = \frac{1 - e^{-0.215}}{0.86} \approx 0.224952 $$
+                        </li>
+                        <li>
+                            <strong>Integrated Option Volatility ($\sigma_p$):</strong> The variance of the short rate at $T_0$ is:
+                            $$ Var_0(r(T_0)) = \frac{\sigma^2}{2\kappa}\left( 1 - e^{-2\kappa T_0} \right) = \frac{0.01^2}{1.72}\left( 1 - e^{-0.43} \right) \approx 0.000020319 $$
+                            $$ \sigma_p = B(T_0, T_1) \sqrt{Var_0(r(T_0))} \approx 0.224952 \times 0.0045077 \approx 0.00101401 $$
+                        </li>
+                        <li>
+                            <strong>Zero-Coupon Bond Price ($P(0, T_1)$):</strong> We evaluate $P(0, 0.50) = e^{A(0.50) - B(0.50)r(0)}$:
+                            $$ B(0.50) = \frac{1 - e^{-0.43}}{0.86} \approx 0.406385 $$
+                            $$ A(0.50) = \left(0.08 - \frac{0.01^2}{2 \times 0.86^2}\right)(B(0.50) - 0.50) - \frac{0.01^2}{4 \times 0.86}B(0.50)^2 \approx -0.007488 $$
+                            $$ P(0, 0.50) \approx e^{-0.007488 - 0.406385 \times 0.06} = e^{-0.031871} \approx 0.968632 $$
+                        </li>
+                        <li>
+                            <strong>Put Option Price:</strong>
+                            $$ Put = 0.968632 \times \left( 2 N(0.000507) - 1 \right) \approx 0.968632 \times 0.0004045 \approx 0.00039184 \text{ of par} $$
+                        </li>
+                        <li>
+                            <strong>Converting to Basis Points (bps):</strong>
+                            $$ Put \text{ in bps} = 0.00039184 \times 10,000 \approx 3.9184 \text{ bps} $$
+                        </li>
+                    </ul>
+                    <p>Rounding to 2 decimal places, we get <strong>$3.92$</strong> basis points.</p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: 3.92</p>
+                </div>
+            </details>
+        </div>
+    </div>
+</div>
+
+<script>
+    function checkQ1() {
+        const radios = document.getElementsByName('q1_option');
+        let selectedValue = '';
+        for (const r of radios) {
+            if (r.checked) {
+                selectedValue = r.value;
+                break;
+            }
+        }
+        const result = document.getElementById('q1-feedback');
+        if (!selectedValue) {
+            result.innerHTML = '<strong>⚠️ Please select an option first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        if (selectedValue === 'q1_3') {
+            result.innerHTML = '<strong>✓ Correct!</strong> $X(t)$ is indeed a CIR process if and only if speed ($\kappa_1 = \kappa_2$) and volatility ($\sigma_1 = \sigma_2$) match.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: For the sum process to have a valid square-root diffusion coefficient under a single Brownian motion, both the volatility parameters must be equal.';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+
+    function checkQ2() {
+        const radios = document.getElementsByName('q2_option');
+        let selectedValue = '';
+        for (const r of radios) {
+            if (r.checked) {
+                selectedValue = r.value;
+                break;
+            }
+        }
+        const result = document.getElementById('q2-feedback');
+        if (!selectedValue) {
+            result.innerHTML = '<strong>⚠️ Please select an option first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        if (selectedValue === 'q2_2') {
+            result.innerHTML = '<strong>✓ Correct!</strong> The infinite maturity yield converges to $\\theta - \\frac{\\sigma^2}{2\\kappa^2}$ due to the risk premium term in the yield equation.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: Check the long-term limit of the sensitivity functions $A(t, T)$ and $B(t, T)$ divided by $T-t$.';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+
+    function checkQ3() {
+        const val = document.getElementById('q3_input').value.trim();
+        const result = document.getElementById('q3-feedback');
+        if (val === '') {
+            result.innerHTML = '<strong>⚠️ Please enter an answer first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        if (val === '2501') {
+            result.innerHTML = '<strong>✓ Correct!</strong> You need exactly 2501 units of the 1-year zero-coupon bond.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! The correct answer is 2501. Check the ZCB system of equations.';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+    }
+
+    function checkQ4() {
+        const val = document.getElementById('q4_input').value.trim();
+        const result = document.getElementById('q4-feedback');
+        if (val === '') {
+            result.innerHTML = '<strong>⚠️ Please enter an answer first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        if (val === '-5205') {
+            result.innerHTML = '<strong>✓ Correct!</strong> You need exactly -5205 units of the 2-year zero-coupon bond (shorting the bond).';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! The correct answer is -5205. Check the minus sign for short position.';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+    }
+
+    function checkQ5() {
+        const val = document.getElementById('q5_input').value.trim();
+        const result = document.getElementById('q5-feedback');
+        if (val === '') {
+            result.innerHTML = '<strong>⚠️ Please enter an answer first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        if (val === '2708') {
+            result.innerHTML = '<strong>✓ Correct!</strong> You need exactly 2708 units of the 3-year zero-coupon bond.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! The correct answer is 2708.';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+    }
+
+    function checkQ6() {
+        const val = document.getElementById('q6_input').value.trim();
+        const result = document.getElementById('q6-feedback');
+        if (val === '') {
+            result.innerHTML = '<strong>⚠️ Please enter an answer first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        const parsed = parseFloat(val);
+        if (!isNaN(parsed) && Math.abs(parsed - 3.92) < 0.015) {
+            result.innerHTML = '<strong>✓ Correct!</strong> The time-0 price of the put option is exactly <strong>3.92 basis points</strong>.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: Check your calculation for $\\sigma_p$ and zero-coupon bond price $P(0, T_1)$. Make sure you convert the option price to basis points (multiply by 10,000).';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+    }
+</script>

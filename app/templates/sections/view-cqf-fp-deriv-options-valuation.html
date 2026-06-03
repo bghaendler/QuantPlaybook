@@ -1,0 +1,556 @@
+<div id="view-cqf-fp-deriv-options-valuation" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <span class="badge" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #4f46e5;">Finance Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9;">Derivatives</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.5rem; font-weight: 800; border-bottom: none; padding-bottom: 0; background: linear-gradient(135deg, var(--text-color), #4f46e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Derivatives: Option Premiums &amp; Valuation</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1.05rem;">Decomposing Intrinsic and Time Value, Volatility Profiles, and the Black-Scholes Pricing Framework.</div>
+    </header>
+
+    <!-- Sub-Navigation tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.75rem; flex-wrap: wrap;">
+        <button class="nav-item tab-btn active" id="btn-val-grid" onclick="selectValTab('grid')" style="padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: 1px solid var(--card-border); background: var(--metric-bg); color: var(--text-color);">1. Option Premium Grids</button>
+        <button class="nav-item tab-btn" id="btn-val-vol" onclick="selectValTab('vol')" style="padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: 1px solid var(--card-border); background: var(--metric-bg); color: var(--text-color);">2. Volatility &amp; Random Walks</button>
+        <button class="nav-item tab-btn" id="btn-val-bs" onclick="selectValTab('bs')" style="padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: 1px solid var(--card-border); background: var(--metric-bg); color: var(--text-color);">3. Black-Scholes pricing Sandbox</button>
+    </div>
+
+    <!-- TAB 1: Option Premium Grids (Lecture Matchings) -->
+    <div id="val-tab-content-grid" class="val-tab-pane" style="display: block;">
+        <div class="card" style="margin-bottom: 2rem; border-left: 4px solid #4f46e5;">
+            <h3 style="margin-top: 0; color: #4f46e5;">Option Premium Valuation &amp; Moneyness</h3>
+            <p style="font-size: 0.9rem; line-height: 1.5;">
+                An option's premium is partitioned into **Intrinsic Value** (what the option is worth if exercised immediately) and **Time Value** (the extra premium charged for volatility over the option's remaining life):
+            </p>
+            <p style="text-align: center; font-size: 1.15rem; font-weight: 700; margin: 1rem 0; color: var(--accent);">
+                $$\text{Premium} = \text{Intrinsic Value} + \text{Time Value}$$
+            </p>
+
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                <h4 style="margin-top:0; color: var(--accent); margin-bottom: 1rem;">Neil's Premium Matching Tables (Underlying Share Spot $S = 133$)</h4>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <!-- Calls list -->
+                    <div>
+                        <h5 style="margin: 0 0 0.5rem 0; color: #10b981; font-size: 0.95rem;">Call Option Premium Matching</h5>
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; line-height: 1.4;">
+                            <thead>
+                                <tr style="border-bottom: 1.5px solid var(--card-border); text-align: left;">
+                                    <th style="padding:0.4rem;">Strike ($K$)</th>
+                                    <th style="padding:0.4rem;">Premium</th>
+                                    <th style="padding:0.4rem;">Moneyness</th>
+                                    <th style="padding:0.4rem;">Intrinsic</th>
+                                    <th style="padding:0.4rem;">Time Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid var(--card-border);">
+                                    <td style="padding:0.4rem; font-weight:700;">125</td>
+                                    <td style="padding:0.4rem; font-family:monospace;">$11.30</td>
+                                    <td style="padding:0.4rem; color: #10b981; font-weight:700;">ITM</td>
+                                    <td style="padding:0.4rem;">$8.00</td>
+                                    <td style="padding:0.4rem;">$3.30</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);">
+                                    <td style="padding:0.4rem; font-weight:700;">130</td>
+                                    <td style="padding:0.4rem; font-family:monospace;">$8.10</td>
+                                    <td style="padding:0.4rem; color: #10b981; font-weight:700;">ITM</td>
+                                    <td style="padding:0.4rem;">$3.00</td>
+                                    <td style="padding:0.4rem;">$5.10</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);">
+                                    <td style="padding:0.4rem; font-weight:700;">140</td>
+                                    <td style="padding:0.4rem; font-family:monospace;">$3.65</td>
+                                    <td style="padding:0.4rem; color: #ef4444; font-weight:700;">OTM</td>
+                                    <td style="padding:0.4rem;">$0.00</td>
+                                    <td style="padding:0.4rem;">$3.65</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Puts list -->
+                    <div>
+                        <h5 style="margin: 0 0 0.5rem 0; color: #ef4444; font-size: 0.95rem;">Put Option Premium Matching</h5>
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; line-height: 1.4;">
+                            <thead>
+                                <tr style="border-bottom: 1.5px solid var(--card-border); text-align: left;">
+                                    <th style="padding:0.4rem;">Strike ($K$)</th>
+                                    <th style="padding:0.4rem;">Premium</th>
+                                    <th style="padding:0.4rem;">Moneyness</th>
+                                    <th style="padding:0.4rem;">Intrinsic</th>
+                                    <th style="padding:0.4rem;">Time Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid var(--card-border);">
+                                    <td style="padding:0.4rem; font-weight:700;">125</td>
+                                    <td style="padding:0.4rem; font-family:monospace;">$2.85</td>
+                                    <td style="padding:0.4rem; color: #ef4444; font-weight:700;">OTM</td>
+                                    <td style="padding:0.4rem;">$0.00</td>
+                                    <td style="padding:0.4rem;">$2.85</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);">
+                                    <td style="padding:0.4rem; font-weight:700;">130</td>
+                                    <td style="padding:0.4rem; font-family:monospace;">$4.55</td>
+                                    <td style="padding:0.4rem; color: #ef4444; font-weight:700;">OTM</td>
+                                    <td style="padding:0.4rem;">$0.00</td>
+                                    <td style="padding:0.4rem;">$4.55</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);">
+                                    <td style="padding:0.4rem; font-weight:700;">140</td>
+                                    <td style="padding:0.4rem; font-family:monospace;">$10.25</td>
+                                    <td style="padding:0.4rem; color: #10b981; font-weight:700;">ITM</td>
+                                    <td style="padding:0.4rem;">$7.00</td>
+                                    <td style="padding:0.4rem;">$3.25</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--card-border);">
+
+                <!-- Expiry effects -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div>
+                        <h5 style="margin: 0 0 0.5rem 0; color: var(--accent); font-size: 0.9rem;">135 Call Expiry Effects (Spot = 133)</h5>
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
+                            <thead>
+                                <tr style="border-bottom: 1.5px solid var(--card-border); text-align: left;">
+                                    <th style="padding:0.4rem;">Maturity Expiry</th>
+                                    <th style="padding:0.4rem; text-align: right;">135 Call Premium</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid var(--card-border);">
+                                    <td style="padding:0.4rem;">1 Month</td>
+                                    <td style="padding:0.4rem; text-align: right; font-family: monospace;">$3.31</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);">
+                                    <td style="padding:0.4rem;">3 Months</td>
+                                    <td style="padding:0.4rem; text-align: right; font-family: monospace;">$6.71</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);">
+                                    <td style="padding:0.4rem;">6 Months</td>
+                                    <td style="padding:0.4rem; text-align: right; font-family: monospace;">$10.12</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div>
+                        <h5 style="margin: 0 0 0.5rem 0; color: var(--accent); font-size: 0.9rem;">135 Put Expiry Effects (Spot = 133)</h5>
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
+                            <thead>
+                                <tr style="border-bottom: 1.5px solid var(--card-border); text-align: left;">
+                                    <th style="padding:0.4rem;">Maturity Expiry</th>
+                                    <th style="padding:0.4rem; text-align: right;">135 Put Premium</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid var(--card-border);">
+                                    <td style="padding:0.4rem;">1 Month</td>
+                                    <td style="padding:0.4rem; text-align: right; font-family: monospace;">$6.20</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);">
+                                    <td style="padding:0.4rem;">3 Months</td>
+                                    <td style="padding:0.4rem; text-align: right; font-family: monospace;">$9.37</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid var(--card-border);">
+                                    <td style="padding:0.4rem;">6 Months</td>
+                                    <td style="padding:0.4rem; text-align: right; font-family: monospace;">$12.45</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Volatility & Random Walks (Monte Carlo Pathing) -->
+    <div id="val-tab-content-vol" class="val-tab-pane" style="display: none;">
+        <div class="card" style="margin-bottom: 2rem; border-left: 4px solid #10b981;">
+            <h3 style="margin-top: 0; color: #10b981;">Volatility - The Key Option Premium Input</h3>
+            <p style="font-size: 0.9rem; line-height: 1.5;">
+                Volatility ($\sigma$) measures the variability of an underlying asset's returns. Because options possess asymmetric payoffs (capped downside, uncapped upside), **higher volatility increases option premiums** by elevating the likelihood that the option finishes deep in-the-money.
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+                <!-- Volatility parameters and inputs -->
+                <div>
+                    <h4 style="margin-top:0; color: var(--accent);">Generate Stock Price Random Walks</h4>
+                    <p style="font-size: 0.82rem; margin-bottom: 1.5rem; line-height: 1.4;">
+                        Adjust the daily volatility limits to compare low volatility steps (±1% per day, Stock A) against high volatility steps (±2.5% per day, Stock B) across 30 days. Higher step parameters produce a wider path distribution:
+                    </p>
+
+                    <div style="margin-bottom: 1.25rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                            <span>Low Volatility Stock A (Daily variance boundary):</span>
+                            <strong id="lbl-vol-a" style="color: var(--accent);">±1.0%</strong>
+                        </div>
+                        <input id="slider-vol-a" type="range" min="0.5" max="2" step="0.1" value="1.0" oninput="generateRandomWalks()" style="width: 100%;">
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                            <span>High Volatility Stock B (Daily variance boundary):</span>
+                            <strong id="lbl-vol-b" style="color: var(--accent);">±2.5%</strong>
+                        </div>
+                        <input id="slider-vol-b" type="range" min="2" max="5" step="0.1" value="2.5" oninput="generateRandomWalks()" style="width: 100%;">
+                    </div>
+
+                    <button onclick="generateRandomWalks()" class="nav-item" style="padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; border: 1px solid var(--card-border); background: var(--card-bg); font-weight:700;">
+                        🔄 Regenerate Monte Carlo Paths
+                    </button>
+                </div>
+
+                <!-- Path visualization canvases -->
+                <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 12px; text-align: center;">
+                    <h5 style="margin-top: 0; color: var(--text-color); font-weight: 700; margin-bottom: 1rem;">Stock Path Dispersion Comparison (30 Days)</h5>
+                    <canvas id="walkCanvas" width="380" height="220" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px;"></canvas>
+                    <div style="display: flex; justify-content: space-around; font-size: 0.72rem; margin-top: 0.5rem; font-weight: 600;">
+                        <span style="color: #4f46e5;">Stock A (Low Vol)</span>
+                        <span style="color: #f59e0b;">Stock B (High Vol)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Black-Scholes pricing Sandbox -->
+    <div id="val-tab-content-bs" class="val-tab-pane" style="display: none;">
+        <div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--accent);">
+            <h3 style="margin-top:0; color: var(--accent);">Black-Scholes Mathematical Valuer</h3>
+            <p style="font-size: 0.9rem; line-height: 1.5;">
+                The **Black-Scholes Pricing Model** calculates the fair value of a European option based on 5 parameters. Volatility is the only subjective, unobservable parameter.
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1.1fr; gap: 2rem; align-items: start;">
+                <!-- BS Controls -->
+                <div>
+                    <h4 style="margin-top: 0; color: var(--accent);">Input Pricing Parameters</h4>
+                    
+                    <div style="margin-bottom: 0.85rem;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.82rem; margin-bottom:0.2rem;">
+                            <span>Underlying Stock Price ($S_0$):</span>
+                            <strong id="lbl-bs-spot" style="color: var(--accent);">$420.00</strong>
+                        </div>
+                        <input id="slider-bs-spot" type="range" min="350" max="480" step="1" value="420" oninput="runBsPricing()" style="width: 100%;">
+                    </div>
+
+                    <div style="margin-bottom: 0.85rem;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.82rem; margin-bottom:0.2rem;">
+                            <span>Strike Price ($K$):</span>
+                            <strong id="lbl-bs-strike" style="color: var(--accent);">$400.00</strong>
+                        </div>
+                        <input id="slider-bs-strike" type="range" min="350" max="480" step="1" value="400" oninput="runBsPricing()" style="width: 100%;">
+                    </div>
+
+                    <div style="margin-bottom: 0.85rem;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.82rem; margin-bottom:0.2rem;">
+                            <span>Expiry Time ($T$ in Months):</span>
+                            <strong id="lbl-bs-expiry" style="color: var(--accent);">3.0m</strong>
+                        </div>
+                        <input id="slider-bs-expiry" type="range" min="0.25" max="12" step="0.25" value="3" oninput="runBsPricing()" style="width: 100%;">
+                    </div>
+
+                    <div style="margin-bottom: 0.85rem;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.82rem; margin-bottom:0.2rem;">
+                            <span>Risk-Free Rate ($r$):</span>
+                            <strong id="lbl-bs-rate" style="color: var(--accent);">1.0% p.a.</strong>
+                        </div>
+                        <input id="slider-bs-rate" type="range" min="0.5" max="8" step="0.1" value="1.0" oninput="runBsPricing()" style="width: 100%;">
+                    </div>
+
+                    <div style="margin-bottom: 1.25rem;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.82rem; margin-bottom:0.2rem;">
+                            <span>Subjective Volatility ($\sigma$):</span>
+                            <strong id="lbl-bs-vol" style="color: var(--accent);">18.0% p.a.</strong>
+                        </div>
+                        <input id="slider-bs-vol" type="range" min="5" max="60" step="1" value="18" oninput="runBsPricing()" style="width: 100%;">
+                    </div>
+
+                    <!-- Double output metric card -->
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: center;">
+                        <div style="border-right: 1px solid var(--card-border);">
+                            <div style="font-weight: 800; font-size: 0.78rem; text-transform: uppercase; color: #10b981;">Call Premium</div>
+                            <h3 id="bs-call-out" style="margin: 0.25rem 0; font-size: 1.4rem; font-weight: 800;">$27.62</h3>
+                            <div style="font-size: 0.68rem; color:#6b7280;">Intrinsic: <span id="bs-call-intr">$20.00</span> | Time: <span id="bs-call-time">$7.62</span></div>
+                        </div>
+                        <div>
+                            <div style="font-weight: 800; font-size: 0.78rem; text-transform: uppercase; color: #ef4444;">Put Premium</div>
+                            <h3 id="bs-put-out" style="margin: 0.25rem 0; font-size: 1.4rem; font-weight: 800;">$6.63</h3>
+                            <div style="font-size: 0.68rem; color:#6b7280;">Intrinsic: <span id="bs-put-intr">$0.00</span> | Time: <span id="bs-put-time">$6.63</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Premium decay line charts -->
+                <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 12px; height: 100%;">
+                    <h5 style="margin-top: 0; color: var(--text-color); font-weight: 700; margin-bottom: 0.5rem;">Option Payoff &amp; Premium Curves</h5>
+                    <div style="position: relative; height: 260px; width: 100%;">
+                        <canvas id="bsDecayChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let bsDecayChartInstance = null;
+
+function selectValTab(tabId) {
+    document.querySelectorAll('.val-tab-pane').forEach(pane => pane.style.display = 'none');
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.background = 'var(--metric-bg)';
+        btn.style.borderColor = 'var(--card-border)';
+    });
+
+    document.getElementById('val-tab-content-' + tabId).style.display = 'block';
+    
+    const activeBtn = document.getElementById('btn-val-' + tabId);
+    if (activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.style.background = 'rgba(79, 70, 229, 0.1)';
+        activeBtn.style.borderColor = '#4f46e5';
+    }
+
+    if (tabId === 'vol') {
+        setTimeout(generateRandomWalks, 100);
+    } else if (tabId === 'bs') {
+        setTimeout(runBsPricing, 100);
+    }
+}
+
+// Monte Carlo path generation drawn on HTML5 canvas
+function generateRandomWalks() {
+    const canvas = document.getElementById('walkCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    const volA = parseFloat(document.getElementById('slider-vol-a').value) / 100;
+    const volB = parseFloat(document.getElementById('slider-vol-b').value) / 100;
+
+    document.getElementById('lbl-vol-a').innerText = '±' + (volA * 100).toFixed(1) + '%';
+    document.getElementById('lbl-vol-b').innerText = '±' + (volB * 100).toFixed(1) + '%';
+
+    const isDark = document.body.classList.contains('dark-theme');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Grid Lines
+    ctx.strokeStyle = isDark ? '#2c2c2c' : '#edece9';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < canvas.width; x += 40) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+    }
+    for (let y = 0; y < canvas.height; y += 40) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+    }
+
+    const steps = 30;
+    const startY = canvas.height / 2;
+    const stepWidth = canvas.width / steps;
+    const numPaths = 12;
+
+    // Helper random walk line drawer
+    const drawWalk = (vol, color) => {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        
+        for (let p = 0; p < numPaths; p++) {
+            ctx.beginPath();
+            ctx.moveTo(0, startY);
+            let currentY = startY;
+            for (let s = 1; s <= steps; s++) {
+                // ± random scaling
+                const change = (Math.random() - 0.5) * 2 * vol * 50; 
+                currentY += change;
+                // keep boundaries
+                currentY = Math.max(10, Math.min(canvas.height - 10, currentY));
+                ctx.lineTo(s * stepWidth, currentY);
+            }
+            ctx.stroke();
+        }
+    };
+
+    // Draw Stock A (Low vol)
+    drawWalk(volA, 'rgba(79, 70, 229, 0.45)');
+    // Draw Stock B (High vol)
+    drawWalk(volB, 'rgba(245, 158, 11, 0.55)');
+}
+
+// B-S Mathematical Core Valuation Engine
+function stdNormalCDF(x) {
+    // Standard normal distribution approximation
+    const a1 = 0.254829592;
+    const a2 = -0.284496736;
+    const a3 = 1.421413741;
+    const a4 = -1.453152027;
+    const a5 = 1.061405429;
+    const p = 0.3275911;
+
+    const sign = x < 0 ? -1 : 1;
+    const absX = Math.abs(x) / Math.sqrt(2.0);
+
+    const t = 1.0 / (1.0 + p * absX);
+    const erf = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-absX * absX);
+
+    return 0.5 * (1.0 + sign * erf);
+}
+
+function blackScholes(S, K, T_yrs, r, sigma) {
+    if (T_yrs <= 0) {
+        return {
+            call: Math.max(S - K, 0),
+            put: Math.max(K - S, 0)
+        };
+    }
+    const d1 = (Math.log(S / K) + (r + (sigma * sigma) / 2) * T_yrs) / (sigma * Math.sqrt(T_yrs));
+    const d2 = d1 - sigma * Math.sqrt(T_yrs);
+
+    const callVal = S * stdNormalCDF(d1) - K * Math.exp(-r * T_yrs) * stdNormalCDF(d2);
+    const putVal = K * Math.exp(-r * T_yrs) * stdNormalCDF(-d2) - S * stdNormalCDF(-d1);
+
+    return { call: callVal, put: putVal };
+}
+
+function runBsPricing() {
+    const s = parseFloat(document.getElementById('slider-bs-spot').value);
+    const k = parseFloat(document.getElementById('slider-bs-strike').value);
+    const t_months = parseFloat(document.getElementById('slider-bs-expiry').value);
+    const r_pct = parseFloat(document.getElementById('slider-bs-rate').value);
+    const vol_pct = parseFloat(document.getElementById('slider-bs-vol').value);
+
+    // Update labels
+    document.getElementById('lbl-bs-spot').innerText = '$' + s.toFixed(2);
+    document.getElementById('lbl-bs-strike').innerText = '$' + k.toFixed(2);
+    document.getElementById('lbl-bs-expiry').innerText = t_months.toFixed(2) + 'm';
+    document.getElementById('lbl-bs-rate').innerText = r_pct.toFixed(1) + '% p.a.';
+    document.getElementById('lbl-bs-vol').innerText = vol_pct.toFixed(1) + '% p.a.';
+
+    // Conversions
+    const T_yrs = t_months / 12;
+    const r = r_pct / 100;
+    const sigma = vol_pct / 100;
+
+    const bs = blackScholes(s, k, T_yrs, r, sigma);
+
+    const callIntr = Math.max(s - k, 0);
+    const callTime = Math.max(bs.call - callIntr, 0);
+    const putIntr = Math.max(k - s, 0);
+    const putTime = Math.max(bs.put - putIntr, 0);
+
+    document.getElementById('bs-call-out').innerText = '$' + bs.call.toFixed(2);
+    document.getElementById('bs-call-intr').innerText = '$' + callIntr.toFixed(2);
+    document.getElementById('bs-call-time').innerText = '$' + callTime.toFixed(2);
+
+    document.getElementById('bs-put-out').innerText = '$' + bs.put.toFixed(2);
+    document.getElementById('bs-put-intr').innerText = '$' + putIntr.toFixed(2);
+    document.getElementById('bs-put-time').innerText = '$' + putTime.toFixed(2);
+
+    drawBsDecayChart(k, T_yrs, r, sigma, s);
+}
+
+function drawBsDecayChart(strike, T_yrs, r, sigma, currentSpot) {
+    const ctx = document.getElementById('bsDecayChart').getContext('2d');
+    if (bsDecayChartInstance) {
+        bsDecayChartInstance.destroy();
+    }
+
+    const isDark = document.body.classList.contains('dark-theme');
+    const gridColor = isDark ? '#2c2c2c' : '#edece9';
+    const textColor = isDark ? '#e3e3e3' : '#37352f';
+
+    const spots = [];
+    const minS = 350;
+    const maxS = 460;
+    const step = (maxS - minS) / 30;
+    for (let i = 0; i <= 30; i++) {
+        spots.push(minS + i * step);
+    }
+
+    // Payoffs curves under different time decay states (3m, 1m, Expiry)
+    const curve3m = spots.map(sp => blackScholes(sp, strike, T_yrs, r, sigma).call);
+    const curve1m = spots.map(sp => blackScholes(sp, strike, Math.min(1/12, T_yrs * 0.33), r, sigma).call);
+    const curveExpiry = spots.map(sp => Math.max(sp - strike, 0));
+
+    bsDecayChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: spots.map(s => '$' + s.toFixed(0)),
+            datasets: [
+                {
+                    label: 'Call Value at Expiry',
+                    data: curveExpiry,
+                    borderColor: '#ef4444',
+                    borderWidth: 2,
+                    fill: false,
+                    pointRadius: 0
+                },
+                {
+                    label: 'Call Premium (Time Left)',
+                    data: curve3m,
+                    borderColor: '#10b981',
+                    borderWidth: 3,
+                    fill: false,
+                    pointRadius: 0
+                },
+                {
+                    label: 'Decayed Curve (Near Expiry)',
+                    data: curve1m,
+                    borderColor: '#0ea5e9',
+                    borderWidth: 1.5,
+                    borderDash: [3, 3],
+                    fill: false,
+                    pointRadius: 0
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: { color: textColor, font: { size: 9 } }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: gridColor },
+                    ticks: { color: textColor, font: { size: 8 } }
+                },
+                y: {
+                    grid: { color: gridColor },
+                    ticks: { color: textColor, font: { size: 8 } }
+                }
+            }
+        }
+    });
+}
+
+// Initialise everything
+setTimeout(() => {
+    selectValTab('grid');
+}, 500);
+
+// Observer to handle chart scale adjustments on visibility change
+const optValObserver = new MutationObserver(() => {
+    if (document.getElementById('view-cqf-fp-deriv-options-valuation').style.display === 'block') {
+        setTimeout(() => {
+            if (bsDecayChartInstance) {
+                bsDecayChartInstance.resize();
+            }
+        }, 100);
+    }
+});
+optValObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+</script>

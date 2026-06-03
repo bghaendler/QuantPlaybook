@@ -1,0 +1,251 @@
+<div id="view-cqf-mp-calculus-15" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9; font-family: var(--font-family-sans);">1.5 Trig &amp; Hyperbolics</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.5 Trigonometric &amp; Hyperbolic Mappings</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Circular functions periodicities, exponential-driven hyperbolic functions, identities, and inverse logs.</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
+        <button id="tabCalc15Theory" onclick="switchCalc15Tab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Theory</button>
+        <button id="tabCalc15Exercises" onclick="switchCalc15Tab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Solutions &amp; Proofs</button>
+    </div>
+
+    <!-- Tab: Core Theory -->
+    <div id="secCalc15Theory" style="display: block;">
+        <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1.5.1 Trigonometric &amp; Hyperbolic Theory</h3>
+            <p>Trigonometric periodicities describe circular oscillations (period $2\pi$). Key reciprocal forms include $\sec x = 1/\cos x$, $\csc x = 1/\sin x$, and $\cot x = 1/\tan x$. Standard circular identity: $\cos^2 x + \sin^2 x = 1$.</p>
+            <p><strong>Hyperbolic Functions:</strong> Defined via exponentials:</p>
+            <p style="text-align: center; font-size: 0.95rem; margin: 0.4rem 0;">
+                $$\sinh x = \frac{e^x - e^{-x}}{2} \quad , \quad \cosh x = \frac{e^x + e^{-x}}{2} \quad , \quad \tanh x = \frac{\sinh x}{\cosh x}$$
+            </p>
+            <p><strong>Hyperbolic Identities:</strong> $\cosh^2 x - \sinh^2 x = 1$, and $\sinh(x+y) = \sinh x\cosh y + \cosh x\sinh y$.</p>
+            <p><strong>Inverse Hyperbolic Logarithmic Forms:</strong> Derived by solving quadratic systems in $e^y$:</p>
+            <p style="text-align: center; font-size: 1rem; font-weight: 700; margin: 0.5rem 0;">
+                $$\sinh^{-1} x = \ln\left(x + \sqrt{x^2 + 1}\right) \quad , \quad \cosh^{-1} x = \ln\left(x + \sqrt{x^2 - 1}\right)$$
+                $$\tanh^{-1} x = \frac{1}{2}\ln\left(\frac{1+x}{1-x}\right)$$
+            </p>
+        </div>
+
+        <!-- Always Visible Side-by-Side Solver and Graph -->
+        <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1.5.2 Interactive Hyperbolic Visualizer</h3>
+            <p>Input real variables and calculate sinh, cosh, and inverse hyperbolic values instantly with interactive graphs:</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; margin-top: 1rem;">
+                <!-- Inputs Column -->
+                <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); display: flex; flex-direction: column; gap: 1rem;">
+                    <div>
+                        <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Input Value $x$:</label>
+                        <input id="hypInputX" type="number" value="1.0" step="0.2" style="width: 100%; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;" oninput="calculateInteractiveHyperbolic()">
+                    </div>
+                    <div style="font-size: 0.88rem; line-height: 1.6; color: var(--text-color); background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid #ec4899;">
+                        <div id="hypOutputSinh"><strong>sinh(1.00):</strong> 1.1752</div>
+                        <div id="hypOutputCosh" style="margin-top: 0.25rem;"><strong>cosh(1.00):</strong> 1.5431</div>
+                        <div id="hypOutputInvSinh" style="margin-top: 0.25rem;"><strong>sinh⁻¹(1.00):</strong> 0.8814</div>
+                    </div>
+                </div>
+
+                <!-- Graph Column -->
+                <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; position: relative;">
+                    <canvas id="calc15Canvas" width="400" height="190" style="width: 100%; height: 190px; background: #000; border-radius: 6px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab: Worked Solutions Sheet -->
+    <div id="secCalc15Exercises" style="display: none;">
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="card" style="padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Exercise 1: Logarithmic sinh⁻¹(x) Derivation</h3>
+                <p>Derive the logarithmic formula for $y = \sinh^{-1} x \implies y = \ln\left(x + \sqrt{x^2 + 1}\right)$.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6;">
+                    <strong>Step-by-Step Proof:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Start with the exponential definition of $\sinh$:</strong>
+                            $$y = \sinh^{-1} x \implies x = \sinh y = \frac{e^y - e^{-y}}{2}$$
+                            $$2x = e^y - e^{-y}$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Multiply through by $e^y$ to form a quadratic equation:</strong>
+                            $$2x e^y = (e^y)^2 - 1 \implies (e^y)^2 - 2x(e^y) - 1 = 0$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Solve for $e^y$ using the quadratic formula:</strong>
+                            Let $u = e^y \implies u^2 - 2xu - 1 = 0$.
+                            $$u = \frac{2x \pm \sqrt{4x^2 - 4(1)(-1)}}{2} = x \pm \sqrt{x^2 + 1}$$
+                        </li>
+                        <li style="margin: 0;">
+                            <strong>Select the positive branch (since $e^y > 0$):</strong>
+                            $$e^y = x + \sqrt{x^2 + 1} \implies y = \ln\left(x + \sqrt{x^2 + 1}\right) \quad \blacksquare$$
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.switchCalc15Tab = function(tab) {
+                const tabTheo = document.getElementById('tabCalc15Theory');
+                const tabExer = document.getElementById('tabCalc15Exercises');
+                const secTheo = document.getElementById('secCalc15Theory');
+                const secExer = document.getElementById('secCalc15Exercises');
+
+                if (tab === 'theory') {
+                    tabTheo.style.color = '#ec4899';
+                    tabTheo.style.borderBottomColor = '#ec4899';
+                    tabExer.style.color = '#6b7280';
+                    tabExer.style.borderBottomColor = 'transparent';
+                    secTheo.style.display = 'block';
+                    secExer.style.display = 'none';
+                } else {
+                    tabExer.style.color = '#ec4899';
+                    tabExer.style.borderBottomColor = '#ec4899';
+                    tabTheo.style.color = '#6b7280';
+                    tabTheo.style.borderBottomColor = 'transparent';
+                    secExer.style.display = 'block';
+                    secTheo.style.display = 'none';
+                }
+            };
+
+            window.calculateInteractiveHyperbolic = function() {
+                const xVal = parseFloat(document.getElementById('hypInputX').value);
+                const elSinh = document.getElementById('hypOutputSinh');
+                const elCosh = document.getElementById('hypOutputCosh');
+                const elInvSinh = document.getElementById('hypOutputInvSinh');
+
+                if (isNaN(xVal)) {
+                    elSinh.innerHTML = "<strong>sinh(x):</strong> Please input a valid number!";
+                    elCosh.innerHTML = "";
+                    elInvSinh.innerHTML = "";
+                    return;
+                }
+
+                const sinhVal = Math.sinh(xVal);
+                const coshVal = Math.cosh(xVal);
+                const invSinhVal = Math.asinh(xVal);
+
+                elSinh.innerHTML = `<strong>sinh(${xVal.toFixed(2)}):</strong> ${sinhVal.toFixed(4)}`;
+                elCosh.innerHTML = `<strong>cosh(${xVal.toFixed(2)}):</strong> ${coshVal.toFixed(4)}`;
+                elInvSinh.innerHTML = `<strong>sinh⁻¹(${xVal.toFixed(2)}):</strong> ${invSinhVal.toFixed(4)}`;
+
+                drawHyperbolicGraph();
+
+                const parent = document.getElementById('view-cqf-mp-calculus-15');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            window.drawHyperbolicGraph = function() {
+                const canvas = document.getElementById('calc15Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const xVal = parseFloat(document.getElementById('hypInputX').value);
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Grid lines & axes
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= canvas.width; i += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, canvas.height);
+                    ctx.stroke();
+                }
+                for (let i = 0; i <= canvas.height; i += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(canvas.width, i);
+                    ctx.stroke();
+                }
+
+                // Coordinates Mapping
+                const xMin = -3.0, xMax = 3.0;
+                const yMin = -4.0, yMax = 6.0;
+
+                const toCanvasX = (x) => ((x - xMin) / (xMax - xMin)) * canvas.width;
+                const toCanvasY = (y) => canvas.height - ((y - yMin) / (yMax - yMin)) * canvas.height;
+
+                // Draw X and Y Axes
+                ctx.strokeStyle = '#52525b';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(0, toCanvasY(0));
+                ctx.lineTo(canvas.width, toCanvasY(0));
+                ctx.moveTo(toCanvasX(0), 0);
+                ctx.lineTo(toCanvasX(0), canvas.height);
+                ctx.stroke();
+
+                // Draw sinh(x) (Pink / Magenta)
+                ctx.strokeStyle = '#ec4899';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                for (let px = 0; px <= canvas.width; px++) {
+                    const x = xMin + (px / canvas.width) * (xMax - xMin);
+                    const y = Math.sinh(x);
+                    if (px === 0) ctx.moveTo(px, toCanvasY(y));
+                    else ctx.lineTo(px, toCanvasY(y));
+                }
+                ctx.stroke();
+
+                // Draw cosh(x) (Cyan)
+                ctx.strokeStyle = '#0ea5e9';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                for (let px = 0; px <= canvas.width; px++) {
+                    const x = xMin + (px / canvas.width) * (xMax - xMin);
+                    const y = Math.cosh(x);
+                    if (px === 0) ctx.moveTo(px, toCanvasY(y));
+                    else ctx.lineTo(px, toCanvasY(y));
+                }
+                ctx.stroke();
+
+                // Draw vertical input line indicator at xVal
+                if (!isNaN(xVal) && xVal >= xMin && xVal <= xMax) {
+                    ctx.strokeStyle = '#8b5cf6';
+                    ctx.lineWidth = 1.25;
+                    ctx.setLineDash([3, 3]);
+                    ctx.beginPath();
+                    ctx.moveTo(toCanvasX(xVal), 0);
+                    ctx.lineTo(toCanvasX(xVal), canvas.height);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    // Highlight sinh and cosh values at xVal
+                    const sY = Math.sinh(xVal);
+                    const cY = Math.cosh(xVal);
+
+                    if (sY >= yMin && sY <= yMax) {
+                        ctx.fillStyle = '#ec4899';
+                        ctx.beginPath();
+                        ctx.arc(toCanvasX(xVal), toCanvasY(sY), 5.5, 0, 2 * Math.PI);
+                        ctx.fill();
+                    }
+                    if (cY >= yMin && cY <= yMax) {
+                        ctx.fillStyle = '#0ea5e9';
+                        ctx.beginPath();
+                        ctx.arc(toCanvasX(xVal), toCanvasY(cY), 5.5, 0, 2 * Math.PI);
+                        ctx.fill();
+                    }
+                }
+            };
+
+            setTimeout(() => {
+                if (document.getElementById('hypInputX')) calculateInteractiveHyperbolic();
+            }, 100);
+        })();
+    </script>
+</div>

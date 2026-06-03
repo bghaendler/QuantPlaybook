@@ -1,0 +1,367 @@
+<div id="view-quiz-hjm" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">Quiz: HJM & Model Calibration</h1>
+        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Practice assignment covering the Heath-Jarrow-Morton drift condition, yield dynamics, and Swiss market calibration.</div>
+    </header>
+    
+    <div class="container" style="max-width: 900px; grid-template-columns: 1fr; gap: 2.5rem; margin-bottom: 4rem;">
+        <p style="font-size: 1.1rem; color: var(--text-color); line-height: 1.7; opacity: 0.85;">
+            Test your understanding of the HJM framework and calibration principles. Select your options, enter numeric answers, and click <strong>Submit</strong> for instant feedback. Expand the <strong>Show Mathematical Solution & Derivation</strong> card at the bottom of each question to view full theoretical proofs.
+        </p>
+
+        <!-- QUESTION 1: Multiple Choice (Radio) -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 1</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1rem;">
+                1. Consider the following Vasicek model for the short rate $r(t)$ under the risk-neutral measure $\mathbb{Q}$:
+            </p>
+            <p style="text-align: center; font-size: 1.15rem; background: var(--nav-hover); padding: 0.75rem; border-radius: 6px; font-family: monospace; margin-bottom: 1.5rem;">
+                $$ dr(t) = 0.2(0.05 - r(t))dt + 0.01dW^*(t) $$
+            </p>
+            <p style="font-size: 1.1rem; color: var(--text-color); margin-bottom: 1.5rem;">
+                What is the drift $\alpha(t, T)$ of the instantaneous forward rate under the risk-neutral probability measure $\mathbb{Q}$?
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1.75rem;">
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="hjm_q1" value="optA" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color);">$0.0005 e^{-0.2(T-t)} \left( 1 - e^{-0.2(T-t)} \right)$</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="hjm_q1" value="optB" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color);">$0.01 e^{-0.2(T-t)} \left( 1 - e^{-0.2(T-t)} \right)$</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="hjm_q1" value="optC" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color);">$0.0005 \left( 1 - e^{-0.2(T-t)} \right)$</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="hjm_q1" value="optD" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color);">$0.005 e^{-0.2(T-t)} \left( 1 - e^{-0.2(T-t)} \right)$</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeHJMQuizQ1()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q1-hjm-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Solution Derivation:</strong></p>
+                    <p>Under the risk-neutral probability measure $\mathbb{Q}$, the drift $\alpha(t, T)$ and the volatility $\sigma(t, T)$ of the instantaneous forward rates must satisfy the risk-neutral HJM drift condition to prevent arbitrage:</p>
+                    <p style="text-align: center;">$$\alpha(t, T) = \sigma(t, T) \int_t^T \sigma(t, u) du$$</p>
+                    <p>For the short rate Vasicek model, the instantaneous forward rate volatility function is:</p>
+                    <p style="text-align: center;">$$\sigma(t, T) = \sigma_V e^{-\kappa(T-t)} = 0.01 e^{-0.2(T-t)}$$</p>
+                    <p>Integrating the volatility function with respect to $u$ from $t$ to $T$ yields:</p>
+                    <p style="text-align: center;">
+                        $$\int_t^T \sigma(t, u) du = 0.01 \int_t^T e^{-0.2(u-t)} du = 0.01 \left[ \frac{e^{-0.2(u-t)}}{-0.2} \right]_t^T = 0.05 \left( 1 - e^{-0.2(T-t)} \right)$$
+                    </p>
+                    <p>Multiplying by the forward rate volatility $\sigma(t, T)$ yields the risk-neutral drift:</p>
+                    <p style="text-align: center;">
+                        $$\alpha(t, T) = 0.01 e^{-0.2(T-t)} \times 0.05 \left( 1 - e^{-0.2(T-t)} \right) = 0.0005 e^{-0.2(T-t)} \left( 1 - e^{-0.2(T-t)} \right)$$
+                    </p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Option: A.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 2: Multiple Choice (Radio) -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 2</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1rem;">
+                2. Using the same Vasicek model parameters from Q1 ($\sigma_V = 0.01$, $\kappa = 0.2$):
+            </p>
+            <p style="font-size: 1.1rem; color: var(--text-color); margin-bottom: 1.5rem;">
+                What is the volatility $\sigma(t, T)$ of the instantaneous forward rate?
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1.75rem;">
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="hjm_q2" value="optA" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color);">$0.01 e^{-0.2(T-t)}$</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="hjm_q2" value="optB" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color);">$0.2 e^{-0.01(T-t)}$</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="hjm_q2" value="optC" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color);">$0.01 \left( 1 - e^{-0.2(T-t)} \right)$</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="hjm_q2" value="optD" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color);">$0.05 e^{-0.2(T-t)}$</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeHJMQuizQ2()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q2-hjm-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Solution Derivation:</strong></p>
+                    <p>In the standard Vasicek short rate model under $\mathbb{Q}$, the yield curve has an affine bond pricing structure: $P(t, T) = \exp(A(t, T) - B(t, T)r(t))$, where the sensitivity of bond prices to short rates is:</p>
+                    <p style="text-align: center;">$$B(t, T) = \frac{1 - e^{-\kappa(T-t)}}{\kappa}$$</p>
+                    <p>The diffusion coefficient (volatility) of the ZCB is $v(t, T) = -\sigma_V B(t, T)$. The instantaneous forward rate volatility $\sigma(t, T)$ is related directly to the ZCB volatility function via differentiation:</p>
+                    <p style="text-align: center;">$$\sigma(t, T) = \frac{\partial v(t, T)}{\partial T} = \sigma_V e^{-\kappa(T-t)}$$</p>
+                    <p>Plugging in our parameters $\sigma_V = 0.01$ and $\kappa = 0.2$:</p>
+                    <p style="text-align: center;">$$\sigma(t, T) = 0.01 e^{-0.2(T-t)}$$</p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Option: A.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 3: Yes / No (Radio) -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 3</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">True / False</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1rem;">
+                3. Using the same Vasicek model from Question 1:
+            </p>
+            <p style="font-size: 1.1rem; color: var(--text-color); font-weight: 600; margin-bottom: 1.5rem; background: var(--nav-hover); padding: 0.75rem 1rem; border-left: 4px solid var(--accent);">
+                Is the risk-neutral HJM drift condition satisfied?
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.75rem;">
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="hjm_q3" value="yes" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1.05rem; color: var(--text-color); font-weight: 600;">Yes</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="hjm_q3" value="no" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1.05rem; color: var(--text-color); font-weight: 600;">No</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeHJMQuizQ3()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q3-hjm-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Theoretical Answer:</strong></p>
+                    <p><strong>Yes</strong>. In any arbitrage-free term structure model specified directly under a risk-neutral (martingale) probability measure $\mathbb{Q}$, the drift of the instantaneous forward rates must satisfy the HJM drift condition:</p>
+                    <p style="text-align: center;">$$\alpha(t, T) = \sigma(t, T) \int_t^T \sigma(t, u) du$$</p>
+                    <p>Because the Vasicek model's short rate dynamics were defined directly under $\mathbb{Q}$, the resulting forward rate drift is mathematically guaranteed to satisfy the HJM condition to prevent arbitrage.</p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: Yes.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 4: Multiple Choice (Radio) -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 4</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1rem;">
+                4. Consider a Gaussian HJM model with constant volatility $\sigma(t, T) \equiv \sigma$ and constant market price of risk $\lambda(t) \equiv \lambda$. The $\mathbb{P}$-dynamics of the $T$-forward rate is:
+            </p>
+            <p style="text-align: center; font-size: 1.15rem; background: var(--nav-hover); padding: 0.75rem; border-radius: 6px; font-family: monospace; margin-bottom: 1.5rem;">
+                $$ df(t, T) = (\sigma^2(T-t) + \sigma\lambda) dt + \sigma dW(t) $$
+            </p>
+            <p style="font-size: 1.1rem; color: var(--text-color); margin-bottom: 1.5rem;">
+                Which of the following represents the correct physical $\mathbb{P}$-dynamics of the corresponding continuously compounded yield process $y(t, T)$?
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1.75rem;">
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="hjm_q4" value="optA" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color);">$dy(t, T) = \left( \frac{y(t, T)-r(t)}{T-t} + \frac{1}{2}\sigma^2(T-t) + \sigma\lambda \right) dt + \sigma dW(t)$</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="hjm_q4" value="optB" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color);">$dy(t, T) = \left( \frac{y(t, T)-r(t)}{T-t} + \sigma^2(T-t) + \sigma\lambda \right) dt + \sigma dW(t)$</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="hjm_q4" value="optC" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color);">$dy(t, T) = \left( \frac{r(t)-y(t, T)}{T-t} + \frac{1}{2}\sigma^2(T-t) + \sigma\lambda \right) dt + \sigma dW(t)$</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="hjm_q4" value="optD" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color);">$dy(t, T) = \left( \frac{y(t, T)-r(t)}{T-t} + \frac{1}{2}\sigma^2(T-t) \right) dt + \sigma dW(t)$</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeHJMQuizQ4()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q4-hjm-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Solution Derivation:</strong></p>
+                    <p>The yield process $y(t, T)$ is the average of forward rates:</p>
+                    <p style="text-align: center;">$$y(t, T) = \frac{1}{T-t} \int_t^T f(t, u) du$$</p>
+                    <p>Let $Y(t, T) = (T-t) y(t, T) = \int_t^T f(t, u) du$. Applying Leibniz's integration rule to $d_t Y(t, T)$:</p>
+                    <p style="text-align: center;">
+                        $$d Y(t, T) = -f(t, t)dt + \int_t^T df(t, u) du = -r(t)dt + \int_t^T \left[ (\sigma^2(u-t) + \sigma\lambda)dt + \sigma dW(t) \right] du$$
+                    </p>
+                    <p>Evaluating the deterministic integrals from $t$ to $T$ gives:</p>
+                    <p style="text-align: center;">
+                        $$d Y(t, T) = \left( -r(t) + \frac{1}{2}\sigma^2(T-t)^2 + \sigma\lambda(T-t) \right) dt + \sigma(T-t) dW(t)$$
+                    </p>
+                    <p>Applying Itô's formula for the product/quotient $y(t, T) = \frac{Y(t, T)}{T-t}$:</p>
+                    <p style="text-align: center;">
+                        $$dy(t, T) = d\left(\frac{Y(t,T)}{T-t}\right) = \frac{d Y}{T-t} + \frac{Y(t, T)}{(T-t)^2} dt = \frac{d Y}{T-t} + \frac{y(t, T)}{T-t} dt$$
+                    </p>
+                    <p>Substituting $dY$ into this relation yields:</p>
+                    <p style="text-align: center;">
+                        $$dy(t, T) = \left( \frac{y(t, T)-r(t)}{T-t} + \frac{1}{2}\sigma^2(T-t) + \sigma\lambda \right) dt + \sigma dW(t)$$
+                    </p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Option: A.</p>
+                </div>
+            </details>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Trigger MathJax typeset when feedback is displayed
+    function hjm_triggerMathJax(el) {
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') {
+            MathJax.typesetPromise([el]);
+        }
+    }
+
+    function gradeHJMQuizQ1() {
+        const selected = document.querySelector('input[name="hjm_q1"]:checked');
+        const feedback = document.getElementById('q1-hjm-feedback');
+        
+        if (!selected) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Please select an option before submitting!';
+            return;
+        }
+
+        feedback.style.display = 'block';
+        if (selected.value === 'optA') {
+            feedback.style.background = '#dcfce7';
+            feedback.style.color = '#166534';
+            feedback.innerHTML = '<strong>✓ Correct!</strong> Under the risk-neutral measure, the drift $\\alpha(t, T)$ satisfies the HJM drift condition $\\sigma(t, T) \\int_t^T \\sigma(t, u) du$. Given $\\sigma(t, T) = 0.01 e^{-0.2(T-t)}$, the drift is exactly $0.0005 e^{-0.2(T-t)} (1 - e^{-0.2(T-t)})$.';
+        } else {
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = '<strong>✗ Incorrect.</strong> Remember to apply the HJM risk-neutral drift condition: $\\alpha(t, T) = \\sigma(t, T) \\int_t^T \\sigma(t, u) du$. Evaluating the integral of $0.01 e^{-0.2(u-t)}$ and multiplying by the outer volatility function yields the correct expression. Try again!';
+        }
+        hjm_triggerMathJax(feedback);
+    }
+
+    function gradeHJMQuizQ2() {
+        const selected = document.querySelector('input[name="hjm_q2"]:checked');
+        const feedback = document.getElementById('q2-hjm-feedback');
+        
+        if (!selected) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Please select an option before submitting!';
+            return;
+        }
+
+        feedback.style.display = 'block';
+        if (selected.value === 'optA') {
+            feedback.style.background = '#dcfce7';
+            feedback.style.color = '#166534';
+            feedback.innerHTML = '<strong>✓ Correct!</strong> In the short rate Vasicek model, the instantaneous forward rate volatility function decays exponentially with mean reversion speed $\\kappa$: $\\sigma(t, T) = \\sigma_V e^{-\\kappa(T-t)} = 0.01 e^{-0.2(T-t)}$.';
+        } else {
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = '<strong>✗ Incorrect.</strong> Under the affine bond pricing framework, the forward rate volatility is the derivative of the bond price volatility function, yielding $\\sigma(t, T) = \\sigma_V e^{-\\kappa(T-t)}$. Try again!';
+        }
+        hjm_triggerMathJax(feedback);
+    }
+
+    function gradeHJMQuizQ3() {
+        const selected = document.querySelector('input[name="hjm_q3"]:checked');
+        const feedback = document.getElementById('q3-hjm-feedback');
+        
+        if (!selected) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Please select an option before submitting!';
+            return;
+        }
+
+        feedback.style.display = 'block';
+        if (selected.value === 'yes') {
+            feedback.style.background = '#dcfce7';
+            feedback.style.color = '#166534';
+            feedback.innerHTML = '<strong>✓ Correct!</strong> Yes, since the short rate dynamics were defined directly under the risk-neutral measure $\\mathbb{Q}$ and the drift condition was explicitly used to construct $\\alpha(t, T)$, the HJM drift condition is satisfied by definition.';
+        } else {
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = '<strong>✗ Incorrect.</strong> In any arbitrage-free model specified under $\\mathbb{Q}$, the HJM drift condition is always satisfied by definition to avoid arbitrage. The correct answer is Yes!';
+        }
+        hjm_triggerMathJax(feedback);
+    }
+
+    function gradeHJMQuizQ4() {
+        const selected = document.querySelector('input[name="hjm_q4"]:checked');
+        const feedback = document.getElementById('q4-hjm-feedback');
+        
+        if (!selected) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Please select an option before submitting!';
+            return;
+        }
+
+        feedback.style.display = 'block';
+        if (selected.value === 'optA') {
+            feedback.style.background = '#dcfce7';
+            feedback.style.color = '#166534';
+            feedback.innerHTML = '<strong>✓ Correct!</strong> Applying Leibniz\'s integration rule and Itô\'s division rule to $y(t, T) = \\frac{1}{T-t}\\int_t^T f(t, u) du$ correctly yields the drift term with a $\\frac{1}{2}\\sigma^2(T-t)$ correction and physical risk premium $\\sigma\\lambda$.';
+        } else {
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = '<strong>✗ Incorrect.</strong> Remember that the continuously compounded yield is the average of forward rates. Applying Leibniz\'s integration rule and Itô\'s formula to the quotient $y(t, T) = Y(t, T)/(T-t)$ yields Option A. Try again!';
+        }
+        hjm_triggerMathJax(feedback);
+    }
+</script>

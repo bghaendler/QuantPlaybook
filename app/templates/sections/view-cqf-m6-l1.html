@@ -1,0 +1,557 @@
+<div id="view-cqf-m6-l1" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 06: Fixed Income &amp; Credit</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 01</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L1: Fixed Income Products &amp; Analysis</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Cash Contracts, Benchmark Rates, Swaps, Multi-Curve Framework, and Bond price-Yield sensitivities</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM6L1Cash" onclick="switchM6L1Tab('cash')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. Cash &amp; Benchmarks</button>
+        <button id="tabM6L1Deriv" onclick="switchM6L1Tab('deriv')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Derivatives &amp; Swaps</button>
+        <button id="tabM6L1Curves" onclick="switchM6L1Tab('curves')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Multi-Curve &amp; Curves</button>
+        <button id="tabM6L1Infrastructure" onclick="switchM6L1Tab('infrastructure')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. Infrastructure &amp; Margins</button>
+        <button id="tabM6L1Bonds" onclick="switchM6L1Tab('bonds')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Bonds &amp; YTM Sensitivities</button>
+        <button id="tabM6L1Sandbox" onclick="switchM6L1Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Interactive Quant Labs</button>
+    </div>
+
+    <!-- TAB 1: Cash & Benchmarks -->
+    <div id="secM6L1Cash" style="display: block;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; display: grid; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Fixed-Income Cash Contracts</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        Fixed income represents transactions involving the exchange of known cash flows, distinct from equities and commodities. ZERO-COUPON BONDS (ZCBs) are the simplest building blocks, paying a principal amount $N$ at a single future date $T$.
+                    </p>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        <strong> deposits &amp; Day Counts:</strong> deposits are OTC lending structures where principal settles on $t_0$ (typically $T+2$) and pays principal plus interest at maturity $t_1$: $N(1 + \delta R)$ [7]. The accrual factor $\delta$ represents the year fraction [8]:
+                        <ul style="padding-left:1.15rem; margin-top:0.25rem;">
+                            <li><strong>$\text{Act}/360$:</strong> standard for USD &amp; EUR money markets.</li>
+                            <li><strong>$\text{Act}/365\text{F}$:</strong> standard for GBP money markets.</li>
+                            <li><strong>$30/360$:</strong> Assumes $30$ days per month and $360$ days per year, standard for swaps.</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Repos, Bills &amp; Benchmarks</h3>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                        <strong>Bills &amp; CDs:</strong> Securitized deposits quoted on a *discounted basis*, where interest is subtracted at inception: $N(1 - \delta R)$ [9].
+                        <strong>Repurchase Agreements (Repos):</strong> Secured short-term cash borrowing using bonds as collateral. The borrower delivers bond quantity $Q = N/B_0$, repurchasing at $N(1+\delta R)$ [12].
+                    </p>
+                    <div style="background:var(--metric-bg); padding:0.85rem; border-radius:6px; border-left:3px solid var(--accent); font-size:0.75rem; line-height:1.45; color:#374151;">
+                        <strong>Interest Rate Benchmarks:</strong> Reference rates published by independent administrators:
+                        <ul style="padding-left:1.15rem; margin-top:0.25rem; margin-bottom:0;">
+                            <li><strong>USD-SOFR:</strong> Secured Overnight Financing Rate, based on Treasury repo transactions.</li>
+                            <li><strong>EUR-$\text{ESTR}$:</strong> Euro Short-Term Rate, unsecured wholesale bank deposits.</li>
+                            <li><strong>GBP-SONIA:</strong> Sterling Overnight Interbank Average, unsecured overnight sterling rate.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Derivatives & Swaps -->
+    <div id="secM6L1Deriv" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Vanilla Swaps, OIS &amp; Comparative Advantage</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    <strong>Vanilla IRS:</strong> A bilateral exchange where one leg pays a fixed rate ($C$) and the other pays a floating rate ($L(t_{i-1})$) [20].
+                    <strong>Overnight Indexed Swaps (OIS):</strong> A swap where the floating leg pays a compounded overnight rate index (e.g. SOFR or SONIA) [21]:
+                    $$\text{OIS Floating Leg} = \prod_{i=1}^n \left(1 + \delta_i I^O(s_{i-1}, s_i)\right) - 1$$
+                    <strong>Forward Rate Agreements (FRAs):</strong> Locks in interest rate for a single future period. The start-settled FRA discount payment formula is [22]:
+                    $$\text{FRA Payment} = \frac{\delta \left(L^j(\theta) - K\right)}{1 + \delta L^j(\theta)}$$
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem;">Exploiting Comparative Advantage Swap Case Study</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        Two firms, A and B, want to borrow USD $10$ million for 2 years. Company B has higher perceived default risk:
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                            <thead>
+                                <tr style="border-bottom:1px solid var(--card-border); text-align:left;">
+                                    <th style="padding:0.25rem;">Company</th>
+                                    <th style="padding:0.25rem;">Fixed Borrowing Cost</th>
+                                    <th style="padding:0.25rem;">Floating Borrowing Cost</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom:1px solid var(--card-border);">
+                                    <td style="padding:0.25rem; font-weight:bold;">A (Highly Rated)</td>
+                                    <td style="padding:0.25rem;">$3.00\%$</td>
+                                    <td style="padding:0.25rem;">$\text{SOFR} + 30\text{ bps}$</td>
+                                </tr>
+                                <tr style="border-bottom:1px solid var(--card-border);">
+                                    <td style="padding:0.25rem; font-weight:bold;">B (Lower Rated)</td>
+                                    <td style="padding:0.25rem;">$4.20\%$</td>
+                                    <td style="padding:0.25rem;">$\text{SOFR} + 100\text{ bps}$</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        - Company A's advantage is larger in the fixed market ($1.20\%$) than floating ($0.70\%$), showing comparative advantage in fixed borrowing.
+                        - If A wants floating and B wants fixed, they borrow where they have comparative advantages (A fixed at $3\%$, B floating at $\text{SOFR} + 100\text{ bps}$), generating potential combined savings of **$50\text{ bps}$** ($0.50\%$).
+                        - They enter a swap where A pays $\text{SOFR}$ and B pays $2.95\%$. Net payments: A pays $\text{SOFR} + 5\text{ bps}$ (saving $25\text{ bps}$); B pays $3.95\%$ (saving $25\text{ bps}$).
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Multi-Curve & Yield Curves -->
+    <div id="secM6L1Curves" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; display: grid; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Multi-Curve Framework Post-2008</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        Before the 2007 Financial Crisis, interbank basis spreads between different tenors (e.g. 3M vs 6M EURIBOR) were negligible, enabling single-curve discounting and forecasting. 
+                    </p>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        <strong>The Crisis Breakdown:</strong> On August 9, 2007, liquidity squeezes and credit risk pricing caused basis spreads to jump. The single-curve replication assumption broke down because cancellation of cash flows assumed absolute certainty of receipt.
+                        The modern **Multi-Curve Framework** separates curves into a **Discounting Curve** (OIS risk-free curves) and tenor-specific **Forward Index Curves** (for floating forecasting) [49].
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Swap Pricing &amp; par Rates</h3>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                        Discount factors $P(s, t)$ represent zero-coupon bond present values. Under multi-curve pricing, the Par swap rate $K$ (making the swap's present value $0$ at inception) is [51]:
+                        $$K = \frac{\sum_{i=1}^n P(0, t_i) \delta_i F^j(0; \theta_i, t_{i-1}, t_i)}{\sum_{i=1}^{\tilde{n}} \tilde{\delta}_i P(0, \tilde{t}_i)}$$
+                        Where $P(0, \cdot)$ is the discounting curve, and $F^j(0; \cdot)$ represents the forward forecasting index.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Infrastructure & Margins -->
+    <div id="secM6L1Infrastructure" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">CCPs, Margins &amp; Collateral Account Discounting</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    <strong>Central Counterparties (CCPs):</strong> Interpose themselves in derivative markets to enable multilateral netting, significantly reducing credit risk exposure.
+                    <strong>Variation Margin (VM):</strong> Daily realized cash exchanges reflecting P&amp;L shifts.
+                    <strong>Initial Margin (IM):</strong> Additional posted collateral to buffer potential liquidation losses during the Margin Period of Risk (MPoR), sized at the 99th percentile VAR over 10 days.
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Collateral Pricing Theorem</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        Because cash collateral deposited for variation margin earns daily compounded overnight interest $c(t)$, assets must be discounted at the collateral rate rather than a theoretical risk-free rate.
+                        The value $V^c_0$ of a future payoff $V^c_u$ is given by:
+                        $$V^c_0 = \mathbb{E}^{\mathbb{X}}\left[ \left(N^c_u\right)^{-1} V^c_u \right]$$
+                        Where $N^c_u = \exp\left(\int_0^u c_\tau \mathrm{d}\tau\right)$ is the collateral account. Under collateral discounting, the compounded overnight OIS pseudo-discount factor replication holds perfectly:
+                        $$\text{PV}(\text{Floating Overnight Coupon}) = P^c(0, s_0) - P^c(0, s_n)$$
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: Bonds & YTM Sensitivities -->
+    <div id="secM6L1Bonds" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; display: grid; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Bond Pricing &amp; Associated Measures</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        <strong>Clean vs. Dirty Prices:</strong> Bonds are quoted and traded in *Clean prices*, which exclude accrued interest. However, actual settlement cash flows are executed in *Dirty prices*:
+                        $$\text{Clean} = \text{Dirty} - \text{Accrued Interest}$$
+                        Yield to Maturity ($Y$) is the internal rate of return that equates the future cash flows to the dirty price.
+                    </p>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        <strong>Modified Duration &amp; Convexity:</strong> Used to approximate price changes w.r.t YTM shifts ($Y_0 + \Delta Y$):
+                        $$\text{Duration}_{\text{Mod}} = -\frac{1}{\text{Dirty}}\frac{\partial \text{Dirty}}{\partial Y}, \quad \text{Convexity} = \frac{1}{\text{Dirty}}\frac{\partial^2 \text{Dirty}}{\partial Y^2}$$
+                        $$\text{Dirty}(Y_0 + \Delta Y) \approx \text{Dirty}(Y_0) \left[ 1 - \text{Duration}_{\text{Mod}} \cdot \Delta Y + \frac{1}{2} \text{Convexity} \cdot (\Delta Y)^2 \right]$$
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Stochastic Interest Rate Modeling</h3>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                        To simulate yield curves, models represent the continuous evolution of rates:
+                        <ul style="padding-left:1.15rem; margin-top:0.25rem; margin-bottom:0;">
+                            <li><strong>Short-Rate Models:</strong> SDEs modeling $r_t$ (e.g. Vasicek, CIR, Hull-White):
+                                $$P(s, t) = \mathbb{E}^{\mathbb{X}}\left[ \exp\left(-\int_s^t r_\tau \mathrm{d}\tau\right) \Big| \mathcal{F}_s \right]$$
+                            </li>
+                            <li><strong>Heath-Jarrow-Morton (HJM):</strong> Models the entire forward rate curve $f(t, u)$ directly:
+                                $$\mathrm{d}f(t, u) = \mu(t, u) \mathrm{d}t + \sigma(t, u) \mathrm{d}W_t$$
+                            </li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Interactive Quant Labs -->
+    <div id="secM6L1Sandbox" style="display: none;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <!-- LAB A: Yield Curve & Multi-Curve Basis Visualizer -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab A: Yield Curve &amp; Multi-Curve Basis</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Credit &amp; Liquidity Regime:</label>
+                        <select id="selectM6L1Regime" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L1BasisLab()">
+                            <option value="pre">Pre-August 2007 (Single Curve)</option>
+                            <option value="post" selected>Post-2007 Era (Multi-Curve Basis)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">OIS Base Rate:</label>
+                        <input id="numM6L1OisRate" type="number" value="0.02" step="0.01" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L1BasisLab()">
+                    </div>
+                </div>
+                <div style="height: 140px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m6l1BasisChart"></canvas>
+                </div>
+                <div id="outM6L1Basis" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Simulating curve basis regimes...
+                </div>
+            </div>
+
+            <!-- LAB B: Bond Price-Yield Sensitivity (Duration & Convexity) -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab B: Bond Price-Yield Sensitivity</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.5rem; font-size:0.75rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Coupon Rate:</label>
+                        <input id="numM6L1Cpn" type="number" value="0.06" step="0.01" style="width:100%; padding:0.15rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L1BondLab()">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Maturity (Y):</label>
+                        <input id="numM6L1Mat" type="number" value="10" step="1" style="width:100%; padding:0.15rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L1BondLab()">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Current YTM:</label>
+                        <input id="numM6L1Ytm" type="number" value="0.05" step="0.01" style="width:100%; padding:0.15rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L1BondLab()">
+                    </div>
+                </div>
+                <div style="height: 140px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m6l1BondChart"></canvas>
+                </div>
+                <div id="outM6L1Bond" style="font-size:0.75rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Calculating bond sensitivities...
+                </div>
+            </div>
+
+            <!-- LAB C: Comparative Advantage Swap Optimizer -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem; grid-column: span 2;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab C: Comparative Advantage Swap Optimizer</h3>
+                <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">A Fixed Rate:</label>
+                        <input id="numM6L1Afixed" type="number" value="0.03" step="0.01" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L1SwapLab()">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">A Floating Spread:</label>
+                        <input id="numM6L1Afloat" type="number" value="0.003" step="0.001" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L1SwapLab()">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">B Fixed Rate:</label>
+                        <input id="numM6L1Bfixed" type="number" value="0.042" step="0.01" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L1SwapLab()">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">B Floating Spread:</label>
+                        <input id="numM6L1Bfloat" type="number" value="0.01" step="0.001" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L1SwapLab()">
+                    </div>
+                </div>
+                <div style="height: 160px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m6l1SwapChart"></canvas>
+                </div>
+                <div id="outM6L1Swap" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Optimizing comparative swap allocations...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching logic for CQF M6 L1
+    window.switchM6L1Tab = function(tab) {
+        const tabs = ['cash', 'deriv', 'curves', 'infrastructure', 'bonds', 'sandbox'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM6L1' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM6L1' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) {
+                sec.style.display = (t === tab ? 'block' : 'none');
+                if (t === tab && !sec.dataset.typeset) {
+                    if (typeof window.safeTypeset === 'function') {
+                        window.safeTypeset([sec]);
+                        sec.dataset.typeset = 'true';
+                    }
+                }
+            }
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        if (tab === 'sandbox') {
+            setTimeout(initM6L1Labs, 100);
+        }
+    };
+
+    let m6l1BasisChartInstance = null;
+    let m6l1BondChartInstance = null;
+    let m6l1SwapChartInstance = null;
+
+    window.initM6L1Labs = function() {
+        runM6L1BasisLab();
+        runM6L1BondLab();
+        runM6L1SwapLab();
+    };
+
+    window.runM6L1BasisLab = function() {
+        const regime = document.getElementById('selectM6L1Regime').value;
+        const oisRate = parseFloat(document.getElementById('numM6L1OisRate').value);
+
+        let tenors = [0.25, 0.5, 1.0, 2.0, 3.0, 5.0, 10.0];
+        let oisCurve = [];
+        let eur3m = [];
+        let eur6m = [];
+
+        tenors.forEach(t => {
+            const base = oisRate + 0.005 * Math.log(1 + t);
+            oisCurve.push(base * 100);
+
+            if (regime === 'pre') {
+                eur3m.push(base * 100);
+                eur6m.push(base * 100);
+            } else {
+                eur3m.push((base + 0.004) * 100);
+                eur6m.push((base + 0.009) * 100);
+            }
+        });
+
+        const outEl = document.getElementById('outM6L1Basis');
+        outEl.innerHTML = `
+            Regime: <strong>${regime === 'pre' ? 'Pre-August 2007 (Single Curve)' : 'Post-2007 Multi-Curve Basis'}</strong>. OIS Base Rate: <strong>${(oisRate*100).toFixed(1)}%</strong>.<br>
+            - Pre-2007: Tenor differences were ignored, and all swaps were priced off a single curve.<br>
+            - Post-2007: Interbank credit and liquidity risks split 3M EURIBOR (+40 bps basis) and 6M EURIBOR (+90 bps basis) curves away from discounting OIS.
+        `;
+        if (typeof window.safeTypeset === 'function') {
+            window.safeTypeset([outEl]);
+        }
+
+        const ctx = document.getElementById('m6l1BasisChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m6l1BasisChartInstance) m6l1BasisChartInstance.destroy();
+
+        m6l1BasisChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: tenors.map(t => t + 'Y'),
+                datasets: [
+                    { label: 'OIS Discounting Curve', data: oisCurve, borderColor: 'var(--accent)', borderWidth: 2, fill: false },
+                    { label: '3M EURIBOR Forward', data: eur3m, borderColor: 'rgba(16, 185, 129, 0.85)', borderWidth: 1.5, borderDash: [4, 4], fill: false },
+                    { label: '6M EURIBOR Forward', data: eur6m, borderColor: 'rgba(239, 68, 68, 0.85)', borderWidth: 1.5, borderDash: [6, 2], fill: false }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, labels: { font: { size: 8 }, color: tickColor } } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { title: { display: true, text: 'Yield (%)', font: { size: 8 }, color: tickColor }, ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+
+    // Calculate coupon bond dirty price
+    function m6l1PriceBond(cpn, mat, freq, ytm) {
+        let price = 0;
+        const totalPeriods = mat * freq;
+        const cpnPayment = (cpn * 100) / freq;
+        for (let i = 1; i <= totalPeriods; i++) {
+            price += cpnPayment / Math.pow(1 + ytm / freq, i);
+        }
+        price += 100 / Math.pow(1 + ytm / freq, totalPeriods);
+        return price;
+    }
+
+    // Calculate Modified Duration and Convexity
+    function m6l1CalcDurationConvexity(cpn, mat, freq, ytm) {
+        const P = m6l1PriceBond(cpn, mat, freq, ytm);
+        const dy = 0.0001;
+        const P_up = m6l1PriceBond(cpn, mat, freq, ytm + dy);
+        const P_dn = m6l1PriceBond(cpn, mat, freq, ytm - dy);
+
+        const modDur = -((P_up - P_dn) / (2 * dy)) / P;
+        const conv = ((P_up + P_dn - 2 * P) / (dy * dy)) / P;
+
+        return { P, modDur, conv };
+    }
+
+    window.runM6L1BondLab = function() {
+        const cpn = parseFloat(document.getElementById('numM6L1Cpn').value);
+        const mat = parseFloat(document.getElementById('numM6L1Mat').value);
+        const ytm = parseFloat(document.getElementById('numM6L1Ytm').value);
+        const freq = 2; // Semi-annual standard
+
+        const { P, modDur, conv } = m6l1CalcDurationConvexity(cpn, mat, freq, ytm);
+
+        let yields = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.12, 0.15];
+        let actualPrices = [];
+        let durPrices = [];
+        let convPrices = [];
+
+        yields.forEach(y => {
+            const actual = m6l1PriceBond(cpn, mat, freq, y);
+            actualPrices.push(actual);
+
+            const dy = y - ytm;
+            const approxDur = P * (1 - modDur * dy);
+            const approxConv = P * (1 - modDur * dy + 0.5 * conv * dy * dy);
+
+            durPrices.push(approxDur);
+            convPrices.push(approxConv);
+        });
+
+        const outEl = document.getElementById('outM6L1Bond');
+        outEl.innerHTML = `
+            Bond Dirty Price: <strong>$${P.toFixed(2)}</strong>. Modified Duration: <strong>${modDur.toFixed(2)} Y</strong>. Convexity: <strong>${conv.toFixed(2)}</strong>.<br>
+            Note that **Duration** (first-order tangent) underestimates bond value under yield shocks, while **Convexity** (second-order adjustment) perfectly captures the curvature.
+        `;
+        if (typeof window.safeTypeset === 'function') {
+            window.safeTypeset([outEl]);
+        }
+
+        const ctx = document.getElementById('m6l1BondChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m6l1BondChartInstance) m6l1BondChartInstance.destroy();
+
+        m6l1BondChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: yields.map(y => (y * 100).toFixed(0) + '%'),
+                datasets: [
+                    { label: 'Actual Price', data: actualPrices, borderColor: 'var(--accent)', borderWidth: 2, fill: false },
+                    { label: 'Duration Tangent', data: durPrices, borderColor: '#ef4444', borderWidth: 1, borderDash: [4, 4], fill: false, pointRadius: 0 },
+                    { label: 'Convexity Approximation', data: convPrices, borderColor: '#10b981', borderWidth: 1.5, borderDash: [2, 2], fill: false, pointRadius: 0 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, labels: { font: { size: 8 }, color: tickColor } } },
+                scales: {
+                    x: { title: { display: true, text: 'Yield to Maturity (YTM)', font: { size: 8 }, color: tickColor }, ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { title: { display: true, text: 'Bond Price ($)', font: { size: 8 }, color: tickColor }, ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+
+    window.runM6L1SwapLab = function() {
+        const A_fix = parseFloat(document.getElementById('numM6L1Afixed').value);
+        const A_float = parseFloat(document.getElementById('numM6L1Afloat').value);
+        const B_fix = parseFloat(document.getElementById('numM6L1Bfixed').value);
+        const B_float = parseFloat(document.getElementById('numM6L1Bfloat').value);
+
+        // Comparative Advantage Swap Math
+        const diffFixed = B_fix - A_fix;
+        const diffFloat = B_float - A_float;
+        const totalSavings = diffFixed - diffFloat;
+
+        // Spread share (50-50 allocation standard)
+        const share = totalSavings / 2;
+
+        // A pays Floating (SOFR + Spread), wants SOFR. A borrows Fixed in market at A_fix
+        // B pays Fixed, wants Fixed. B borrows Floating in market at SOFR + B_float
+        const swapRate = A_fix + A_float - share; 
+        const aNetPayment = A_fix + A_float - share; // SOFR + Spread
+
+        const outEl = document.getElementById('outM6L1Swap');
+        if (totalSavings <= 0) {
+            outEl.innerHTML = `No comparative advantage exists with these parameters. Total swap savings = 0.`;
+            return;
+        }
+
+        outEl.innerHTML = `
+            Company A (Borrowing Fixed at ${(A_fix*100).toFixed(2)}%). Company B (Borrowing Floating at SOFR + ${(B_float*10000).toFixed(0)} bps).<br>
+            Total Potential Combined Swap Savings: <strong style="color:#10b981;">${(totalSavings*100).toFixed(2)}% (${(totalSavings*10000).toFixed(0)} bps)</strong>!<br>
+            - **Company A Net Payment:** Borrow Fixed + Swap Payments = <strong style="color:var(--accent);">SOFR + ${(A_float*10000 - share*10000).toFixed(0)} bps</strong> (saving ${(share*10000).toFixed(0)} bps).<br>
+            - **Company B Net Payment:** Borrow Floating + Swap Payments = <strong style="color:var(--accent);">${(B_fix*100 - share*100).toFixed(2)}%</strong> (saving ${(share*10000).toFixed(0)} bps).
+        `;
+        if (typeof window.safeTypeset === 'function') {
+            window.safeTypeset([outEl]);
+        }
+
+        const ctx = document.getElementById('m6l1SwapChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m6l1SwapChartInstance) m6l1SwapChartInstance.destroy();
+
+        m6l1SwapChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Direct Fixed Borrowing', 'Direct Floating Borrowing', 'Net Cost via Swap'],
+                datasets: [
+                    {
+                        label: 'Company A Net Rate (%)',
+                        data: [A_fix * 100, (A_float + 0.02) * 100, (A_float - share + 0.02) * 100], // offset SOFR as 2% for visual
+                        backgroundColor: 'rgba(16, 185, 129, 0.75)',
+                        borderColor: '#10b981',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Company B Net Rate (%)',
+                        data: [B_fix * 100, (B_float + 0.02) * 100, (B_fix - share) * 100],
+                        backgroundColor: 'rgba(239, 68, 68, 0.75)',
+                        borderColor: '#ef4444',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, labels: { font: { size: 8 }, color: tickColor } } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { title: { display: true, text: 'Effective Cost Rate (%)', font: { size: 8 }, color: tickColor }, ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+</script>

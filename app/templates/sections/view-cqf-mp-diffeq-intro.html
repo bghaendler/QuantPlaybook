@@ -1,0 +1,212 @@
+<div id="view-cqf-mp-diffeq-intro" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #f59e0b; font-family: var(--font-family-sans);">1. ODE Introduction</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Differential Equations - Introduction</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Core classifications, ordinary vs. partial vs. stochastic models, order and degree, and constants of integration.</div>
+    </header>
+
+    <!-- Core Lecture Summary Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1. Lecture Overview &amp; Distinctions</h3>
+        <p>In quantitative finance, differential equations are unavoidable because asset pricing, option valuations, and portfolio risk channels involve pricing assets that change with respect to underlying variables such as asset prices or time.</p>
+        <p>There are three main types of differential equations:</p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li><strong>Ordinary Differential Equations (ODEs):</strong> Contain ordinary derivatives such as $dy/dx$. They involve functions of a single independent variable.</li>
+            <li><strong>Partial Differential Equations (PDEs):</strong> Contain partial derivatives and involve unknown functions of several variables (e.g. Black-Scholes PDE).</li>
+            <li><strong>Stochastic Differential Equations (SDEs):</strong> Contain a random term (Wiener process) modeling random market deviations (e.g. Geometric Brownian Motion).</li>
+        </ul>
+    </div>
+
+    <!-- Order and Degree Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">2. Order and Degree Classification</h3>
+        <p>Every ODE has two primary classification metrics:</p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li><strong>Order:</strong> Determined by the highest derivative present in the equation.</li>
+            <li><strong>Degree:</strong> The power to which that highest-order derivative is raised.</li>
+        </ul>
+        <p>Any differential equation of degree greater than one is <strong>nonlinear</strong>, while degree one equations can be linear.</p>
+
+        <h4 style="color: var(--accent); margin-top: 1.5rem; margin-bottom: 0.5rem;">Classification Examples:</h4>
+        <table style="width: 100%; border-collapse: collapse; font-family: var(--font-family-sans); font-size: 0.85rem; text-align: left;">
+            <thead>
+                <tr style="border-bottom: 2px solid var(--card-border); font-weight: bold;">
+                    <th style="padding: 0.5rem;">Differential Equation</th>
+                    <th style="padding: 0.5rem;">Order</th>
+                    <th style="padding: 0.5rem;">Degree</th>
+                    <th style="padding: 0.5rem;">Linearity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);">
+                    <td style="padding: 0.5rem;">$\frac{dy}{dx} + 5y = x^2$</td>
+                    <td style="padding: 0.5rem;">1</td>
+                    <td style="padding: 0.5rem;">1</td>
+                    <td style="padding: 0.5rem; color: #10b981; font-weight: bold;">Linear</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--card-border);">
+                    <td style="padding: 0.5rem;">$\left(\frac{d^2y}{dx^2}\right)^3 + y\frac{dy}{dx} = e^x$</td>
+                    <td style="padding: 0.5rem;">2</td>
+                    <td style="padding: 0.5rem;">3</td>
+                    <td style="padding: 0.5rem; color: #ef4444; font-weight: bold;">Nonlinear (Degree 3, y coefficient)</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--card-border);">
+                    <td style="padding: 0.5rem;">$\frac{d^2y}{dx^2} + \sqrt{\frac{dy}{dx}} = y$</td>
+                    <td style="padding: 0.5rem;">2</td>
+                    <td style="padding: 0.5rem;">1 (after squaring)</td>
+                    <td style="padding: 0.5rem; color: #ef4444; font-weight: bold;">Nonlinear (Fractional power)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Constants of Integration & Worked Solutions -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">3. Working Backwards: Constants of Integration</h3>
+        <p>If we start with a function $y$ that depends on $x$ and $n$ arbitrary constants, differentiating $n$ times produces $n+1$ equations. Eliminating the constants yields an $n^{\text{th}}$-order ODE. This proves that an $n^{\text{th}}$-order ODE has a general solution containing exactly $n$ constants.</p>
+
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color); margin-top: 1rem;">
+            <strong>Worked Example 1: One Constant (First Order ODE)</strong>
+            <p style="margin: 0.25rem 0;">Start with: $y = C x$</p>
+            <p style="margin: 0.25rem 0;">Differentiate once: $\frac{dy}{dx} = C$</p>
+            <p style="margin: 0.25rem 0;">Eliminate $C$ by substituting $C = y/x$:</p>
+            <p style="color: #10b981; font-weight: bold; margin-top: 0.25rem;">$$\frac{dy}{dx} = \frac{y}{x} \implies x \frac{dy}{dx} - y = 0 \quad \text{(First-order ODE)}$$</p>
+
+            <strong style="display: block; margin-top: 1rem;">Worked Example 2: Two Constants (Second Order ODE)</strong>
+            <p style="margin: 0.25rem 0;">Start with: $y = A \cos x + B \sin x$</p>
+            <p style="margin: 0.25rem 0;">Differentiate twice:</p>
+            <p style="margin: 0.25rem 0;">$$\frac{dy}{dx} = -A \sin x + B \cos x$$</p>
+            <p style="margin: 0.25rem 0;">$$\frac{d^2y}{dx^2} = -A \cos x - B \sin x = - (A \cos x + B \sin x)$$</p>
+            <p style="color: #10b981; font-weight: bold; margin-top: 0.25rem;">$$\frac{d^2y}{dx^2} + y = 0 \quad \text{(Second-order ODE)}$$</p>
+        </div>
+    </div>
+
+    <!-- Initial vs Boundary Value Problems -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">4. Supplementary Conditions: IVP vs. BVP</h3>
+        <p>A general solution contains undetermined constants. To obtain a <strong>particular solution</strong>, we must impose additional conditions:</p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li><strong>Initial Value Problems (IVPs):</strong> Consist of an $n^{\text{th}}$-order ODE together with $n$ initial conditions specifying the values of $y$ and its derivatives <strong>all at the same point</strong> $x_0$ (e.g. $y(0) = 1, y'(0) = 0$).</li>
+            <li><strong>Boundary Value Problems (BVPs):</strong> Consist of an $n^{\text{th}}$-order ODE together with $n$ boundary conditions specifying the values of $y$ at <strong>$n$ different points</strong> (e.g. $y(0) = 0, y(1) = 5$).</li>
+        </ul>
+        <p>Initial conditions and boundary conditions cannot be mixed within a single problem, and a valid solution must satisfy both the differential equation and every one of the conditions.</p>
+    </div>
+
+    <!-- Verification sandbox visualizer -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">5. Interactive Solution Verification Sandbox</h3>
+        <p>We want to verify if the function $y = C e^x$ satisfies the second-order linear ODE $y'' - y = 0$. Since differentiation is a linear operation, if $e^x$ is a solution, any constant multiple of $e^x$ is also a solution, meaning there are infinitely many solutions. Use the slider below to select the constant $C$ and watch the function fit dynamically:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls -->
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Constant ($C$):</label>
+                    <input type="range" id="diffeqIntroSliderC" min="-4" max="4" value="1.5" step="0.1" oninput="runDiffeqIntroSimulation()" style="width: 100%; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: -0.75rem; margin-bottom: 1.25rem; color: #6b7280;">
+                        <span>-4.0</span>
+                        <span id="diffeqIntroCVal" style="font-weight: bold; color: var(--accent);">C = 1.5</span>
+                        <span>4.0</span>
+                    </div>
+
+                    <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border);">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">VERIFICATION IDENTITY STATUS</div>
+                        <div id="diffeqIntroStatus" style="font-size: 1.15rem; font-weight: 700; color: #10b981; margin-top: 0.25rem;">y'' - y = 0  (Satisfied!)</div>
+                    </div>
+                </div>
+
+                <!-- Custom 2D Line Chart Canvas -->
+                <div style="background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 1rem;">
+                    <canvas id="diffeqIntroCanvas" width="320" height="200" style="width: 100%; height: 200px; display: block;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.runDiffeqIntroSimulation = function() {
+                const c = parseFloat(document.getElementById('diffeqIntroSliderC').value);
+                document.getElementById('diffeqIntroCVal').innerText = `C = ${c.toFixed(1)}`;
+
+                drawIntroGraph(c);
+
+                const parent = document.getElementById('view-cqf-mp-diffeq-intro');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawIntroGraph(c) {
+                const canvas = document.getElementById('diffeqIntroCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const margin = 20;
+                const topMargin = 20;
+                const bottomMargin = 20;
+                const width = canvas.width - 2 * margin;
+                const height = canvas.height - topMargin - bottomMargin;
+
+                // Plot y = c * e^x for x in [-2, 2]
+                const minX = -2;
+                const maxX = 2;
+                const minY = -10;
+                const maxY = 10;
+
+                function getCX(x) {
+                    return margin + ((x - minX) / (maxX - minX)) * width;
+                }
+
+                function getCY(y) {
+                    return canvas.height - bottomMargin - ((y - minY) / (maxY - minY)) * height;
+                }
+
+                // Grid lines
+                ctx.strokeStyle = '#222';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(margin, getCY(0));
+                ctx.lineTo(canvas.width - margin, getCY(0));
+                ctx.moveTo(getCX(0), topMargin);
+                ctx.lineTo(getCX(0), canvas.height - bottomMargin);
+                ctx.stroke();
+
+                // Plot function curve
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                let started = false;
+                for (let x = minX; x <= maxX; x += 0.05) {
+                    const y = c * Math.exp(x);
+                    const cx = getCX(x);
+                    const cy = getCY(y);
+                    if (!started) {
+                        ctx.moveTo(cx, cy);
+                        started = true;
+                    } else {
+                        ctx.lineTo(cx, cy);
+                    }
+                }
+                ctx.stroke();
+
+                // Title
+                ctx.fillStyle = '#888';
+                ctx.font = '9px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(`y = ${c.toFixed(1)} * e^x`, canvas.width / 2, topMargin);
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('diffeqIntroSliderC')) runDiffeqIntroSimulation();
+            }, 100);
+        })();
+    </script>
+</div>

@@ -1,0 +1,685 @@
+<div id="view-quiz-forward-futures" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">Quiz: Forward &amp; Futures Rates</h1>
+        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Practice Assignment covering simple forward rates, continuously compounded yields, discount factor monotonicity, spot-forward curve inequalities, and interest rate futures.</div>
+    </header>
+
+    <div class="container" style="max-width: 900px; grid-template-columns: 1fr; gap: 2rem;">
+        <p style="margin-bottom: 2rem; font-size: 1.15rem; color: var(--text-color); opacity: 0.8; line-height: 1.7;">
+            Test your understanding of forward rate agreements and interest rate futures with these practice problems. Input or select your options, then click <strong>Submit Answer</strong> to get instant feedback. Expand the <strong>Show Mathematical Solution &amp; Derivation</strong> card at the bottom of each question to review the full step-by-step analytical proof.
+        </p>
+
+        <!-- QUESTION 1 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 1 (Forward Rate Calculation)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Input</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                Suppose we observe the 1-year yield $y(0, 1) = 4\%$ and the 2-year yield $y(0, 2) = 6\%$. Calculate the simple forward rate $F(0, 1, 2)$. Express your answer in percentage points and round to two decimal places.
+            </p>
+
+            <!-- Numeric Input Field -->
+            <div style="margin-bottom: 1.5rem;">
+                <input type="text" id="qff1_input" placeholder="e.g. 5.50" style="padding: 0.75rem 1rem; font-size: 1.1rem; font-family: monospace; font-weight: bold; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; width: 100%; max-width: 250px;" />
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQff1()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qff1-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Derivation:</strong></p>
+                    <p>Under continuous compounding, the Zero-Coupon Bond (ZCB) prices maturing in $T=1$ and $T=2$ years are:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ P(0, 1) = e^{-1 \times y(0,1)} = e^{-0.04} \approx 0.960789 $$
+                        $$ P(0, 2) = e^{-2 \times y(0,2)} = e^{-0.12} \approx 0.886920 $$
+                    </div>
+                    <p>The simple forward rate $F(t, T_0, T_1)$ over the future period $[T_0, T_1] = [1, 2]$ has length $\delta = 2 - 1 = 1$. The pricing relation satisfies:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ F(0, 1, 2) = \frac{1}{\delta} \left( \frac{P(0, 1)}{P(0, 2)} - 1 \right) = \frac{1}{1} \left( \frac{e^{-0.04}}{e^{-0.12}} - 1 \right) = e^{0.08} - 1 $$
+                    </div>
+                    <p>Evaluating this exponential term:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ e^{0.08} - 1 \approx 1.083287 - 1 = 0.083287 \text{ (or } \mathbf{8.33\%}\text{)} $$
+                    </div>
+                    <p>Expressed in percentage points, the simple forward rate is exactly <strong>8.33</strong>.</p>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answer: 8.33</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 2 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 2 (Discount Curve &amp; Forward Sign)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                If the discount curve $T \mapsto P(t, T)$ is increasing for $T \in [T_0, T_1]$, can you say something about the sign of the simple forward rate $F(t, T_0, T_1)$?
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qff2_option" value="positive" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">Positive</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qff2_option" value="negative" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">Negative</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qff2_option" value="unrelated" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">Has nothing to do with the shape of the discount curve</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQff2()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qff2-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Proof:</strong></p>
+                    <p>The simple forward rate over $[T_0, T_1]$ is analytically defined as:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ F(t, T_0, T_1) = \frac{1}{\delta} \left( \frac{P(t, T_0)}{P(t, T_1)} - 1 \right) $$
+                    </div>
+                    <p>The period length $\delta = T_1 - T_0$ is strictly positive ($\delta > 0$). If the discount curve $T \mapsto P(t, T)$ is strictly increasing over $[T_0, T_1]$:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ T_0 < T_1 \implies P(t, T_0) < P(t, T_1) $$
+                    </div>
+                    <p>Dividing both sides by the positive price $P(t, T_1)$ yields:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ \frac{P(t, T_0)}{P(t, T_1)} < 1 \implies \frac{P(t, T_0)}{P(t, T_1)} - 1 < 0 $$
+                    </div>
+                    <p>Dividing by the positive $\delta$, we establish that:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ F(t, T_0, T_1) < 0 \text{ (strictly Negative)} $$
+                    </div>
+                    <p>Typically, discount curves are strictly decreasing over maturity due to time preference, which corresponds to positive forward rates. An increasing discount curve implies negative interest rates, forcing the forward rate to be strictly **Negative**.</p>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answer: Negative</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 3 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 3 (Spot Yield vs. Instantaneous Forward)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                Suppose the yield curve $T \mapsto y(t, T)$ is increasing for $T \in [T_0, T_1]$. Which of the following statements is true?
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qff3_option" value="above" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">The instantaneous forward curve $T \mapsto f(t, T)$ is above the yield curve for $T \in [T_0, T_1]$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qff3_option" value="below" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">The instantaneous forward curve $T \mapsto f(t, T)$ is below the yield curve for $T \in [T_0, T_1]$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qff3_option" value="none" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">None of the above</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQff3()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qff3-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Derivation:</strong></p>
+                    <p>The yield curve is related to instantaneous forward rates by taking the integral average over maturity:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ y(t, T) = \frac{1}{T - t} \int_t^T f(t, u) du \implies (T - t) y(t, T) = \int_t^T f(t, u) du $$
+                    </div>
+                    <p>Differentiating both sides with respect to maturity $T$ using the product rule and the fundamental theorem of calculus:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ y(t, T) + (T - t) \frac{\partial y(t, T)}{\partial T} = f(t, T) $$
+                    </div>
+                    <p>Rearranging this equation gives the key spot-forward slope relation:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ f(t, T) = y(t, T) + (T - t) \frac{\partial y(t, T)}{\partial T} $$
+                    </div>
+                    <p>We analyze the signs of the terms on the right-hand side:</p>
+                    <ul style="margin-left: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem;">
+                        <li>Since the yield curve $T \mapsto y(t, T)$ is strictly increasing, its slope is positive: $\frac{\partial y(t, T)}{\partial T} > 0$.</li>
+                        <li>Since the maturity date is in the future, the time-to-maturity length is positive: $T - t > 0$.</li>
+                    </ul>
+                    <p>Therefore, their product is positive: $(T-t) \frac{\partial y(t, T)}{\partial T} > 0$, establishing that:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ f(t, T) > y(t, T) $$
+                    </div>
+                    <p>Thus, the instantaneous forward curve is strictly **above** the spot yield curve when yields are upward-sloping.</p>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answer: The instantaneous forward curve is above the yield curve.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 4 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 4 (Yield Curve &amp; Forward Yield Inequality)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                Suppose the yield curve $T \mapsto y(t, T)$ is increasing for $T \in [T_0, T_1]$. Which of the following statements about the forward yield $Y(t, T_0, T_1)$ is true?
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qff4_option" value="opt1" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">$Y(t, T_0, T_1) < y(t, T_0) < y(t, T_1)$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qff4_option" value="opt2" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">$y(t, T_0) < Y(t, T_0, T_1) < y(t, T_1)$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qff4_option" value="opt3" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">$y(t, T_0) < y(t, T_1) < Y(t, T_0, T_1)$</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQff4()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qff4-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Proof:</strong></p>
+                    <p>The continuously compounded forward rate (forward yield) $Y(t, T_0, T_1)$ is defined by:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ Y(t, T_0, T_1) = \frac{1}{T_1 - T_0} \log\left(\frac{P(t, T_0)}{P(t, T_1)}\right) $$
+                    </div>
+                    <p>Substituting ZCB price in terms of continuously compounded spot yield $P(t, T) = e^{-(T-t)y(t, T)}$:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ Y(t, T_0, T_1) = \frac{(T_1 - t)y(t, T_1) - (T_0 - t)y(t, T_0)}{T_1 - T_0} $$
+                    </div>
+                    <p>We rearrange the numerator algebraically by adding and subtracting $(T_1 - t)y(t, T_0)$:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ Y(t, T_0, T_1) = y(t, T_1) + \frac{T_0 - t}{T_1 - T_0} \bigl(y(t, T_1) - y(t, T_0)\bigr) $$
+                    </div>
+                    <p>Since the spot yield curve $y(t, T)$ is strictly increasing:</p>
+                    <ul style="margin-left: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem;">
+                        <li>The yield difference is positive: $y(t, T_1) - y(t, T_0) > 0$.</li>
+                        <li>Since $T_1 > T_0 \ge t$, we have $T_1 - T_0 > 0$ and $T_0 - t \ge 0$.</li>
+                    </ul>
+                    <p>Therefore, the second term is strictly non-negative. This establishes that:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ Y(t, T_0, T_1) \geq y(t, T_1) > y(t, T_0) $$
+                    </div>
+                    <p>Thus, we establish the chain of inequalities: $y(t, T_0) < y(t, T_1) < Y(t, T_0, T_1)$.</p>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answer: $y(t, T_0) < y(t, T_1) < Y(t, T_0, T_1)$.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 5 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 5 (Yield Curve &amp; Simple Forward Inequality)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                Suppose the yield curve $T \mapsto y(t, T)$ is increasing for $T \in [T_0, T_1]$. Which of the following statements about the simple forward rate $F(t, T_0, T_1)$ is true?
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qff5_option" value="opt1" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">$F(t, T_0, T_1) < y(t, T_0) < y(t, T_1)$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qff5_option" value="opt2" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">$y(t, T_0) < F(t, T_0, T_1) < y(t, T_1)$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qff5_option" value="opt3" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">$y(t, T_0) < y(t, T_1) < F(t, T_0, T_1)$</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQff5()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qff5-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Proof:</strong></p>
+                    <p>We connect three distinct interest rate concepts:</p>
+                    <ol style="margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <li>
+                            <strong>Forward Yield vs. Spot Yield:</strong>
+                            In Question 4, we proved that if the yield curve is strictly increasing over $[T_0, T_1]$, then the continuously compounded forward yield is strictly greater than the spot yield at maturity:
+                            $$ y(t, T_1) < Y(t, T_0, T_1) $$
+                        </li>
+                        <li>
+                            <strong>Simple Forward vs. Forward Yield:</strong>
+                            In our reading module on Forward Yields, we established that due to continuous compounding frequency benefits, the simple forward rate $F(t, T_0, T_1)$ is strictly larger than the continuously compounded forward yield $Y(t, T_0, T_1)$:
+                            $$ Y(t, T_0, T_1) < F(t, T_0, T_1) $$
+                        </li>
+                    </ol>
+                    <p>Combining these two inequalities via the transitive property of ordering:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ y(t, T_0) < y(t, T_1) < Y(t, T_0, T_1) < F(t, T_0, T_1) $$
+                    </div>
+                    <p>Therefore, we establish the chain: $y(t, T_0) < y(t, T_1) < F(t, T_0, T_1)$.</p>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answer: $y(t, T_0) < y(t, T_1) < F(t, T_0, T_1)$.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 6 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 6 (Simple Spot vs. Simple Forward)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                Suppose the term structure of simple spot rates $T \mapsto L(t, T)$ is decreasing for $T \in [T_0, T_1]$. If we assume furthermore that $L(t, T_0)L(t, T_1) > 0$. Which of the following statements about the simple forward rate $F(t, T_0, T_1)$ is true?
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qff6_option" value="opt1" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">$F(t, T_0, T_1) < L(t, T_1) < L(t, T_0)$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qff6_option" value="opt2" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">$L(t, T_1) < F(t, T_0, T_1) < L(t, T_0)$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qff6_option" value="opt3" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">$L(t, T_1) < L(t, T_0) < F(t, T_0, T_1)$</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQff6()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qff6-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Derivation:</strong></p>
+                    <p>Under simple spot compounding, the discount factors satisfy:</p>
+                    <div style="margin: 0.5rem 0; text-align: center;">
+                        $$ P(t, T) = \frac{1}{1 + (T-t)L(t, T)} $$
+                    </div>
+                    <p>Without loss of generality, let $t = 0$. The discount factors maturing at $T_0$ and $T_1$ are:</p>
+                    <div style="margin: 0.5rem 0; text-align: center;">
+                        $$ P(0, T_0) = \frac{1}{1 + T_0 L(0, T_0)}, \quad P(0, T_1) = \frac{1}{1 + T_1 L(0, T_1)} $$
+                    </div>
+                    <p>The simple forward rate is defined as: $F(0, T_0, T_1) = \frac{1}{T_1 - T_0}\left(\frac{P(0, T_0)}{P(0, T_1)} - 1\right)$. Substituting the discount factors yields:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ F(0, T_0, T_1) = \frac{1}{T_1 - T_0} \left( \frac{1 + T_1 L(0, T_1)}{1 + T_0 L(0, T_0)} - 1 \right) = \frac{T_1 L(0, T_1) - T_0 L(0, T_0)}{(T_1 - T_0)(1 + T_0 L(0, T_0))} $$
+                    </div>
+                    <p>Since the simple spot curve is decreasing, $L(0, T_1) < L(0, T_0)$. Let's compare $F(0, T_0, T_1)$ to the spot rate at maturity $L(0, T_1)$:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ F(0, T_0, T_1) - L(0, T_1) = \frac{T_1 L(0, T_1) - T_0 L(0, T_0) - L(0, T_1)(T_1 - T_0)(1 + T_0 L(0, T_0))}{(T_1 - T_0)(1 + T_0 L(0, T_0))} $$
+                    </div>
+                    <p>Expanding and simplifying the numerator:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ \text{Numerator} = T_0 \bigl( L(0, T_1) - L(0, T_0) \bigr) - T_0 (T_1 - T_0) L(0, T_0) L(0, T_1) $$
+                    </div>
+                    <p>Analyzing the signs of the terms:</p>
+                    <ul style="margin-left: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem;">
+                        <li>Since $L$ is strictly decreasing, $L(0, T_1) - L(0, T_0) < 0$.</li>
+                        <li>Since simple rates are positive, $L(0, T_0) L(0, T_1) > 0$.</li>
+                        <li>With $T_1 > T_0 > 0$, the second term $-T_0(T_1 - T_0) L(0, T_0) L(0, T_1) < 0$.</li>
+                    </ul>
+                    <p>Thus, the numerator is strictly negative, proving that: $F(0, T_0, T_1) - L(0, T_1) < 0 \implies F(0, T_0, T_1) < L(0, T_1)$.</p>
+                    <p>Since the spot curve is strictly decreasing, we have $L(0, T_1) < L(0, T_0)$, leading directly to the chain:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ F(t, T_0, T_1) < L(t, T_1) < L(t, T_0) $$
+                    </div>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answer: $F(t, T_0, T_1) < L(t, T_1) < L(t, T_0)$.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 7 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 7 (Futures Price Change)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                Suppose at time $t = 0$ we hold a futures contract with notional 100, reference period $[T_0, T_1]$, and corresponding futures rate $R_{\text{futures}}(0, T_0, T_1) = 5\%$. By how much does the futures price change if the futures rate drops to 3%?
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qff7_option" value="minus2" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">-2</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qff7_option" value="zero" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">0</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qff7_option" value="plus2" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">2</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQff7()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qff7-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Derivation:</strong></p>
+                    <p>The quoted exchange price of an interest rate futures contract is defined as:</p>
+                    <div style="margin: 0.5rem 0; text-align: center;">
+                        $$ P_{\text{futures}}(t, T_0, T_1) = 100 \times \bigl( 1 - R_{\text{futures}}(t, T_0, T_1) \bigr) $$
+                    </div>
+                    <p>We calculate the initial futures price at $R_{\text{futures}}(0) = 5\% = 0.05$:</p>
+                    <div style="margin: 0.5rem 0; text-align: center;">
+                        $$ P_{\text{futures}}^{\text{initial}} = 100 \times (1 - 0.05) = 100 \times 0.95 = 95 $$
+                    </div>
+                    <p>Next, we calculate the new futures price when the futures rate drops to $R_{\text{futures}}^{\text{new}} = 3\% = 0.03$:</p>
+                    <div style="margin: 0.5rem 0; text-align: center;">
+                        $$ P_{\text{futures}}^{\text{new}} = 100 \times (1 - 0.03) = 100 \times 0.97 = 97 $$
+                    </div>
+                    <p>The daily mark-to-market change in the futures price received by the contract holder is:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center; font-size: 1.05rem; font-weight: 700; color: #166534;">
+                        $$ \Delta P_{\text{futures}} = P_{\text{futures}}^{\text{new}} - P_{\text{futures}}^{\text{initial}} = 97 - 95 = \mathbf{+2} $$
+                    </div>
+                    <p style="margin-bottom: 0;">Since interest rates dropped, the price of the interest rate contract rose by exactly **2** points, representing a positive cash flow of 2 units to the holder.</p>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answer: 2</p>
+                </div>
+            </details>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function checkQff1() {
+        const val = document.getElementById('qff1_input').value.trim();
+        const result = document.getElementById('qff1-feedback');
+        if (!val) {
+            result.innerHTML = '<strong>⚠️ Please enter your answer first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        const numericVal = parseFloat(val);
+        if (Math.abs(numericVal - 8.33) < 0.015) {
+            result.innerHTML = '<strong>✓ Correct!</strong> Under 4% and 6% yields, the discount factors are $P(0,1) = e^{-0.04}$ and $P(0,2) = e^{-0.12}$. The simple forward rate is exactly $F = e^{0.08} - 1 \\approx 8.33\\%$.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: Find $P(0,1) = e^{-0.04}$ and $P(0,2) = e^{-0.12}$. Then calculate simple forward $F = (P(0,1)/P(0,2) - 1)/\\delta$, convert to percentage points and round to two decimals.';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+
+    function checkQff2() {
+        let selectedValue = '';
+        const radios = document.getElementsByName('qff2_option');
+        for (const r of radios) {
+            if (r.checked) {
+                selectedValue = r.value;
+                break;
+            }
+        }
+        const result = document.getElementById('qff2-feedback');
+        if (!selectedValue) {
+            result.innerHTML = '<strong>⚠️ Please select an option first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        if (selectedValue === 'negative') {
+            result.innerHTML = '<strong>✓ Correct!</strong> Since $T_1 > T_0$, an increasing discount curve means $P(t, T_1) > P(t, T_0)$, making the ratio $P(t, T_0)/P(t, T_1) < 1$, which makes the forward rate strictly <strong>Negative</strong>.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: Write out $F = (P(t,T_0)/P(t,T_1) - 1)/\\delta$. If the discount curve is increasing with $T$, how does $P(t,T_0)$ compare to $P(t,T_1)$?';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+
+    function checkQff3() {
+        let selectedValue = '';
+        const radios = document.getElementsByName('qff3_option');
+        for (const r of radios) {
+            if (r.checked) {
+                selectedValue = r.value;
+                break;
+            }
+        }
+        const result = document.getElementById('qff3-feedback');
+        if (!selectedValue) {
+            result.innerHTML = '<strong>⚠️ Please select an option first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        if (selectedValue === 'above') {
+            result.innerHTML = '<strong>✓ Correct!</strong> Since the yield curve is increasing, its derivative is positive, forcing the instantaneous forward curve $f(t, T) = y(t, T) + (T-t)\\frac{\\partial y}{\\partial T}$ to be strictly <strong>above</strong> the yield curve.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: Recall $f(t,T) = y(t,T) + (T-t)\\frac{\\partial y}{\\partial T}$. If the yield curve is increasing, is the slope $\\frac{\\partial y}{\\partial T}$ positive or negative?';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+
+    function checkQff4() {
+        let selectedValue = '';
+        const radios = document.getElementsByName('qff4_option');
+        for (const r of radios) {
+            if (r.checked) {
+                selectedValue = r.value;
+                break;
+            }
+        }
+        const result = document.getElementById('qff4-feedback');
+        if (!selectedValue) {
+            result.innerHTML = '<strong>⚠️ Please select an option first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        if (selectedValue === 'opt3') {
+            result.innerHTML = '<strong>✓ Correct!</strong> For an increasing yield curve, we mathematically established the chain of inequalities: $y(t, T_0) < y(t, T_1) < Y(t, T_0, T_1)$.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: Express $Y$ as $y(t,T_1) + \\frac{T_0-t}{T_1-T_0}(y(t,T_1)-y(t,T_0))$. If yields are increasing, is this correction positive or negative?';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+
+    function checkQff5() {
+        let selectedValue = '';
+        const radios = document.getElementsByName('qff5_option');
+        for (const r of radios) {
+            if (r.checked) {
+                selectedValue = r.value;
+                break;
+            }
+        }
+        const result = document.getElementById('qff5-feedback');
+        if (!selectedValue) {
+            result.innerHTML = '<strong>⚠️ Please select an option first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        if (selectedValue === 'opt3') {
+            result.innerHTML = '<strong>✓ Correct!</strong> Since simple forward rates are strictly larger than continuously compounded forward yields, and forward yields are strictly larger than spot yields, we obtain: $y(t, T_0) < y(t, T_1) < F(t, T_0, T_1)$.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: Combine the results of Question 4 ($y(t, T_0) < y(t, T_1) < Y(t, T_0, T_1)$) and the compounding frequency inequality ($Y(t, T_0, T_1) < F(t, T_0, T_1)$).';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+
+    function checkQff6() {
+        let selectedValue = '';
+        const radios = document.getElementsByName('qff6_option');
+        for (const r of radios) {
+            if (r.checked) {
+                selectedValue = r.value;
+                break;
+            }
+        }
+        const result = document.getElementById('qff6-feedback');
+        if (!selectedValue) {
+            result.innerHTML = '<strong>⚠️ Please select an option first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        if (selectedValue === 'opt1') {
+            result.innerHTML = '<strong>✓ Correct!</strong> Under a strictly decreasing simple spot curve, simple forward rates are pushed systematically below spot rates, yielding: $F(t, T_0, T_1) < L(t, T_1) < L(t, T_0)$.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: Differentiate or plug in a simple numerical example (e.g., $L(0, 1) = 6\\%$, $L(0, 2) = 4\\%$) to find the ordering between $L(0,1)$, $L(0,2)$, and $F(0, 1, 2)$.';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+
+    function checkQff7() {
+        let selectedValue = '';
+        const radios = document.getElementsByName('qff7_option');
+        for (const r of radios) {
+            if (r.checked) {
+                selectedValue = r.value;
+                break;
+            }
+        }
+        const result = document.getElementById('qff7-feedback');
+        if (!selectedValue) {
+            result.innerHTML = '<strong>⚠️ Please select an option first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        if (selectedValue === 'plus2') {
+            result.innerHTML = '<strong>✓ Correct!</strong> The initial futures price is $100 \\times (1 - 0.05) = 95$, and the new price is $100 \\times (1 - 0.03) = 97$. The cash payoff is $97 - 95 = \\mathbf{+2}$.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: Quoted price is $100 \\times (1 - R)$. Calculate the initial price at 5% rate and the final price at 3% rate, then subtract initial from final.';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+</script>

@@ -1,0 +1,583 @@
+<div id="view-cqf-m2-l7" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 02: Risk &amp; Return</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 07</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L7: Collateral &amp; Margins</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Counterparty Exposure Profiles, Netting, Variation/Initial Margins, ISDA SIMM, Beta LGD, and SA-CCR EAD</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM2L7Exposure" onclick="switchM2L7Tab('exposure')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. Derivatives &amp; Exposure</button>
+        <button id="tabM2L7Clearing" onclick="switchM2L7Tab('clearing')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Margins &amp; Central Clearing</button>
+        <button id="tabM2L7Cva" onclick="switchM2L7Tab('cva')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. CDS &amp; CVA Valuation</button>
+        <button id="tabM2L7Simm" onclick="switchM2L7Tab('simm')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. ISDA SIMM Methodology</button>
+        <button id="tabM2L7Beta" onclick="switchM2L7Tab('beta')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Beta LGD &amp; SA-CCR</button>
+        <button id="tabM2L7Lab" onclick="switchM2L7Tab('lab')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Collateral &amp; Exposure Lab</button>
+    </div>
+
+    <!-- TAB 1: Derivatives & Exposure -->
+    <div id="secM2L7Exposure" style="display: block;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Counterparty Exposure in Derivatives</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6;">Unlike spot transactions, derivatives are legally oriented toward future events. Warren Buffett famously termed them "financial weapons of mass destruction" (Berkshire Hathaway 2002 Annual Report). Dr. Alonso Peña (EIB quant, Bocconi professor, and CQF alumnus) contextualizes this by noting that derivatives are highly powerful tools that can be utilized constructively for hedging or destructively for excessive speculation. Using real-world CME futures data, crude oil contracts for September through December 2025 range dynamically from <strong>$64.23 down to $62.37 per barrel</strong>, showcasing the future-oriented delivery expectations of modern derivative listings.</p>
+                
+                <p style="font-size: 0.9rem; line-height: 1.6;">The exposure of a derivative at time $t$ is defined as the positive part of its Mark-to-Market value $V_t$, since only positive values represent potential default losses to the holder (gains represent liabilities to us, which default does not wipe out):</p>
+                <div style="text-align: center; margin-bottom: 1.25rem;">
+                    $$X_t = \max(V_t, 0)$$
+                </div>
+
+                <h4 style="font-family: var(--font-family-sans); font-size: 1.05rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Key Exposure Profiles over Time:</h4>
+                <ul style="padding-left: 1.2rem; line-height: 1.7; font-size: 0.88rem; margin-bottom: 0.5rem;">
+                    <li><strong>Interest Rate Swaps (IRS):</strong> Produce a <strong>hump-shaped</strong> curve. Early on, uncertainty in rates accumulates (driving exposure up). Towards maturity, the number of remaining coupon payments decreases to zero, forcing the exposure down. Expected exposure peaks at approximately <strong>one-third of the contract's life</strong>, typical for quarterly paying swaps.</li>
+                    <li><strong>FX Forwards, Futures, and Options (Single Payoff):</strong> Produce a <strong>wedge-shaped</strong> curve. Because there are no intermediate payments and the single cashflow occurs strictly at maturity, exposure grows continuously over the life of the trade due to accumulating diffusion uncertainty.</li>
+                </ul>
+                
+                <p style="font-size: 0.88rem; line-height: 1.6;"><strong>Exchange-Traded vs. Over-The-Counter (OTC):</strong> Exchange-traded derivatives are standardized and cleared via exchanges. Bilateral OTC contracts are negotiated directly between dealers. A 25-year volume chart shows a massive surge in OTC derivatives leading up to the 2007-08 financial crisis, a post-crisis decline, and a return to near-crisis heights recently. The post-crisis regulatory environment is the primary driver of changes in how derivatives are traded and managed today.</p>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.15rem; font-weight: 700; color: var(--accent);">Bilateral Risk Mitigation</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6;">Before collateral posting, dealers reduce gross exposure using two main bilateral mechanisms:</p>
+                    
+                    <ul style="padding-left: 1.2rem; line-height: 1.6; font-size: 0.82rem; margin-bottom: 1rem;">
+                        <li><strong>Close-out Netting:</strong> Standardized under International Swaps and Derivatives Association (ISDA) agreements. In default, all transactions within a netting set are offset against one another to pay/receive a single net sum.</li>
+                        <li><strong>Portfolio Compression:</strong> Restructures multiple overlapping contracts across dealers into fewer contracts, reducing gross notionals outstanding while maintaining the identical net risk profile (often facilitated by vendor platforms like TriOptima).</li>
+                    </ul>
+                </div>
+
+                <div style="background: rgba(245, 158, 11, 0.05); border-left: 3px solid #f59e0b; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.82rem; line-height: 1.4;">
+                    📜 <strong>Ancient Roots</strong>: Collateral is not a modern creation; it traces back to the Code of Hammurabi (1754 BC) where Law 117 allowed debtors to pledge assets or family members to mitigate default losses.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Margins & Central Clearing -->
+    <div id="secM2L7Clearing" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Central Clearing, Variation Margins, and Initial Margins</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6;">In derivatives markets, <strong>Collateral</strong> represents the actual asset posted (cash, government bonds) to cover potential losses, while <strong>Margins</strong> constitute the operational posting mechanism. Basel III and G20 mandates split margin posting into two core types:</p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; margin-top: 1rem;">
+                    <div style="background: rgba(59, 130, 246, 0.05); padding: 1.25rem; border-radius: 8px; border: 1px solid rgba(59, 130, 246, 0.2);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: #2563eb; font-size: 1rem;">1. Variation Margin (VM)</h4>
+                        <p style="font-size: 0.82rem; line-height: 1.5; margin: 0;">Posted daily to track the shifting mark-to-market value of the portfolio. Settled on a T+1 basis with a standardized Minimum Transfer Amount (MTA) of &le; 500,000 currency units. Cash posting is prioritized, and non-cash assets suffer haircuts.</p>
+                    </div>
+                    <div style="background: rgba(16, 185, 129, 0.05); padding: 1.25rem; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.2);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: #059669; font-size: 1rem;">2. Initial Margin (IM)</h4>
+                        <p style="font-size: 0.82rem; line-height: 1.5; margin: 0;">Cushions the non-defaulting party against potential market shifts during the <strong>Margin Period of Risk (MPoR)</strong> (typically 5 to 10 days) required to liquidate positions. Held in segregated tri-party custodian accounts.</p>
+                    </div>
+                </div>
+
+                <h4 style="font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Central Counterparties (CCPs) &amp; Novation</h4>
+                <p style="font-size: 0.9rem; line-height: 1.6;">Following the 2008 crisis, the G20 strongly promoted <strong>Central Clearing</strong> to prevent systemic contagion. This converts a chaotic, interconnected bilateral network of dealers (where a single default can create domino failures) into a centrally cleared hub-and-spoke central counterparty (CCP) network:</p>
+
+                <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 1.5rem; align-items: center; margin-top: 1rem;">
+                    <div>
+                        <p style="font-size: 0.85rem; line-height: 1.5; margin: 0;">This is achieved via <strong>Novation</strong>: bilateral trades between Counterparty A and B are legally replaced with two separate contracts facing the CCP. A and B no longer carry credit exposure to each other; they only face the CCP. This mutualizes credit default losses through a clearing member default fund waterfall, where the IMF describes the default fund as a shared stabilization system.</p>
+                    </div>
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); text-align: center; font-size: 0.85rem;">
+                        🔄 <strong>Novation Example</strong>:<br>
+                        Dealer A pays 60 to Dealer B.<br>
+                        Dealer B pays 90 to Dealer A.<br>
+                        <strong>Novated Outcome</strong>: Dealer A receives a single net payment of <strong>30</strong> from the CCP.
+                    </div>
+                </div>
+                
+                <p style="font-size: 0.88rem; line-height: 1.6; margin-top: 1rem;"><strong>Bilateral Margins for Non-Cleared Derivatives:</strong> For derivatives that cannot be centrally cleared (due to non-standard customization), bilateral margin requirements serve two purposes: reducing systemic risk from non-standardized derivatives (which collectively total hundreds of trillions of dollars), and promoting central clearing by making non-cleared derivatives much more costly to hold. <strong>ISDA survey data</strong> shows that bilateral Initial Margin held at major institutions grew from <strong>$130 Billion in 2017 to $432 Billion in 2023</strong>, reflecting the growing importance of margin rules.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: CDS & CVA Valuation (Alonso Pena PhD Notes) -->
+    <div id="secM2L7Cva" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Credit Valuation Adjustment (CVA) &amp; CDS Pricing</h3>
+                <p style="font-size: 0.9rem; line-height: 1.5;">Dr. Alonso Peña outlines the historical evolution and mathematical foundations of modern Counterparty Credit Risk (CCR) management. The Credit Valuation Adjustment (CVA) represents the expected present value of probable losses due to a counterparty defaulting:</p>
+
+                <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1.5rem;">
+                    <div style="text-align: center; font-weight: 700; margin-bottom: 0.5rem; color: var(--accent);">Unilateral CVA Integral Formulation</div>
+                    $$CVA = \int_0^T (1 - R) E(t) \times DF(t) \times dPD(t)$$
+                    <p style="font-size: 0.78rem; line-height: 1.4; margin: 0.5rem 0 0 0; color: #4b5563; text-align: center;">
+                        Where $R$ is recovery rate, $E(t)$ is expected exposure $\mathbb{E}[\max(V_t, 0)]$, $DF(t)$ is risk-free discount factor, and $dPD(t)$ is the marginal default probability during interval $dt$.
+                    </p>
+                </div>
+
+                <h4 style="font-family: var(--font-family-sans); font-size: 1.05rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Credit Default Swap (CDS) Premium Pricing</h4>
+                <p style="font-size: 0.88rem; line-height: 1.6;">A CDS protects against default of C. Protection buyer A pays regular premium $\pi$ to seller B. By setting $PV(\text{premium}) = PV(\text{default})$ under constant default hazard rate $\lambda$ (where survival probability $P(t) = e^{-\lambda t}$):</p>
+                
+                <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1rem; text-align: center;">
+                    $$\pi = \frac{\sum_{i=1}^N (1-R) \times DF_i \times \left[ P(T_{i-1}) - P(T_i) \right]}{\sum_{i=1}^N \Delta t \times DF_i \times P(T_i)}$$
+                </div>
+            </div>
+
+            <!-- Historical & Profile Context -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.15rem; font-weight: 700; color: var(--accent);">Historical Genesis of CDS</h3>
+                    <p style="font-size: 0.85rem; line-height: 1.5; margin-bottom: 0.75rem;"><strong>Exxon Valdez Oil Spill (1989):</strong> The Exxon tanker ran aground, triggering $5B in punitive damages. JP Morgan extended a $4.8B credit line to Exxon to maintain trust.</p>
+                    <p style="font-size: 0.85rem; line-height: 1.5; margin-bottom: 0.75rem;"><strong>1994 Invention:</strong> To reduce required regulatory capital reserves held against Exxon's default, a JP Morgan team led by Blythe Masters structured and sold the credit risk of this line to the EBRD. This transaction launched the global CDS market.</p>
+                </div>
+                
+                <div style="border-top: 1px solid var(--card-border); padding-top: 0.75rem; font-size: 0.82rem; font-family: var(--font-family-sans); color: #6b7280;">
+                    ✍️ <strong>Author Profile</strong>: Notes provided by Dr. Alonso Peña, SDA Bocconi School of Management SDA Professor and former Quantitative Analyst at Thompson Reuters and UniCredit.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: ISDA SIMM Methodology -->
+    <div id="secM2L7Simm" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Initial Margin Methodologies &amp; ISDA SIMM</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6;">For derivatives that cannot be centrally cleared, <a href="https://www.bis.org/bcbs/" target="_blank" style="color: var(--accent); font-weight: 700; text-decoration: none; border-bottom: 1px dashed var(--accent); transition: all 0.2s;" onmouseover="this.style.color='var(--text-color)'" onmouseout="this.style.color='var(--accent)'">BCBS</a>-IOSCO rules enforce strict bilateral margin requirements. Three primary methodologies exist for calculating Initial Margin:</p>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 1.5rem; margin-top: 1rem;">
+                    <!-- SPAN -->
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem;">1. SPAN Margin Model</h4>
+                        <p style="font-size: 0.8rem; margin: 0; line-height: 1.4;">Developed by the CME for exchange-traded derivatives. It uses <strong>16 scenario-based projections</strong> varying underlying risk factor prices and volatilities to estimate the largest potential portfolio loss.</p>
+                    </div>
+                    <!-- Historical Simulation -->
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem;">2. Historical Simulation VaR</h4>
+                        <p style="font-size: 0.8rem; margin: 0; line-height: 1.4;">Projects potential future losses at a chosen confidence level using actual historical return distributions, frequently utilizing <strong>EWMA volatility weighting</strong> to scale historical shocks to current market environments.</p>
+                    </div>
+                    <!-- ISDA SIMM -->
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem;">3. ISDA SIMM analytical model</h4>
+                        <p style="font-size: 0.8rem; margin: 0; line-height: 1.4;">An analytical, sensitivity-based nested variance-covariance model. Designed to be standardized and transparent. Dr. Alonso Peña notes the formulas closely match the Sensitivities-Based Method in the Basel market risk framework.</p>
+                    </div>
+                </div>
+
+                <h4 style="font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">ISDA SIMM Delta Margin Aggregation Math</h4>
+                <p style="font-size: 0.88rem; line-height: 1.6;">The SIMM Delta Margin is aggregated hierarchically across Risk Factors, Risk Buckets, and Risk Classes:</p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h5 style="margin: 0 0 0.5rem 0; font-weight: 700; font-size: 0.95rem; color: var(--accent);">1. Bucket Level Aggregation ($K_b$)</h5>
+                        $$K_b = \sqrt{\sum_{i} WS_{i}^2 + \sum_{i} \sum_{j \ne i} \rho_{ij} WS_{i} WS_{j}}$$
+                        <p style="font-size: 0.8rem; line-height: 1.4; margin: 0.5rem 0 0 0; color: #4b5563;">
+                            Where $WS_i = RW_i \times s_i$ represents the weighted sensitivity for risk factor $i$ (sensitivity $s_i$ multiplied by regulatory risk weight $RW_i$).
+                        </p>
+                    </div>
+
+                    <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h5 style="margin: 0 0 0.5rem 0; font-weight: 700; font-size: 0.95rem; color: var(--accent);">2. Risk Class Level Aggregation</h5>
+                        $$\text{Delta Margin} = \sqrt{\sum_b K_b^2 + \sum_b \sum_{c \ne b} \gamma_{bc} S_b S_c}$$
+                        <p style="font-size: 0.8rem; line-height: 1.4; margin: 0.5rem 0 0 0; color: #4b5563;">
+                            Where $S_b = \sum_i WS_{i}$ represents the sum of weighted sensitivities in bucket $b$, restricted to a defined range.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: Beta LGD & SA-CCR -->
+    <div id="secM2L7Beta" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Beta Loss Given Default (LGD) Modeling</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6;">Traditionally, Credit Valuation Adjustment (CVA) calculations utilize a single-point constant LGD (e.g. 40% for senior unsecured bonds). However, LGD is highly volatile and correlates with systematic downturns. To capture tail risks, modern quants model LGD using a <strong>Beta Distribution</strong> ($0 \le LGD \le 1$):</p>
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    $$LGD \sim \text{Beta}(\alpha, \beta)$$
+                </div>
+
+                <p style="font-size: 0.88rem; line-height: 1.6;">The first two moments are defined as:</p>
+                <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1.25rem;">
+                    $$\mathbb{E}[LGD] = \frac{\alpha}{\alpha + \beta}$$
+                    $$\text{Var}[LGD] = \frac{\alpha\beta}{(\alpha + \beta)^2(\alpha + \beta + 1)}$$
+                </div>
+
+                <p style="font-size: 0.85rem; line-height: 1.5; margin: 0;"><strong>Key Advantage</strong>: A Beta LGD permits Monte Carlo CVA simulation to model extreme losses (e.g. LGD > 60%) occurring under stress scenarios. Because CVA is linear in LGD, incorporating the Beta distribution has a negligible incremental impact on simulation speed while providing a significantly more robust risk cushion.</p>
+            </div>
+
+            <!-- SA-CCR -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">SA-CCR Exposure at Default</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6;">The <strong>Standardised Approach for Counterparty Credit Risk (SA-CCR)</strong> evaluates Exposure at Default (EAD) for capitalization purposes:</p>
+                    
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1rem; text-align: center;">
+                        $$EAD = 1.4 \times (RC + PFE)$$
+                    </div>
+
+                    <ul style="padding-left: 1.2rem; line-height: 1.5; font-size: 0.82rem; margin-bottom: 0;">
+                        <li><strong>Replacement Cost (RC):</strong> The immediate cost of replacing a defaulted trade netting set:
+                            $$RC = \max(V - C, \, \text{TH} + \text{MTA} - \text{NICA}, \, 0)$$
+                        </li>
+                        <li><strong>Potential Future Exposure (PFE):</strong> Reflects potential future exposure spikes, calculated as adjusted notional scaled by supervisory factors:
+                            $$\text{PFE} = \sum N_i \times SF_i \times \sqrt{M_i}$$
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Lab -->
+    <div id="secM2L7Lab" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <!-- Calculator 1: EE vs PFE -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.15rem; font-weight: 700; color: var(--accent);">1. Expected vs. Potential Future Exposure</h3>
+                    <p style="font-size: 0.8rem; color: #4b5563; margin-bottom: 1rem;">Calculates and plots Expected Exposure ($EE(t)$) vs $PFE_q(t)$ under Normal value diffusion: $\sigma_t = \sigma_0 \sqrt{t}$:</p>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem; font-family: var(--font-family-sans); font-size: 0.85rem; margin-bottom: 0.75rem;">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                            <div>
+                                <span style="font-weight:600;">Time ($t$ Years):</span>
+                                <input type="number" id="inputM2L7Eet" value="1.0" step="0.25" min="0.25" max="5.0" style="width:100%; padding:0.35rem; border-radius:6px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color);">
+                            </div>
+                            <div>
+                                <span style="font-weight:600;">Volatility Scale ($\sigma_0$):</span>
+                                <input type="number" id="inputM2L7EeSig" value="0.6" step="0.1" min="0.1" max="2.0" style="width:100%; padding:0.35rem; border-radius:6px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color);">
+                            </div>
+                        </div>
+                        <div>
+                            <span style="font-weight:600;">PFE Percentile ($q$):</span>
+                            <select id="selectM2L7EeQ" style="width:100%; padding:0.35rem; border-radius:6px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color);">
+                                <option value="0.95">95% Quantile (factor = 1.645)</option>
+                                <option value="0.99">99% Quantile (factor = 2.326)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="height: 180px; position: relative; margin-bottom: 0.75rem;">
+                        <canvas id="m2l7EeChart"></canvas>
+                    </div>
+                </div>
+
+                <div style="background: var(--metric-bg); padding: 0.85rem; border-radius: 6px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); display:grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                    <div>
+                        <div style="font-size: 0.72rem; color:#6b7280; font-weight:600; text-transform:uppercase;">Expected Exposure:</div>
+                        <div id="outM2L7EeVal" style="font-size:1.1rem; font-weight:800; color:var(--accent);">0.239m</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.72rem; color:#6b7280; font-weight:600; text-transform:uppercase;">PFE quant level:</div>
+                        <div id="outM2L7PfeVal" style="font-size:1.1rem; font-weight:800; color:var(--accent);">0.987m</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculator 2: Beta LGD Calibrator -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.15rem; font-weight: 700; color: var(--accent);">2. Beta LGD Calibrator &amp; Tail Integrator</h3>
+                    <p style="font-size: 0.8rem; color: #4b5563; margin-bottom: 1rem;">Calibrates the Beta $(\alpha, \beta)$ parameters for a target LGD mean/variance, and integrates stress tail probabilities:</p>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem; font-family: var(--font-family-sans); font-size: 0.85rem; margin-bottom: 1rem;">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                            <div>
+                                <span style="font-weight:600;">Mean LGD ($E[LGD]$ %):</span>
+                                <input type="number" id="inputM2L7BetaMean" value="35.0" step="5" min="5" max="95" style="width:100%; padding:0.35rem; border-radius:6px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color);">
+                            </div>
+                            <div>
+                                <span style="font-weight:600;">LGD Variance ($Var$):</span>
+                                <input type="number" id="inputM2L7BetaVar" value="0.03" step="0.005" min="0.001" max="0.10" style="width:100%; padding:0.35rem; border-radius:6px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color);">
+                            </div>
+                        </div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                            <div>
+                                <span style="font-weight:600;">Tail Threshold %:</span>
+                                <input type="number" id="inputM2L7BetaThresh" value="60.0" step="5" min="10" max="90" style="width:100%; padding:0.35rem; border-radius:6px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color);">
+                            </div>
+                            <div>
+                                <span style="font-weight:600;">Margin period risk ($m$):</span>
+                                <input type="number" id="inputM2L7BetaMpor" value="5.0" step="1" min="1" max="20" style="width:100%; padding:0.35rem; border-radius:6px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color);">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(139, 92, 246, 0.05); border-left: 3px solid #8b5cf6; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.8rem; line-height: 1.5; margin-bottom: 1rem;">
+                        💡 <strong>Calibration Logic</strong>: We isolate $(\alpha, \beta)$ algebraically using the first two moments. A Beta-LGD captures downturn stress spikes in Monte Carlo CVA modeling that standard constant LGDs ignore.
+                    </div>
+                </div>
+
+                <div style="background: var(--metric-bg); padding: 0.85rem; border-radius: 6px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); display:grid; grid-template-columns: 1.1fr 0.9fr; gap: 0.75rem;">
+                    <div>
+                        <div style="font-size: 0.72rem; color:#6b7280; font-weight:600; text-transform:uppercase;">Calibrated Parameters:</div>
+                        <div style="font-size:1.05rem; font-weight:800; color:var(--accent); margin-top:0.25rem;">
+                            &alpha; = <span id="outM2L7BetaAlpha">3.10</span>, &beta; = <span id="outM2L7BetaBeta">5.75</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.72rem; color:#6b7280; font-weight:600; text-transform:uppercase;">Tail Prob [LGD &gt; <span id="lblM2L7BetaThresh">60%</span>]:</div>
+                        <div id="outM2L7BetaProb" style="font-size:1.15rem; font-weight:800; color:var(--accent);">7.18%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching logic for CQF M2 L7
+    window.switchM2L7Tab = function(tab) {
+        const tabs = ['exposure', 'clearing', 'cva', 'simm', 'beta', 'lab'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM2L7' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM2L7' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) sec.style.display = (t === tab ? 'block' : 'none');
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        // Trigger safe typesetting on MathJax math blocks inside newly shown sections
+        if (typeof window.safeTypeset === 'function') {
+            // Scoped section typesetting handled by parent index.html router.
+        }
+
+        // Specific loaders
+        if (tab === 'lab') {
+            setTimeout(updateM2L7Calculators, 100);
+        }
+    };
+
+    // LAB Calculators
+    let m2l7EeChartInstance = null;
+
+    // Beasley-Springer-Moro normal inverse CDF
+    function normInvMoro(p) {
+        if (p <= 0.0 || p >= 1.0) return 0.0;
+        const a = [2.50662823884, -18.61500062529, 41.39119773534, -28.44120361287];
+        const b = [-8.47351082858, 23.08336743743, -21.06224101826, 3.13082909833];
+        const c = [0.3374754822726147, 0.976169013223269, 0.1607979714918209, 0.0276438810916503, 0.0038405729373609, 0.000395189343119, 0.0000321767881768, 0.0000002888167364, 0.0000003960315187];
+        
+        let y = p - 0.5;
+        if (Math.abs(y) < 0.42) {
+            let r = y * y;
+            let num = (((a[3]*r + a[2])*r + a[1])*r + a[0]) * y;
+            let den = (((b[3]*r + b[2])*r + b[1])*r + 1.0);
+            return num / den;
+        } else {
+            let r = p;
+            if (y > 0) r = 1.0 - p;
+            let z = Math.log(-Math.log(r));
+            let num = (((((((c[8]*z + c[7])*z + c[6])*z + c[5])*z + c[4])*z + c[3])*z + c[2])*z + c[1])*z + c[0];
+            let ans = num;
+            if (y < 0) return -ans;
+            return ans;
+        }
+    }
+
+    // Incomplete beta function approximation via continued fractions (Lanczos-like)
+    function betainc(x, a, b) {
+        if (x <= 0) return 0;
+        if (x >= 1) return 1;
+        
+        // Log Beta function
+        const lbeta = Math.log(gamma(a)) + Math.log(gamma(b)) - Math.log(gamma(a + b));
+        const bt = Math.exp(a * Math.log(x) + b * Math.log(1 - x) - lbeta);
+        
+        if (x < (a + 1) / (a + b + 2)) {
+            return bt * betaFraction(x, a, b) / a;
+        } else {
+            return 1.0 - bt * betaFraction(1 - x, b, a) / b;
+        }
+    }
+
+    function betaFraction(x, a, b) {
+        const maxIter = 100;
+        const eps = 3e-7;
+        const am = a + b;
+        const ap = a + 1;
+        const am1 = a - 1;
+        
+        let d = 0;
+        let c = 1.0;
+        let h = 1.0 / (1.0 - (am * x / ap));
+        
+        let dVal = 1.0;
+        
+        for (let m = 1; m <= maxIter; m++) {
+            const m2 = 2 * m;
+            let aa = m * (b - m) * x / ((a + m2 - 1) * (a + m2));
+            
+            dVal = 1.0 + aa * dVal;
+            if (Math.abs(dVal) < eps) dVal = eps;
+            dVal = 1.0 / dVal;
+            
+            h = h * dVal;
+            
+            aa = -(a + m) * (am + m) * x / ((a + m2) * (a + m2 + 1));
+            dVal = 1.0 + aa * dVal;
+            if (Math.abs(dVal) < eps) dVal = eps;
+            dVal = 1.0 / dVal;
+            
+            h = h * dVal;
+        }
+        return h;
+    }
+
+    // Lanczos Gamma function approximation
+    function gamma(z) {
+        const g = 7;
+        const p = [
+            0.99999999999980993, 676.5203681218851, -1259.1392167224028,
+            771.32342877765313, -176.61502916214059, 12.507381424461908,
+            -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7
+        ];
+        if (z < 0.5) {
+            return Math.PI / (Math.sin(Math.PI * z) * gamma(1 - z));
+        }
+        z -= 1;
+        let x = p[0];
+        for (let i = 1; i < g + 2; i++) {
+            x += p[i] / (z + i);
+        }
+        let t = z + g + 0.5;
+        return Math.sqrt(2 * Math.PI) * Math.pow(t, z + 0.5) * Math.exp(-t) * x;
+    }
+
+    window.updateM2L7Calculators = function() {
+        // --- 1. Expected vs PFE Calculation & Chart ---
+        const tVal = parseFloat(document.getElementById('inputM2L7Eet').value);
+        const sigScale = parseFloat(document.getElementById('inputM2L7EeSig').value);
+        const qVal = parseFloat(document.getElementById('selectM2L7EeQ').value);
+
+        const sig_t = sigScale * Math.sqrt(tVal);
+        const qFactor = normInvMoro(qVal);
+
+        // Expected Exposure (EE) = sig_t / sqrt(2*pi)
+        const ee = sig_t / Math.sqrt(2 * Math.PI);
+        // Potential Future Exposure (PFE) = sig_t * qFactor
+        const pfe = sig_t * qFactor;
+
+        document.getElementById('outM2L7EeVal').innerText = ee.toFixed(3) + "m";
+        document.getElementById('outM2L7PfeVal').innerText = pfe.toFixed(3) + "m";
+
+        // Listen for input changes in EE inputs
+        const eeInputs = ['inputM2L7Eet', 'inputM2L7EeSig', 'selectM2L7EeQ'];
+        eeInputs.forEach(id => {
+            const el = document.getElementById(id);
+            if (el && !el.oninput) {
+                el.oninput = updateM2L7Calculators;
+                if (el.tagName === 'SELECT') el.onchange = updateM2L7Calculators;
+            }
+        });
+
+        // Generate profile curves (0 to 5 years)
+        const times = [];
+        const eeProfile = [];
+        const pfeProfile = [];
+
+        for (let year = 0; year <= 5.0; year += 0.25) {
+            times.push(year.toFixed(2));
+            const vol = sigScale * Math.sqrt(year);
+            eeProfile.push(vol / Math.sqrt(2 * Math.PI));
+            pfeProfile.push(vol * qFactor);
+        }
+
+        renderM2L7EePlot(times, eeProfile, pfeProfile, tVal, ee, pfe);
+
+        // --- 2. Beta LGD Calibrator ---
+        const meanLgd = parseFloat(document.getElementById('inputM2L7BetaMean').value) / 100;
+        const varLgd = parseFloat(document.getElementById('inputM2L7BetaVar').value);
+        const threshLgd = parseFloat(document.getElementById('inputM2L7BetaThresh').value) / 100;
+
+        document.getElementById('lblM2L7BetaThresh').innerText = (threshLgd * 100).toFixed(0) + "%";
+
+        // Listen for inputs
+        const betaInputs = ['inputM2L7BetaMean', 'inputM2L7BetaVar', 'inputM2L7BetaThresh', 'inputM2L7BetaMpor'];
+        betaInputs.forEach(id => {
+            const el = document.getElementById(id);
+            if (el && !el.oninput) el.oninput = updateM2L7Calculators;
+        });
+
+        // Calibration equations
+        // alpha = mean * [ (mean * (1 - mean) / var) - 1 ]
+        // beta = (1 - mean) * [ (mean * (1 - mean) / var) - 1 ]
+        const insideTerm = (meanLgd * (1.0 - meanLgd) / varLgd) - 1.0;
+        let alpha = meanLgd * insideTerm;
+        let beta = (1.0 - meanLgd) * insideTerm;
+
+        if (alpha > 0 && beta > 0) {
+            document.getElementById('outM2L7BetaAlpha').innerText = alpha.toFixed(2);
+            document.getElementById('outM2L7BetaBeta').innerText = beta.toFixed(2);
+            
+            // Integrator: Prob(LGD > threshLgd) = 1 - CDF_Beta(threshLgd)
+            const tailProb = (1.0 - betainc(threshLgd, alpha, beta)) * 100;
+            document.getElementById('outM2L7BetaProb').innerText = tailProb.toFixed(2) + "%";
+        } else {
+            document.getElementById('outM2L7BetaAlpha').innerText = "Err";
+            document.getElementById('outM2L7BetaBeta').innerText = "Err";
+            document.getElementById('outM2L7BetaProb').innerText = "N/A";
+        }
+    };
+
+    function renderM2L7EePlot(times, eeData, pfeData, selectT, selectEe, selectPfe) {
+        const ctx = document.getElementById('m2l7EeChart');
+        if (!ctx) return;
+
+        if (m2l7EeChartInstance) {
+            m2l7EeChartInstance.data.labels = times;
+            m2l7EeChartInstance.data.datasets[0].data = pfeData;
+            m2l7EeChartInstance.data.datasets[1].data = eeData;
+            m2l7EeChartInstance.update();
+            return;
+        }
+
+        m2l7EeChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: times,
+                datasets: [
+                    {
+                        label: 'PFE profile (quant level)',
+                        data: pfeData,
+                        borderColor: 'var(--accent)',
+                        backgroundColor: 'var(--accent-glow)',
+                        borderWidth: 2,
+                        fill: false,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Expected Exposure (average)',
+                        data: eeData,
+                        borderColor: '#10b981',
+                        borderWidth: 1.5,
+                        fill: false,
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true, position: 'bottom', labels: { boxWidth: 10, font: { size: 8 } } }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Contract Horizon (Years)', font: { size: 9 } },
+                        ticks: { font: { size: 8 } }
+                    },
+                    y: {
+                        title: { display: true, text: 'Exposure (Millions)', font: { size: 9 } },
+                        ticks: { font: { size: 8 } }
+                    }
+                }
+            }
+        });
+    }
+</script>

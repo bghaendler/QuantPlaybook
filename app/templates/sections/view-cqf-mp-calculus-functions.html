@@ -1,0 +1,149 @@
+<div id="view-cqf-mp-calculus-functions" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9; font-family: var(--font-family-sans);">Calculus: Functions &amp; Partials</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">2. Functions &amp; Partials</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Trigonometric periodicities, hyperbolic mappings, bivariate derivatives, chain rules, and total differentials.</div>
+    </header>
+
+    <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
+        <!-- Card 1.5: Trigonometric & Hyperbolic Mappings -->
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1.5 Trigonometric &amp; Hyperbolic Mappings</h3>
+            <p>Trigonometric periodicities are defined for period $2\pi$. The reciprocal functions are $\sec x = 1/\cos x$, $\csc x = 1/\sin x$, and $\cot x = 1/\tan x$. Key circular identity: $\cos^2 x + \sin^2 x = 1$.</p>
+            <p><strong>Hyperbolic Functions:</strong> Defined via exponentials:</p>
+            <p style="text-align: center; font-size: 0.95rem; margin: 0.4rem 0;">
+                $$\sinh x = \frac{e^x - e^{-x}}{2} \quad , \quad \cosh x = \frac{e^x + e^{-x}}{2} \quad , \quad \tanh x = \frac{\sinh x}{\cosh x}$$
+            </p>
+            <p><strong>Hyperbolic Identities:</strong> $\cosh^2 x - \sinh^2 x = 1$, and $\sinh(x+y) = \sinh x\cosh y + \cosh x\sinh y$.</p>
+            <p><strong>Inverse Hyperbolic Functions (Logarithmic Proof):</strong> By treating $y = \sinh^{-1} x \implies x = \frac{e^y - e^{-y}}{2}$, multiplying by $e^y$ yields the quadratic $(e^y)^2 - 2x(e^y) - 1 = 0$. Solving and taking the positive root yields:</p>
+            <p style="text-align: center; font-size: 1rem; font-weight: 700; margin: 0.5rem 0;">
+                $$\sinh^{-1} x = \ln\left(x + \sqrt{x^2 + 1}\right) \quad , \quad \cosh^{-1} x = \ln\left(x + \sqrt{x^2 - 1}\right)$$
+                $$\tanh^{-1} x = \frac{1}{2}\ln\left(\frac{1+x}{1-x}\right)$$
+            </p>
+
+            <!-- Interactive Hyperbolic Panel -->
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; margin-top: 1rem; font-family: var(--font-family-sans);">
+                <h4 style="margin: 0 0 0.5rem 0; font-size: 0.88rem; font-weight: 700; color: #ec4899;">Interactive Hyperbolic &amp; Inverse Laboratory</h4>
+                <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 0.75rem;">
+                    <div>
+                        <label style="font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Input Value $x$:</label>
+                        <input id="hypInputX" type="number" value="1.0" step="0.2" style="width: 60px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveHyperbolic()">
+                    </div>
+                </div>
+                <div style="font-size: 0.82rem; line-height: 1.5; color: var(--text-color); background: var(--card-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid #ec4899;">
+                    <div id="hypOutputSinh"><strong>sinh(1.00):</strong> 1.1752</div>
+                    <div id="hypOutputCosh"><strong>cosh(1.00):</strong> 1.5431</div>
+                    <div id="hypOutputInvSinh"><strong>sinh⁻¹(1.00):</strong> 0.8814</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 1.6: Bivariate Derivatives & Total Differentials -->
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="margin-top: 0; color: #06b6d4; font-family: var(--font-family-sans); font-weight: 700;">1.6 Bivariate Derivatives &amp; Chain Rules</h3>
+            <p>In multivariate calculus, partial derivatives evaluate rates of change holding other independent variables fixed:</p>
+            <p style="text-align: center; font-size: 0.95rem; margin: 0.4rem 0;">
+                $$\frac{\partial f}{\partial x} = \lim_{\delta x \to 0} \frac{f(x+\delta x, y) - f(x, y)}{\delta x} \quad , \quad \frac{\partial f}{\partial y} = \lim_{\delta y \to 0} \frac{f(x, y+\delta y) - f(x, y)}{\delta y}$$
+            </p>
+            <p><strong>The Chain Rule (Case I):</strong> If $x = x(s)$ and $y = y(s)$, the total derivative with respect to $s$ is:</p>
+            <p style="text-align: center; font-weight: 700; margin: 0.4rem 0;">
+                $$\frac{dF}{ds} = \frac{\partial f}{\partial x}\frac{dx}{ds} + \frac{\partial f}{\partial y}\frac{dy}{ds}$$
+            </p>
+            <p><strong>The Chain Rule (Case II):</strong> If $x = x(u,v)$ and $y = y(u,v)$, the partials are:</p>
+            <p style="text-align: center; font-weight: 700; margin: 0.4rem 0;">
+                $$\frac{\partial F}{\partial u} = \frac{\partial f}{\partial x}\frac{\partial x}{\partial u} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial u} \quad , \quad \frac{\partial F}{\partial v} = \frac{\partial f}{\partial x}\frac{\partial x}{\partial v} + \frac{\partial f}{\partial y}\frac{\partial y}{\partial v}$$
+            </p>
+            <p><strong>Total Differential ($df$):</strong> Examining the linear surface changes:</p>
+            <p style="text-align: center; font-weight: 700; margin: 0.4rem 0;">
+                $$df = \frac{\partial f}{\partial x}dx + \frac{\partial f}{\partial y}dy$$
+            </p>
+
+            <!-- Interactive Partial Derivative Solver -->
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; margin-top: 1rem; font-family: var(--font-family-sans);">
+                <h4 style="margin: 0 0 0.5rem 0; font-size: 0.88rem; font-weight: 700; color: #06b6d4;">Interactive Surface &amp; Partials Laboratory</h4>
+                <p style="font-size: 0.8rem; margin: 0 0 0.5rem 0;">For the surface: $f(x,y) = x^2 y + y^3$</p>
+                <div style="display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.75rem;">
+                    <div>
+                        <label style="font-size: 0.72rem; font-weight: 600; display: block;">Input $x$:</label>
+                        <input id="partInputX" type="number" value="2.0" step="0.5" style="width: 50px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractivePartials()">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.72rem; font-weight: 600; display: block;">Input $y$:</label>
+                        <input id="partInputY" type="number" value="3.0" step="0.5" style="width: 50px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractivePartials()">
+                    </div>
+                </div>
+                <div style="font-size: 0.82rem; line-height: 1.5; color: var(--text-color); background: var(--card-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid #06b6d4;">
+                    <div id="partOutputF"><strong>f(2.00, 3.00):</strong> 39.00</div>
+                    <div id="partOutputPx"><strong>df/dx = 2xy:</strong> 12.00</div>
+                    <div id="partOutputPy"><strong>df/dy = x² + 3y²:</strong> 31.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.calculateInteractiveHyperbolic = function() {
+                const xVal = parseFloat(document.getElementById('hypInputX').value);
+                const elSinh = document.getElementById('hypOutputSinh');
+                const elCosh = document.getElementById('hypOutputCosh');
+                const elInvSinh = document.getElementById('hypOutputInvSinh');
+
+                if (isNaN(xVal)) {
+                    elSinh.innerHTML = "<strong>sinh(x):</strong> Please input a valid number!";
+                    elCosh.innerHTML = "";
+                    elInvSinh.innerHTML = "";
+                    return;
+                }
+
+                const sinhVal = Math.sinh(xVal);
+                const coshVal = Math.cosh(xVal);
+                const invSinhVal = Math.asinh(xVal);
+
+                elSinh.innerHTML = `<strong>sinh(${xVal.toFixed(2)}):</strong> ${sinhVal.toFixed(4)}`;
+                elCosh.innerHTML = `<strong>cosh(${xVal.toFixed(2)}):</strong> ${coshVal.toFixed(4)}`;
+                elInvSinh.innerHTML = `<strong>sinh⁻¹(${xVal.toFixed(2)}):</strong> ${invSinhVal.toFixed(4)}`;
+
+                if (window.MathJax && typeof window.MathJax.typeset === 'function') {
+                    window.MathJax.typeset();
+                }
+            };
+
+            window.calculateInteractivePartials = function() {
+                const xVal = parseFloat(document.getElementById('partInputX').value);
+                const yVal = parseFloat(document.getElementById('partInputY').value);
+                const elF = document.getElementById('partOutputF');
+                const elPx = document.getElementById('partOutputPx');
+                const elPy = document.getElementById('partOutputPy');
+
+                if (isNaN(xVal) || isNaN(yVal)) {
+                    elF.innerHTML = "<strong>f(x,y):</strong> Please input valid numbers!";
+                    elPx.innerHTML = "";
+                    elPy.innerHTML = "";
+                    return;
+                }
+
+                const fVal = (xVal * xVal * yVal) + (yVal * yVal * yVal);
+                const pxVal = 2 * xVal * yVal;
+                const pyVal = (xVal * xVal) + (3 * yVal * yVal);
+
+                elF.innerHTML = `<strong>f(${xVal.toFixed(2)}, ${yVal.toFixed(2)}):</strong> ${fVal.toFixed(4)}`;
+                elPx.innerHTML = `<strong>df/dx = 2xy:</strong> ${pxVal.toFixed(4)}`;
+                elPy.innerHTML = `<strong>df/dy = x² + 3y²:</strong> ${pyVal.toFixed(4)}`;
+
+                if (window.MathJax && typeof window.MathJax.typeset === 'function') {
+                    window.MathJax.typeset();
+                }
+            };
+
+            setTimeout(() => {
+                if (document.getElementById('hypInputX')) calculateInteractiveHyperbolic();
+                if (document.getElementById('partInputX')) calculateInteractivePartials();
+            }, 100);
+        })();
+    </script>
+</div>

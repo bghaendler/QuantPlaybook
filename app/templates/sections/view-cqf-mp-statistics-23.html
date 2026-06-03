@@ -1,0 +1,291 @@
+<div id="view-cqf-mp-statistics-23" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">2.3 Regression &amp; Correlation</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">2.3 Regression &amp; Correlation</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Method of least squares, regression line partial derivatives, and Pearson/Spearman coefficient calculations.</div>
+    </header>
+
+    <!-- Ordinary Least Squares (OLS) Derivation -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">2.3.1 Ordinary Least Squares Regression Derivation</h3>
+        <p>A sensible first step to identify relationships between variables is to plot the bivariate data on a scatter diagram, i.e. pairs of values $(x_i, y_i)$.</p>
+        <p>We want to fit a straight line $y = bx + a$ through the data so as to minimise the sum of the squared distances of the points from the line. The difference between the data value and the fitted line is called the residual or error.</p>
+        
+        <p>The residual of the $i^{\text{th}}$ data point $(x_i, y_i)$ is:</p>
+        <p style="text-align: center;">$$r_i = y_i - y = y_i - (b x_i + a)$$</p>
+        <p>The sum of squared residuals ($S.R.$) is defined as:</p>
+        <p style="text-align: center; font-size: 1.1rem; font-weight: 700; margin: 0.6rem 0;">
+            $$S.R. = \sum_{i=1}^{n} r_i^2 = \sum_{i=1}^{n} [y_i - (b x_i + a)]^2$$
+        </p>
+        
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color); margin-top: 1rem;">
+            <strong>Step 1: Expand the Sum of Squared Residuals</strong>
+            $$S.R. = \sum \left[ y_i^2 - 2y_i(bx_i + a) + (bx_i + a)^2 \right]$$
+            $$= \sum \left[ y_i^2 - 2by_ix_i - 2ay_i + b^2 x_i^2 + 2bax_i + a^2 \right]$$
+            $$= n\bar{y}^2 - 2bn\bar{xy} - 2an\bar{y} + b^2 n\bar{x}^2 + 2ban\bar{x} + na^2$$
+
+            <strong style="display: block; margin-top: 1rem;">Step 2: Take Partial Derivatives to Minimize</strong>
+            <p style="margin: 0.5rem 0;">To find the coordinates that minimize the error, we set partial derivatives to zero:</p>
+            $$\frac{\partial(S.R.)}{\partial b} = -2n\bar{xy} + 2bn\bar{x}^2 + 2an\bar{x} = 0$$
+            $$\frac{\partial(S.R.)}{\partial a} = -2n\bar{y} + 2bn\bar{x} + 2an = 0$$
+
+            <strong style="display: block; margin-top: 1rem;">Step 3: Solve the Linear Simultaneous Equations</strong>
+            <p style="color: #10b981; font-weight: bold; margin-top: 0.25rem;">$$b = \frac{S_{xy}}{S_{xx}}$$</p>
+            <p style="color: #10b981; font-weight: bold; margin-top: 0.25rem;">$$a = \bar{y} - b\bar{x}$$</p>
+            <p style="margin: 0.5rem 0; font-size: 0.85rem; color: #6b7280;">Where:
+                $$S_{xx} = \sum (x_i - \bar{x})^2 = \sum (x_i^2) - \frac{(\sum x_i)^2}{n}$$
+                $$S_{xy} = \sum (x_i - \bar{x})(y_i - \bar{y}) = \sum x_i y_i - \frac{(\sum x_i)(\sum y_i)}{n}$$
+            </p>
+        </div>
+    </div>
+
+    <!-- Correlation Coefficients -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">2.3.2 Pearson Product-Moment Correlation Coefficient</h3>
+        <p>A measure often used within statistics to quantify linear dependence is the <strong>Pearson product-moment correlation coefficient (PMCC)</strong>, denoted by $r$. This coefficient gives a value between +1 and -1:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$\text{PMCC } r = \frac{S_{xy}}{\sqrt{S_{xx}S_{yy}}}$$</p>
+        <p style="font-size: 0.85rem; color: #6b7280;">Where:
+            $$S_{yy} = \sum (y_i - \bar{y})^2 = \sum (y_i^2) - \frac{(\sum y_i)^2}{n}$$
+        </p>
+
+        <h4 style="color: var(--accent); margin-top: 1.5rem;">Worked Example:</h4>
+        <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); font-size: 0.9rem;">
+            <p style="margin: 0 0 0.5rem 0; font-weight: 600;">Data Table:</p>
+            <table style="width: 100%; border-collapse: collapse; font-family: var(--font-family-sans); font-size: 0.85rem; text-align: center; margin-bottom: 1rem;">
+                <tr style="border-bottom: 1px solid var(--card-border);">
+                    <td style="font-weight: bold; padding: 0.4rem;">$x$</td>
+                    <td>5</td><td>10</td><td>15</td><td>20</td><td>25</td><td>30</td><td>35</td><td>40</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--card-border);">
+                    <td style="font-weight: bold; padding: 0.4rem;">$y$</td>
+                    <td>98</td><td>90</td><td>81</td><td>66</td><td>61</td><td>47</td><td>39</td><td>34</td>
+                </tr>
+            </table>
+            <p style="margin: 0.25rem 0;">Summation metrics calculated: $\sum x_i = 180, \sum y_i = 516, \sum x_i^2 = 5100, \sum y_i^2 = 37228, \sum x_i y_i = 9585$</p>
+            <p style="margin: 0.25rem 0;">$$S_{xy} = 9585 - \frac{180 \times 516}{8} = -2025$$</p>
+            <p style="margin: 0.25rem 0;">$$S_{xx} = 5100 - \frac{180^2}{8} = 1050 \implies b = \frac{-2025}{1050} = -1.929$$</p>
+            <p style="margin: 0.25rem 0;">$$a = \bar{y} - b\bar{x} = 64.5 - (-1.929 \times 22.5) = 107.9$$</p>
+            <p style="margin: 0.25rem 0; color: var(--accent); font-weight: bold;">OLS regression line equation: $y = -1.929x + 107.9$</p>
+            <p style="margin: 0.25rem 0; color: #10b981; font-weight: bold;">PMCC Calculation: $S_{yy} = 37228 - \frac{516^2}{8} = 3946$</p>
+            <p style="margin: 0.25rem 0; color: #10b981; font-weight: bold;">$$r = \frac{-2025}{\sqrt{1050 \times 3946}} = -0.995 \quad \text{(Strong negative correlation)}$$</p>
+        </div>
+    </div>
+
+    <!-- Spearman Rank correlation -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">2.3.3 Spearman's Rank Correlation Coefficient</h3>
+        <p>Instead of dealing with absolute values, we can assign a rank to each value and calculate a correlation based on these ranks, serving as an approximation to PMCC:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$r_s = 1 - \frac{6 \sum d_i^2}{n(n^2 - 1)}$$</p>
+        <p style="font-size: 0.85rem; color: #6b7280; text-align: center;">Where $d_i$ is the difference in ranks for each pair, and $n$ is the number of pairs.</p>
+
+        <h4 style="color: var(--accent); margin-top: 1.5rem;">Worked Judge Example:</h4>
+        <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); font-size: 0.9rem;">
+            <table style="width: 100%; border-collapse: collapse; font-family: var(--font-family-sans); font-size: 0.85rem; text-align: center; margin-bottom: 0.5rem;">
+                <tr style="border-bottom: 1px solid var(--card-border);">
+                    <td style="font-weight: bold; padding: 0.3rem;">Judge X</td><td>3</td><td>1</td><td>6</td><td>7</td><td>5</td><td>4</td><td>8</td><td>2</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--card-border);">
+                    <td style="font-weight: bold; padding: 0.3rem;">Judge Y</td><td>2</td><td>1</td><td>5</td><td>8</td><td>4</td><td>3</td><td>7</td><td>6</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--card-border);">
+                    <td style="font-weight: bold; padding: 0.3rem;">Diff $d$</td><td>1</td><td>0</td><td>1</td><td>-1</td><td>1</td><td>1</td><td>1</td><td>-4</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--card-border);">
+                    <td style="font-weight: bold; padding: 0.3rem;">$d^2$</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>16</td>
+                </tr>
+            </table>
+            <p style="margin: 0.5rem 0;">Sum of $d^2 = 22$, sample size $n = 8$:</p>
+            <p style="margin: 0.25rem 0; color: #10b981; font-weight: bold;">$$r_s = 1 - \frac{6 \times 22}{8(8^2 - 1)} = 0.738$$</p>
+        </div>
+    </div>
+
+    <!-- Click-to-Add Points Sandbox Laboratory -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">2.3.4 Interactive Click-to-Plot Scatter Sandbox</h3>
+        <p>Click inside the black canvas area below to place random scatter coordinates $(x, y)$. The ordinary least squares (OLS) regression line ($y = bx + a$) along with both Pearson $r$ and Spearman $r_s$ coefficients will recalculate and redraw in real-time!</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start;">
+                <!-- Clickable Canvas -->
+                <div style="background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
+                    <canvas id="stats23Canvas" width="360" height="240" style="width: 100%; height: 240px; background: #000; cursor: crosshair; display: block;"></canvas>
+                </div>
+
+                <!-- Live Results -->
+                <div>
+                    <button onclick="clearStats23Points()" style="background: #ef4444; color: #fff; border: none; padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; margin-bottom: 1.25rem;">Clear Data Points</button>
+
+                    <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); margin-bottom: 0.75rem;">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">REGRESSION LINE EQUATION</div>
+                        <div id="stats23Eq" style="font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-top: 0.25rem;">y = --x + --</div>
+                    </div>
+
+                    <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); margin-bottom: 0.75rem; border-left: 4px solid #10b981;">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">PEARSON CORRELATION (r)</div>
+                        <div id="stats23Pearson" style="font-size: 1.3rem; font-weight: 800; color: #10b981; margin-top: 0.25rem;">--</div>
+                    </div>
+
+                    <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); border-left: 4px solid var(--warning);">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">SPEARMAN RANK CORRELATION (r_s)</div>
+                        <div id="stats23Spearman" style="font-size: 1.3rem; font-weight: 800; color: var(--warning); margin-top: 0.25rem;">--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            // Default points
+            let points = [
+                {x: 60, y: 180},
+                {x: 120, y: 150},
+                {x: 180, y: 130},
+                {x: 240, y: 80},
+                {x: 300, y: 60}
+            ];
+
+            window.runStats23Simulation = function() {
+                const canvas = document.getElementById('stats23Canvas');
+                if (!canvas) return;
+
+                // Setup initial click handlers if not already bound
+                if (!canvas.getAttribute('data-bound')) {
+                    canvas.addEventListener('mousedown', function(e) {
+                        const rect = canvas.getBoundingClientRect();
+                        const scaleX = canvas.width / rect.width;
+                        const scaleY = canvas.height / rect.height;
+                        const x = (e.clientX - rect.left) * scaleX;
+                        const y = (e.clientY - rect.top) * scaleY;
+                        points.push({ x, y });
+                        runStats23Simulation();
+                    });
+                    canvas.setAttribute('data-bound', 'true');
+                }
+
+                computeRegressionAndDraw();
+
+                const parent = document.getElementById('view-cqf-mp-statistics-23');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            window.clearStats23Points = function() {
+                points = [];
+                runStats23Simulation();
+            };
+
+            function computeRegressionAndDraw() {
+                const canvas = document.getElementById('stats23Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Draw standard grid
+                ctx.strokeStyle = '#1a1a1a';
+                ctx.lineWidth = 1;
+                for (let x = 40; x < canvas.width; x += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, canvas.height);
+                    ctx.stroke();
+                }
+                for (let y = 40; y < canvas.height; y += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(canvas.width, y);
+                    ctx.stroke();
+                }
+
+                // Draw active points
+                ctx.fillStyle = '#fff';
+                points.forEach(pt => {
+                    ctx.beginPath();
+                    ctx.arc(pt.x, pt.y, 5, 0, 2*Math.PI);
+                    ctx.fill();
+                });
+
+                if (points.length < 2) {
+                    document.getElementById('stats23Eq').innerText = "Add more points...";
+                    document.getElementById('stats23Pearson').innerText = "--";
+                    document.getElementById('stats23Spearman').innerText = "--";
+                    return;
+                }
+
+                // Ordinary Least Squares regression calculations
+                const n = points.length;
+                let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0, sumYY = 0;
+                points.forEach(pt => {
+                    sumX += pt.x;
+                    sumY += pt.y;
+                    sumXY += pt.x * pt.y;
+                    sumXX += pt.x * pt.x;
+                    sumYY += pt.y * pt.y;
+                });
+
+                const meanX = sumX / n;
+                const meanY = sumY / n;
+
+                let sxx = sumXX - n * Math.pow(meanX, 2);
+                let syy = sumYY - n * Math.pow(meanY, 2);
+                let sxy = sumXY - n * meanX * meanY;
+
+                // Protect division by zero
+                if (sxx === 0) sxx = 0.0001;
+                if (syy === 0) syy = 0.0001;
+
+                const b = sxy / sxx;
+                const a = meanY - b * meanX;
+
+                // Pearson correlation coefficient r
+                const r = sxy / Math.sqrt(sxx * syy);
+
+                // Spearman Rank Correlation Coefficient
+                // Sort coordinates to compute simple ranks
+                const sortedX = [...points].sort((p1, p2) => p1.x - p2.x);
+                const sortedY = [...points].sort((p1, p2) => p1.y - p2.y);
+
+                const ranksX = points.map(pt => sortedX.findIndex(p => p.x === pt.x) + 1);
+                const ranksY = points.map(pt => sortedY.findIndex(p => p.y === pt.y) + 1);
+
+                let sumRankDiffSq = 0;
+                for (let i = 0; i < n; i++) {
+                    sumRankDiffSq += Math.pow(ranksX[i] - ranksY[i], 2);
+                }
+                const rs = 1 - (6 * sumRankDiffSq) / (n * (Math.pow(n, 2) - 1));
+
+                // Display numerical results
+                // In browser coordinates, Y is inverted (0 is top). Invert presentation to look normal.
+                const displayedSlope = -b; 
+                const displayedIntercept = canvas.height - a;
+
+                document.getElementById('stats23Eq').innerText = `y = ${displayedSlope.toFixed(3)}x + ${displayedIntercept.toFixed(1)}`;
+                document.getElementById('stats23Pearson').innerText = r.toFixed(4);
+                document.getElementById('stats23Spearman').innerText = rs.toFixed(4);
+
+                // Draw OLS Regression Line
+                ctx.strokeStyle = '#2563eb';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                const x0 = 0;
+                const y0 = a + b * x0;
+                const x1 = canvas.width;
+                const y1 = a + b * x1;
+                ctx.moveTo(x0, y0);
+                ctx.lineTo(x1, y1);
+                ctx.stroke();
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('stats23Canvas')) runStats23Simulation();
+            }, 100);
+        })();
+    </script>
+</div>

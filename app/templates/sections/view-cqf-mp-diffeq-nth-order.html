@@ -1,0 +1,175 @@
+<div id="view-cqf-mp-diffeq-nth-order" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #f59e0b; font-family: var(--font-family-sans);">5. General Nth Order</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">General Nth Order Linear Homogeneous Equations</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Extension of constant coefficient linear differential operators to arbitrary orders, polynomial roots, and worked higher-order cases.</div>
+    </header>
+
+    <!-- General Framework -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1. General Nth Order Homogeneous Formulation</h3>
+        <p>The general form of an $n^{\text{th}}$-order linear homogeneous differential equation with constant coefficients is:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$a_n \frac{d^n y}{dx^n} + a_{n-1} \frac{d^{n-1} y}{dx^{n-1}} + \dots + a_1 \frac{dy}{dx} + a_0 y = 0$$</p>
+        <p>Substituting the trial exponential form $y = e^{\lambda x}$ produces an $n^{\text{th}}$-degree polynomial **Auxiliary Equation**:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold; color: var(--accent);">$$a_n \lambda^n + a_{n-1} \lambda^{n-1} + \dots + a_1 \lambda + a_0 = 0$$</p>
+        <p>Solving the differential equation reduces entirely to finding the roots of this polynomial.</p>
+    </div>
+
+    <!-- The Three Root Cases for Nth Order -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">2. Three Root Cases &amp; Solution Construction</h3>
+        
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">
+            <strong style="color: var(--accent);">Case 1: $n$ Distinct Roots</strong>
+            <p style="margin: 0.25rem 0;">Each distinct real root $\lambda_i$ generates an independent solution $e^{\lambda_i x}$. The general solution is a linear combination of all $n$ terms:</p>
+            $$y = c_1 e^{\lambda_1 x} + c_2 e^{\lambda_2 x} + \dots + c_n e^{\lambda_n x}$$
+
+            <strong style="display: block; margin-top: 1rem; color: #10b981;">Case 2: $r$-Fold Repeated Real Root</strong>
+            <p style="margin: 0.25rem 0;">When a root $\lambda$ repeats $r$ times ($r \le n$), it generates $r$ linearly independent solutions by scaling with increasing powers of $x$. Only the repeated roots are scaled; all other roots are treated separately:</p>
+            $$y = \left( c_1 + c_2 x + c_3 x^2 + \dots + c_r x^{r-1} \right) e^{\lambda x}$$
+
+            <strong style="display: block; margin-top: 1rem; color: var(--warning);">Case 3: $r$-Fold Repeated Complex Conjugate Roots</strong>
+            <p style="margin: 0.25rem 0;">When a complex root pair $p \pm iq$ is repeated $r$ times, the solutions take the form of $e^{px}$ multiplied by combinations of cosine and sine terms, with each repetition introducing an additional factor of $x$:</p>
+            $$y = e^{px} \left[ \left( A_1 + A_2 x + \dots + A_r x^{r-1} \right)\cos qx + \left( B_1 + B_2 x + \dots + B_r x^{r-1} \right)\sin qx \right]$$
+        </div>
+    </div>
+
+    <!-- Worked Polynomial Examples -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">3. Worked Polynomial Examples</h3>
+        
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">
+            <strong>Worked Example 1: Fourth-Order Equation with Distinct Roots</strong>
+            <p style="margin: 0.25rem 0;">Find general solution for $\lambda^4 - 5\lambda^2 + 6 = 0$. Factoring:</p>
+            $$(\lambda^2 - 2)(\lambda^2 - 3) = 0 \implies \lambda = \pm\sqrt{2}, \quad \lambda = \pm\sqrt{3}$$
+            <p style="color: #10b981; font-weight: bold; margin-top: 0.25rem;">$$y = c_1 e^{\sqrt{2}x} + c_2 e^{-\sqrt{2}x} + c_3 e^{\sqrt{3}x} + c_4 e^{-\sqrt{3}x}$$</p>
+
+            <strong style="display: block; margin-top: 1rem;">Worked Example 2: Sixth-Order Equation with Repeated Root</strong>
+            <p style="margin: 0.25rem 0;">Find general solution for $\lambda^6 - 5\lambda^4 = 0 \implies \lambda^4(\lambda^2 - 5) = 0$:</p>
+            <ul style="padding-left: 1.2rem; margin: 0.25rem 0;">
+                <li>$\lambda = 0$ is a fourfold repeated root ($r = 4$), generating: $1, x, x^2, x^3$ (since $e^{0x} = 1$).</li>
+                <li>$\lambda = \pm\sqrt{5}$ are distinct roots, contributing $e^{\sqrt{5}x}$ and $e^{-\sqrt{5}x}$.</li>
+            </ul>
+            <p style="color: #10b981; font-weight: bold; margin-top: 0.25rem;">$$y = c_1 + c_2 x + c_3 x^2 + c_4 x^3 + c_5 e^{\sqrt{5}x} + c_6 e^{-\sqrt{5}x}$$</p>
+
+            <strong style="display: block; margin-top: 1rem;">Worked Example 3: Fourth-Order Equation with Repeated Complex Roots</strong>
+            <p style="margin: 0.25rem 0;">Find general solution for $(\lambda^2 + 1)^2 = 0 \implies \lambda = \pm i$ are twofold repeated roots:</p>
+            <ul style="padding-left: 1.2rem; margin: 0.25rem 0;">
+                <li>Here, $p = 0$, $q = 1$, and multiplicity $r = 2$.</li>
+            </ul>
+            <p style="color: #10b981; font-weight: bold; margin-top: 0.25rem;">$$y = (A + Bx)\cos x + (C + Dx)\sin x$$</p>
+        </div>
+    </div>
+
+    <!-- Interactive Nth Order Sandbox -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">4. Interactive Nth Order Sandbox</h3>
+        <p>Observe the exact solution profile of a third-order homogeneous ODE with roots $\lambda_1 = 0$, $\lambda_2 = r$, and $\lambda_3 = -r$ resulting in auxiliary equation $\lambda(\lambda^2 - r^2) = 0 \implies y(x) = c_1 + c_2 e^{rx} + c_3 e^{-rx}$. Adjust the root magnitude $r$ and observe the curve behavior:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls -->
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Root magnitude ($r$):</label>
+                    <input type="range" id="diffeqNthSliderR" min="0.5" max="2.5" value="1.2" step="0.1" oninput="runDiffeqNthOrderSimulation()" style="width: 100%; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: -0.75rem; margin-bottom: 1.25rem; color: #6b7280;">
+                        <span>0.5</span>
+                        <span id="diffeqNthRVal" style="font-weight: bold; color: var(--accent);">r = 1.2</span>
+                        <span>2.5</span>
+                    </div>
+
+                    <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border);">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">SOLVED SYSTEM FORMULA</div>
+                        <div id="diffeqNthFormula" style="font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-top: 0.25rem;">y = 1 + e^{1.2x} + e^{-1.2x}</div>
+                    </div>
+                </div>
+
+                <!-- Custom 2D Line Chart Canvas -->
+                <div style="background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 1rem;">
+                    <canvas id="diffeqNthCanvas" width="320" height="200" style="width: 100%; height: 200px; display: block;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.runDiffeqNthOrderSimulation = function() {
+                const r = parseFloat(document.getElementById('diffeqNthSliderR').value);
+                document.getElementById('diffeqNthRVal').innerText = `r = ${r.toFixed(1)}`;
+                document.getElementById('diffeqNthFormula').innerText = `y = 1 + e^{${r.toFixed(1)}x} + e^{-${r.toFixed(1)}x}`;
+
+                drawNthOrderGraph(r);
+
+                const parent = document.getElementById('view-cqf-mp-diffeq-nth-order');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawNthOrderGraph(r) {
+                const canvas = document.getElementById('diffeqNthCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const margin = 20;
+                const topMargin = 20;
+                const bottomMargin = 20;
+                const width = canvas.width - 2 * margin;
+                const height = canvas.height - topMargin - bottomMargin;
+
+                const minX = -2;
+                const maxX = 2;
+                const minY = 0.0;
+                const maxY = 15.0;
+
+                function getCX(x) {
+                    return margin + ((x - minX) / (maxX - minX)) * width;
+                }
+
+                function getCY(y) {
+                    return canvas.height - bottomMargin - ((y - minY) / (maxY - minY)) * height;
+                }
+
+                // Grid lines
+                ctx.strokeStyle = '#222';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(margin, canvas.height - bottomMargin);
+                ctx.lineTo(canvas.width - margin, canvas.height - bottomMargin);
+                ctx.stroke();
+
+                // Plot y(x) = 1 + e^{rx} + e^{-rx}
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                let started = false;
+                for (let x = minX; x <= maxX; x += 0.05) {
+                    const y = 1 + Math.exp(r * x) + Math.exp(-r * x);
+                    const cx = getCX(x);
+                    const cy = getCY(y);
+                    if (y >= minY && y <= maxY) {
+                        if (!started) {
+                            ctx.moveTo(cx, cy);
+                            started = true;
+                        } else {
+                            ctx.lineTo(cx, cy);
+                        }
+                    }
+                }
+                ctx.stroke();
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('diffeqNthSliderR')) runDiffeqNthOrderSimulation();
+            }, 100);
+        })();
+    </script>
+</div>

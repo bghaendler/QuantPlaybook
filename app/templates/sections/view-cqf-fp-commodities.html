@@ -1,0 +1,298 @@
+<div id="view-cqf-fp-commodities" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2.5rem; position: relative;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <span class="badge" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #4f46e5;">Finance Primer</span>
+            <span class="badge" style="background: rgba(245, 158, 11, 0.1); color: #d97706; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #d97706;">Commodities</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.5rem; font-weight: 800; border-bottom: none; padding-bottom: 0; background: linear-gradient(135deg, var(--text-color), #4f46e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Commodities: An Introduction</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1.05rem;">Sectors, Physical Supply Chains, Investment Motives, and Curve Term Structures</div>
+    </header>
+
+    <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-bottom: 2rem;">
+        <!-- Card 1: Broad Organization & Sectors -->
+        <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <h3 style="margin-top: 0; color: #4f46e5; font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
+                    <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    How is Commodities Broadly Organized?
+                </h3>
+                <p>Commodities are categorized into <strong>5 main sectors</strong>, each shaped by unique global supply and demand drivers:</p>
+                
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 1rem 0;">
+                    <button class="segment-btn active" id="secBtnEnergy" onclick="switchCommSector('Energy')" style="padding: 0.4rem 0.8rem; font-size: 0.78rem;">Energy</button>
+                    <button class="segment-btn" id="secBtnBase" onclick="switchCommSector('Base')" style="padding: 0.4rem 0.8rem; font-size: 0.78rem;">Base Metals</button>
+                    <button class="segment-btn" id="secBtnAgs" onclick="switchCommSector('Ags')" style="padding: 0.4rem 0.8rem; font-size: 0.78rem;">Ags/Softs</button>
+                    <button class="segment-btn" id="secBtnBulks" onclick="switchCommSector('Bulks')" style="padding: 0.4rem 0.8rem; font-size: 0.78rem;">Bulks</button>
+                    <button class="segment-btn" id="secBtnPrecious" onclick="switchCommSector('Precious')" style="padding: 0.4rem 0.8rem; font-size: 0.78rem;">Precious</button>
+                </div>
+
+                <div id="commSectorPanel" style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-size: 0.92rem; min-height: 180px;">
+                    <!-- Content populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Contrast with Financial Assets & Supply Chains -->
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="margin-top: 0; color: #d97706; font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
+                <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                Unique Physical Nature of Commodities
+            </h3>
+            <p>Unlike financial instruments, physical commodities are tangible and governed by real-world friction:</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+                <div style="display: flex; gap: 0.75rem; background: var(--metric-bg); padding: 0.75rem; border-radius: 6px; border-left: 3px solid #d97706;">
+                    <div style="font-size: 1.25rem;">🔄</div>
+                    <div>
+                        <strong style="display: block; font-size: 0.9rem;">Change Physical Form</strong>
+                        <span style="font-size: 0.82rem; color: #6b7280;">Subject to a conversion value-add chain: Production ➔ Refining/Processing ➔ Consumption.</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 0.75rem; background: var(--metric-bg); padding: 0.75rem; border-radius: 6px; border-left: 3px solid #d97706;">
+                    <div style="font-size: 1.25rem;">🚚</div>
+                    <div>
+                        <strong style="display: block; font-size: 0.9rem;">Supply Chain &amp; Logistics Factors</strong>
+                        <span style="font-size: 0.82rem; color: #6b7280;">Heavily dependent on pipelines, freight routes, shipping congestion, and specialized storage nodes.</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 0.75rem; background: var(--metric-bg); padding: 0.75rem; border-radius: 6px; border-left: 3px solid #d97706;">
+                    <div style="font-size: 1.25rem;">🛢️</div>
+                    <div>
+                        <strong style="display: block; font-size: 0.9rem;">Non-Uniformity &amp; Grade Specs</strong>
+                        <span style="font-size: 0.82rem; color: #6b7280;">Bespoke chemical properties. For example, there are roughly <strong>190 distinct grades of crude oil</strong> based on sulfur and density.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Portfolio Correlation & Diversification -->
+    <div class="card" style="margin-bottom: 2rem;">
+        <h3 style="margin-top: 0; color: #0ea5e9; font-weight: 800;">Motives for Commodity Allocation: Low Correlation</h3>
+        <p>A primary driver for adding commodities to asset allocation models is their low correlation with traditional stocks and bonds. They react to inflation and supply shocks differently, offering powerful diversification benefits during market corrections.</p>
+        
+        <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem; margin-top: 1.5rem; align-items: center;">
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px;">
+                <h4 style="margin: 0 0 1rem 0; font-size: 0.9rem; font-weight: 700; color: #0ea5e9; text-transform: uppercase;">12-Month Performance (S&amp;P 500 vs. Commodity Strategy ETF)</h4>
+                
+                <div style="position: relative; height: 180px; width: 100%;" id="commCorrChartContainer">
+                    <canvas id="commCorrelationChart"></canvas>
+                </div>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div style="background: var(--accent-glow); padding: 1rem; border-radius: 8px; border: 1px solid var(--accent);">
+                    <h4 style="margin: 0; font-size: 0.85rem; color: var(--accent);">Why Diversify?</h4>
+                    <p style="font-size: 0.85rem; margin: 0.25rem 0 0 0; line-height: 1.4;">When corporate earnings are impacted by high raw material costs (stocks declining), the commodity index is rising, balancing total portfolio drawdowns.</p>
+                </div>
+                <div style="font-size: 0.85rem; line-height: 1.5;">
+                    <strong>Exposure Alternatives:</strong> Since institutional investors rarely receive physically delivered barrels, wheat, or cattle, they rely on:
+                    <ul style="padding-left: 1.2rem; margin: 0.5rem 0 0 0;">
+                        <li>Commodity Exchange Traded Funds (ETFs)</li>
+                        <li>Futures/Forwards Derivatives</li>
+                        <li><strong>S&amp;P GSCI Production-Weighted Index:</strong> (59.1% Energy, 17.6% Ags, 9.7% Base Metals, 9.1% Livestock, 4.4% Precious Metals)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Backwardation & Contango Theory and Sandbox -->
+    <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="margin-top:0; color: #10b981; font-weight: 800;">1.2 Spot-Futures Arbitrage: The Pricing Model</h3>
+            <p>Futures contract values are calculated through the Cost of Carry arbitrage identity:</p>
+            <p style="text-align: center; font-size: 1.25rem; font-weight: 700; margin: 1rem 0;">
+                $$ F(t, T) = S(t) e^{(r + w - c)(T - t)} $$
+            </p>
+            <ul style="line-height: 1.6; font-size: 0.9rem; padding-left: 1.2rem;">
+                <li>$r$: Risk-free interest rate.</li>
+                <li>$w$: Physical storage, warehouse, and insurance fees.</li>
+                <li>$c$: <strong>Convenience Yield</strong> (implied benefit of holding physical stock, e.g. preventing structural factory shutdowns due to shortages).</li>
+            </ul>
+            <p style="font-size: 0.88rem; font-style: italic; background: var(--metric-bg); padding: 0.75rem; border-radius: 6px; margin-top: 1rem;">
+                <strong>Electricity Asymptote:</strong> Because electrical energy cannot be cost-effectively stored at massive grid scales ($w \to \infty$), standard carry arbitrage breaks down. Price is set instantaneously by supply and demand.
+            </p>
+        </div>
+
+        <div class="card" style="margin-bottom: 0; border-left: 4px solid #10b981;">
+            <h3 style="margin-top: 0; color: #10b981; font-weight: 800;">Backwardation &amp; Contango Sandbox</h3>
+            <p>Alter the parameters below to see how physical holding economics force the futures curve to bend into Contango or Backwardation.</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 1.25rem; font-size: 0.85rem;">
+                <div>
+                    <label style="font-weight: 600; display: block; margin-bottom: 0.25rem;">Storage Costs ($w$):</label>
+                    <input id="commStorage2" type="range" min="0" max="0.12" step="0.01" value="0.04" oninput="calcCommCurve2()" style="width: 100%;">
+                    <span id="commStorageVal2" style="font-weight: 700; color: #10b981;">4%</span>
+                </div>
+                <div>
+                    <label style="font-weight: 600; display: block; margin-bottom: 0.25rem;">Convenience Yield ($c$):</label>
+                    <input id="commConv2" type="range" min="0" max="0.15" step="0.01" value="0.01" oninput="calcCommCurve2()" style="width: 100%;">
+                    <span id="commConvVal2" style="font-weight: 700; color: #10b981;">1%</span>
+                </div>
+            </div>
+
+            <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                <h4 style="margin: 0 0 0.5rem 0; color: #10b981; font-size: 0.9rem;">Term Structure Curve Summary:</h4>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding: 0.4rem 0;">
+                    <span>3-Month Futures:</span>
+                    <strong id="commF3_2" style="color: var(--text-color); font-size: 1rem;">$101.26</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding: 0.4rem 0;">
+                    <span>1-Year Futures:</span>
+                    <strong id="commF12_2" style="color: var(--text-color); font-size: 1rem;">$105.13</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0 0 0;">
+                    <span>Current Curve Condition:</span>
+                    <span id="commStateResult" style="font-weight: 800;">CONTANGO</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function switchCommSector(sector) {
+    const btns = ['Energy', 'Base', 'Ags', 'Bulks', 'Precious'];
+    for(const b of btns) {
+        document.getElementById('secBtn' + b).classList.remove('active');
+    }
+    
+    const sMap = {
+        'Energy': {
+            btn: 'secBtnEnergy',
+            html: `<strong>Examples:</strong> Crude Oil, Gasoline, Jet Fuel, Natural Gas, LNG, Electricity, Carbon Emissions, Thermal Coal.<br><br>
+                   <strong>Main Key Drivers:</strong> OPEC geopolitical production volume decisions, extreme seasonal weather patterns, global macro industrial activity, and governmental decarbonization emissions policies.`
+        },
+        'Base': {
+            btn: 'secBtnBase',
+            html: `<strong>Examples:</strong> Aluminium, Copper, Lead, Nickel, Zinc, Tin.<br><br>
+                   <strong>Main Key Drivers:</strong> Capital-intensive mining investment cycles, environmental mine supply disruptions, global grid infrastructure expansion, and manufacturing manufacturing health indexes.`
+        },
+        'Ags': {
+            btn: 'secBtnAgs',
+            html: `<strong>Examples:</strong> Wheat, Sugar, Coffee, Cocoa, Soybeans, Cotton, Corn, Palm Oil.<br><br>
+                   <strong>Main Key Drivers:</strong> La Niña/El Niño weather conditions, fertilizer costs, local export tariff revisions, and changing dietary growth profiles in emerging economies.`
+        },
+        'Bulks': {
+            btn: 'secBtnBulks',
+            html: `<strong>Examples:</strong> Dry Freight Index, Iron Ore, Steel, Coking Coal.<br><br>
+                   <strong>Main Key Drivers:</strong> Global construction cycles, heavy heavy manufacturing infrastructure rollouts, and bulk carrier cargo shipping capacities.`
+        },
+        'Precious': {
+            btn: 'secBtnPrecious',
+            html: `<strong>Examples:</strong> Gold, Silver, Platinum, Palladium.<br><br>
+                   <strong>Main Key Drivers:</strong> Real yields, global currency markets fluctuations, central bank purchase flows, sovereign safe-haven capital flights, and industrial jewelry demand.`
+        }
+    };
+    
+    document.getElementById(sMap[sector].btn).classList.add('active');
+    document.getElementById('commSectorPanel').innerHTML = sMap[sector].html;
+}
+
+function calcCommCurve2() {
+    const s = 100;
+    const r = 0.02; // risk free rate 2%
+    const w = parseFloat(document.getElementById('commStorage2').value);
+    const c = parseFloat(document.getElementById('commConv2').value);
+    
+    document.getElementById('commStorageVal2').innerText = (w * 100).toFixed(0) + '%';
+    document.getElementById('commConvVal2').innerText = (c * 100).toFixed(0) + '%';
+    
+    const rate = r + w - c;
+    const f3 = s * Math.exp(rate * 0.25);
+    const f12 = s * Math.exp(rate * 1.0);
+    
+    document.getElementById('commF3_2').innerText = '$' + f3.toFixed(2);
+    document.getElementById('commF12_2').innerText = '$' + f12.toFixed(2);
+    
+    const isContango = rate >= 0;
+    const stateEl = document.getElementById('commStateResult');
+    if (isContango) {
+        stateEl.innerHTML = '<span style="color:#10b981; text-transform:uppercase;">📈 Contango (Positive Carry)</span>';
+    } else {
+        stateEl.innerHTML = '<span style="color:#ef4444; text-transform:uppercase;">📉 Backwardation (Implied Scarcity)</span>';
+    }
+}
+
+// Draw the rebased S&P 500 vs. Commodity correlation chart
+let commCorrChartInstance = null;
+function drawCommCorrChart() {
+    const ctx = document.getElementById('commCorrelationChart').getContext('2d');
+    if (commCorrChartInstance) {
+        commCorrChartInstance.destroy();
+    }
+    
+    // Simulate rebased performance curves showing inverse/uncorrelated cycles
+    const labels = Array.from({length: 12}, (_, i) => 'M' + (i+1));
+    const sp500 = [100, 105, 112, 108, 98, 93, 102, 107, 115, 110, 104, 112];
+    const commodity = [100, 96, 92, 95, 110, 118, 122, 115, 105, 98, 106, 99];
+    
+    const isDark = document.body.classList.contains('dark-theme');
+    const gridColor = isDark ? '#2c2c2c' : '#edece9';
+    const textColor = isDark ? '#e3e3e3' : '#37352f';
+    
+    commCorrChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Vanguard S&P 500 ETF (Stocks)',
+                    data: sp500,
+                    borderColor: '#2383e2',
+                    backgroundColor: 'rgba(35, 131, 226, 0.05)',
+                    borderWidth: 2,
+                    tension: 0.35,
+                    pointRadius: 2
+                },
+                {
+                    label: 'Vanguard Commodity ETF',
+                    data: commodity,
+                    borderColor: '#ec4899',
+                    backgroundColor: 'rgba(236, 72, 153, 0.05)',
+                    borderWidth: 2,
+                    tension: 0.35,
+                    pointRadius: 2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: { color: textColor, font: { size: 9, family: 'var(--font-family-sans)' } }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: gridColor },
+                    ticks: { color: textColor, font: { size: 8 } }
+                },
+                y: {
+                    grid: { color: gridColor },
+                    ticks: { color: textColor, font: { size: 8 } }
+                }
+            }
+        }
+    });
+}
+
+// Initialise page views
+setTimeout(() => {
+    switchCommSector('Energy');
+    calcCommCurve2();
+    drawCommCorrChart();
+}, 600);
+
+// Redraw chart if dark mode is switched
+const commObserver = new MutationObserver(() => {
+    if (document.getElementById('view-cqf-fp-commodities').style.display === 'block') {
+        drawCommCorrChart();
+    }
+});
+commObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+</script>

@@ -1,0 +1,212 @@
+<div id="view-cqf-mp-diffeq-first-order" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #f59e0b; font-family: var(--font-family-sans);">2. First Order ODEs</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">First Order Ordinary Differential Equations</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Simplest forms (missing variables), variable separable equations, and linear ODEs solved using integrating factors.</div>
+    </header>
+
+    <!-- Notational Conventions -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1. Notational Conventions</h3>
+        <p>A first-order ordinary differential equation relates an independent variable $x$, a dependent variable $y$, and the first derivative $dy/dx$. There are two equivalent ways to represent this relationship:</p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li><strong>Implicit Form ($F$):</strong> All terms gathered on one side:
+                $$F\left(x, y, \frac{dy}{dx}\right) = 0$$
+            </li>
+            <li style="margin-top: 0.5rem;"><strong>Explicit Form ($f$):</strong> The derivative $dy/dx$ is isolated on the left:
+                $$\frac{dy}{dx} = f(x, y)$$
+            </li>
+        </ul>
+        <p>These are simply different notational conventions representing the exact same underlying equation.</p>
+    </div>
+
+    <!-- Simplest Cases (Absent Variables) -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">2. Simple Equations (Absent Variables)</h3>
+        <p>When one of the variables is absent from the right-hand side, the equation reduces to a direct integration form:</p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li><strong>Variable $y$ is absent:</strong> The equation becomes $dy/dx = f(x)$. This is solved by separating $dx$ across and integrating both sides directly:
+                $$y = \int f(x)\,dx + C$$
+            </li>
+            <li style="margin-top: 0.75rem;"><strong>Variable $x$ is absent:</strong> The equation becomes $dy/dx = f(y)$. Rearranging to place $dy$ and $y$ on the left and $dx$ on the right:
+                $$\int \frac{1}{f(y)}\,dy = \int 1\,dx = x + C$$
+            </li>
+        </ul>
+
+        <h4 style="color: var(--accent); margin-top: 1.5rem; margin-bottom: 0.5rem;">Worked Initial Value Problem (IVP) Example:</h4>
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">
+            <p style="margin: 0.25rem 0;">Solve: $\frac{dy}{dx} = \cos^2 y$, subject to initial condition $y = \frac{\pi}{4}$ when $x = 2$.</p>
+            <p style="margin: 0.5rem 0;">Separate variables:</p>
+            $$\frac{1}{\cos^2 y}\,dy = dx \implies \sec^2 y\,dy = dx$$
+            <p style="margin: 0.5rem 0;">Integrate both sides:</p>
+            $$\int \sec^2 y\,dy = \int 1\,dx \implies \tan y = x + C$$
+            <p style="margin: 0.5rem 0;">Apply the initial condition ($y(\pi/4) \implies x = 2$):</p>
+            $$\tan\left(\frac{\pi}{4}\right) = 2 + C \implies 1 = 2 + C \implies C = -1$$
+            <p style="color: #10b981; font-weight: bold; margin-top: 0.25rem;">$$y = \arctan(x - 1) \quad \text{(Particular solution)}$$</p>
+        </div>
+    </div>
+
+    <!-- Variable Separable Equations -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">3. Variable Separable Equations</h3>
+        <p>A first-order equation is <strong>separable</strong> if $f(x,y)$ can be factored into a product $g(x) h(y)$. If so, we can separate all $y$ terms to one side and $x$ terms to the other:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$\frac{dy}{dx} = g(x)h(y) \implies \int \frac{1}{h(y)}\,dy = \int g(x)\,dx + C$$</p>
+        <p>For example, $x^2 \sin y$ and $e^x \ln y$ are separable, while $x + y$ is not separable.</p>
+
+        <h4 style="color: var(--accent); margin-top: 1.5rem; margin-bottom: 0.5rem;">Worked Separable Example:</h4>
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">
+            <p style="margin: 0.25rem 0;">Solve: $\frac{dy}{dx} = \frac{x^2 + 2}{y}$</p>
+            <p style="margin: 0.5rem 0;">Separate variables: $y\,dy = (x^2 + 2)\,dx$</p>
+            <p style="margin: 0.5rem 0;">Integrate both sides:</p>
+            $$\int y\,dy = \int (x^2 + 2)\,dx \implies \frac{y^2}{2} = \frac{x^3}{3} + 2x + C_0$$
+            <p style="color: #10b981; font-weight: bold; margin-top: 0.25rem;">$$y^2 = \frac{2}{3}x^3 + 4x + C \quad \text{(Implicit general solution)}$$</p>
+            <p style="margin-top: 0.5rem; font-style: italic; color: #6b7280;">Note: Leaving a solution in implicit form such as $y^2 = \text{expression}$ is entirely acceptable and preferable to forcing an explicit root form.</p>
+        </div>
+    </div>
+
+    <!-- Linear First Order & Integrating Factor -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">4. Linear Equations &amp; Integrating Factor Method</h3>
+        <p>A linear first-order ODE has the standard form:</p>
+        <p style="text-align: center; font-size: 1.1rem; font-weight: bold;">$$\frac{dy}{dx} + p(x)y = q(x)$$</p>
+        <p>To solve this, we define an <strong>Integrating Factor $R(x)$</strong> as:</p>
+        <p style="text-align: center; font-size: 1.1rem; font-weight: bold;">$$R(x) = e^{\int p(x)\,dx}$$</p>
+        
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color); margin-top: 1rem;">
+            <strong>Method Proof:</strong>
+            <p style="margin: 0.5rem 0;">Multiplying both sides of the standard equation by $R(x)$ converts the left-hand side into an exact derivative by product rule:</p>
+            $$e^{\int p(x)\,dx}\frac{dy}{dx} + p(x)e^{\int p(x)\,dx}y = q(x)e^{\int p(x)\,dx}$$
+            $$\frac{d}{dx}\left[ y \cdot e^{\int p(x)\,dx} \right] = q(x)e^{\int p(x)\,dx}$$
+            <p style="margin: 0.5rem 0;">Now we integrate both sides directly with respect to $x$ and divide through by $R(x)$ to obtain $y$.</p>
+            <p style="margin: 0.25rem 0; color: var(--warning); font-weight: bold;">CRITICAL REMINDER: The equation must be in standard form (with $1$ as coefficient of $y'$) before identifying $p(x)$.</p>
+        </div>
+    </div>
+
+    <!-- Interactive Integrating Factor Sandbox -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">5. Interactive Integrating Factor sandbox</h3>
+        <p>Solve the linear first-order ODE $\frac{dy}{dx} + \frac{k}{x} y = x^2$ with integrating factor $R(x) = e^{\int (k/x)\,dx} = e^{k \ln x} = x^k$. Use the slider to adjust parameter $k$ and observe how the integrating factor scale $R(x)$ and the particular solution change dynamically:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls -->
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Coefficient parameter ($k$):</label>
+                    <input type="range" id="diffeq1SliderK" min="1" max="4" value="2" step="1" oninput="runDiffeqFirstOrderSimulation()" style="width: 100%; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: -0.75rem; margin-bottom: 1.25rem; color: #6b7280;">
+                        <span>1</span>
+                        <span id="diffeq1KVal" style="font-weight: bold; color: var(--accent);">k = 2</span>
+                        <span>4</span>
+                    </div>
+
+                    <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); margin-bottom: 0.75rem;">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">INTEGRATING FACTOR R(x)</div>
+                        <div id="diffeq1RFormula" style="font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-top: 0.25rem;">x^2</div>
+                    </div>
+
+                    <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); border-left: 4px solid #10b981;">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">PARTICULAR SOLUTION FORMULA</div>
+                        <div id="diffeq1SolFormula" style="font-size: 1.05rem; font-weight: 700; color: #10b981; margin-top: 0.25rem;">y = x^3 / 5 + C / x^2</div>
+                    </div>
+                </div>
+
+                <!-- Custom 2D Line Chart Canvas -->
+                <div style="background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 1rem;">
+                    <canvas id="diffeq1Canvas" width="320" height="200" style="width: 100%; height: 200px; display: block;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.runDiffeqFirstOrderSimulation = function() {
+                const k = parseInt(document.getElementById('diffeq1SliderK').value);
+                document.getElementById('diffeq1KVal').innerText = `k = ${k}`;
+
+                // Display derived formulas
+                document.getElementById('diffeq1RFormula').innerText = `R(x) = x^${k}`;
+                const denom = 3 + k;
+                document.getElementById('diffeq1SolFormula').innerText = `y = x^3 / ${denom} + C / x^${k}`;
+
+                drawFirstOrderGraph(k, denom);
+
+                const parent = document.getElementById('view-cqf-mp-diffeq-first-order');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawFirstOrderGraph(k, denom) {
+                const canvas = document.getElementById('diffeq1Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const margin = 20;
+                const topMargin = 20;
+                const bottomMargin = 20;
+                const width = canvas.width - 2 * margin;
+                const height = canvas.height - topMargin - bottomMargin;
+
+                // Plot for x in [0.5, 4.0]
+                const minX = 0.5;
+                const maxX = 4.0;
+                const minY = 0.0;
+                const maxY = 15.0;
+
+                function getCX(x) {
+                    return margin + ((x - minX) / (maxX - minX)) * width;
+                }
+
+                function getCY(y) {
+                    return canvas.height - bottomMargin - ((y - minY) / (maxY - minY)) * height;
+                }
+
+                // Grid lines
+                ctx.strokeStyle = '#222';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(margin, canvas.height - bottomMargin);
+                ctx.lineTo(canvas.width - margin, canvas.height - bottomMargin);
+                ctx.stroke();
+
+                // Plot particular solution with C = 5
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                let started = false;
+                for (let x = minX; x <= maxX; x += 0.05) {
+                    const y = Math.pow(x, 3) / denom + 5 / Math.pow(x, k);
+                    const cx = getCX(x);
+                    const cy = getCY(y);
+                    if (y >= minY && y <= maxY) {
+                        if (!started) {
+                            ctx.moveTo(cx, cy);
+                            started = true;
+                        } else {
+                            ctx.lineTo(cx, cy);
+                        }
+                    }
+                }
+                ctx.stroke();
+
+                // Legend / Label
+                ctx.fillStyle = '#888';
+                ctx.font = '9px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(`Particular Solution (C = 5)`, canvas.width / 2, topMargin);
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('diffeq1SliderK')) runDiffeqFirstOrderSimulation();
+            }, 100);
+        })();
+    </script>
+</div>

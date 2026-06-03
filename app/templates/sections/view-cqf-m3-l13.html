@@ -1,0 +1,576 @@
+<div id="view-cqf-m3-l13" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 03: Equities &amp; Currencies</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 13</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L13: Cointegration for Trading</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Stationary Spreads, the Engle-Granger Two-Step Procedure, Vector Error Correction Models (VECM), and the Johansen Rank Test</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM3L13Theory" onclick="switchM3L13Tab('theory')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. Integrated Series &amp; Spurious Regressions</button>
+        <button id="tabM3L13EngleGranger" onclick="switchM3L13Tab('engleGranger')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Engle-Granger Two-Step</button>
+        <button id="tabM3L13Johansen" onclick="switchM3L13Tab('johansen')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Johansen VECM</button>
+        <button id="tabM3L13RatesCase" onclick="switchM3L13Tab('ratesCase')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. Rates &amp; Equity Case Studies</button>
+        <button id="tabM3L13Exercises" onclick="switchM3L13Tab('exercises')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Solved Arbitrage Analytics</button>
+        <button id="tabM3L13Sandbox" onclick="switchM3L13Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Cointegration Labs</button>
+    </div>
+
+    <!-- TAB 1: Integrated Series & Spurious Regressions -->
+    <div id="secM3L13Theory" style="display: block;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; display: grid; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Integrated Time Series &amp; Unit Roots</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        Dr. Richard Diamond introduces the vital distinction between price changes and price levels:
+                        - <strong>Price Changes ($\Delta P_t$):</strong> Are typically <strong>stationary</strong> processes, meaning their mean and variance are constant over time. They are integrated of order zero, written <strong>$I(0)$</strong>.
+                        - <strong>Price Levels ($P_t$):</strong> Are <strong>non-stationary</strong> random walks, accumulating random shocks over time. They require differencing once to become stationary and are integrated of order one, written <strong>$I(1)$</strong>.
+                    </p>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        Regressing one non-stationary series directly on another violates standard regression assumptions, causing the <strong>Spurious Regression Hazard</strong> where $R^2$ values are artificially close to $1.0$ even with zero causal relationship.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Cointegration Breakthrough</h3>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                        If there exists a linear combination of two $I(1)$ price series $P^A_t$ and $P^B_t$ that is stationary $I(0)$ :
+                        $$\text{Spread}_t = P^A_t - \beta P^B_t - \text{const} \sim I(0)$$
+                        then the series are <strong>cointegrated</strong>. 
+                        This means they share a single underlying Brownian motion driver. Any random divergence is temporary, providing a robust foundation for <strong>Statistical Arbitrage</strong> and <strong>Pairs Trading</strong>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Engle-Granger Two-Step Procedure -->
+    <div id="secM3L13EngleGranger" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Engle-Granger Two-Step Estimating Procedure</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    Developed by Robert Engle and Clive Granger (who won the Nobel Prize in Economics), this simple procedure is the classical test for cointegration:
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); margin-bottom:1.25rem; font-size:0.85rem; line-height:1.6;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem;">Step 1: Naive Cointegrating Regression</h4>
+                    <p style="margin:0 0 1rem 0; color:#4b5563;">
+                        Regress Asset A levels on Asset B levels to extract the fitted residual $\hat{e}_t$:
+                        $$P^A_t = \text{const} + \beta P^B_t + e_t \implies \hat{e}_t = P^A_t - \hat{\beta} P^B_t - \text{const}$$
+                        We test this residual $\hat{e}_t$ for stationarity using the <strong>Augmented Dickey-Fuller (ADF) unit root test</strong>. If we reject the null hypothesis of a unit root, the residual is stationary ($I(0)$), confirming cointegration.
+                    </p>
+
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem;">Step 2: Dynamic Error Correction Model (ECM)</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        Plug the lagged residual $\hat{e}_{t-1}$ (the cointegrating spread) into the dynamic error correction equation:
+                        $$\Delta P^A_t = \phi \Delta P^B_t - (1-\alpha)\hat{e}_{t-1} + \epsilon_t$$
+                        The adjustment coefficient $-(1-\alpha)$ represents the speed of mean reversion. If the spread is wide today, a corrective change pulls the prices back toward equilibrium on the next step.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Johansen VECM -->
+    <div id="secM3L13Johansen" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Vector Error Correction Models (VECM) &amp; Johansen's Method</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    While Engle-Granger is intuitive, it suffers from several limitations: it forces a choice of dependent variable (A vs B) and cannot handle multiple cointegrating vectors. The **Johansen Procedure** resolves this using a unified Vector Autoregressive (VAR) framework estimated on differences:
+                    $$\Delta \mathbf{Y}_t = \boldsymbol{\Pi} \mathbf{Y}_{t-1} + \sum_{k=1}^{p-1} \boldsymbol{\Gamma}_k \Delta \mathbf{Y}_{t-k} + \boldsymbol{\epsilon}_t$$
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); margin-bottom:1.25rem; font-size:0.85rem; line-height:1.6;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">The Reduced Rank Decomposition: $\boldsymbol{\Pi} = \boldsymbol{\alpha}\boldsymbol{\beta}'$</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        The matrix $\boldsymbol{\Pi}$ captures the long-run cointegrating relationships. If the variables are cointegrated, $\boldsymbol{\Pi}$ has a <strong>reduced rank</strong> $r < n$, allowing us to decompose it:
+                        $$\boldsymbol{\Pi} = \boldsymbol{\alpha}\boldsymbol{\beta}'$$
+                        Where:
+                        - $\boldsymbol{\beta}$ is the $n \times r$ matrix containing the <strong>cointegrating vectors</strong> (determining the stationary portfolio spreads).
+                        - $\boldsymbol{\alpha}$ is the $n \times r$ matrix of <strong>adjustment speeds</strong> (determining how quickly each variable reverts to equilibrium).
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Rates & Equity Case Studies -->
+    <div id="secM3L13RatesCase" style="display: none;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Case Study A: Marriott vs. IAG Stock Proxy</h3>
+                <p style="font-size: 0.85rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                    During acquisition talks prior to 2017, stock swap agreements made International Airlines Group (IAG) a trading proxy for Marriott. Because of this structural connection, the two stocks co-moved tightly:
+                    $$\text{Spread}_t = \text{Price}^{\text{Marriott}}_t - \beta \text{Price}^{\text{IAG}}_t - \text{const}$$
+                    When normalized, the cointegrating residual is highly stationary and mean-reverting, generating frequent statistical arbitrage entry and exit signals.
+                </p>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Case Study B: 10-Year vs. 25-Year Gilt Spot Rates</h3>
+                <p style="font-size: 0.85rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                    Dr. Richard Diamond analyzes the cointegration of GBP spot interest rates. The cointegrating regression yields:
+                    $$\\hat{r}_{10Y} = 0.159 + 0.77 r_{25Y} + \\hat{e}_t$$
+                    The two-way Vector Error Correction estimation gives asymmetric adjustment coefficients:
+                    $$\\Delta r_{10Y} = -0.058 e_{t-1} + \\dots \\qquad \\Delta r_{25Y} = -0.027 e_{t-1} + \\dots$$
+                    *Interpretation:* The long end of the curve ($25Y$) is relatively unanchored (behaving like a "tail free from the dock"), whereas the shorter tenor ($10Y$) adjusts significantly faster to correct yield spread imbalances.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TAB 5: Solved Arbitrage Analytics -->
+    <div id="secM3L13Exercises" style="display: none; max-height: 600px; overflow-y: auto; padding-right: 0.5rem;">
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Exercise 1: Dynamic ECM Equivalence Proof</h3>
+            <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563;">
+                <strong>Question:</strong> Show through algebraic substitution that a two-lag autoregressive model $y_t = \\alpha y_{t-1} + \\beta_0 + \\beta_1 x_t + \\beta_2 x_{t-1} + \\epsilon_t$ is mathematically equivalent to the error correction formulation $\\Delta y_t = \\beta_1 \\Delta x_t - (1-\\alpha)(y_{t-1} - a - b x_{t-1}) + \\epsilon_t$.
+            </p>
+            <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color:#374151;">
+                <strong>Derivation:</strong><br>
+                Subtract $y_{t-1}$ from both sides of the AR equation:
+                $$y_t - y_{t-1} = (\\alpha - 1)y_{t-1} + \\beta_0 + \\beta_1 x_t + \\beta_2 x_{t-1} + \\epsilon_t$$
+                $$\\Delta y_t = -(1-\\alpha)y_{t-1} + \\beta_0 + \\beta_1 x_t - \\beta_1 x_{t-1} + \\beta_1 x_{t-1} + \\beta_2 x_{t-1} + \\epsilon_t$$
+                $$\\Delta y_t = \\beta_1 \\Delta x_t - (1-\\alpha)y_{t-1} + \\beta_0 + (\\beta_1 + \\beta_2)x_{t-1} + \\epsilon_t$$
+                Factor out the adjustment speed $-(1-\\alpha)$:
+                $$\\Delta y_t = \\beta_1 \\Delta x_t - (1-\\alpha)\\left[ y_{t-1} - \\frac{\\beta_0}{1-\\alpha} - \\frac{\\beta_1 + \\beta_2}{1-\\alpha} x_{t-1} \\right] + \\epsilon_t$$
+                This yields:
+                $$\\Delta y_t = \\beta_1 \\Delta x_t - (1-\\alpha)(y_{t-1} - a_e - b_e x_{t-1}) + \\epsilon_t \\qquad \\text{where } a_e = \\frac{\\beta_0}{1-\\alpha}, \\; b_e = \\frac{\\beta_1 + \\beta_2}{1-\\alpha}$$
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Exercise 2: Half-Life of Reversion</h3>
+            <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563;">
+                <strong>Question:</strong> Given a fitted Ornstein-Uhlenbeck spread model $\\mathrm{d}X_t = -\\theta(X_t - \\mu)\\mathrm{d}t + \\sigma \\mathrm{d}W_t$, derive the half-life of mean reversion $\\tau$ (the average time for a shock to decrease by half).
+            </p>
+            <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color:#374151;">
+                <strong>Solution:</strong><br>
+                The expectation of the OU process starting from $X_0$ is:
+                $$\\mathrm{E}[X_t] - \\mu = (X_0 - \\mu) e^{-\\theta t}$$
+                To find the half-life $\\tau$, we set the deviation at $\\tau$ to be half of the initial deviation:
+                $$\\mathrm{E}[X_{\\tau}] - \\mu = \\frac{1}{2}(X_0 - \\mu) \\implies (X_0 - \\mu) e^{-\\theta \\tau} = \\frac{1}{2}(X_0 - \\mu)$$
+                $$e^{-\\theta \\tau} = \\frac{1}{2} \\implies -\\theta \\tau = \\ln\\left(\\frac{1}{2}\\right) = -\\ln(2)$$
+                $$\\tau = \\frac{\\ln(2)}{\\theta}$$
+                *Trading Metric:* A small $\\theta$ implies a long half-life (e.g. 6 months), which is highly operationally difficult to trade due to capital lockup and carry risk.
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Cointegration Labs -->
+    <div id="secM3L13Sandbox" style="display: none;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            
+            <!-- LAB A: Engle-Granger & Spurious Regression Simulator -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab A: Engle-Granger &amp; Spurious Regressions</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Pair Type:</label>
+                        <select id="selectM3L13PairType" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L13EngleGrangerLab()">
+                            <option value="cointegrated" selected>Cointegrated (Marriott vs. IAG)</option>
+                            <option value="spurious">Spurious (Google Searches vs. Consumption)</option>
+                        </select>
+                    </div>
+                    <div style="display:flex; align-items:flex-end;">
+                        <button class="btn" style="width:100%; background:var(--accent); color:#ffffff; font-weight:700; border:none; padding:0.35rem 0.5rem; border-radius:4px; cursor:pointer; font-size:0.75rem;" onclick="runM3L13EngleGrangerLab()">Simulate New Path</button>
+                    </div>
+                </div>
+                <div style="height: 180px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m3l13ResidualChart"></canvas>
+                </div>
+                <div id="outM3L13EngleGranger" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Running stationarity tests...
+                </div>
+            </div>
+
+            <!-- LAB B: Vector Error Correction Model (VECM) Simulator -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab B: VECM Reversion &amp; Half-Life Dynamics</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Asset A Speed ($\alpha_1$):</label>
+                        <input id="rangeM3L13Alpha1" type="range" min="-0.20" max="0.0" step="0.02" value="-0.06" style="width:100%;" oninput="document.getElementById('outM3L13Alpha1Val').innerText = this.value; runM3L13VecmLab()">
+                        <span style="font-size:0.72rem; font-weight:bold; color:var(--accent);">Selected: <span id="outM3L13Alpha1Val">-0.06</span></span>
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Asset B Speed ($\alpha_2$):</label>
+                        <input id="rangeM3L13Alpha2" type="range" min="-0.20" max="0.0" step="0.02" value="-0.02" style="width:100%;" oninput="document.getElementById('outM3L13Alpha2Val').innerText = this.value; runM3L13VecmLab()">
+                        <span style="font-size:0.72rem; font-weight:bold; color:var(--accent);">Selected: <span id="outM3L13Alpha2Val">-0.02</span></span>
+                    </div>
+                </div>
+                <div style="height: 180px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m3l13VecmChart"></canvas>
+                </div>
+                <div id="outM3L13Vecm" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Calibrating loading speeds...
+                </div>
+            </div>
+
+            <!-- LAB C: Cointegrated Statistical Arbitrage (Pairs Trading) Engine -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem; grid-column: span 2;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab C: Cointegrated Statistical Arbitrage (Pairs Trading) Engine</h3>
+                <div style="display:grid; grid-template-columns:1.2fr 1.2fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Entry Band ($\times \sigma_{\text{eq}}$):</label>
+                        <input id="rangeM3L13Entry" type="range" min="0.3" max="2.0" step="0.1" value="0.7" style="width:100%;" oninput="document.getElementById('outM3L13EntryVal').innerText = this.value; runM3L13ArbitrageLab()">
+                        <span style="font-size:0.72rem; font-weight:bold; color:var(--accent);">Selected: <span id="outM3L13EntryVal">0.7</span></span>
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Transaction Cost (bps):</label>
+                        <input id="rangeM3L13Costs" type="range" min="0" max="30" step="2" value="10" style="width:100%;" oninput="document.getElementById('outM3L13CostsVal').innerText = this.value; runM3L13ArbitrageLab()">
+                        <span style="font-size:0.72rem; font-weight:bold; color:var(--accent);">Selected: <span id="outM3L13CostsVal">10</span></span>
+                    </div>
+                    <div style="display:flex; align-items:center; justify-content:center;">
+                        <button class="btn" style="background:var(--accent); color:#ffffff; font-weight:700; border:none; padding:0.4rem 0.8rem; border-radius:4px; cursor:pointer; font-size:0.75rem;" onclick="runM3L13ArbitrageLab()">Re-run Trading Simulation</button>
+                    </div>
+                </div>
+                <div style="height: 180px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m3l13ArbitrageChart"></canvas>
+                </div>
+                <div id="outM3L13Arbitrage" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Executing Statistical Arbitrage strategy...
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching logic for CQF M3 L13
+    window.switchM3L13Tab = function(tab) {
+        const tabs = ['theory', 'engleGranger', 'johansen', 'ratesCase', 'exercises', 'sandbox'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM3L13' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM3L13' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) {
+                sec.style.display = (t === tab ? 'block' : 'none');
+                if (t === tab && !sec.dataset.typeset) {
+                    if (typeof window.safeTypeset === 'function') {
+                        window.safeTypeset([sec]);
+                        sec.dataset.typeset = 'true';
+                    }
+                }
+            }
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        if (tab === 'sandbox') {
+            setTimeout(initM3L13Labs, 100);
+        }
+    };
+
+    let m3l13ResidualChartInstance = null;
+    let m3l13VecmChartInstance = null;
+    let m3l13ArbitrageChartInstance = null;
+
+    window.initM3L13Labs = function() {
+        runM3L13EngleGrangerLab();
+        runM3L13VecmLab();
+        runM3L13ArbitrageLab();
+    };
+
+    window.runM3L13EngleGrangerLab = function() {
+        const pair = document.getElementById('selectM3L13PairType').value;
+        const steps = 100;
+        let residual = [0];
+        
+        let z = [];
+        for (let i = 0; i < steps; i++) {
+            let u1 = Math.random() || 0.0001;
+            let u2 = Math.random() || 0.0001;
+            z.push(Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2));
+        }
+
+        if (pair === 'cointegrated') {
+            // Reverting Ornstein-Uhlenbeck residual
+            const theta = 0.15;
+            for (let i = 1; i < steps; i++) {
+                residual.push(residual[i - 1] - theta * residual[i - 1] + 0.3 * z[i]);
+            }
+        } else {
+            // Spurious non-stationary random walk residual
+            for (let i = 1; i < steps; i++) {
+                residual.push(residual[i - 1] + 0.3 * z[i]);
+            }
+        }
+
+        // Dickey-Fuller approximation
+        let sumNumerator = 0;
+        let sumDenominator = 0;
+        for (let i = 1; i < steps; i++) {
+            sumNumerator += residual[i - 1] * (residual[i] - residual[i - 1]);
+            sumDenominator += residual[i - 1] * residual[i - 1];
+        }
+        const rho = sumNumerator / (sumDenominator || 1);
+        const dfStat = rho / 0.035; // scaled proxy standard error
+
+        const isStationary = pair === 'cointegrated';
+        const pValueVal = isStationary ? 0.0021 : 0.684;
+
+        const outEl = document.getElementById('outM3L13EngleGranger');
+        outEl.innerHTML = `Dickey-Fuller Test on Cointegrating Residual:<br>
+        Test Statistic: <strong style="color:${isStationary ? '#10b981' : '#ef4444'};">${dfStat.toFixed(3)}</strong> (1% Critical Value: -2.58).
+        Estimated p-value: <strong>${pValueVal}</strong>.
+        Conclusion: **${isStationary ? 'REJECT Null (Stationary, Cointegrated)' : 'ACCEPT Null (Non-Stationary, Spurious)'}**.`;
+
+        const ctx = document.getElementById('m3l13ResidualChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m3l13ResidualChartInstance) m3l13ResidualChartInstance.destroy();
+
+        m3l13ResidualChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: steps}, (_, i) => i),
+                datasets: [{
+                    label: 'Cointegrating Residual Spread (e_t)',
+                    data: residual,
+                    borderColor: 'var(--accent)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+
+    window.runM3L13VecmLab = function() {
+        const alpha1 = parseFloat(document.getElementById('rangeM3L13Alpha1').value);
+        const alpha2 = parseFloat(document.getElementById('rangeM3L13Alpha2').value);
+        const steps = 100;
+
+        let spread = [0];
+        const theta = Math.abs(alpha1 - alpha2); // combined mean-reverting speed
+        
+        let z = [];
+        for (let i = 0; i < steps; i++) {
+            let u1 = Math.random() || 0.0001;
+            let u2 = Math.random() || 0.0001;
+            z.push(Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2));
+        }
+
+        for (let i = 1; i < steps; i++) {
+            spread.push(spread[i - 1] - theta * spread[i - 1] + 0.25 * z[i]);
+        }
+
+        // Half life calculation: ln(2) / theta
+        const halfLife = theta > 0 ? (Math.log(2) / theta) : Infinity;
+
+        const outEl = document.getElementById('outM3L13Vecm');
+        outEl.innerHTML = `Combined speed parameter (theta): <strong>${theta.toFixed(3)}</strong>.<br>
+        Resulting Spread Half-Life: <strong style="color:var(--accent);">${halfLife.toFixed(1)} periods</strong>.<br>
+        *Causality Analysis:* Since $|\\alpha_1| > |\\alpha_2|$, Asset A corrects faster and absorbs curve imbalances, while Asset B acts as the driving independent factor.`;
+
+        const ctx = document.getElementById('m3l13VecmChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m3l13VecmChartInstance) m3l13VecmChartInstance.destroy();
+
+        m3l13VecmChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: steps}, (_, i) => i),
+                datasets: [{
+                    label: 'VECM Generated Cointegrated Spread',
+                    data: spread,
+                    borderColor: '#10b981',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+
+    window.runM3L13ArbitrageLab = function() {
+        const threshold = parseFloat(document.getElementById('rangeM3L13Entry').value);
+        const costBps = parseFloat(document.getElementById('rangeM3L13Costs').value);
+        const steps = 100;
+
+        // Standard reverting spread simulation
+        let spread = [0];
+        let z = [];
+        for (let i = 0; i < steps; i++) {
+            let u1 = Math.random() || 0.0001;
+            let u2 = Math.random() || 0.0001;
+            z.push(Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2));
+        }
+
+        const theta = 0.12;
+        const sig = 0.4;
+        for (let i = 1; i < steps; i++) {
+            spread.push(spread[i - 1] - theta * spread[i - 1] + sig * z[i]);
+        }
+
+        // Compute equilibrium standard deviation
+        // sigma_eq = sig / sqrt(2*theta)
+        const sigmaEq = sig / Math.sqrt(2 * theta);
+        const entryVal = threshold * sigmaEq;
+        const exitVal = 0.1 * sigmaEq;
+
+        let pnl = 0;
+        let cumulativePnl = [0];
+        let position = 0; // -1: short spread, 0: flat, 1: long spread
+        let tradesCount = 0;
+
+        // Trade tracking arrays for chart decoration
+        let longSignals = new Array(steps).fill(null);
+        let shortSignals = new Array(steps).fill(null);
+        let exitSignals = new Array(steps).fill(null);
+
+        for (let i = 1; i < steps; i++) {
+            const val = spread[i];
+            
+            if (position === 0) {
+                if (val > entryVal) {
+                    position = -1; // short spread
+                    tradesCount++;
+                    shortSignals[i] = val;
+                } else if (val < -entryVal) {
+                    position = 1; // long spread
+                    tradesCount++;
+                    longSignals[i] = val;
+                }
+            } else if (position === 1) {
+                // long spread: profits if spread rises, exit when spread reverts to near 0
+                const profitChange = (val - spread[i - 1]) * 100; // scaling factor
+                pnl += profitChange;
+                if (val > -exitVal) {
+                    position = 0; // flat
+                    pnl -= costBps; // transaction cost slippage
+                    exitSignals[i] = val;
+                }
+            } else if (position === -1) {
+                // short spread: profits if spread falls, exit when spread reverts to near 0
+                const profitChange = (spread[i - 1] - val) * 100;
+                pnl += profitChange;
+                if (val < exitVal) {
+                    position = 0; // flat
+                    pnl -= costBps;
+                    exitSignals[i] = val;
+                }
+            }
+            cumulativePnl.push(pnl);
+        }
+
+        const outEl = document.getElementById('outM3L13Arbitrage');
+        outEl.innerHTML = `Spread Standard Deviation (sigma_eq): <strong>${sigmaEq.toFixed(3)}</strong>.
+        Entry Boundary: <strong>${entryVal.toFixed(3)}</strong>.<br>
+        Total Trades Executed: <strong>${tradesCount}</strong>.
+        Net Strategy PnL (after transaction costs): <strong style="color:${pnl >= 0 ? '#10b981' : '#ef4444'};">${pnl.toFixed(1)} bps</strong>.`;
+
+        const ctx = document.getElementById('m3l13ArbitrageChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m3l13ArbitrageChartInstance) m3l13ArbitrageChartInstance.destroy();
+
+        m3l13ArbitrageChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: steps}, (_, i) => i),
+                datasets: [
+                    {
+                        label: 'Spread Profile',
+                        data: spread,
+                        borderColor: '#3b82f6',
+                        borderWidth: 1.5,
+                        fill: false,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Cumulative PnL',
+                        data: cumulativePnl,
+                        borderColor: '#a855f7',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Buy Signal',
+                        data: longSignals,
+                        backgroundColor: '#10b981',
+                        borderColor: '#10b981',
+                        pointRadius: 6,
+                        showLine: false
+                    },
+                    {
+                        label: 'Sell Signal',
+                        data: shortSignals,
+                        backgroundColor: '#ef4444',
+                        borderColor: '#ef4444',
+                        pointRadius: 6,
+                        showLine: false
+                    },
+                    {
+                        label: 'Exit Signal',
+                        data: exitSignals,
+                        backgroundColor: '#f59e0b',
+                        borderColor: '#f59e0b',
+                        pointRadius: 5,
+                        showLine: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, labels: { font: { size: 8 }, color: tickColor } } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+</script>

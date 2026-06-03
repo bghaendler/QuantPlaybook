@@ -1,0 +1,474 @@
+<div id="view-cqf-m2-l4" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 02: Risk &amp; Return</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 04</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L4: Asset Returns Stylised Facts</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Log Returns, Leptokurtosis, Autocorrelations, Diurnal U-Shapes, and Realized Volatility</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM2L4Foundations" onclick="switchM2L4Tab('foundations')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. Returns &amp; Clustering</button>
+        <button id="tabM2L4Dailyfacts" onclick="switchM2L4Tab('dailyfacts')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Daily Stylised Facts</button>
+        <button id="tabM2L4Dailysandbox" onclick="switchM2L4Tab('dailysandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Returns Sandbox</button>
+        <button id="tabM2L4Intraday" onclick="switchM2L4Tab('intraday')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. High-Frequency Facts</button>
+        <button id="tabM2L4Realized" onclick="switchM2L4Tab('realized')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Realized Volatility</button>
+    </div>
+
+    <!-- TAB 1: Returns & Clustering -->
+    <div id="secM2L4Foundations" style="display: block;">
+        <div class="container" style="grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">1. Linear vs. Continuously Compounded Returns</h3>
+                <p style="font-size: 0.9rem;">To model financial assets over time, we evaluate two primary return definitions:</p>
+                
+                <ul style="padding-left: 1.2rem; line-height: 1.6; font-size: 0.88rem; margin-bottom: 1rem;">
+                    <li><strong>Simple Return ($r'_t$):</strong> Measures the percentage price change:
+                        $$r'_t = \frac{p_t + d_t - p_{t-1}}{p_{t-1}}$$
+                        Simple returns aggregate linearly across a portfolio: $r_{p} = \sum w_i r'_i$.
+                    </li>
+                    <li><strong>Continuously Compounded Return ($r_t$):</strong> Defined as the natural log of price relatives:
+                        $$r_t = \ln(p_t + d_t) - \ln(p_{t-1})$$
+                        Log-returns are additive over time: $r_{0 \to T} = \sum_{t=1}^T r_t$.
+                    </li>
+                </ul>
+
+                <div style="background: rgba(139, 92, 246, 0.05); border-left: 3px solid #8b5cf6; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem;">
+                    💡 **Taylor Series Equivalence**: When returns are small ($r_t \approx 0$), simple and log-returns are numerically similar: $r'_t = e^{r_t}-1 \approx r_t + \frac{1}{2}r_t^2 + \dots$
+                </div>
+            </div>
+
+            <!-- Volatility Clustering -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">2. Volatility Clustering</h3>
+                    <p style="font-size: 0.9rem;">Financial return series universally exhibit <strong>volatility clustering</strong> (Mandelbrot, 1963):</p>
+                    <blockquote style="margin: 0.5rem 0 1rem 0; border-left: 3px solid var(--accent); padding-left: 0.75rem; color: #64748b; font-style: italic; font-size: 0.85rem; line-height: 1.5;">
+                        "Large price changes tend to be followed by large changes – of either sign – and small price changes tend to be followed by small changes."
+                    </blockquote>
+                    <p style="font-size: 0.88rem; line-height: 1.5;"><strong>Implication:</strong> Daily asset returns cannot be modeled as independent normal distributions. Instead, they behave like a <em>mixture of normals</em> with time-varying variance, which leads directly to leptokurtosis (fat tails).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Daily Stylised Facts -->
+    <div id="secM2L4Dailyfacts" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Three Stylised Facts of Daily Asset Returns</h3>
+                <p>Daily returns across virtually all stock markets, commodities, and currency pairs exhibit three invariant empirical properties:</p>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-top: 1.5rem;">
+                    <!-- Fact 1 -->
+                    <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 1rem;">1. Heavy Tails (Non-Normality)</h4>
+                        <p style="font-size: 0.8rem; margin: 0; line-height: 1.4;">Daily returns are non-normal. They display symmetry but are highly **leptokurtic** (fat tails and high narrow peaks). Extreme moves ($>4\sigma$) occur $1$-$2$ times a year (under standard normal, only once every 60 years).</p>
+                    </div>
+                    <!-- Fact 2 -->
+                    <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 1rem;">2. Zero Autocorrelation</h4>
+                        <p style="font-size: 0.8rem; margin: 0; line-height: 1.4;">Raw returns show almost zero linear autocorrelation over daily intervals. You cannot easily predict direction or returns using linear historical relationships. Autocorrelations behave like i.i.d. noise: $\hat{\rho}_\tau \sim N(0, 1/n)$.</p>
+                    </div>
+                    <!-- Fact 3 -->
+                    <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 1rem;">3. Volatility Persistence</h4>
+                        <p style="font-size: 0.8rem; margin: 0; line-height: 1.4;">While raw returns show no autocorrelation, **absolute returns** $|r_t|$ and **squared returns** $r_t^2$ show highly persistent, significant positive autocorrelation that decays extremely slowly over months.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Returns Sandbox -->
+    <div id="secM2L4Dailysandbox" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <!-- Interactive Simulator -->
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Non-Normality &amp; Autocorrelation Lab</h3>
+                <p style="font-size: 0.85rem; margin-bottom: 1rem;">Choose between normal random numbers and empirical (leptokurtic, clustered) financial returns to view standard deviation, excess kurtosis, and linear vs. absolute return autocorrelation:</p>
+
+                <div style="margin-bottom: 1rem; display: flex; gap: 1.5rem; align-items: center;">
+                    <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-color);">Return Distribution:</span>
+                    <label style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.88rem; cursor: pointer;">
+                        <input type="radio" name="sandboxType" value="normal" checked onchange="updateM2L4Sandbox()" style="cursor: pointer;"> Gaussian (Normal)
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.88rem; cursor: pointer;">
+                        <input type="radio" name="sandboxType" value="empirical" onchange="updateM2L4Sandbox()" style="cursor: pointer;"> Empirical (Fat-Tailed)
+                    </label>
+                </div>
+
+                <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1.25rem;">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; text-align: center; font-size: 0.8rem;">
+                        <div>
+                            <strong>Daily Volatility ($\sigma$)</strong>
+                            <div id="sndOutVol" style="font-family: monospace; font-size: 1rem; font-weight: 700; margin-top: 0.25rem; color: var(--accent);">-</div>
+                        </div>
+                        <div>
+                            <strong>Excess Kurtosis ($k-3$)</strong>
+                            <div id="sndOutKurt" style="font-family: monospace; font-size: 1rem; font-weight: 700; margin-top: 0.25rem; color: var(--accent);">-</div>
+                        </div>
+                        <div>
+                            <strong>JB Normality p-val</strong>
+                            <div id="sndOutNorm" style="font-family: monospace; font-size: 1rem; font-weight: 700; margin-top: 0.25rem; color: var(--accent);">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Histograms / distribution curves -->
+                <div style="height: 180px; position: relative;">
+                    <canvas id="m2l4SandboxHistogram"></canvas>
+                </div>
+            </div>
+
+            <!-- ACF Plots -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Autocorrelation Functions (ACF)</h3>
+                    <p style="font-size: 0.85rem; margin-bottom: 0.5rem;">Compare autocorrelation at positive lags for raw daily returns (virtually zero) versus absolute returns (sustained positive clustering):</p>
+                    
+                    <div style="height: 180px; position: relative; margin-bottom: 0.5rem;">
+                        <canvas id="m2l4SandboxRawAcf"></canvas>
+                    </div>
+                    <div style="height: 180px; position: relative;">
+                        <canvas id="m2l4SandboxAbsAcf"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: High-Frequency Facts -->
+    <div id="secM2L4Intraday" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">1. Intraday High-Frequency Properties</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 1rem;">When price data is sampled at intermediate intraday intervals (e.g. 5 minutes) rather than daily, several distinct econometric properties manifest:</p>
+
+                <div style="max-height: 350px; overflow-y: auto; padding-right: 0.5rem; font-size: 0.85rem; line-height: 1.5;">
+                    <div style="margin-bottom: 1rem; border-left: 3px solid #3b82f6; padding-left: 0.75rem;">
+                        <h4 style="margin: 0; font-weight: 700; color: #2563eb;">1. Extremes and Reverse CLT</h4>
+                        As the sampling interval shortens, observed excess kurtosis increases dramatically. Returns display increasingly non-normal, leptokurtic distributions—representing the Central Limit Theorem operating in reverse.
+                    </div>
+                    <div style="margin-bottom: 1rem; border-left: 3px solid #10b981; padding-left: 0.75rem;">
+                        <h4 style="margin: 0; font-weight: 700; color: #059669;">2. Negative Autocorrelation (Bid-Ask Bounce)</h4>
+                        Over short intervals (seconds/ticks), consecutive returns show artificial negative serial correlation at lag one. This is driven by transactions bouncing between bid and ask quotes.
+                    </div>
+                    <div style="border-left: 3px solid #8b5cf6; padding-left: 0.75rem;">
+                        <h4 style="margin: 0; font-weight: 700; color: #7c3aed;">3. 24-Hour Volatility Peaks</h4>
+                        autocorrelation of absolute returns peaks sharp at exact integer multiples of 24 hours (e.g. lag 48 for 30-min data), demonstrating that intraday volatility levels are highly predictable from previous days at the same time.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diurnal U-Shape Plot -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">2. Diurnal U-Shape Volatility Pattern</h3>
+                    <p style="font-size: 0.85rem;">Intraday trading activity and volatility are not constant; they follow a predictable, highly stylized "U-Shape" pattern over the trading day, with sharp spikes at open, close, and scheduled macroeconomic announcements:</p>
+
+                    <div style="height: 180px; position: relative;">
+                        <canvas id="m2l4IntradayUChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: Realized Volatility -->
+    <div id="secM2L4Realized" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Realized Volatility ($\sigma_t$) and Properties</h3>
+                <p>Because high-frequency data provides a significantly larger number of observations, volatility can be estimated far more precisely than with daily closing prices. Let $r_{t,j}$ ($j=1, \dots, N$) denote the intraday high-frequency returns on day $t$. The **Realized Volatility** ($\sigma_t$) is defined as:</p>
+
+                <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; font-family: monospace; font-size: 0.95rem; margin-bottom: 1.5rem; border: 1px solid var(--card-border); text-align: center;">
+                    $$\sigma_t = \sqrt{\sum_{j=1}^{N} r_{t,j}^2}$$
+                </div>
+
+                <h4 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-sans); font-size: 1rem; font-weight: 700; color: var(--text-color);">Three Fundamental Empirical Properties:</h4>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-top: 1rem;">
+                    <div style="background: rgba(16, 185, 129, 0.05); padding: 1rem; border-radius: 8px; border-left: 3px solid #10b981;">
+                        <h5 style="margin: 0; font-weight: 700; color: #059669; font-size: 0.95rem;">1. Standardization Normality</h5>
+                        $$\frac{r_t}{\sigma_t} \sim N(0, 1)$$
+                        Standardizing daily returns by their realized volatility results in an **approximately standard normal distribution**.
+                    </div>
+                    <div style="background: rgba(59, 130, 246, 0.05); padding: 1rem; border-radius: 8px; border-left: 3px solid #3b82f6;">
+                        <h5 style="margin: 0; font-weight: 700; color: #2563eb; font-size: 0.95rem;">2. Log-Normal Distribution</h5>
+                        $$\ln(\sigma_t) \sim \text{Gaussian}$$
+                        The distribution of realized volatility ($\sigma_t$) over time is **approximately lognormal**.
+                    </div>
+                    <div style="background: rgba(139, 92, 246, 0.05); padding: 1rem; border-radius: 8px; border-left: 3px solid #8b5cf6;">
+                        <h5 style="margin: 0; font-weight: 700; color: #7c3aed; font-size: 0.95rem;">3. Long Memory Persistence</h5>
+                        $$\text{Corr}(\sigma_t, \sigma_{t+\tau}) \gg 0$$
+                        The autocorrelation of realized volatility decays very slowly over time, behaving like a long memory process.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching logic for CQF M2 L4
+    window.switchM2L4Tab = function(tab) {
+        const tabs = ['foundations', 'dailyfacts', 'dailysandbox', 'intraday', 'realized'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM2L4' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM2L4' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) sec.style.display = (t === tab ? 'block' : 'none');
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        // Specific loaders
+        if (tab === 'dailysandbox') {
+            setTimeout(updateM2L4Sandbox, 100);
+        } else if (tab === 'intraday') {
+            setTimeout(initM2L4IntradayPlot, 100);
+        }
+    };
+
+    // TAB 3: Non-Normality & Autocorrelation Sandbox
+    let m2l4HistChartInstance = null;
+    let m2l4RawAcfChartInstance = null;
+    let m2l4AbsAcfChartInstance = null;
+
+    window.updateM2L4Sandbox = function() {
+        const type = document.querySelector('input[name="sandboxType"]:checked').value;
+
+        // Statistics
+        let vol = "1.00%";
+        let kurt = "0.02";
+        let jb = "0.950 (Normal)";
+
+        const histLabels = [];
+        const histData = [];
+        const rawAcf = [1.0];
+        const absAcf = [1.0];
+
+        if (type === 'normal') {
+            vol = "1.00%";
+            kurt = "-0.01";
+            jb = "0.941 (Accept)";
+            
+            // Gaussian bell curve
+            for (let i = -30; i <= 30; i++) {
+                const x = i / 10;
+                histLabels.push(x.toFixed(1) + '%');
+                histData.push(Math.exp(-x*x/2) / Math.sqrt(2 * Math.PI));
+            }
+
+            // white noise ACF
+            for (let lag = 1; lag <= 20; lag++) {
+                rawAcf.push((Math.random() - 0.5) * 0.06);
+                absAcf.push((Math.random() - 0.5) * 0.06);
+            }
+        } else {
+            // Leptokurtic, fat tails
+            vol = "1.45%";
+            kurt = "4.87";
+            jb = "0.000 (REJECT)";
+
+            // High narrow peak and fat tails
+            for (let i = -30; i <= 30; i++) {
+                const x = i / 10;
+                histLabels.push(x.toFixed(1) + '%');
+                // T-distribution with 3 dof
+                const y = Math.pow(1 + x*x/3, -2) / (Math.sqrt(3) * 1.57);
+                histData.push(y);
+            }
+
+            // Volatility clustered ACF
+            for (let lag = 1; lag <= 20; lag++) {
+                rawAcf.push((Math.random() - 0.5) * 0.05); // still uncorrelated
+                // persistent absolute correlation
+                absAcf.push(Math.exp(-lag / 8) * 0.35 + Math.random() * 0.02);
+            }
+        }
+
+        document.getElementById('sndOutVol').innerText = vol;
+        document.getElementById('sndOutKurt').innerText = kurt;
+        document.getElementById('sndOutNorm').innerText = jb;
+
+        // Render charts
+        renderM2L4Hist(histLabels, histData);
+        renderM2L4AcfPlots(rawAcf, absAcf);
+    };
+
+    function renderM2L4Hist(labels, data) {
+        const ctx = document.getElementById('m2l4SandboxHistogram');
+        if (!ctx) return;
+
+        if (m2l4HistChartInstance) {
+            m2l4HistChartInstance.data.labels = labels;
+            m2l4HistChartInstance.data.datasets[0].data = data;
+            m2l4HistChartInstance.update();
+            return;
+        }
+
+        m2l4HistChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Return Probability Density',
+                    data: data,
+                    borderColor: 'var(--accent)',
+                    backgroundColor: 'var(--accent-glow)',
+                    borderWidth: 2,
+                    fill: true,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { display: true },
+                    y: { display: false }
+                }
+            }
+        });
+    }
+
+    function renderM2L4AcfPlots(raw, abs) {
+        const rawCtx = document.getElementById('m2l4SandboxRawAcf');
+        const absCtx = document.getElementById('m2l4SandboxAbsAcf');
+        if (!rawCtx || !absCtx) return;
+
+        const lags = Array.from({length: 21}, (_, i) => i);
+
+        if (m2l4RawAcfChartInstance && m2l4AbsAcfChartInstance) {
+            m2l4RawAcfChartInstance.data.datasets[0].data = raw;
+            m2l4RawAcfChartInstance.update();
+            m2l4AbsAcfChartInstance.data.datasets[0].data = abs;
+            m2l4AbsAcfChartInstance.update();
+            return;
+        }
+
+        m2l4RawAcfChartInstance = new Chart(rawCtx, {
+            type: 'bar',
+            data: {
+                labels: lags,
+                datasets: [{
+                    label: 'Raw Returns ACF',
+                    data: raw,
+                    backgroundColor: 'rgba(59, 130, 246, 0.4)',
+                    borderColor: '#3b82f6',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true }
+                },
+                scales: {
+                    y: { min: -0.2, max: 0.5 }
+                }
+            }
+        });
+
+        m2l4AbsAcfChartInstance = new Chart(absCtx, {
+            type: 'bar',
+            data: {
+                labels: lags,
+                datasets: [{
+                    label: 'Absolute Returns ACF |r_t|',
+                    data: abs,
+                    backgroundColor: 'rgba(139, 92, 246, 0.4)',
+                    borderColor: '#8b5cf6',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true }
+                },
+                scales: {
+                    y: { min: -0.2, max: 0.5 }
+                }
+            }
+        });
+    }
+
+    // TAB 4: Intraday Volatility U-Shape plot
+    let m2l4IntradayUChartInstance = null;
+
+    function initM2L4IntradayPlot() {
+        const ctx = document.getElementById('m2l4IntradayUChart');
+        if (!ctx) return;
+
+        if (m2l4IntradayUChartInstance) return;
+
+        // Generate stylized U-shape volatility curve across 5-minute segments
+        const labels = [];
+        const values = [];
+        const steps = 78; // 9:30 to 16:00 is 6.5 hours = 78 five-minute segments
+        for (let i = 0; i < steps; i++) {
+            const time = 9.5 + (i / steps) * 6.5;
+            const hour = Math.floor(time);
+            const min = Math.round((time - hour) * 60);
+            labels.push(hour.toString().padStart(2, '0') + ':' + min.toString().padStart(2, '0'));
+
+            // standard U-shape + spike at 13:30 (US open/macro news)
+            let val = Math.pow((i - steps/2)/(steps/2), 2) * 0.6 + 0.15;
+            if (i >= 45 && i <= 48) {
+                // Scheduled US macroeconomic news spike at 13:30 EST
+                val += 0.45;
+            }
+            values.push(val);
+        }
+
+        m2l4IntradayUChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Volatility (Proportion of Daily Variance)',
+                    data: values,
+                    borderColor: 'var(--accent)',
+                    backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                    borderWidth: 2,
+                    fill: true,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        ticks: { maxTicksLimit: 10 }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Variance Proportion' }
+                    }
+                }
+            }
+        });
+    }
+
+</script>

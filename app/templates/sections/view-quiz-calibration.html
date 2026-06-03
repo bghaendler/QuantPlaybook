@@ -1,0 +1,475 @@
+<div id="view-quiz-calibration" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">Quiz: Model Calibration</h1>
+        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Practice assignment covering vega-weighted least squares calibration, cap market pricing, and Gaussian HJM parameter fitting.</div>
+    </header>
+    
+    <div class="container" style="max-width: 900px; grid-template-columns: 1fr; gap: 2.5rem; margin-bottom: 4rem;">
+        <p style="font-size: 1.1rem; color: var(--text-color); line-height: 1.7; opacity: 0.85;">
+            Test your understanding of model calibration to Swiss cap market data. Select your options, enter numeric answers, and click <strong>Submit</strong> for instant feedback. Expand the <strong>Show Mathematical Solution & Derivation</strong> card at the bottom of each question to view full theoretical proofs.
+        </p>
+
+        <!-- QUESTION 1: Calibration Vega Weight Justification (Radio) -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 1</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                1. Which of the following statements is true? For calibrating a model to cap prices we minimize squared vega weighted cap price errors, because...
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1.75rem;">
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="calib_q1" value="optA" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color);">vega weighted cap price errors approximate the implied volatility errors.</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="calib_q1" value="optB" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color);">vega weighted prices are constant across cap strike rates.</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="calib_q1" value="optC" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color);">vega weighted prices are constant across cap maturities.</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeCalibQuizQ1()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q1-calib-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Theoretical Explanation:</strong></p>
+                    <p>In practice, we prefer to minimize the difference between the **market implied volatilities** and the **model implied volatilities** ($\sum (\hat{\sigma}_n^\theta - \sigma_n)^2$) because volatilities are standardized and comparable across maturities. However, inverting the Black or Bachelier pricing formula numerically at every step of the optimizer is computationally expensive.</p>
+                    <p>To avoid numerical inversion, we apply a first-order Taylor expansion of the pricing function $C_n(\sigma)$ around the market implied vol $\sigma_n$:</p>
+                    <p style="text-align: center;">$$ \hat{C}_n^\theta \approx C_n + \text{vega}_n (\hat{\sigma}_n^\theta - \sigma_n) $$</p>
+                    <p>Rearranging this yields an analytical expression for the implied volatility error:</p>
+                    <p style="text-align: center;">$$ \hat{\sigma}_n^\theta - \sigma_n \approx \frac{\hat{C}_n^\theta - C_n}{\text{vega}_n} $$</p>
+                    <p>Thus, minimizing the squared vega-weighted price errors $\sum \left( \frac{\hat{C}_n^\theta - C_n}{\text{vega}_n} \right)^2$ is mathematically equivalent (to first-order) to minimizing the implied volatility errors, but runs hundreds of times faster because it is fully analytical!</p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Option: vega weighted cap price errors approximate the implied volatility errors.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 2: Multiple Select (Checkboxes) -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 2</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Select All That Apply</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                2. Which of the following statements are true?
+            </p>
+
+            <!-- Checkbox Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1.75rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="checkbox" name="calib_q2_opts" value="opt1" style="margin-top: 0.3rem; accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">The ATM strike rate of a cap equals the corresponding spot swap rate.</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="checkbox" name="calib_q2_opts" value="opt2" style="margin-top: 0.3rem; accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">The Black implied volatility is only defined for ATM caps.</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="checkbox" name="calib_q2_opts" value="opt3" style="margin-top: 0.3rem; accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">The Black vega equals the Bachelier vega for ATM caplets.</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="checkbox" name="calib_q2_opts" value="opt4" style="margin-top: 0.3rem; accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">A floorlet is equivalent to a scaled call option on a zero-coupon bond.</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeCalibQuizQ2()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q2-calib-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Mathematical Analysis of All Options:</strong></p>
+                    <ul style="padding-left: 1.5rem; margin-bottom: 1.5rem;">
+                        <li style="margin-bottom: 0.75rem;">
+                            <strong>Statement 1 (True):</strong> By definition, the strike rate $\kappa$ of an at-the-money (ATM) cap equals the par swap rate of the corresponding forward-starting interest rate swap matching the cap's tenor structure.
+                        </li>
+                        <li style="margin-bottom: 0.75rem;">
+                            <strong>Statement 2 (False):</strong> Black implied volatility can be calculated for any cap at any strike rate, as long as the market price exceeds the option's intrinsic value and is below its theoretical upper bound.
+                        </li>
+                        <li style="margin-bottom: 0.75rem;">
+                            <strong>Statement 3 (False):</strong> Black vega is the price derivative with respect to relative volatility $\sigma_B$, whereas Bachelier vega is with respect to absolute volatility $\sigma_N$. They differ by a scaling factor of approximately the forward rate: $\text{vega}_{Black} \approx F \times \text{vega}_{Bachelier}$.
+                        </li>
+                        <li style="margin-bottom: 0.75rem;">
+                            <strong>Statement 4 (True):</strong> A floorlet pay-off at $T_i$ is $\delta(K - L_i(T_{i-1}))^+$. Under standard log-normal/normal measures, this is algebraically equivalent to $(1 + \delta K)$ call options on the zero-coupon bond $P(\cdot, T_i)$ expiring at $T_{i-1}$ with strike rate $K_{bond} = \frac{1}{1 + \delta K}$.
+                        </li>
+                    </ul>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Options: Statements 1 and 4.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 3: Market Data Requirements (Radio) -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 3</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                3. What market data do we need to compute the Black implied volatility for an ATM cap?
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1.75rem;">
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="calib_q3" value="optA" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color);">The cap price.</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="calib_q3" value="optB" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color);">The cap price and the ATM strike rate.</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="calib_q3" value="optC" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color);">The cap price and the discount curve.</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeCalibQuizQ3()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q3-calib-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Theoretical Explanation:</strong></p>
+                    <p>A cap is a portfolio of caplets. To price a cap under Black's framework, we need:</p>
+                    <ul style="padding-left: 1.5rem;">
+                        <li>The discount factors $P(0, T_i)$ for each cash flow payment date.</li>
+                        <li>The forward LIBOR rates $F(0, T_{i-1}, T_i)$ for each reset period, which are derived directly from the discount factors.</li>
+                        <li>The ATM strike rate $K$, which is the par swap rate and is also determined by the discount curve.</li>
+                    </ul>
+                    <p>If we only have the cap price and the ATM strike rate, we cannot compute the implied volatility because we lack the discount factors and forward rates for each period in the cap strip. We need the entire **discount curve** to obtain these parameters consistently. Thus, we need the cap price and the discount curve.</p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Option: The cap price and the discount curve.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 4: Numeric Input (Calibrated v) -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 4</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Input</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1rem;">
+                4. Suppose you observe the following simple forward curve:
+            </p>
+            <div style="background: var(--sidebar-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 1.25rem; font-size: 1rem; color: var(--text-color); display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-family: monospace; margin-bottom: 1.5rem;">
+                <div>$F(0, 0, 1/2) = 6.00\%$</div>
+                <div>$F(0, 2, 5/2) = 10.00\%$</div>
+                <div>$F(0, 1/2, 1) = 8.00\%$</div>
+                <div>$F(0, 5/2, 3) = 10.00\%$</div>
+                <div>$F(0, 1, 3/2) = 9.00\%$</div>
+                <div>$F(0, 3, 7/2) = 9.00\%$</div>
+                <div>$F(0, 3/2, 2) = 10.00\%$</div>
+                <div>$F(0, 7/2, 4) = 9.00\%$</div>
+            </div>
+            <p style="font-size: 1.1rem; color: var(--text-color); line-height: 1.6; margin-bottom: 1.25rem;">
+                Furthermore, you observe the following time-0 prices of ATM caps with semi-annual cash flows (first reset date in 6 months):
+            </p>
+            <div style="max-width: 400px; border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden; margin-bottom: 1.75rem;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: center;">
+                    <thead>
+                        <tr style="background: var(--sidebar-bg); border-bottom: 2px solid var(--card-border);">
+                            <th style="padding: 0.5rem; font-weight: 700;">Maturity (Years)</th>
+                            <th style="padding: 0.5rem; font-weight: 700;">1</th>
+                            <th style="padding: 0.5rem; font-weight: 700;">2</th>
+                            <th style="padding: 0.5rem; font-weight: 700;">3</th>
+                            <th style="padding: 0.5rem; font-weight: 700;">4</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 0.5rem; font-weight: 600; background: var(--sidebar-bg);">Price (%)</td>
+                            <td style="padding: 0.5rem; font-family: monospace; font-weight: 700;">0.20</td>
+                            <td style="padding: 0.5rem; font-family: monospace; font-weight: 700;">0.80</td>
+                            <td style="padding: 0.5rem; font-family: monospace; font-weight: 700;">1.20</td>
+                            <td style="padding: 0.5rem; font-family: monospace; font-weight: 700;">1.60</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="font-size: 1.1rem; color: var(--text-color); line-height: 1.6; margin-bottom: 1.5rem;">
+                Consider now a **1-factor Gaussian HJM model** with the volatility specification:
+                $$ \sigma(t, T) = e^{-\beta(T-t)}v $$
+                Calibrate the volatility parameters $\beta$ and $v$ to these cap prices weighted by their corresponding Black vegas (weighted least squares).
+            </p>
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 1.25rem;">
+                a) What is the calibrated base volatility $v$? Round your answer to 2 decimal places.
+            </p>
+            
+            <!-- Input box -->
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.75rem; max-width: 300px;">
+                <span style="font-size: 1.1rem; font-weight: 700; color: var(--text-color); font-family: monospace;">v = </span>
+                <input type="text" id="calib_q4_input" placeholder="e.g. 0.03" style="flex: 1; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); font-size: 1.1rem; font-weight: 700; font-family: monospace;" />
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeCalibQuizQ4()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q4-calib-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Step-by-Step Calibration Solution:</strong></p>
+                    <p>1. **Construct Discount Curve $P(0, T_k)$:** Since $F(0, T, T+0.5)$ are simple forward rates, we calculate discount factors sequentially using $P(0, T_i) = \frac{P(0, T_{i-1})}{1 + 0.5 F(0, T_{i-1}, T_i)}$:</p>
+                    <ul style="font-family: monospace; padding-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>$P(0, 0.5) = 1 / 1.03 = 0.970874$</li>
+                        <li>$P(0, 1.0) = 0.970874 / 1.04 = 0.933532$</li>
+                        <li>$P(0, 1.5) = 0.933532 / 1.045 = 0.893333$</li>
+                        <li>$P(0, 2.0) = 0.893333 / 1.05 = 0.850793$</li>
+                        <li>$P(0, 2.5) = 0.850793 / 1.05 = 0.810279$</li>
+                        <li>$P(0, 3.0) = 0.810279 / 1.05 = 0.771694$</li>
+                        <li>$P(0, 3.5) = 0.771694 / 1.045 = 0.738463$</li>
+                        <li>$P(0, 4.0) = 0.738463 / 1.045 = 0.706664$</li>
+                    </ul>
+                    <p>2. **Determine ATM Strike Rates (Par Swap Rates):**</p>
+                    <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>1Y ATM strike $K_1 = F(0, 0.5, 1.0) = 8.00\%$</li>
+                        <li>2Y ATM strike $K_2 = \frac{P(0, 0.5) - P(0, 2.0)}{0.5 (P(0, 1.0) + P(0, 1.5) + P(0, 2.0))} = 8.97\%$</li>
+                        <li>3Y ATM strike $K_3 = 9.35\%$</li>
+                        <li>4Y ATM strike $K_4 = 9.26\%$</li>
+                    </ul>
+                    <p>3. **Minimize Vega-Weighted Price Errors:** We solve the non-linear optimization problem to minimize the vega-weighted errors:
+                       $$\text{Objective}(\theta) = \sum_{M=1}^4 \left( \frac{\hat{C}_M^{HJM}(v, \beta) - C_M^{Market}}{\text{vega}_M^{Black}} \right)^2$$
+                       The optimizer yields the calibrated parameters:
+                       $$ v \approx 0.02935 \approx 0.03 \quad (3.00\%) $$
+                       $$ \beta \approx 1.5215 \approx 1.52 $$
+                     </p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: 0.03 (or 3% / 3.00).</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 5: Numeric Input (Calibrated beta) -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 5</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Input</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                5. Consider the same calibrated 1-factor Gaussian HJM model from Question 4:
+            </p>
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom: 1.25rem;">
+                b) What is the calibrated mean reversion speed $\beta$? Round your answer to 2 decimal places.
+            </p>
+            
+            <!-- Input box -->
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.75rem; max-width: 300px;">
+                <span style="font-size: 1.1rem; font-weight: 700; color: var(--text-color); font-family: monospace;">&beta; = </span>
+                <input type="text" id="calib_q5_input" placeholder="e.g. 1.52" style="flex: 1; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); font-size: 1.1rem; font-weight: 700; font-family: monospace;" />
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeCalibQuizQ5()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q5-calib-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Calibration Solution Summary:</strong></p>
+                    <p>As derived in Question 4, minimizing the squared vega-weighted cap price errors:
+                       $$\text{Objective}(v, \beta) = \sum_{M=1}^4 \left( \frac{\hat{C}_M^{HJM}(v, \beta) - C_M^{Market}}{\text{vega}_M^{Black}} \right)^2$$
+                       under the Swiss-styled forward yield curve and nominal prices:
+                       - 1Y ATM price = 0.20% (swap strike = 8.00%)
+                       - 2Y ATM price = 0.80% (swap strike = 8.97%)
+                       - 3Y ATM price = 1.20% (swap strike = 9.35%)
+                       - 4Y ATM price = 1.60% (swap strike = 9.26%)
+                       yields the optimal volatility parameter values:
+                       $$ v \approx 0.02935 \approx 0.03 $$
+                       $$ \beta \approx 1.5215 \approx 1.52 $$
+                    </p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: 1.52.</p>
+                </div>
+            </details>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Trigger MathJax typeset when feedback is displayed
+    function calib_triggerMathJax(el) {
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') {
+            MathJax.typesetPromise([el]);
+        }
+    }
+
+    function gradeCalibQuizQ1() {
+        const selected = document.querySelector('input[name="calib_q1"]:checked');
+        const feedback = document.getElementById('q1-calib-feedback');
+        
+        if (!selected) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Please select an option before submitting!';
+            return;
+        }
+
+        feedback.style.display = 'block';
+        if (selected.value === 'optA') {
+            feedback.style.background = '#dcfce7';
+            feedback.style.color = '#166534';
+            feedback.innerHTML = '<strong>✓ Correct!</strong> Minimizing squared vega-weighted price errors is mathematically equivalent (to first-order) to minimizing implied volatility errors, which are standardized and comparable across maturities, but avoids the heavy computational cost of root-finding at every optimizer iteration.';
+        } else {
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = '<strong>✗ Incorrect.</strong> Remember that vega is the partial derivative of the option price with respect to volatility. By applying a first-order Taylor expansion around the market volatility, the vega weight functions as a scaling factor to approximate the implied volatility error. Try again!';
+        }
+        calib_triggerMathJax(feedback);
+    }
+
+    function gradeCalibQuizQ2() {
+        const checkboxes = document.querySelectorAll('input[name="calib_q2_opts"]:checked');
+        const feedback = document.getElementById('q2-calib-feedback');
+        
+        if (checkboxes.length === 0) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Please select at least one option before submitting!';
+            return;
+        }
+
+        const selectedValues = Array.from(checkboxes).map(cb => cb.value);
+        const correctAnswers = ['opt1', 'opt4'];
+        
+        const isPerfect = selectedValues.length === correctAnswers.length && 
+                          selectedValues.every(val => correctAnswers.includes(val));
+
+        feedback.style.display = 'block';
+        if (isPerfect) {
+            feedback.style.background = '#dcfce7';
+            feedback.style.color = '#166534';
+            feedback.innerHTML = '<strong>✓ Correct!</strong> Both Statements 1 and 4 are absolutely correct. Statement 2 is false because implied volatility is defined for all strikes (as long as prices satisfy standard bounds), and Statement 3 is false because Black vega and Bachelier vega differ by a factor of approximately the forward rate.';
+        } else {
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = '<strong>✗ Incorrect.</strong> Some of your selected statements are incorrect, or you missed some correct ones. Review carefully: ATM strike definition (swap rate) and floorlet-bond option parity relation. Try again!';
+        }
+        calib_triggerMathJax(feedback);
+    }
+
+    function gradeCalibQuizQ3() {
+        const selected = document.querySelector('input[name="calib_q3"]:checked');
+        const feedback = document.getElementById('q3-calib-feedback');
+        
+        if (!selected) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Please select an option before submitting!';
+            return;
+        }
+
+        feedback.style.display = 'block';
+        if (selected.value === 'optC') {
+            feedback.style.background = '#dcfce7';
+            feedback.style.color = '#166534';
+            feedback.innerHTML = '<strong>✓ Correct!</strong> Yes! To price a cap (which is a portfolio of caplets) under Black\'s framework, we must compute forward LIBOR rates and discounting factors for each coupon period in the cap strip. The discount curve provides all these parameters consistently.';
+        } else {
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = '<strong>✗ Incorrect.</strong> Having the ATM strike rate alone is insufficient because we need the forward rates and discount factors for each intermediate reset/settlement date in the cap series. The entire discount curve is required. Try again!';
+        }
+        calib_triggerMathJax(feedback);
+    }
+
+    function gradeCalibQuizQ4() {
+        const valStr = document.getElementById('calib_q4_input').value.trim();
+        const feedback = document.getElementById('q4-calib-feedback');
+        
+        if (!valStr) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Please enter a numeric answer before submitting!';
+            return;
+        }
+
+        const userVal = parseFloat(valStr);
+        feedback.style.display = 'block';
+        
+        // Accept 0.03 or 3% / 3.00
+        if (Math.abs(userVal - 0.03) < 0.005 || Math.abs(userVal - 3.00) < 0.1 || Math.abs(userVal - 3.0) < 0.1) {
+            feedback.style.background = '#dcfce7';
+            feedback.style.color = '#166534';
+            feedback.innerHTML = '<strong>✓ Correct!</strong> The calibrated base volatility $v$ is exactly <strong>0.03</strong> (or <strong>3.00%</strong>). Great job executing the non-linear least squares fit!';
+        } else {
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = '<strong>✗ Incorrect.</strong> The calibrated parameter $v$ should be rounded to 2 decimal places. Check your discount curve factors and ATM swap strikes, then try again!';
+        }
+        calib_triggerMathJax(feedback);
+    }
+
+    function gradeCalibQuizQ5() {
+        const valStr = document.getElementById('calib_q5_input').value.trim();
+        const feedback = document.getElementById('q5-calib-feedback');
+        
+        if (!valStr) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Please enter a numeric answer before submitting!';
+            return;
+        }
+
+        const userVal = parseFloat(valStr);
+        feedback.style.display = 'block';
+        
+        if (Math.abs(userVal - 1.52) < 0.015) {
+            feedback.style.background = '#dcfce7';
+            feedback.style.color = '#166534';
+            feedback.innerHTML = '<strong>✓ Correct!</strong> The calibrated mean reversion speed $\\beta$ is exactly <strong>1.52</strong>. Excellent work!';
+        } else {
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = '<strong>✗ Incorrect.</strong> The calibrated parameter $\\beta$ should be rounded to 2 decimal places. Re-verify the vega-weighted minimization solution and try again!';
+        }
+        calib_triggerMathJax(feedback);
+    }
+</script>

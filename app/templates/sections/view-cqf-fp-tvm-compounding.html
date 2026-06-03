@@ -1,0 +1,235 @@
+<div id="view-cqf-fp-tvm-compounding" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #4f46e5;">Finance Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9;">Time Value of Money</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Compounding &amp; Future Values</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Explore the mathematical foundations of cash growth over time, from multi-frequency compounding to short-term money market conventions.</p>
+    </header>
+
+    <!-- Row 1: Multi-Frequency Compounding Laboratory -->
+    <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+        
+        <!-- Controls Card -->
+        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Discrete &amp; Continuous Compounding
+                </h3>
+                <p style="font-size: 0.88rem; color: #64748b; line-height: 1.5;">Interest can be compounded at different frequencies. The more frequent the compounding interval, the higher the **Effective Annual Rate (EAR)** actually achieved by the investor.</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+                    <div>
+                        <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Present Value ($PV$)</label>
+                        <input type="number" id="fvPVInput" value="100000" step="5000" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="runFVMappings()">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Nominal Rate ($r$, % p.a.)</label>
+                            <input type="number" id="fvRateInput" value="2.00" step="0.1" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="runFVMappings()">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Term ($T$ Years)</label>
+                            <input type="number" id="fvYearsInput" value="1" step="1" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="runFVMappings()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: var(--accent-glow); border: 1px solid var(--accent); border-radius: 8px; padding: 0.75rem 1rem; margin-top: 1rem; font-size: 0.82rem; color: var(--text-color); line-height: 1.4;">
+                <span style="font-weight: 700; display: block; text-transform: uppercase; color: var(--accent); margin-bottom: 0.25rem;">Continuous Limit Formula</span>
+                As compounding frequency $m \rightarrow \infty$:
+                <div style="font-family: monospace; font-size: 0.95rem; text-align: center; margin: 0.25rem 0; font-weight: 700;">
+                    FV = PV × e^(r × T)
+                </div>
+                Euler's number $e \approx 2.71828$ serves as the continuous compounding growth factor.
+            </div>
+        </div>
+
+        <!-- Frequency Grid Output -->
+        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <h4 style="margin: 0 0 0.75rem 0; font-size: 1rem; color: var(--text-color);">Growth of Sum at Compounding Frequencies:</h4>
+            
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; flex: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: center; background: var(--metric-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border: 1px solid var(--card-border);">
+                    <span style="font-weight: 700; font-size: 0.85rem;">Annual <span style="font-weight:400; color:#64748b; font-size:0.75rem;">(m = 1)</span></span>
+                    <div style="text-align: right;">
+                        <div id="fvAnnualOut" style="font-weight: 800; font-size: 1rem; color: var(--text-color);">€102,000.00</div>
+                        <span id="earAnnualOut" style="font-size: 0.72rem; color: #10b981; font-weight: 700;">Effective EAR: 2.00%</span>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; background: var(--metric-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border: 1px solid var(--card-border);">
+                    <span style="font-weight: 700; font-size: 0.85rem;">Semi-Annual <span style="font-weight:400; color:#64748b; font-size:0.75rem;">(m = 2)</span></span>
+                    <div style="text-align: right;">
+                        <div id="fvSemiOut" style="font-weight: 800; font-size: 1rem; color: var(--text-color);">€102,010.00</div>
+                        <span id="earSemiOut" style="font-size: 0.72rem; color: #10b981; font-weight: 700;">Effective EAR: 2.01%</span>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; background: var(--metric-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border: 1px solid var(--card-border);">
+                    <span style="font-weight: 700; font-size: 0.85rem;">Quarterly <span style="font-weight:400; color:#64748b; font-size:0.75rem;">(m = 4)</span></span>
+                    <div style="text-align: right;">
+                        <div id="fvQuarterOut" style="font-weight: 800; font-size: 1rem; color: var(--text-color);">€102,015.05</div>
+                        <span id="earQuarterOut" style="font-size: 0.72rem; color: #10b981; font-weight: 700;">Effective EAR: 2.015%</span>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; background: var(--metric-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border: 1px solid var(--card-border);">
+                    <span style="font-weight: 700; font-size: 0.85rem;">Monthly <span style="font-weight:400; color:#64748b; font-size:0.75rem;">(m = 12)</span></span>
+                    <div style="text-align: right;">
+                        <div id="fvMonthOut" style="font-weight: 800; font-size: 1rem; color: var(--text-color);">€102,018.44</div>
+                        <span id="earMonthOut" style="font-size: 0.72rem; color: #10b981; font-weight: 700;">Effective EAR: 2.018%</span>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; background: var(--accent-glow); padding: 0.5rem 0.75rem; border-radius: 6px; border: 1px solid var(--accent);">
+                    <span style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">Continuous <span style="font-weight:400; color:var(--accent); font-size:0.75rem;">(m = ∞)</span></span>
+                    <div style="text-align: right;">
+                        <div id="fvContOut" style="font-weight: 900; font-size: 1.05rem; color: var(--accent);">€102,020.13</div>
+                        <span id="earContOut" style="font-size: 0.72rem; color: #10b981; font-weight: 700;">Effective EAR: 2.020%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 2: Money Market Periods Compounding (up to 12 Months) -->
+    <div class="card" style="border-left: 4px solid var(--accent); margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Money Market Periods (Day Count Compounding)
+        </h3>
+        <p style="font-size: 0.88rem; color: #64748b;">Short term money markets (periods <12m) use a linear **Day Count Fraction** rather than exponents to compute future value proceeds. Select a preset below or enter custom parameters to calculate overnight returns:</p>
+
+        <!-- Presets Selection Grid -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-bottom: 1.25rem;">
+            <button onclick="setMMPreset('usd_tue')" class="btn btn-secondary" style="font-size: 0.75rem; font-weight: 700; padding: 0.4rem; border-radius: 4px;">USD Tue (1 Day / 360)</button>
+            <button onclick="setMMPreset('usd_fri')" class="btn btn-secondary" style="font-size: 0.75rem; font-weight: 700; padding: 0.4rem; border-radius: 4px;">USD Fri (3 Days / 360)</button>
+            <button onclick="setMMPreset('gbp_tue')" class="btn btn-secondary" style="font-size: 0.75rem; font-weight: 700; padding: 0.4rem; border-radius: 4px;">GBP Tue (1 Day / 365)</button>
+            <button onclick="setMMPreset('usd_1yr')" class="btn btn-secondary" style="font-size: 0.75rem; font-weight: 700; padding: 0.4rem; border-radius: 4px;">USD 1-Year (365 Days / 360)</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1.25rem;">
+            <div>
+                <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Deposit Principal</label>
+                <input type="number" id="mmPrincipal" value="10000000" step="1000000" style="width: 100%; padding: 0.35rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calcMMPayments()">
+            </div>
+            <div>
+                <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Nominal Rate (% p.a.)</label>
+                <input type="number" id="mmRate" value="3.00" step="0.05" style="width: 100%; padding: 0.35rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calcMMPayments()">
+            </div>
+            <div>
+                <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Actual Days (ACT)</label>
+                <input type="number" id="mmAct" value="1" step="1" style="width: 100%; padding: 0.35rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calcMMPayments()">
+            </div>
+            <div>
+                <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Day Count Basis</label>
+                <select id="mmBasis" onchange="calcMMPayments()" style="width: 100%; padding: 0.35rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);">
+                    <option value="360" selected>360 Days (USD/EUR/JPY)</option>
+                    <option value="365">365 Days (GBP)</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div style="border-right: 1px solid var(--card-border); padding-right: 1rem; text-align: center;">
+                <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Maturity Proceeds (Future Value)</span>
+                <div id="mmFVResult" style="font-size: 1.3rem; font-weight: 900; color: var(--accent); margin-top: 0.25rem;">€10,000,833.33</div>
+                <span id="mmInterestResult" style="font-size: 0.75rem; color: #10b981; font-weight: 700;">Interest Earned: €833.33</span>
+            </div>
+            <div style="padding-left: 1rem; text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Effective Annual Return Achieved</span>
+                <div id="mmYieldResult" style="font-size: 1.3rem; font-weight: 900; color: #10b981; margin-top: 0.25rem;">3.045%</div>
+                <span style="font-size: 0.72rem; color: #64748b;">Due to Day-Count fraction convention vs. 365 Days</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Compounding Multi-frequency calculations
+function runFVMappings() {
+    const pv = parseFloat(document.getElementById('fvPVInput').value) || 0;
+    const r = (parseFloat(document.getElementById('fvRateInput').value) || 0) / 100;
+    const t = parseFloat(document.getElementById('fvYearsInput').value) || 0;
+
+    const fAnn = pv * Math.pow(1 + r/1, 1 * t);
+    const fSemi = pv * Math.pow(1 + r/2, 2 * t);
+    const fQuarter = pv * Math.pow(1 + r/4, 4 * t);
+    const fMonth = pv * Math.pow(1 + r/12, 12 * t);
+    const fCont = pv * Math.exp(r * t);
+
+    // Calculate Effective Annual Rate (EAR)
+    const earAnn = (Math.pow(1 + r/1, 1) - 1) * 100;
+    const earSemi = (Math.pow(1 + r/2, 2) - 1) * 100;
+    const earQuarter = (Math.pow(1 + r/4, 4) - 1) * 100;
+    const earMonth = (Math.pow(1 + r/12, 12) - 1) * 100;
+    const earCont = (Math.exp(r) - 1) * 100;
+
+    document.getElementById('fvAnnualOut').innerText = '€' + fAnn.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('fvSemiOut').innerText = '€' + fSemi.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('fvQuarterOut').innerText = '€' + fQuarter.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('fvMonthOut').innerText = '€' + fMonth.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('fvContOut').innerText = '€' + fCont.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+    document.getElementById('earAnnualOut').innerText = 'Effective EAR: ' + earAnn.toFixed(4) + '%';
+    document.getElementById('earSemiOut').innerText = 'Effective EAR: ' + earSemi.toFixed(4) + '%';
+    document.getElementById('earQuarterOut').innerText = 'Effective EAR: ' + earQuarter.toFixed(4) + '%';
+    document.getElementById('earMonthOut').innerText = 'Effective EAR: ' + earMonth.toFixed(4) + '%';
+    document.getElementById('earContOut').innerText = 'Effective EAR: ' + earCont.toFixed(4) + '%';
+}
+
+// Money Market Compounding Presets
+function setMMPreset(preset) {
+    if (preset === 'usd_tue') {
+        document.getElementById('mmPrincipal').value = 10000000;
+        document.getElementById('mmRate').value = 3.00;
+        document.getElementById('mmAct').value = 1;
+        document.getElementById('mmBasis').value = "360";
+    } else if (preset === 'usd_fri') {
+        document.getElementById('mmPrincipal').value = 10000000;
+        document.getElementById('mmRate').value = 3.00;
+        document.getElementById('mmAct').value = 3;
+        document.getElementById('mmBasis').value = "360";
+    } else if (preset === 'gbp_tue') {
+        document.getElementById('mmPrincipal').value = 10000000;
+        document.getElementById('mmRate').value = 3.00;
+        document.getElementById('mmAct').value = 1;
+        document.getElementById('mmBasis').value = "365";
+    } else if (preset === 'usd_1yr') {
+        document.getElementById('mmPrincipal').value = 10000000;
+        document.getElementById('mmRate').value = 4.00;
+        document.getElementById('mmAct').value = 365;
+        document.getElementById('mmBasis').value = "360";
+    }
+    calcMMPayments();
+}
+
+// Money Market Linear Compounding Price
+function calcMMPayments() {
+    const pv = parseFloat(document.getElementById('mmPrincipal').value) || 0;
+    const r = (parseFloat(document.getElementById('mmRate').value) || 0) / 100;
+    const act = parseFloat(document.getElementById('mmAct').value) || 0;
+    const basis = parseFloat(document.getElementById('mmBasis').value) || 360;
+
+    // Linear formula: FV = PV * (1 + r * ACT / BASIS)
+    const fv = pv * (1 + r * act / basis);
+    const interest = fv - pv;
+
+    // Effective Annual Return (linear compounded back to full year)
+    // EAR = (Interest / PV) * (365 / ACT)
+    let ear = 0;
+    if (act > 0) {
+        ear = (interest / pv) * (365 / act) * 100;
+    }
+
+    document.getElementById('mmFVResult').innerText = '€' + fv.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('mmInterestResult').innerText = 'Interest Earned: €' + interest.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('mmYieldResult').innerText = ear.toFixed(4) + '%';
+}
+
+// Initialize on page load
+setTimeout(() => {
+    runFVMappings();
+    calcMMPayments();
+}, 200);
+</script>

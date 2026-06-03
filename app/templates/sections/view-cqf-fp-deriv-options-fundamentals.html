@@ -1,0 +1,462 @@
+<div id="view-cqf-fp-deriv-options-fundamentals" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <span class="badge" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #4f46e5;">Finance Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9;">Derivatives</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.5rem; font-weight: 800; border-bottom: none; padding-bottom: 0; background: linear-gradient(135deg, var(--text-color), #4f46e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Derivatives: Fundamentals of Options</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1.05rem;">Understanding Option Agreements, Settlement Styles, and Payoff Architectures</div>
+    </header>
+
+    <!-- Interactive Simulator Sandbox Card -->
+    <div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--accent);">
+        <h3 style="margin-top: 0; color: var(--accent); font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
+            <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z"></path></svg>
+            Interactive Lecture Example Simulator
+        </h3>
+        <p style="font-size: 0.9rem; color: #6b7280; margin-bottom: 1.5rem;">Select one of Neil Graham's key lecture examples below to explore holder vs. writer mechanics, cash settlement, and American vs. European styles:</p>
+        
+        <!-- Scenario Tabs -->
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+            <button class="nav-item tab-btn active" id="btn-oil-call" onclick="selectScenario('oil-call')" style="padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: 1px solid var(--card-border); background: var(--metric-bg); color: var(--text-color);">1. 3m Oil Call ($80 Strike)</button>
+            <button class="nav-item tab-btn" id="btn-oil-put" onclick="selectScenario('oil-put')" style="padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: 1px solid var(--card-border); background: var(--metric-bg); color: var(--text-color);">2. 3m Oil Put ($80 Strike)</button>
+            <button class="nav-item tab-btn" id="btn-sp-call" onclick="selectScenario('sp-call')" style="padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: 1px solid var(--card-border); background: var(--metric-bg); color: var(--text-color);">3. S&amp;P 500 Call (Cash-Settled)</button>
+            <button class="nav-item tab-btn" id="btn-sp-put" onclick="selectScenario('sp-put')" style="padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: 1px solid var(--card-border); background: var(--metric-bg); color: var(--text-color);">4. S&amp;P 500 American Put (Early Ex.)</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+            <!-- Simulation Inputs and Ledgers -->
+            <div>
+                <!-- Dynamic Scenario Description -->
+                <div id="scenario-desc" style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); font-size: 0.88rem; line-height: 1.5; margin-bottom: 1.5rem;">
+                    <!-- Filled dynamically by JavaScript -->
+                </div>
+
+                <!-- Mathematical Equation Card -->
+                <div style="background: rgba(79, 70, 229, 0.05); padding: 0.75rem 1rem; border-radius: 8px; border-left: 3px solid #4f46e5; margin-bottom: 1.5rem; font-size: 0.85rem;">
+                    <div style="font-weight: 700; color: #4f46e5; margin-bottom: 0.25rem;">Theoretical Payoff Formula:</div>
+                    <div id="scenario-math" style="font-family: monospace; font-size: 0.95rem;">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+
+                <!-- Spot Price Slider -->
+                <div style="margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <label id="slider-label" style="font-weight: 700; font-size: 0.9rem;">Expiry Spot Price ($S_T$):</label>
+                        <span id="slider-val" style="font-size: 1.1rem; font-weight: 800; color: var(--accent);">$92.00</span>
+                    </div>
+                    <input id="expiry-spot-slider" type="range" min="50" max="110" step="1" value="92" oninput="updateSimulation()" style="width: 100%;">
+                    
+                    <!-- Presets buttons -->
+                    <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                        <button onclick="setSpotPreset(71)" class="nav-item" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; border-radius: 4px; cursor: pointer; border: 1px solid var(--card-border); background: var(--card-bg);">Preset: $71 (Low)</button>
+                        <button onclick="setSpotPreset(80)" class="nav-item" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; border-radius: 4px; cursor: pointer; border: 1px solid var(--card-border); background: var(--card-bg);">Preset: $80 (Strike)</button>
+                        <button onclick="setSpotPreset(92)" class="nav-item" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; border-radius: 4px; cursor: pointer; border: 1px solid var(--card-border); background: var(--card-bg);">Preset: $92 (High)</button>
+                    </div>
+                </div>
+
+                <!-- Double Sided Ledger -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <!-- Investor A (Writer / Short) -->
+                    <div id="ledger-writer" style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; text-align: center; transition: all 0.3s ease;">
+                        <div style="font-weight: 700; font-size: 0.85rem; color: #6b7280; text-transform: uppercase;">Investor A (Writer / Short)</div>
+                        <div id="emoji-writer" style="font-size: 3rem; margin: 0.5rem 0;">😡</div>
+                        <div style="font-size: 0.8rem; margin-bottom: 0.25rem;">Premium Received: <span id="prem-writer" style="font-weight: 700;">+$5.00</span></div>
+                        <div style="font-size: 0.8rem; margin-bottom: 0.5rem;">Payoff / Loss: <span id="payoff-writer" style="font-weight: 700; color: #ef4444;">-$12.00</span></div>
+                        <div style="border-top: 1px solid var(--card-border); padding-top: 0.5rem; font-size: 0.95rem; font-weight: 800;">
+                            Overall: <span id="overall-writer" style="color: #ef4444;">-$7.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Investor B (Holder / Long) -->
+                    <div id="ledger-holder" style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; text-align: center; transition: all 0.3s ease;">
+                        <div style="font-weight: 700; font-size: 0.85rem; color: #6b7280; text-transform: uppercase;">Investor B (Holder / Long)</div>
+                        <div id="emoji-holder" style="font-size: 3rem; margin: 0.5rem 0;">😊</div>
+                        <div style="font-size: 0.8rem; margin-bottom: 0.25rem;">Premium Paid: <span id="prem-holder" style="font-weight: 700;">-$5.00</span></div>
+                        <div style="font-size: 0.8rem; margin-bottom: 0.5rem;">Payoff / Gain: <span id="payoff-holder" style="font-weight: 700; color: #10b981;">+$12.00</span></div>
+                        <div style="border-top: 1px solid var(--card-border); padding-top: 0.5rem; font-size: 0.95rem; font-weight: 800;">
+                            Overall: <span id="overall-holder" style="color: #10b981;">+$7.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Academic Discrepancy Note -->
+                <div id="discrepancy-note" style="display: none; background: rgba(245, 158, 11, 0.08); border-left: 4px solid #f59e0b; padding: 1rem; border-radius: 8px; margin-top: 1.5rem; font-size: 0.82rem; line-height: 1.4;">
+                    <div style="font-weight: 700; color: #d97706; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.25rem;">
+                        <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        Slide Discrepancy Highlight
+                    </div>
+                    <span><strong>Note on Neil's Put Slide (Page 3 Panel 1):</strong> In the lecture slides, the 3m Oil Put Option scenario lists an upfront premium of <strong>$7 per barrel</strong>. However, for the $71 spot price exercise scenario, the slide calculation mistakenly prints <em>"Less premium: -USD 5 pb"</em> resulting in an overall profit of <strong>+$4 pb</strong> (instead of 80 - 71 - 7 = +$2 pb). We provide a toggle below to switch between standard arithmetic and Neil's slide values.</span>
+                    <div style="margin-top: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <label style="font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.25rem;">
+                            <input type="checkbox" id="sp-typo-toggle" onchange="updateSimulation()" checked> Use Lecture Slide values (with $5 typo)
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visualization Pane -->
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.5rem; border-radius: 12px; height: 100%;">
+                <h4 style="margin: 0 0 1rem 0; font-size: 1rem; font-weight: 700; color: var(--text-color);">Options Payoff &amp; Net Profit Profile</h4>
+                <p style="font-size: 0.8rem; color: #6b7280; margin-top: -0.5rem; margin-bottom: 1.5rem;">Visualizing the payoff curves for both Holder (Long) and Writer (Short) at expiration.</p>
+                <div style="position: relative; height: 320px; width: 100%;">
+                    <canvas id="optionsFundamentalsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Lecture Theory Cards -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;">
+        <div class="card">
+            <h3 style="margin-top: 0; color: #4f46e5; font-size: 1.15rem; font-weight: 700;">European vs. American Exercise Styles</h3>
+            <p style="font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                Regular vanilla options are classified by their exercise flexibility. This is purely a label and has nothing to do with geography:
+            </p>
+            <ul style="font-size: 0.85rem; padding-left: 1.25rem; line-height: 1.6; color: var(--text-color);">
+                <li><strong>European Options:</strong> Can only be exercised at the exact moment of expiration ($t = T$).</li>
+                <li><strong>American Options:</strong> Can be exercised at <em>any time</em> up to and including expiration ($0 \le t \le T$). This added flexibility typically increases the premium ($C_{Amer} \ge C_{Euro}$).</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top: 0; color: #10b981; font-size: 1.15rem; font-weight: 700;">Cash vs. Physical Settlement</h3>
+            <p style="font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                Depending on the underlying asset class, options are settled in one of two modes:
+            </p>
+            <ul style="font-size: 0.85rem; padding-left: 1.25rem; line-height: 1.6; color: var(--text-color);">
+                <li><strong>Physical Delivery:</strong> Standard for single stocks and commodities (e.g. delivering 1,000 physical barrels of crude oil or 100 shares of Amazon stock).</li>
+                <li><strong>Cash Settlement:</strong> Standard for index derivatives (e.g., S&amp;P 500 options). Since you cannot physically buy or split an index, the writer pays the holder the index point difference in cash multiplied by a factor (e.g. $25 per index point).</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+// Active scenario variable
+let activeScenario = 'oil-call';
+let optionsChartInstance = null;
+
+// Scenario Configurations
+const scenarios = {
+    'oil-call': {
+        name: '3-Month Oil Call Option',
+        strike: 80,
+        premium: 5,
+        minSpot: 50,
+        maxSpot: 110,
+        defaultSpot: 92,
+        sliderLabel: 'Expiry Oil Price ($/bbl):',
+        unit: '$/bbl',
+        multiplier: 1, // unit scale
+        physical: true,
+        math: 'Long Call Payoff = \\max(S_T - K, 0)',
+        description: 'B has the right, but not the obligation, to buy 1,000 barrels of oil at $80 from A. B pays A a premium of $5 per barrel upfront. If price is high, B exercises; if low, B abandons.'
+    },
+    'oil-put': {
+        name: '3-Month Oil Put Option',
+        strike: 80,
+        premium: 7,
+        minSpot: 50,
+        maxSpot: 110,
+        defaultSpot: 71,
+        sliderLabel: 'Expiry Oil Price ($/bbl):',
+        unit: '$/bbl',
+        multiplier: 1,
+        physical: true,
+        math: 'Long Put Payoff = \\max(K - S_T, 0)',
+        description: 'B has the right, but not the obligation, to sell 1,000 barrels of oil at $80 to A. B pays A a premium of $7 per barrel upfront. If price is low, B exercises; if high, B abandons.'
+    },
+    'sp-call': {
+        name: 'S&P 500 Index Call (Cash Settled)',
+        strike: 6100,
+        premium: 110, // index points
+        minSpot: 5000,
+        maxSpot: 7000,
+        defaultSpot: 6350,
+        sliderLabel: 'S&P 500 Index Level at Expiry:',
+        unit: ' Points',
+        multiplier: 25, // $25 per point
+        physical: false,
+        math: 'Cash Settled Payoff = \\max(S_T - K, 0) \\times \\$25',
+        description: 'A 3-month option on the S&P 500 Index with a 6,100 Strike. Settled entirely in cash. B pays A a premium of 110 index points ($2,750 cash). B receives $25 per index point above 6,100.'
+    },
+    'sp-put': {
+        name: 'S&P 500 Index American Put (Early Exercise)',
+        strike: 6100,
+        premium: 158, // index points ($3,950 cash)
+        minSpot: 5000,
+        maxSpot: 7000,
+        defaultSpot: 5200,
+        sliderLabel: 'S&P 500 Index Level at Month 2:',
+        unit: ' Points',
+        multiplier: 25,
+        physical: false,
+        math: 'American Put Payoff = \\max(K - S_t, 0) \\times \\$25 \\quad (\\text{for } 0 \\le t \\le T)',
+        description: 'B purchases an American-style put option with a 6,100 strike for 158 index points ($3,950 cash). In month 2, index plunges to 5,200. B exercises early to realize locked-in cash value immediately.'
+    }
+};
+
+function selectScenario(scenKey) {
+    activeScenario = scenKey;
+    
+    // Update active tab styles
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.background = 'var(--metric-bg)';
+        btn.style.borderColor = 'var(--card-border)';
+    });
+    const activeBtn = document.getElementById('btn-' + scenKey);
+    if (activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.style.background = 'rgba(79, 70, 229, 0.1)';
+        activeBtn.style.borderColor = '#4f46e5';
+    }
+
+    const config = scenarios[scenKey];
+    
+    // Set Slider Limits
+    const slider = document.getElementById('expiry-spot-slider');
+    slider.min = config.minSpot;
+    slider.max = config.maxSpot;
+    slider.value = config.defaultSpot;
+    
+    // Toggle Discrepancy Alert for Oil Put
+    const discAlert = document.getElementById('discrepancy-note');
+    if (scenKey === 'oil-put') {
+        discAlert.style.display = 'block';
+    } else {
+        discAlert.style.display = 'none';
+    }
+
+    // Refresh dynamic notes & KaTeX
+    document.getElementById('scenario-desc').innerHTML = `<strong>${config.name} Example:</strong> ${config.description}`;
+    document.getElementById('scenario-math').innerHTML = `$$ ${config.math} $$`;
+    if (window.renderMathInElement) {
+        window.renderMathInElement(document.getElementById('scenario-math'));
+    }
+
+    updateSimulation();
+}
+
+function setSpotPreset(val) {
+    const config = scenarios[activeScenario];
+    let spot = val;
+    // scale preset if index
+    if (activeScenario.startsWith('sp')) {
+        if (val === 71) spot = 5200;
+        else if (val === 80) spot = 6100;
+        else if (val === 92) spot = 6350;
+    }
+    document.getElementById('expiry-spot-slider').value = spot;
+    updateSimulation();
+}
+
+function updateSimulation() {
+    const config = scenarios[activeScenario];
+    const spot = parseFloat(document.getElementById('expiry-spot-slider').value);
+    
+    // Update labels
+    document.getElementById('slider-label').innerText = config.sliderLabel;
+    
+    let displaySpotStr = '';
+    if (activeScenario.startsWith('oil')) {
+        displaySpotStr = '$' + spot.toFixed(2) + ' pb';
+    } else {
+        displaySpotStr = spot.toLocaleString() + ' points';
+    }
+    document.getElementById('slider-val').innerText = displaySpotStr;
+
+    // Mathematics Core Calculations
+    let strike = config.strike;
+    let prem = config.premium;
+    let multiplier = config.multiplier;
+    
+    // Handle the Oil Put Lecture Typo
+    let usedPrem = prem;
+    if (activeScenario === 'oil-put' && spot === 71) {
+        const typoActive = document.getElementById('sp-typo-toggle').checked;
+        if (typoActive) {
+            usedPrem = 5; // The lecture slide premium typo!
+        }
+    }
+
+    let rawPayoff = 0;
+    let isExercised = false;
+    
+    if (activeScenario.endsWith('call')) {
+        rawPayoff = Math.max(spot - strike, 0);
+        isExercised = spot > strike;
+    } else {
+        rawPayoff = Math.max(strike - spot, 0);
+        isExercised = spot < strike;
+    }
+
+    let holderPremPaid = usedPrem * multiplier;
+    let writerPremReceived = usedPrem * multiplier;
+    let holderPayoff = rawPayoff * multiplier;
+    let writerPayoffLoss = -rawPayoff * multiplier;
+    
+    let holderOverall = holderPayoff - holderPremPaid;
+    let writerOverall = writerPayoffLoss + writerPremReceived;
+
+    // Formatting Strings
+    const fmt = (val) => {
+        const sign = val >= 0 ? '+' : '';
+        return sign + '$' + val.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    };
+
+    const isOil = activeScenario.startsWith('oil');
+    const unitSfx = isOil ? ' pb' : '';
+
+    // Update LEDGERS
+    document.getElementById('prem-writer').innerText = '+' + '$' + (usedPrem * multiplier).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + (isOil ? ' pb' : '');
+    document.getElementById('payoff-writer').innerText = '-' + '$' + (rawPayoff * multiplier).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + (isOil ? ' pb' : '');
+    
+    document.getElementById('prem-holder').innerText = '-' + '$' + (usedPrem * multiplier).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + (isOil ? ' pb' : '');
+    document.getElementById('payoff-holder').innerText = '+' + '$' + (rawPayoff * multiplier).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + (isOil ? ' pb' : '');
+
+    const overallHolderEl = document.getElementById('overall-holder');
+    const overallWriterEl = document.getElementById('overall-writer');
+    
+    overallHolderEl.innerText = fmt(holderOverall) + unitSfx;
+    overallWriterEl.innerText = fmt(writerOverall) + unitSfx;
+
+    const emojiHolder = document.getElementById('emoji-holder');
+    const emojiWriter = document.getElementById('emoji-writer');
+
+    // Custom emoji states matching lecture
+    if (isExercised) {
+        if (holderOverall >= 0) {
+            emojiHolder.innerText = '😊'; // Smiling holder
+            emojiWriter.innerText = '😡';  // Mad writer
+            overallHolderEl.style.color = '#10b981';
+            overallWriterEl.style.color = '#ef4444';
+        } else {
+            // Option exercised but premium makes it net negative or narrow
+            emojiHolder.innerText = '😐'; 
+            emojiWriter.innerText = '😐';
+            overallHolderEl.style.color = '#ef4444';
+            overallWriterEl.style.color = '#10b981';
+        }
+    } else {
+        // Abandoned
+        emojiHolder.innerText = '😡'; // Holder is mad they lost premium
+        emojiWriter.innerText = '😊'; // Writer smiling
+        overallHolderEl.style.color = '#ef4444';
+        overallWriterEl.style.color = '#10b981';
+    }
+
+    // REDRAW CHART
+    drawFundamentalsChart(spot);
+}
+
+function drawFundamentalsChart(currentSpot) {
+    const ctx = document.getElementById('optionsFundamentalsChart').getContext('2d');
+    if (optionsChartInstance) {
+        optionsChartInstance.destroy();
+    }
+
+    const config = scenarios[activeScenario];
+    const isDark = document.body.classList.contains('dark-theme');
+    const gridColor = isDark ? '#2c2c2c' : '#edece9';
+    const textColor = isDark ? '#e3e3e3' : '#37352f';
+
+    // Generate Chart Data Points
+    const steps = 40;
+    const stepSize = (config.maxSpot - config.minSpot) / steps;
+    const xLabels = [];
+    const holderProfits = [];
+    const writerProfits = [];
+
+    for (let i = 0; i <= steps; i++) {
+        const sVal = config.minSpot + (i * stepSize);
+        xLabels.push(sVal);
+
+        let payoff = 0;
+        if (activeScenario.endsWith('call')) {
+            payoff = Math.max(sVal - config.strike, 0);
+        } else {
+            payoff = Math.max(config.strike - sVal, 0);
+        }
+
+        // Apply correct premium logic (without typo in chart for mathematical correctness)
+        const hOverall = (payoff - config.premium) * config.multiplier;
+        const wOverall = (-payoff + config.premium) * config.multiplier;
+        
+        holderProfits.push(hOverall);
+        writerProfits.push(wOverall);
+    }
+
+    // Generate indicator line data point
+    const indicatorIndex = xLabels.findIndex(x => x >= currentSpot);
+
+    optionsChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: xLabels.map(x => activeScenario.startsWith('oil') ? '$' + x.toFixed(0) : x.toFixed(0)),
+            datasets: [
+                {
+                    label: 'Investor B (Holder / Long)',
+                    data: holderProfits,
+                    borderColor: '#10b981',
+                    borderWidth: 3,
+                    fill: false,
+                    pointRadius: 0
+                },
+                {
+                    label: 'Investor A (Writer / Short)',
+                    data: writerProfits,
+                    borderColor: '#ef4444',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    fill: false,
+                    pointRadius: 0
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: { color: textColor, font: { size: 10, family: 'var(--font-family-sans)' } }
+                },
+                tooltip: {
+                    enabled: true,
+                    mode: 'index',
+                    intersect: false
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: gridColor },
+                    ticks: { color: textColor, font: { size: 9 } }
+                },
+                y: {
+                    grid: { color: gridColor },
+                    ticks: { color: textColor, font: { size: 9 } }
+                }
+            }
+        }
+    });
+}
+
+// Initialise everything
+setTimeout(() => {
+    selectScenario('oil-call');
+}, 500);
+
+// Visibility observer for Chart.js redrawing on sidebar change
+const optFundamentalsObserver = new MutationObserver(() => {
+    if (document.getElementById('view-cqf-fp-deriv-options-fundamentals').style.display === 'block') {
+        setTimeout(() => {
+            if (optionsChartInstance) {
+                optionsChartInstance.resize();
+            }
+        }, 100);
+    }
+});
+optFundamentalsObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+</script>

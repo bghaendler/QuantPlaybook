@@ -1,0 +1,286 @@
+<div id="view-cqf-fp-deriv-futures-apps" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <span class="badge" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #4f46e5;">Finance Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9;">Derivatives</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.5rem; font-weight: 800; border-bottom: none; padding-bottom: 0; background: linear-gradient(135deg, var(--text-color), #4f46e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Forwards &amp; Futures: Applications</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1.05rem;">Interactive Case Studies on Speculative Margin Mechanics and Producer Crop Hedging</div>
+    </header>
+
+    <!-- Case Study A: Speculation -->
+    <div class="card" style="margin-bottom: 2rem;">
+        <h3 style="margin-top: 0; color: #4f46e5; font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
+            <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+            Case Study 1: Speculating via Exchange-Traded Oil Futures
+        </h3>
+        <p>A speculator takes deliberate pricing risk. Suppose we are **bearish** on crude oil prices and enter a <strong>short position of 10 contracts</strong> (1 contract = 1,000 barrels) of June Crude Oil at a price of <strong>$79.94 / barrel</strong>. The exchange clearinghouse requires an Initial Margin deposit of <strong>$4,000 per contract</strong> ($40,000 total).</p>
+        
+        <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem; margin-top: 1.5rem; align-items: start;">
+            <!-- Interactive Margin account marking -->
+            <div>
+                <h4 style="margin: 0 0 0.75rem 0; font-size: 0.95rem; color: var(--accent);">Interactive Daily Mark-to-Market Ledger</h4>
+                <p style="font-size: 0.85rem; margin-bottom: 1rem;">Change the daily closing price below to observe how the daily <strong>Variation Margin (VM)</strong> flows are immediately credited or debited to our margin ledger account:</p>
+                
+                <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-size: 0.88rem;">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.25rem;">
+                        <div>
+                            <label style="font-weight: 600; display: block; margin-bottom: 0.25rem;">MTM Day Close ($):</label>
+                            <input id="specMtmPrice" type="number" value="80.03" step="0.05" oninput="calcSpecLedger()" style="width: 80px; padding: 0.25rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 700;">
+                        </div>
+                        <div>
+                            <span style="font-weight: 600; display: block; margin-bottom: 0.25rem;">Prev Close:</span>
+                            <span style="font-weight: 700; color: #6b7280;">$79.94</span>
+                        </div>
+                        <div>
+                            <span style="font-weight: 600; display: block; margin-bottom: 0.25rem;">Contracts:</span>
+                            <span style="font-weight: 700;">10 (10,000 bbls)</span>
+                        </div>
+                    </div>
+
+                    <div style="border-top: 1px solid var(--card-border); padding-top: 0.75rem; display: flex; justify-content: space-between;">
+                        <span>Daily Variation Margin flow:</span>
+                        <strong id="specMtmVm" style="color: #ef4444;">-$900.00</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 0.4rem;">
+                        <span>Resulting Margin Account Balance:</span>
+                        <strong id="specMtmBal" style="color: var(--text-color); font-size: 1.05rem;">$39,100.00</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pre-recorded trade history table -->
+            <div>
+                <h4 style="margin: 0 0 0.75rem 0; font-size: 0.95rem; color: var(--accent);">WTI Speculative Lifecycle (June Contracts):</h4>
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; line-height: 1.4;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--card-border); text-align: left;">
+                            <th style="padding: 0.35rem 0;">Day</th>
+                            <th style="padding: 0.35rem 0;">June Close</th>
+                            <th style="padding: 0.35rem 0;">Daily Flow</th>
+                            <th style="padding: 0.35rem 0;">Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.35rem 0;">Entry</td>
+                            <td style="padding: 0.35rem 0;">$79.94</td>
+                            <td style="padding: 0.35rem 0;">-</td>
+                            <td style="padding: 0.35rem 0; font-weight:700;">$40,000</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.35rem 0;">Day 1</td>
+                            <td style="padding: 0.35rem 0;">$80.03</td>
+                            <td style="padding: 0.35rem 0; color:#ef4444;">-$900</td>
+                            <td style="padding: 0.35rem 0;">$39,100</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.35rem 0;">Day 2</td>
+                            <td style="padding: 0.35rem 0;">$79.95</td>
+                            <td style="padding: 0.35rem 0; color:#10b981;">+$800</td>
+                            <td style="padding: 0.35rem 0;">$39,900</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.35rem 0;">Day 3</td>
+                            <td style="padding: 0.35rem 0;">$80.09</td>
+                            <td style="padding: 0.35rem 0; color:#ef4444;">-$1,400</td>
+                            <td style="padding: 0.35rem 0;">$38,500</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.35rem 0;">Day 12</td>
+                            <td style="padding: 0.35rem 0; font-weight:700;">$79.14</td>
+                            <td style="padding: 0.35rem 0; color:#10b981;">+$8,000 (Offset)</td>
+                            <td style="padding: 0.35rem 0; font-weight:700; color:#10b981;">$48,000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Case Study B: Hedging -->
+    <div class="card" style="margin-bottom: 2rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
+            <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            Case Study 2: Hedging via Producer Short Positions
+        </h3>
+        <p>A farming corporation must establish a firm selling price for its wheat harvest in February before it is harvested in August to eliminate downside crop risk. Hedging is about <strong>removing pricing uncertainty entirely</strong>:</p>
+        
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-size: 0.88rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div>
+                <strong>Crop Cost (Planting/Fertilizing):</strong><br>
+                <span style="font-size: 1.15rem; font-weight:800; color: #d97706;">1,100 ¢ / bushel</span>
+            </div>
+            <div>
+                <strong>August Futures Price (Locked-in):</strong><br>
+                <span style="font-size: 1.15rem; font-weight:800; color: #4f46e5;">1,365 ¢ / bushel</span>
+            </div>
+            <div>
+                <strong>Maximum Profit locked-in:</strong><br>
+                <span style="font-size: 1.15rem; font-weight:800; color: #10b981;">+265 ¢ / bushel</span>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 2rem; align-items: center;">
+            <div>
+                <h4 style="margin: 0 0 0.75rem 0; font-size: 0.95rem; color: #10b981;">Interactive August Harvest Spot Pricing Sandbox</h4>
+                <p style="font-size: 0.85rem; margin-bottom: 1.25rem;">Adjust the physical market price at harvest in August to observe how the futures short position completely offsets spot value fluctuations:</p>
+                
+                <div style="margin-bottom: 1.25rem;">
+                    <label style="font-weight:600; font-size:0.85rem; display:block; margin-bottom:0.5rem;">August Spot Price ($S_T$):</label>
+                    <input id="hedgeSpot" type="range" min="800" max="1800" step="50" value="1000" oninput="calcHedge()" style="width: 100%;">
+                    <span id="hedgeSpotVal" style="font-size: 0.95rem; font-weight: 800; color: var(--accent);">1,000 ¢</span>
+                </div>
+
+                <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; font-size: 0.85rem;">
+                    <div style="display:flex; justify-content:space-between; padding: 0.4rem 0; border-bottom:1px solid var(--card-border);">
+                        <span>Physical Crop Sales (Spot):</span>
+                        <span id="hedgeSpotSale" style="font-weight: 700;">1,000 ¢</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; padding: 0.4rem 0; border-bottom:1px solid var(--card-border);">
+                        <span>Short August Futures P&amp;L:</span>
+                        <span id="hedgeFutPl" style="font-weight: 700; color: #10b981;">+365 ¢</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; padding: 0.4rem 0 0 0; font-size: 0.9rem;">
+                        <strong>Combined Harvest Net Revenue:</strong>
+                        <strong id="hedgeNet" style="color: #10b981;">1,365 ¢ (Net Profit: +265 ¢)</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visualization of the perfect offset -->
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px;">
+                <h4 style="margin: 0 0 1rem 0; font-size: 0.85rem; font-weight: 700; color: #10b981; text-transform: uppercase;">Wheat Hedging Perfect Asymmetry Plot</h4>
+                <div style="position: relative; height: 160px; width: 100%;">
+                    <canvas id="wheatHedgeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function calcSpecLedger() {
+    const entry = 79.94;
+    const mtm = parseFloat(document.getElementById('specMtmPrice').value) || 0;
+    
+    // Speculator has short position of 10 contracts (10,000 barrels)
+    // Daily VM flow calculated relative to entry/previous close
+    const flow = (entry - mtm) * 1000 * 10;
+    const initialBal = 40000;
+    const currentBal = initialBal + flow;
+    
+    const vmEl = document.getElementById('specMtmVm');
+    vmEl.innerText = (flow >= 0 ? '+' : '') + '$' + flow.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    vmEl.style.color = flow >= 0 ? '#10b981' : '#ef4444';
+    
+    const balEl = document.getElementById('specMtmBal');
+    balEl.innerText = '$' + currentBal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    balEl.style.color = currentBal >= 40000 ? '#10b981' : '#ef4444';
+}
+
+function calcHedge() {
+    const cost = 1100;
+    const locked = 1365;
+    const spot = parseInt(document.getElementById('hedgeSpot').value);
+    
+    document.getElementById('hedgeSpotVal').innerText = spot.toLocaleString() + ' ¢';
+    document.getElementById('hedgeSpotSale').innerText = spot.toLocaleString() + ' ¢';
+    
+    const futPl = locked - spot;
+    const net = spot + futPl;
+    const profit = net - cost;
+    
+    const futEl = document.getElementById('hedgeFutPl');
+    futEl.innerText = (futPl >= 0 ? '+' : '') + futPl.toLocaleString() + ' ¢';
+    futEl.style.color = futPl >= 0 ? '#10b981' : '#ef4444';
+    
+    document.getElementById('hedgeNet').innerText = net.toLocaleString() + ' ¢ (Net Profit: +' + profit.toLocaleString() + ' ¢)';
+}
+
+// Chart.js configuration for the perfect hedging offset
+let wheatChartInstance = null;
+function drawWheatHedgeChart() {
+    const ctx = document.getElementById('wheatHedgeChart').getContext('2d');
+    if (wheatChartInstance) {
+        wheatChartInstance.destroy();
+    }
+    
+    const isDark = document.body.classList.contains('dark-theme');
+    const gridColor = isDark ? '#2c2c2c' : '#edece9';
+    const textColor = isDark ? '#e3e3e3' : '#37352f';
+    
+    const spotRange = [800, 1000, 1200, 1365, 1500, 1700, 1800];
+    const cropValue = [...spotRange];
+    const shortFutures = spotRange.map(s => 1365 - s);
+    const overallRevenue = spotRange.map(() => 1365);
+    
+    wheatChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: spotRange.map(s => s + '¢'),
+            datasets: [
+                {
+                    label: 'Unhedged Crop Value',
+                    data: cropValue,
+                    borderColor: '#ef4444',
+                    borderWidth: 1.5,
+                    borderDash: [4, 4],
+                    fill: false,
+                    pointRadius: 0
+                },
+                {
+                    label: 'Short Futures P&L',
+                    data: shortFutures,
+                    borderColor: '#ec4899',
+                    borderWidth: 1.5,
+                    borderDash: [2, 2],
+                    fill: false,
+                    pointRadius: 0
+                },
+                {
+                    label: 'Overall Hedged Revenue (Locks Profit)',
+                    data: overallRevenue,
+                    borderColor: '#10b981',
+                    borderWidth: 3,
+                    fill: false,
+                    pointRadius: 3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: { color: textColor, font: { size: 8, family: 'var(--font-family-sans)' } }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: gridColor },
+                    ticks: { color: textColor, font: { size: 7 } }
+                },
+                y: {
+                    grid: { color: gridColor },
+                    ticks: { color: textColor, font: { size: 7 } }
+                }
+            }
+        }
+    });
+}
+
+// Initialization calls
+setTimeout(() => {
+    calcSpecLedger();
+    calcHedge();
+    drawWheatHedgeChart();
+}, 500);
+
+const hedgeObserver = new MutationObserver(() => {
+    if (document.getElementById('view-cqf-fp-deriv-futures-apps').style.display === 'block') {
+        drawWheatHedgeChart();
+    }
+});
+hedgeObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+</script>

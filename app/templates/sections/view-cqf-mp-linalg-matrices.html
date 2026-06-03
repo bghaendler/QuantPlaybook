@@ -1,0 +1,163 @@
+<div id="view-cqf-mp-linalg-matrices" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(236, 72, 153, 0.1); color: #ec4899; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #ec4899; font-family: var(--font-family-sans);">2.2 Properties of Matrices</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Properties of Matrices</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Matrix layouts, arithmetic, matrix multiplication rules, symmetric/skew-symmetric transposes, and determinants.</div>
+    </header>
+
+    <!-- Matrix Definitions -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1. Matrix Definitions &amp; Layout</h3>
+        <p>A matrix is a rectangular array $A = (a_{ij})$ for $i = 1, \dots, m$ and $j = 1, \dots, n$, written as:</p>
+        <p style="text-align: center;">
+            $$A = \begin{pmatrix} 
+            a_{11} & a_{12} & \dots & a_{1n} \\ 
+            a_{21} & a_{22} & \dots & a_{2n} \\ 
+            \vdots & \vdots & \ddots & \vdots \\ 
+            a_{m1} & a_{m2} & \dots & a_{mn} 
+            \end{pmatrix}$$
+        </p>
+        <p>This is an $(m \times n)$ matrix (having $m$ rows and $n$ columns). If $m = n$, the matrix is called a <strong>square</strong> matrix. The product $mn$ yields the total number of elements in the matrix.</p>
+    </div>
+
+    <!-- Matrix Arithmetic & Multiplication -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">2. Matrix Arithmetic &amp; Multiplication</h3>
+        <p>Let $A, B \in {^m\mathbb{R}^n}$:</p>
+        
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">
+            <strong>Matrix Addition:</strong>
+            <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #6b7280;">Matrices can only be added if they are of the same dimensions. Corresponding elements are added:</p>
+            $$A + B = (a_{ij} + b_{ij}) = B + A$$
+
+            <strong style="display: block; margin-top: 1rem;">Matrix Multiplication:</strong>
+            <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #6b7280;">To multiply two square matrices $\mathbf{A}$ and $\mathbf{B}$ such that $\mathbf{C} = \mathbf{AB}$, the elements of $\mathbf{C}$ are found using the relation:</p>
+            $$C_{ij} = \sum_{k=1}^N A_{ik}B_{kj}$$
+            <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #6b7280;">This means that the $i^{\text{th}}$ row of $\mathbf{A}$ is dotted with the $j^{\text{th}}$ column of $\mathbf{B}$:</p>
+            $$\begin{pmatrix} a & b \\ c & d \end{pmatrix} \begin{pmatrix} e & f \\ g & h \end{pmatrix} = \begin{pmatrix} ae+bg & af+bh \\ ce+dg & cf+dh \end{pmatrix}$$
+            <p style="margin: 0.5rem 0; color: var(--warning); font-weight: bold;">CRITICAL NOTE: Matrix multiplication is non-commutative: $\mathbf{AB} \neq \mathbf{BA}$.</p>
+            <p style="margin: 0.25rem 0;">Dimension compatibility rule: $A_{p \times n} B_{n \times m} \to C_{p \times m}$.</p>
+        </div>
+    </div>
+
+    <!-- The Matrix Transpose -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">3. Matrix Transpose</h3>
+        <p>The transpose of a matrix with entries $A_{ij}$ is the matrix with entries $A_{ji}$, denoted as $\mathbf{A}^{\mathrm{T}}$. The rows of the original matrix become the columns of the transposed matrix:</p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li>If $\mathbf{A} = \mathbf{A}^{\mathrm{T}}$, the matrix is called **symmetric**.</li>
+            <li>If $a_{ij} = -a_{ji}$ with $a_{ii} = 0$, the matrix is called **skew-symmetric**.</li>
+        </ul>
+
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color); margin-top: 1rem;">
+            <strong>Properties of Transposition:</strong>
+            <ol style="padding-left: 1.2rem;">
+                <li>$(\mathbf{A} + \mathbf{B})^{\mathrm{T}} = \mathbf{A}^{\mathrm{T}} + \mathbf{B}^{\mathrm{T}}$</li>
+                <li>$(\mathbf{A}^{\mathrm{T}})^{\mathrm{T}} = \mathbf{A}$</li>
+                <li>$(k\mathbf{A})^{\mathrm{T}} = k\mathbf{A}^{\mathrm{T}}$ (where $k$ is a scalar)</li>
+                <li style="color: var(--warning); font-weight: bold;">$(\mathbf{AB})^{\mathrm{T}} = \mathbf{B}^{\mathrm{T}}\mathbf{A}^{\mathrm{T}}$ &nbsp; (Order reverses!)</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Matrix representation of linear systems -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">4. Matrix Representation of Linear Equations</h3>
+        <p>Consider a $2 \times 2$ set of linear equations for the unknowns $x$ and $y$:</p>
+        <p style="text-align: center;">$$ax + by = p \quad \text{and} \quad cx + dy = q$$</p>
+        <p>We can write this system in matrix-vector form as:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$\begin{pmatrix} a & b \\ c & d \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix} = \begin{pmatrix} p \\ q \end{pmatrix} \quad \implies \quad \mathbf{A}\underline{x} = \underline{p}$$</p>
+        <p>This system can be solved uniquely if the coefficient matrix $\mathbf{A}$ is invertible. This is true if and only if its **determinant** is non-zero:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$\det(A) = \begin{vmatrix} a & b \\ c & d \end{vmatrix} = ad - bc \neq 0$$</p>
+    </div>
+
+    <!-- Interactive Matrix Multiplication & Non-Commutativity sandbox -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">5. Interactive Matrix Multiplication &amp; Non-Commutativity Sandbox</h3>
+        <p>This sandbox lets you configure elements of two $2 \times 2$ matrices, $\mathbf{A}$ and $\mathbf{B}$, to observe the multiplication products. Compare $\mathbf{AB}$ against $\mathbf{BA}$ to visually verify non-commutativity:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start;">
+                <!-- Matrix A Inputs -->
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem; color: var(--accent);">Matrix $\mathbf{A}$ elements:</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                        <input id="linalgMatA11" type="number" value="2" style="padding: 0.35rem;" oninput="runLinAlgMatricesSimulation()">
+                        <input id="linalgMatA12" type="number" value="1" style="padding: 0.35rem;" oninput="runLinAlgMatricesSimulation()">
+                        <input id="linalgMatA21" type="number" value="0" style="padding: 0.35rem;" oninput="runLinAlgMatricesSimulation()">
+                        <input id="linalgMatA22" type="number" value="3" style="padding: 0.35rem;" oninput="runLinAlgMatricesSimulation()">
+                    </div>
+                </div>
+
+                <!-- Matrix B Inputs -->
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem; color: #10b981;">Matrix $\mathbf{B}$ elements:</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                        <input id="linalgMatB11" type="number" value="1" style="padding: 0.35rem;" oninput="runLinAlgMatricesSimulation()">
+                        <input id="linalgMatB12" type="number" value="-1" style="padding: 0.35rem;" oninput="runLinAlgMatricesSimulation()">
+                        <input id="linalgMatB21" type="number" value="2" style="padding: 0.35rem;" oninput="runLinAlgMatricesSimulation()">
+                        <input id="linalgMatB22" type="number" value="4" style="padding: 0.35rem;" oninput="runLinAlgMatricesSimulation()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Products Output -->
+            <div style="margin-top: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); border-left: 4px solid var(--warning);">
+                    <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">MATRIX PRODUCT AB</div>
+                    <div id="linalgMatProdAB" style="font-family: monospace; font-size: 1rem; font-weight: 700; margin-top: 0.5rem; white-space: pre;">[ 4, 2 ]<br>[ 6, 12 ]</div>
+                </div>
+                <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); border-left: 4px solid #8b5cf6;">
+                    <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">MATRIX PRODUCT BA</div>
+                    <div id="linalgMatProdBA" style="font-family: monospace; font-size: 1rem; font-weight: 700; margin-top: 0.5rem; white-space: pre;">[ 2, -2 ]<br>[ 4, 14 ]</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.runLinAlgMatricesSimulation = function() {
+                const a11 = parseFloat(document.getElementById('linalgMatA11').value) || 0;
+                const a12 = parseFloat(document.getElementById('linalgMatA12').value) || 0;
+                const a21 = parseFloat(document.getElementById('linalgMatA21').value) || 0;
+                const a22 = parseFloat(document.getElementById('linalgMatA22').value) || 0;
+
+                const b11 = parseFloat(document.getElementById('linalgMatB11').value) || 0;
+                const b12 = parseFloat(document.getElementById('linalgMatB12').value) || 0;
+                const b21 = parseFloat(document.getElementById('linalgMatB21').value) || 0;
+                const b22 = parseFloat(document.getElementById('linalgMatB22').value) || 0;
+
+                // Compute product AB
+                const ab11 = a11 * b11 + a12 * b21;
+                const ab12 = a11 * b12 + a12 * b22;
+                const ab21 = a21 * b11 + a22 * b21;
+                const ab22 = a21 * b12 + a22 * b22;
+
+                // Compute product BA
+                const ba11 = b11 * a11 + b12 * a21;
+                const ba12 = b11 * a12 + b12 * a22;
+                const ba21 = b21 * a11 + b22 * a21;
+                const ba22 = b21 * a12 + b22 * a22;
+
+                document.getElementById('linalgMatProdAB').innerHTML = `[ ${ab11.toFixed(1)}, ${ab12.toFixed(1)} ]<br>[ ${ab21.toFixed(1)}, ${ab22.toFixed(1)} ]`;
+                document.getElementById('linalgMatProdBA').innerHTML = `[ ${ba11.toFixed(1)}, ${ba12.toFixed(1)} ]<br>[ ${ba21.toFixed(1)}, ${ba22.toFixed(1)} ]`;
+
+                const parent = document.getElementById('view-cqf-mp-linalg-matrices');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            setTimeout(() => {
+                if (document.getElementById('linalgMatA11')) runLinAlgMatricesSimulation();
+            }, 100);
+        })();
+    </script>
+</div>

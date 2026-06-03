@@ -1,0 +1,527 @@
+<div id="view-cqf-m6-l2" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 06: Fixed Income &amp; Credit</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 02</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L2: Stochastic Interest Rate Modeling</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Spot Rate SDEs, One-Factor Bond Pricing Equation, Affine Pricing Theorems, and Two-Factor Systems</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM6L2Spot" onclick="switchM6L2Tab('spot')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. Spot Rate &amp; BPE</button>
+        <button id="tabM6L2Risk" onclick="switchM6L2Tab('risk')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Market Price of Risk</button>
+        <button id="tabM6L2Affine" onclick="switchM6L2Tab('affine')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Affine Pricing</button>
+        <button id="tabM6L2Models" onclick="switchM6L2Tab('models')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. Spot Rate Models</button>
+        <button id="tabM6L2Multi" onclick="switchM6L2Tab('multi')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Multi-Factor Systems</button>
+        <button id="tabM6L2Sandbox" onclick="switchM6L2Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Interactive Stochastic Labs</button>
+    </div>
+
+    <!-- TAB 1: Spot Rate & BPE -->
+    <div id="secM6L2Spot" style="display: block;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; display: grid; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Stochastic Spot Rate ($r$)</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        The instantaneous **spot rate** $r$ is a mathematical construct representing the yield on a bond of infinitesimal maturity [PDF1: 2]. Real-world proxies are short-maturity instruments, such as a one-month bond yield [PDF1: 2]. We govern the spot rate's random walk via a Stochastic Differential Equation (SDE) [PDF1: 2]:
+                        $$\mathrm{d}r = u(r, t)\mathrm{d}t + w(r, t)\mathrm{d}W_t$$
+                        Where $u(r, t)$ is the real-world drift rate, and $w(r, t)$ represents the local interest rate volatility.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">One-Factor Bond Pricing Equation</h3>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                        Because the spot rate $r$ is not a traded asset, we cannot hedge a bond with the underlying rate itself [PDF1: 2]. Instead, we construct a risk-free portfolio $\Pi = V_1 - \Delta V_2$ hedging a bond of maturity $T_1$ against another of maturity $T_2$ [PDF1: 2].
+                        Applying Itô's Lemma, choosing $\Delta = \frac{\partial V_1}{\partial r} / \frac{\partial V_2}{\partial r}$ to eliminate $\mathrm{d}W_t$, and invoking no-arbitrage ($\mathrm{d}\Pi = r \Pi \mathrm{d}t$) separates maturities [PDF1: 3]:
+                        $$\frac{\frac{\partial V_1}{\partial t} + \frac{1}{2}w^2 \frac{\partial^2 V_1}{\partial r^2} - r V_1}{\frac{\partial V_1}{\partial r}} = \frac{\frac{\partial V_2}{\partial t} + \frac{1}{2}w^2 \frac{\partial^2 V_2}{\partial r^2} - r V_2}{\frac{\partial V_2}{\partial r}} = a(r, t)$$
+                        This maturity-independent separation leads directly to the **Bond Pricing Equation (BPE)** [PDF1: 4]:
+                        $$\frac{\partial V}{\partial t} + \frac{1}{2}w(r, t)^2 \frac{\partial^2 V}{\partial r^2} + \left( u(r, t) - \lambda(r, t) w(r, t) \right) \frac{\partial V}{\partial r} - r V = 0$$
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Market Price of Risk -->
+    <div id="secM6L2Risk" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Market Price of Interest Rate Risk ($\lambda$)</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    The separation variable $a(r, t)$ is written without loss of generality in terms of the **market price of interest rate risk** $\lambda(r, t)$ [PDF1: 4]:
+                    $$a(r, t) = \lambda(r, t)w(r, t) - u(r, t)$$
+                    Applying Itô's Lemma to an unhedged bond, its price return decomposes into the risk-free rate plus excess compensation per unit of stochastic risk [PDF1: 5]:
+                    $$\mathrm{d}V - r V \mathrm{d}t = w \frac{\partial V}{\partial r}\left( \mathrm{d}W_t + \lambda(r, t)\mathrm{d}t \right)$$
+                    Because bond prices are inversely related to interest rates ($\frac{\partial V}{\partial r} < 0$), the market price of risk $\lambda$ is typically negative.
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Equities vs. Fixed Income Risk Neutrality</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        - **For Traded Assets (Equities $S$):** The real-world drift is replaced by the risk-free rate $r$ in the pricing PDE. The market price of risk is the Sharpe ratio:
+                        $$\lambda_S = \frac{\mu - r}{\sigma}$$
+                        - **For Non-Traded Quantities (Interest Rates $r$):** All pricing is done under the risk-neutral measure $\mathbb{Q}$, where the real-world drift $u(r, t)$ is replaced by the **risk-neutral drift**:
+                        $$\text{Risk-Neutral Drift} = u(r, t) - \lambda(r, t)w(r, t)$$
+                        $$\lambda_r = \frac{a(r,t) + u(r,t)}{w(r,t)}$$
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Affine Pricing -->
+    <div id="secM6L2Affine" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Tractable Affine Pricing Term Structures</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    An interest rate model belongs to the **affine class** if the price of a zero-coupon bond (ZCB) can be expressed as an exponential linear function of the short rate [PDF1: 11]:
+                    $$V(r, t; T) = \exp\left( A(t; T) - r B(t; T) \right)$$
+                    Where $A(t; T)$ and $B(t; T)$ are maturity-dependent functions.
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">The Affine Pricing Theorem</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        Substituting $V = \exp(A - r B)$ into the Bond Pricing Equation and differentiating twice with respect to $r$ yields the necessary and sufficient structural condition:
+                        * **A spot rate model is affine if and only if both its risk-adjusted drift $(u - \lambda w)$ and local variance $w^2$ are linear in $r$ [PDF1: 12]:**
+                        $$w^2 = \alpha(t)r + \beta(t)$$
+                        $$u - \lambda w = \eta(t) - \gamma(t)r$$
+                        Under these conditions, $A(t; T)$ and $B(t; T)$ are governed by two coupled ordinary differential equations (ODEs):
+                        $$\frac{\partial A}{\partial t} = \eta(t) B - \frac{1}{2}\beta(t) B^2$$
+                        $$\frac{\partial B}{\partial t} = \frac{1}{2}\alpha(t) B^2 + \gamma(t) B - 1$$
+                        With the boundary conditions at maturity $T$ satisfying $V(r, T; T) = 1$: $A(T; T) = 0$ and $B(T; T) = 0$ [PDF1: 12].
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Spot Rate Models -->
+    <div id="secM6L2Models" style="display: none; max-height: 600px; overflow-y: auto; padding-right: 0.5rem;">
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">A. The Vasicek Model (1977)</h3>
+            <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563;">
+                The Vasicek spot rate is mean-reverting and governed by [PDF1: 9]:
+                $$\mathrm{d}r = (\eta - \gamma r)\mathrm{d}t + \beta^{1/2} \mathrm{d}W_t$$
+                Its analytical functions are solved directly from the affine ODEs [PDF1: 10]:
+                $$B(t; T) = \frac{1}{\gamma}\left( 1 - e^{-\gamma(T-t)} \right)$$
+                $$A(t; T) = \frac{1}{\gamma^2}\left( B(t; T) - T + t \right)\left( \eta \gamma - \frac{1}{2}\beta \right) - \frac{\beta B(t; T)^2}{4\gamma}$$
+                <strong>Disadvantage:</strong> Under the Fokker-Planck steady-state distribution, $r_T$ is Normally distributed, meaning the spot rate can breach zero and become negative with positive probability [PDF1: 11].
+            </p>
+        </div>
+
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">B. The Cox-Ingersoll-Ross (CIR) Model (1985)</h3>
+            <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563;">
+                To resolve the negative rate problem, the CIR model scales local variance by the spot rate itself [PDF1: 47]:
+                $$\mathrm{d}r = (\eta - \gamma r)\mathrm{d}t + \sqrt{\alpha r} \mathrm{d}W_t$$
+                The spot rate remains strictly positive and bounded if the **Feller Condition** is satisfied [PDF1: 47]:
+                $$\eta > \alpha/2$$
+                The lower boundary $r=0$ is non-attainable if the steady-state parameter $k > 1$ [PDF1: 67]:
+                $$k = \frac{2\eta}{\alpha} + \frac{2\beta\gamma}{\alpha^2} > 1$$
+            </p>
+        </div>
+
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">C. The Ho &amp; Lee Model (1986)</h3>
+            <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563;">
+                The first no-arbitrage model, designed to perfectly fit the initial market yield curve $Z_M(t^*; T)$ by using a time-dependent drift $\eta(t)$ [PDF1: 18]:
+                $$\mathrm{d}r = \eta(t)\mathrm{d}t + \beta^{1/2}\mathrm{d}W_t$$
+                Applying Leibniz's integration rule twice on the market curve logs solves the inverse problem, yielding the calibrated parameter [PDF1: 20]:
+                $$\eta^*(t) = -\frac{\partial^2}{\partial t^2}\log\left( Z_M(t^*; t) \right) + \beta(t - t^*)$$
+            </p>
+        </div>
+    </div>
+
+    <!-- TAB 5: Multi-Factor Systems -->
+    <div id="secM6L2Multi" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Multi-Factor Systems &amp; Two-Factor PDEs</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    <strong>One-Factor Limitations:</strong> A single spot rate model assumes all yields are perfectly correlated to a single random source $r$, which fails to capture non-parallel shifts, tilts, or independent long/short-rate dynamics [PDF1: 21].
+                    <strong>Two-Factor SDEs:</strong> We model two correlated stochastic variables (short-rate $r$ and consol long-rate or variance $l$) [PDF1: 21]:
+                    $$\mathrm{d}r = u \mathrm{d}t + w \mathrm{d}W_1, \quad \mathrm{d}l = p \mathrm{d}t + q \mathrm{d}W_2 \quad (\text{with } \mathbb{E}[\mathrm{d}W_1\mathrm{d}W_2] = \rho\mathrm{d}t)$$
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Two-Factor Bond Pricing PDE</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        To eliminate both sources of randomness ($\mathrm{d}W_1, \mathrm{d}W_2$), we construct a portfolio using three bonds of different maturities [PDF1: 21]. Under no-arbitrage, the consistency determinant of the 3x2 matrix must equal zero, yielding two market prices of risk ($\lambda_r, \lambda_l$) and the **Two-Factor Bond Pricing PDE** [PDF1: 23, 24]:
+                        $$\frac{\partial V}{\partial t} + \frac{1}{2}w^2 \frac{\partial^2 V}{\partial r^2} + \rho w q \frac{\partial^2 V}{\partial r \partial l} + \frac{1}{2}q^2 \frac{\partial^2 V}{\partial l^2} + (u - \lambda_r w)\frac{\partial V}{\partial r} + (p - \lambda_l q)\frac{\partial V}{\partial l} - r V = 0$$
+                        * **Brennan &amp; Schwartz Model (1982):** Mean-reverts short rate $r$ to consolidations long-rate $l$ [PDF1: 25]. Due to lognormal form, no analytical pricing solutions exist, and simulations can blow up.
+                        * **Fong &amp; Vasicek (1991):** Short-rate variance $\xi$ follows its own mean-reverting square-root process.
+                        * **Longstaff &amp; Schwartz (1992):** Models two independent square-root factors ($x, y$), expressing the spot rate linearly: $r = c x + d y$ [PDF1: 25].
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Interactive Stochastic Labs -->
+    <div id="secM6L2Sandbox" style="display: none;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <!-- LAB A: Vasicek vs. CIR Monte Carlo Paths -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab A: Vasicek vs. CIR Monte Carlo Paths</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.5rem; font-size:0.75rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Mean Reversion ($\gamma$):</label>
+                        <input id="numM6L2GammaMC" type="number" value="1.5" step="0.1" style="width:100%; padding:0.15rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L2MonteCarloLab()">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Mean Level ($\theta$):</label>
+                        <input id="numM6L2ThetaMC" type="number" value="0.05" step="0.01" style="width:100%; padding:0.15rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L2MonteCarloLab()">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Volatility ($\sigma$):</label>
+                        <input id="numM6L2VolMC" type="number" value="0.08" step="0.01" style="width:100%; padding:0.15rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L2MonteCarloLab()">
+                    </div>
+                </div>
+                <div style="height: 140px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m6l2McChart"></canvas>
+                </div>
+                <div id="outM6L2Mc" style="font-size:0.75rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Running stochastic spot path simulations...
+                </div>
+            </div>
+
+            <!-- LAB B: Yield Curve Affine Term Structure Generator -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab B: Yield Curve Affine Term Structure</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.5rem; font-size:0.75rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Pricing Model:</label>
+                        <select id="selectM6L2ModelAffine" style="width:100%; padding:0.15rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L2AffineLab()">
+                            <option value="vasicek" selected>Vasicek Model</option>
+                            <option value="cir">CIR Model</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Current rate ($r_0$):</label>
+                        <input id="numM6L2R0Affine" type="number" value="0.03" step="0.01" style="width:100%; padding:0.15rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L2AffineLab()">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Reversion ($\gamma$):</label>
+                        <input id="numM6L2GammaAffine" type="number" value="0.5" step="0.1" style="width:100%; padding:0.15rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L2AffineLab()">
+                    </div>
+                </div>
+                <div style="height: 140px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m6l2AffineChart"></canvas>
+                </div>
+                <div id="outM6L2Affine" style="font-size:0.75rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Generating analytical affine term structures...
+                </div>
+            </div>
+
+            <!-- LAB C: Two-Factor Yield Curve & Twists Simulator -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem; grid-column: span 2;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab C: Two-Factor Yield Curve &amp; Twists</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Correlation ($\rho$):</label>
+                        <input id="rangeM6L2Rho" type="range" min="-1" max="1" step="0.1" value="-0.5" style="width:100%;" oninput="document.getElementById('outM6L2RhoVal').innerText = this.value; runM6L2TwoFactorLab()">
+                        <span style="font-size:0.72rem; font-weight:bold; color:var(--accent);">Selected: <span id="outM6L2RhoVal">-0.5</span></span>
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Long Rate Volatility:</label>
+                        <input id="numM6L2VolL" type="number" value="0.04" step="0.01" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L2TwoFactorLab()">
+                    </div>
+                    <div style="display:flex; align-items:flex-end;">
+                        <button class="btn" style="width:100%; background:var(--accent); color:#ffffff; font-weight:700; border:none; padding:0.2rem; border-radius:4px; cursor:pointer;" onclick="runM6L2TwoFactorLab()">Simulate Two-Factor Curves</button>
+                    </div>
+                </div>
+                <div style="height: 160px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m6l2TwoFactorChart"></canvas>
+                </div>
+                <div id="outM6L2TwoFactor" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Modeling correlated two-factor curves...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching logic for CQF M6 L2
+    window.switchM6L2Tab = function(tab) {
+        const tabs = ['spot', 'risk', 'affine', 'models', 'multi', 'sandbox'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM6L2' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM6L2' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) {
+                sec.style.display = (t === tab ? 'block' : 'none');
+                if (t === tab && !sec.dataset.typeset) {
+                    if (typeof window.safeTypeset === 'function') {
+                        window.safeTypeset([sec]);
+                        sec.dataset.typeset = 'true';
+                    }
+                }
+            }
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        if (tab === 'sandbox') {
+            setTimeout(initM6L2Labs, 100);
+        }
+    };
+
+    let m6l2McChartInstance = null;
+    let m6l2AffineChartInstance = null;
+    let m6l2TwoFactorChartInstance = null;
+
+    // Normal Random Box-Muller generator
+    function m6l2RandomNormal() {
+        let u = 0, v = 0;
+        while(u === 0) u = Math.random();
+        while(v === 0) v = Math.random();
+        return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    }
+
+    window.initM6L2Labs = function() {
+        runM6L2MonteCarloLab();
+        runM6L2AffineLab();
+        runM6L2TwoFactorLab();
+    };
+
+    window.runM6L2MonteCarloLab = function() {
+        const gamma = parseFloat(document.getElementById('numM6L2GammaMC').value);
+        const theta = parseFloat(document.getElementById('numM6L2ThetaMC').value);
+        const vol = parseFloat(document.getElementById('numM6L2VolMC').value);
+
+        const r0 = 0.01; // Low starting rate to trigger negative rate breaches in Vasicek
+        const totalSteps = 100;
+        const T = 2.0;
+        const dt = T / totalSteps;
+
+        let times = [];
+        for (let i = 0; i <= totalSteps; i++) times.push((i * dt).toFixed(2));
+
+        // Generate shared random seed numbers so that the path trajectories are directly comparable
+        let shocks = [];
+        for (let i = 0; i < totalSteps; i++) shocks.push(m6l2RandomNormal());
+
+        // Vasicek Path
+        let rV = r0;
+        let vPath = [rV * 100];
+        // CIR Path
+        let rC = r0;
+        let cPath = [rC * 100];
+
+        let breaches = 0;
+
+        for (let i = 0; i < totalSteps; i++) {
+            const rand = shocks[i];
+
+            // Vasicek SDE
+            rV = rV + gamma * (theta - rV) * dt + vol * Math.sqrt(dt) * rand;
+            vPath.push(rV * 100);
+            if (rV < 0) breaches++;
+
+            // CIR SDE
+            rC = rC + gamma * (theta - rC) * dt + vol * Math.sqrt(Math.max(rC, 0)) * Math.sqrt(dt) * rand;
+            cPath.push(rC * 100);
+        }
+
+        const outEl = document.getElementById('outM6L2Mc');
+        outEl.innerHTML = `
+            Initial Rate: <strong>${(r0*100).toFixed(0)}%</strong>. Volatility: <strong>${(vol*100).toFixed(0)}%</strong>.<br>
+            - **Vasicek model:** Breached the $0.0\\%$ negative boundary **${breaches} times** due to Normal distribution characteristics.<br>
+            - **CIR model:** Remained strictly positive as the diffusion coefficient $\\sqrt{r}$ shrinks near $0$, pulling rates back dynamically.
+        `;
+        if (typeof window.safeTypeset === 'function') {
+            window.safeTypeset([outEl]);
+        }
+
+        const ctx = document.getElementById('m6l2McChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m6l2McChartInstance) m6l2McChartInstance.destroy();
+
+        m6l2McChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: times,
+                datasets: [
+                    { label: 'Vasicek Paths (%)', data: vPath, borderColor: '#ef4444', borderWidth: 1.5, fill: false, pointRadius: 0 },
+                    { label: 'CIR Paths (%)', data: cPath, borderColor: '#10b981', borderWidth: 1.5, fill: false, pointRadius: 0 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, labels: { font: { size: 8 }, color: tickColor } } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { title: { display: true, text: 'Spot Rate (%)', font: { size: 8 }, color: tickColor }, ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+
+    window.runM6L2AffineLab = function() {
+        const model = document.getElementById('selectM6L2ModelAffine').value;
+        const r0 = parseFloat(document.getElementById('numM6L2R0Affine').value);
+        const gamma = parseFloat(document.getElementById('numM6L2GammaAffine').value);
+        const theta = 0.05; // fixed mean level
+        const sig = 0.06; // fixed volatility
+
+        let tenors = [0.25, 0.5, 1.0, 2.0, 3.0, 5.0, 7.0, 10.0];
+        let yields = [];
+
+        tenors.forEach(T => {
+            let B = 0, A = 0;
+            if (model === 'vasicek') {
+                // Vasicek analytical coefficients
+                B = (1 - Math.exp(-gamma * T)) / gamma;
+                A = ((B - T) * (gamma * gamma * theta - 0.5 * sig * sig)) / (gamma * gamma) - (sig * sig * B * B) / (4 * gamma);
+            } else {
+                // CIR analytical coefficients
+                const h = Math.sqrt(gamma * gamma + 2 * sig * sig);
+                B = (2 * (Math.exp(h * T) - 1)) / ((h + gamma) * (Math.exp(h * T) - 1) + 2 * h);
+                A = (2 * gamma * theta / (sig * sig)) * Math.log((2 * h * Math.exp((h + gamma) * T / 2)) / ((h + gamma) * (Math.exp(h * T) - 1) + 2 * h));
+            }
+            const price = Math.exp(A - r0 * B);
+            const y = -Math.log(price) / T;
+            yields.push(y * 100);
+        });
+
+        const outEl = document.getElementById('outM6L2Affine');
+        outEl.innerHTML = `
+            Model selected: <strong>${model.toUpperCase()}</strong>. Short Rate $r_0$: <strong>${(r0*100).toFixed(0)}%</strong>. Reversion $\\gamma$: <strong>${gamma.toFixed(1)}</strong>.<br>
+            Changes in mean reversion and initial rates deform the term structure, generating **upward sloping**, **flat**, or **inverted** yield curves.
+        `;
+        if (typeof window.safeTypeset === 'function') {
+            window.safeTypeset([outEl]);
+        }
+
+        const ctx = document.getElementById('m6l2AffineChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m6l2AffineChartInstance) m6l2AffineChartInstance.destroy();
+
+        m6l2AffineChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: tenors.map(t => t + 'Y'),
+                datasets: [{
+                    label: model.toUpperCase() + ' ZCB Yield (%)',
+                    data: yields,
+                    borderColor: 'var(--accent)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, labels: { font: { size: 8 }, color: tickColor } } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { title: { display: true, text: 'Yield (%)', font: { size: 8 }, color: tickColor }, ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+
+    window.runM6L2TwoFactorLab = function() {
+        const rho = parseFloat(document.getElementById('rangeM6L2Rho').value);
+        const volL = parseFloat(document.getElementById('numM6L2VolL').value);
+
+        const r0 = 0.03; // Short rate
+        const l0 = 0.05; // Long rate
+        const volR = 0.05;
+
+        const totalSteps = 100;
+        const T = 10.0;
+        const dt = T / totalSteps;
+
+        let timeLabels = [];
+        for (let i = 0; i <= totalSteps; i++) timeLabels.push((i * dt).toFixed(1) + 'Y');
+
+        // Correlated paths generator
+        let rPath = [r0 * 100];
+        let lPath = [l0 * 100];
+
+        let r = r0;
+        let l = l0;
+
+        for (let i = 0; i < totalSteps; i++) {
+            const z1 = m6l2RandomNormal();
+            const z2 = m6l2RandomNormal();
+            const correlatedZ = rho * z1 + Math.sqrt(1 - rho * rho) * z2;
+
+            // Short rate reverts to long rate (Brennan Schwartz style mean reversion)
+            r = r + 1.2 * (l - r) * dt + volR * Math.sqrt(dt) * z1;
+            // Long rate reverts to constant
+            l = l + 0.3 * (0.05 - l) * dt + volL * Math.sqrt(dt) * correlatedZ;
+
+            rPath.push(r * 100);
+            lPath.push(l * 100);
+        }
+
+        const outEl = document.getElementById('outM6L2TwoFactor');
+        outEl.innerHTML = `
+            Two-Factor Correlation $\\rho$: <strong>${rho.toFixed(1)}</strong>. consol Volatility: <strong>${(volL*100).toFixed(0)}%</strong>.<br>
+            - Short-rate path (Green) mean-reverts dynamically to the long-term consol rate (Red).<br>
+            - This dual randomness framework allows for **tilt, steepening, and twists** in the yield curve that single-factor models cannot mathematically represent.
+        `;
+        if (typeof window.safeTypeset === 'function') {
+            window.safeTypeset([outEl]);
+        }
+
+        const ctx = document.getElementById('m6l2TwoFactorChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m6l2TwoFactorChartInstance) m6l2TwoFactorChartInstance.destroy();
+
+        m6l2TwoFactorChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: [
+                    { label: 'Short-Term Rate (%)', data: rPath, borderColor: '#10b981', borderWidth: 1.5, fill: false, pointRadius: 0 },
+                    { label: 'Long-Term Consol Rate (%)', data: lPath, borderColor: '#ef4444', borderWidth: 1.5, fill: false, pointRadius: 0 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, labels: { font: { size: 8 }, color: tickColor } } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { title: { display: true, text: 'Interest Rate (%)', font: { size: 8 }, color: tickColor }, ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+</script>

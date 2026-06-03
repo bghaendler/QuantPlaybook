@@ -1,0 +1,120 @@
+<div id="view-girsanov-theorem" style="display: none;">
+    <header>
+        <h1>Module 3.1: Stochastic Calculus</h1>
+        <div class="subtitle" style="color: #6b7280;">4. Change of Measure &amp; Girsanov Theorem</div>
+    </header>
+    <div class="container" style="grid-template-columns: 1fr; gap: 3rem; max-width: 1400px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+            <div class="card" style="margin-bottom: 0;">
+                <h2>Change of Measure &amp; Girsanov's Theorem</h2>
+                <p>In quantitative finance, we often need to switch between the <strong>Real-World Probability Measure</strong> $\mathbb{P}$ (used for forecasting and historical analysis) and the <strong>Risk-Neutral Probability Measure</strong> $\mathbb{Q}$ (used for derivative pricing).</p>
+                <p>Girsanov's Theorem states that we can change the drift of a Brownian motion by changing the probability measure. Given a "drift shift" or market price of risk process $\lambda(t)$ adapted to $\mathcal{F}_t$, we define a new process:</p>
+                <p style="text-align: center;">$$ dW^*(t) = dW(t) + \lambda(t) dt $$</p>
+                <p>This process $W^*(t)$ is a standard Brownian motion under the new probability measure $\mathbb{Q}$. The two measures are equivalent (they agree on what is possible vs. impossible), and they are linked by the <strong>Radon-Nikodym derivative density process</strong> $\zeta(t)$:</p>
+                <div style="background: #f9fafb; padding: 1.5rem; border-radius: 4px; border-left: 4px solid var(--accent); margin: 1.5rem 0;">
+                    <strong>Radon-Nikodym Derivative ($\zeta(t)$):</strong>
+                    <p style="text-align: center; font-size: 1.05rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                        $$ \zeta(t) = \left. \frac{d\mathbb{Q}}{d\mathbb{P}} \right|_{\mathcal{F}_t} = \exp\left( -\int_0^t \lambda(s) dW(s) - \frac{1}{2} \int_0^t \lambda(s)^2 ds \right) $$
+                    </p>
+                    By definition, $\zeta(t)$ is a stochastic exponential $\mathcal{E}\left( -\int \lambda dW \right)$, meaning it is a **positive martingale** under $\mathbb{P}$ with $\mathbb{E}[\zeta(t)] = 1$ for all $t$.
+                </div>
+                <p>To ensure that $\zeta(t)$ is a true martingale (and doesn't collapse to a strict local martingale), we require **Novikov's Condition**: $\mathbb{E}\left[\exp\left(\frac{1}{2}\int_0^T \lambda(t)^2 dt\right)\right] < \infty$.</p>
+            </div>
+            <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px;">
+                <h3 style="margin-top:0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+                <p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> Imagine you are playing a rigged coin toss game where heads comes up 60% of the time. Girsanov's theorem is like putting on "probability glasses" that re-weight the odds so the coin appears perfectly fair (50/50). It doesn't change the physical path of the coin; it just changes how we *measure* its likelihood.</p>
+                <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+                    <li style="margin-bottom: 1rem;"><strong>Measure Change:</strong> We change the drift of our paths by changing the likelihood weights of those paths. To make an upward-drifting stock look flat, we weight the downward paths higher and the upward paths lower.</li>
+                    <li style="margin-bottom: 1rem;"><strong>Radon-Nikodym Derivative ($\zeta$):</strong> This is the exact weighting factor. If a path goes way up, $\zeta$ becomes very small (discounting its probability). If it goes way down, $\zeta$ becomes very large.</li>
+                    <li style="margin-bottom: 1rem;"><strong>$\zeta(t)$ Martingale Property:</strong> The average weighting factor must stay exactly 1.0. Some paths get weighted 10x higher, others 10x lower, but on average, the total probability space weights sum to 1.</li>
+                    <li style="margin-bottom: 0;"><strong>Example:</strong> A stock has a real drift of 12%. By shifting the measure to $\mathbb{Q}$ where the drift is 4% (risk-free), we can compute expectations easily without having to estimate investors' risk preferences.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Interactive Visualization -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <h2>Interactive Simulation: Girsanov Drift Shift &amp; Radon-Nikodym Martingale</h2>
+            <p style="margin-bottom: 1.5rem;">Adjust the drift shift $\lambda$ (market price of risk) and process volatility $\sigma$. Observe how Girsanov's theorem shifts the drift of the Itô process from the real-world $\mathbb{P}$ to the risk-neutral $\mathbb{Q}$. Also examine the Radon-Nikodym density process $\zeta(t)$: individual paths can explode or decay, but their **Expected Average** remains perfectly flat at 1.0 (verifying the martingale property!).</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <!-- Drift Shift Slider -->
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <label for="girsanovLambdaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Drift Shift $\lambda$: <span id="girsanovLambdaValue">0.15</span></label>
+                    <input id="girsanovLambdaSlider" max="0.40" min="-0.40" step="0.05" style="width: 100%;" type="range" value="0.15"/>
+                </div>
+                <!-- Volatility Slider -->
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <label for="girsanovSigmaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Volatility $\sigma$: <span id="girsanovSigmaValue">0.15</span></label>
+                    <input id="girsanovSigmaSlider" max="0.30" min="0.05" step="0.01" style="width: 100%;" type="range" value="0.15"/>
+                </div>
+                <!-- Indicator -->
+                <div style="border-left: 2px solid #cbd5e1; padding-left: 1.5rem; display: flex; flex-direction: column; justify-content: center;">
+                    <div style="font-size: 0.85rem; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 0.25rem;">Expected $\mathbb{E}[\zeta(t)]$</div>
+                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--success); font-family: 'Courier New', monospace;">
+                        1.00000
+                    </div>
+                </div>
+                <!-- Re-simulate Button -->
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <button id="resimulateGirsanovBtn" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%;">Run 5 Paths</button>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <h3 style="margin-top:0; font-family: 'Inter', sans-serif; font-size: 1.1rem; color: #475569; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem;">1. Drift Shift: Process under $\mathbb{P}$ vs. $\mathbb{Q}$</h3>
+                    <div class="chart-container" style="height: 350px;">
+                        <canvas id="girsanovDriftChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="margin-top:0; font-family: 'Inter', sans-serif; font-size: 1.1rem; color: #475569; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem;">2. Radon-Nikodym Density $\zeta(t) = \left. \frac{d\mathbb{Q}}{d\mathbb{P}} \right|_{\mathcal{F}_t}$</h3>
+                    <div class="chart-container" style="height: 350px;">
+                        <canvas id="girsanovDensityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sample Exercise -->
+        <div class="card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
+            <h2 style="color: #166534;">Practice Exercise: Finding Radon-Nikodym Martingales</h2>
+            <p style="color: #166534; font-weight: 500;">Let $\lambda$ be a constant. Find the expectation $\mathbb{E}[e^{-\lambda W(t)}]$ under the real-world measure $\mathbb{P}$ where $W(t)$ is standard Brownian motion, and use this to prove that $\mathbb{E}[\zeta(t)] = 1$ for the Radon-Nikodym density process.</p>
+            <details style="background: white; padding: 1rem; border-radius: 6px; border: 1px solid #bbf7d0;">
+                <summary style="cursor: pointer; font-weight: 600; color: #15803d; list-style: none; display: flex; align-items: center;">
+                    <span style="margin-right: 0.5rem;">👉</span> Show Step-by-Step Solution
+                </summary>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; color: #334155;">
+                    <ol style="line-height: 1.8;">
+                        <li>Since $W(t) \sim \mathcal{N}(0, t)$, the random variable $-\lambda W(t)$ is normally distributed: $-\lambda W(t) \sim \mathcal{N}(0, \lambda^2 t)$.</li>
+                        <li>Recall that for a normal random variable $Y \sim \mathcal{N}(\mu_y, \sigma_y^2)$, its moment generating function is:
+                            <div style="text-align: center; margin: 0.5rem 0;">$$\mathbb{E}[e^Y] = \exp\left( \mu_y + \frac{1}{2} \sigma_y^2 \right)$$</div>
+                        </li>
+                        <li>Apply this to $Y = -\lambda W(t)$ with $\mu_y = 0$ and $\sigma_y^2 = \lambda^2 t$:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$\mathbb{E}[e^{-\lambda W(t)}] = \exp\left( 0 + \frac{1}{2} \lambda^2 t \right) = e^{\frac{1}{2} \lambda^2 t}$$
+                            </div>
+                        </li>
+                        <li>Now write down the Radon-Nikodym density process for a constant shift $\lambda$:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$\zeta(t) = e^{-\lambda W(t) - \frac{1}{2}\lambda^2 t} = e^{-\lambda W(t)} e^{-\frac{1}{2}\lambda^2 t}$$
+                            </div>
+                        </li>
+                        <li>Take the expectation. Since $e^{-\frac{1}{2}\lambda^2 t}$ is deterministic, it factors out:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$\mathbb{E}[\zeta(t)] = \mathbb{E}[e^{-\lambda W(t)} e^{-\frac{1}{2}\lambda^2 t}] = e^{-\frac{1}{2}\lambda^2 t} \mathbb{E}[e^{-\lambda W(t)}]$$
+                            </div>
+                        </li>
+                        <li>Substitute the expectation from Step 3:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$\mathbb{E}[\zeta(t)] = e^{-\frac{1}{2}\lambda^2 t} \cdot e^{\frac{1}{2}\lambda^2 t} = e^0 = 1$$
+                            </div>
+                        </li>
+                    </ol>
+                    <p><strong>Conclusion:</strong> The expectation of the Radon-Nikodym derivative is exactly **$1.0$** at all times. This conservation of average probability weights confirms that $\zeta(t)$ is a valid density process and a martingale.</p>
+                </div>
+            </details>
+        </div>
+    </div>
+</div>

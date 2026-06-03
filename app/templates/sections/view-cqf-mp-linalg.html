@@ -1,0 +1,378 @@
+<div id="view-cqf-mp-linalg" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(236, 72, 153, 0.1); color: #ec4899; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #ec4899; font-family: var(--font-family-sans);">Linear Algebra</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Linear Algebra</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Vectors, Matrices, Eigenvalues, and Systems of Linear Equations</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
+        <button id="tabLinAlgLectures" onclick="switchLinAlgTab('lectures')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Video Lecture Index</button>
+        <button id="tabLinAlgTheory" onclick="switchLinAlgTab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Core Linear Algebra Theory</button>
+        <button id="tabLinAlgSandbox" onclick="switchLinAlgTab('sandbox')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Eigenvalue Explorer</button>
+    </div>
+
+    <!-- Tab A: Video Lectures Directory -->
+    <div id="secLinAlgLectures" style="display: block;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 2rem; max-height: 500px; overflow-y: auto;">
+            <!-- Video 1 -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                        <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Introduction To Linear Algebra - Properties of Vectors</h4>
+                        <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">12:20</span>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Vector definitions, components, addition, scalar multiplication, dot products, norms, orthogonality.</p>
+                </div>
+            </div>
+
+            <!-- Video 2 -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                        <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Introduction To Linear Algebra - Matrices</h4>
+                        <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">14:24</span>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Definitions, operations (addition, multiplication, transposition), symmetric/skew-symmetric, determinants, identity matrices.</p>
+                </div>
+            </div>
+
+            <!-- Video 3 -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                        <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Introduction To Linear Algebra - Using Matrix Notation for Solving Linear Systems</h4>
+                        <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">14:10</span>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Gaussian elimination, augmented matrices, row operations, upper triangular form, back-substitution.</p>
+                </div>
+            </div>
+
+            <!-- Video 4 -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                        <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Introduction To Linear Algebra - Matrix Inverse</h4>
+                        <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">07:00</span>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">$A \cdot A^{-1} = I$, 2×2 formula using determinant/adjoint, cofactors and minors for larger matrices.</p>
+                </div>
+            </div>
+
+            <!-- Video 5 -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                        <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Introduction To Linear Algebra - Orthogonal Matrices</h4>
+                        <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">01:23</span>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Inverse equals transpose, rows and columns mutually orthogonal, dot products equal zero.</p>
+                </div>
+            </div>
+
+            <!-- Video 6 -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                        <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Introduction To Linear Algebra - Eigenvalues And Eigenvectors</h4>
+                        <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">20:12</span>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Characteristic polynomials, real symmetric matrices, distinct eigenvalues, orthogonal eigenvectors.</p>
+                </div>
+                <div style="margin-top: 1rem; font-size: 0.8rem; font-weight: 600; color: var(--accent); display: flex; align-items: center; gap: 0.25rem; cursor: pointer;" onclick="switchLinAlgTab('sandbox')">
+                    Interactive Sandbox Available &rarr;
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab B: Core Linear Algebra Theory -->
+    <div id="secLinAlgTheory" style="display: none;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Card 1: Eigenvalue Decomposition -->
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700;">1. Eigenvalue Decomposition</h3>
+                <p>A matrix $A$ acting on an eigenvector $\mathbf{v}$ simply scales it by eigenvalue $\lambda$:</p>
+                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
+                    $$A\mathbf{v} = \lambda\mathbf{v}$$
+                </p>
+                <p>Eigenvalues are roots of the characteristic polynomial:</p>
+                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
+                    $$\det(A - \lambda I) = 0$$
+                </p>
+                <p>If $A$ has $n$ linearly independent eigenvectors, it admits the decomposition:</p>
+                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
+                    $$A = PDP^{-1}$$
+                </p>
+                <p>where $D$ is the diagonal matrix of eigenvalues and $P$ is the matrix of eigenvectors.</p>
+                <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.75rem; padding-top: 0.5rem; border-top: 1px solid var(--card-border);">In quantitative finance, eigendecomposition is key for PCA and portfolio variance decomposition.</p>
+            </div>
+
+            <!-- Card 2: Matrix Inverse & Linear Systems -->
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">2. Matrix Inverse &amp; Linear Systems</h3>
+                <p>For the system $A\mathbf{x} = \mathbf{b}$, the solution is obtained by inverting $A$:</p>
+                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
+                    $$\mathbf{x} = A^{-1}\mathbf{b}$$
+                </p>
+                <p>For a 2×2 matrix, the inverse is computed via the adjoint formula:</p>
+                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
+                    $$A^{-1} = \frac{1}{\det(A)} \cdot \text{adj}(A)$$
+                </p>
+                <p>where the determinant of $A = \begin{bmatrix} a & b \\ c & d \end{bmatrix}$ is:</p>
+                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
+                    $$\det(A) = ad - bc$$
+                </p>
+                <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.75rem; padding-top: 0.5rem; border-top: 1px solid var(--card-border);">Solving systems of linear equations appears in bond portfolio optimization and yield curve fitting.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab C: Eigenvalue Explorer Sandbox -->
+    <div id="secLinAlgSandbox" style="display: none;">
+        <div class="card" style="margin-bottom: 2rem;">
+            <div style="margin-bottom: 1.5rem;">
+                <h2 style="margin: 0; font-family: var(--font-family-sans); font-weight: 800; font-size: 1.4rem;">Eigenvalue Explorer Sandbox</h2>
+                <div style="color: #6b7280; font-size: 0.95rem; margin-top: 0.25rem;">Enter a 2×2 matrix and compute its determinant, trace, eigenvalues, and eigenvectors. The plot shows the unit circle (green) and the transformed ellipse (orange dashed) after multiplication by the matrix, visually revealing how eigenvectors are stretched.</div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 280px 1fr; gap: 2rem; align-items: start;">
+                <!-- Controls Column -->
+                <div style="background: var(--metric-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-family-sans);">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">Matrix Entries</h3>
+
+                    <!-- Matrix Input Grid -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                        <div>
+                            <label for="linAlgA11" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.8rem; color: var(--text-color);">$a_{11}$</label>
+                            <input id="linAlgA11" type="number" value="2" step="0.1" style="width: 100%; padding: 0.4rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-family: var(--font-family-sans); font-weight: 600; box-sizing: border-box;">
+                        </div>
+                        <div>
+                            <label for="linAlgA12" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.8rem; color: var(--text-color);">$a_{12}$</label>
+                            <input id="linAlgA12" type="number" value="1" step="0.1" style="width: 100%; padding: 0.4rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-family: var(--font-family-sans); font-weight: 600; box-sizing: border-box;">
+                        </div>
+                        <div>
+                            <label for="linAlgA21" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.8rem; color: var(--text-color);">$a_{21}$</label>
+                            <input id="linAlgA21" type="number" value="1" step="0.1" style="width: 100%; padding: 0.4rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-family: var(--font-family-sans); font-weight: 600; box-sizing: border-box;">
+                        </div>
+                        <div>
+                            <label for="linAlgA22" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.8rem; color: var(--text-color);">$a_{22}$</label>
+                            <input id="linAlgA22" type="number" value="3" step="0.1" style="width: 100%; padding: 0.4rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-family: var(--font-family-sans); font-weight: 600; box-sizing: border-box;">
+                        </div>
+                    </div>
+
+                    <!-- Compute Button -->
+                    <button onclick="runLinAlgSandbox()" style="width: 100%; padding: 0.6rem 1rem; font-size: 0.9rem; font-weight: 700; background: var(--accent); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-family: var(--font-family-sans); transition: opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">Compute</button>
+
+                    <!-- Results Output -->
+                    <div id="linAlgResults" style="font-size: 0.82rem; line-height: 1.7; color: var(--text-color); display: none;">
+                        <div style="border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; margin-bottom: 0.5rem; font-weight: 700; font-size: 0.85rem;">Results</div>
+                        <div><strong>Determinant:</strong> <span id="linAlgDet">—</span></div>
+                        <div><strong>Trace:</strong> <span id="linAlgTrace">—</span></div>
+                        <div style="margin-top: 0.5rem;"><strong>Eigenvalue λ₁:</strong> <span id="linAlgEig1">—</span></div>
+                        <div><strong>Eigenvalue λ₂:</strong> <span id="linAlgEig2">—</span></div>
+                        <div style="margin-top: 0.5rem;"><strong>Eigenvector v₁:</strong> <span id="linAlgVec1">—</span></div>
+                        <div><strong>Eigenvector v₂:</strong> <span id="linAlgVec2">—</span></div>
+                    </div>
+                </div>
+
+                <!-- Plot Column -->
+                <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; min-height: 320px; position: relative;">
+                    <h4 style="margin: 0 0 0.75rem 0; font-family: var(--font-family-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-color); text-transform: uppercase; letter-spacing: 0.05em;">Unit Circle &amp; Matrix Transformation</h4>
+                    <div style="width: 100%; height: 260px;">
+                        <canvas id="linAlgPlotChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            let linAlgChartInstance = null;
+
+            window.switchLinAlgTab = function(tab) {
+                const tabLect = document.getElementById('tabLinAlgLectures');
+                const tabTheo = document.getElementById('tabLinAlgTheory');
+                const tabSand = document.getElementById('tabLinAlgSandbox');
+                const secLect = document.getElementById('secLinAlgLectures');
+                const secTheo = document.getElementById('secLinAlgTheory');
+                const secSand = document.getElementById('secLinAlgSandbox');
+
+                if (tab === 'lectures') {
+                    tabLect.style.color = 'var(--accent)';
+                    tabLect.style.borderBottomColor = 'var(--accent)';
+                    tabTheo.style.color = tabSand.style.color = '#6b7280';
+                    tabTheo.style.borderBottomColor = tabSand.style.borderBottomColor = 'transparent';
+                    secLect.style.display = 'block';
+                    secTheo.style.display = secSand.style.display = 'none';
+                } else if (tab === 'theory') {
+                    tabTheo.style.color = 'var(--accent)';
+                    tabTheo.style.borderBottomColor = 'var(--accent)';
+                    tabLect.style.color = tabSand.style.color = '#6b7280';
+                    tabLect.style.borderBottomColor = tabSand.style.borderBottomColor = 'transparent';
+                    secTheo.style.display = 'block';
+                    secLect.style.display = secSand.style.display = 'none';
+                } else {
+                    tabSand.style.color = 'var(--accent)';
+                    tabSand.style.borderBottomColor = 'var(--accent)';
+                    tabLect.style.color = tabTheo.style.color = '#6b7280';
+                    tabLect.style.borderBottomColor = tabTheo.style.borderBottomColor = 'transparent';
+                    secSand.style.display = 'block';
+                    secLect.style.display = secTheo.style.display = 'none';
+                    setTimeout(() => { runLinAlgSandbox(); }, 50);
+                }
+            };
+
+            window.runLinAlgSandbox = function() {
+                const a11 = parseFloat(document.getElementById('linAlgA11').value) || 0;
+                const a12 = parseFloat(document.getElementById('linAlgA12').value) || 0;
+                const a21 = parseFloat(document.getElementById('linAlgA21').value) || 0;
+                const a22 = parseFloat(document.getElementById('linAlgA22').value) || 0;
+
+                // Compute determinant and trace
+                const det = a11 * a22 - a12 * a21;
+                const trace = a11 + a22;
+
+                // Compute eigenvalues from characteristic polynomial:
+                // λ² - trace·λ + det = 0
+                const disc = trace * trace - 4 * det;
+                let lambda1, lambda2, eigReal = true;
+                if (disc >= 0) {
+                    lambda1 = (trace + Math.sqrt(disc)) / 2;
+                    lambda2 = (trace - Math.sqrt(disc)) / 2;
+                } else {
+                    eigReal = false;
+                    lambda1 = trace / 2;
+                    lambda2 = trace / 2;
+                }
+
+                // Compute eigenvectors for real eigenvalues
+                function computeEigenvector(lambda) {
+                    // (A - λI)v = 0 => (a11 - λ)v1 + a12·v2 = 0
+                    const r1 = a11 - lambda;
+                    const r2 = a12;
+                    if (Math.abs(r2) > 1e-10) {
+                        const norm = Math.sqrt(r2 * r2 + r1 * r1);
+                        return [r2 / norm, -r1 / norm];
+                    } else if (Math.abs(r1) > 1e-10) {
+                        return [0, 1];
+                    } else {
+                        // Try second row: a21·v1 + (a22 - λ)·v2 = 0
+                        const s1 = a21;
+                        const s2 = a22 - lambda;
+                        if (Math.abs(s1) > 1e-10) {
+                            const norm = Math.sqrt(s2 * s2 + s1 * s1);
+                            return [s2 / norm, -s1 / norm];
+                        }
+                        return [1, 0];
+                    }
+                }
+
+                // Display results
+                const resultsEl = document.getElementById('linAlgResults');
+                resultsEl.style.display = 'block';
+                document.getElementById('linAlgDet').textContent = det.toFixed(4);
+                document.getElementById('linAlgTrace').textContent = trace.toFixed(4);
+
+                if (eigReal) {
+                    document.getElementById('linAlgEig1').textContent = lambda1.toFixed(4);
+                    document.getElementById('linAlgEig2').textContent = lambda2.toFixed(4);
+                    const v1 = computeEigenvector(lambda1);
+                    const v2 = computeEigenvector(lambda2);
+                    document.getElementById('linAlgVec1').textContent = '(' + v1[0].toFixed(4) + ', ' + v1[1].toFixed(4) + ')';
+                    document.getElementById('linAlgVec2').textContent = '(' + v2[0].toFixed(4) + ', ' + v2[1].toFixed(4) + ')';
+                } else {
+                    const imagPart = Math.sqrt(-disc) / 2;
+                    document.getElementById('linAlgEig1').textContent = lambda1.toFixed(4) + ' + ' + imagPart.toFixed(4) + 'i';
+                    document.getElementById('linAlgEig2').textContent = lambda2.toFixed(4) + ' − ' + imagPart.toFixed(4) + 'i';
+                    document.getElementById('linAlgVec1').textContent = 'Complex';
+                    document.getElementById('linAlgVec2').textContent = 'Complex';
+                }
+
+                // Generate unit circle points
+                const steps = 100;
+                const unitCircle = [];
+                const transformed = [];
+                for (let i = 0; i <= steps; i++) {
+                    const theta = (2 * Math.PI * i) / steps;
+                    const cx = Math.cos(theta);
+                    const cy = Math.sin(theta);
+                    unitCircle.push({ x: cx, y: cy });
+                    // Apply matrix transformation: [a11 a12; a21 a22] * [cx; cy]
+                    transformed.push({
+                        x: a11 * cx + a12 * cy,
+                        y: a21 * cx + a22 * cy
+                    });
+                }
+
+                // Render Chart.js Plot
+                const isDark = document.body.classList.contains('dark-theme');
+                const gridColor = isDark ? 'rgba(68, 76, 86, 0.2)' : 'rgba(203, 213, 225, 0.2)';
+                const labelColor = isDark ? '#adbac7' : '#475569';
+
+                if (linAlgChartInstance) linAlgChartInstance.destroy();
+
+                // Compute axis range from transformed points
+                let maxVal = 2;
+                for (const p of transformed) {
+                    maxVal = Math.max(maxVal, Math.abs(p.x) + 0.5, Math.abs(p.y) + 0.5);
+                }
+                maxVal = Math.ceil(maxVal);
+
+                const ctx = document.getElementById('linAlgPlotChart').getContext('2d');
+                linAlgChartInstance = new Chart(ctx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [
+                            {
+                                label: 'Unit Circle',
+                                data: unitCircle,
+                                showLine: true,
+                                borderColor: '#10b981',
+                                borderWidth: 2,
+                                pointRadius: 0,
+                                fill: false
+                            },
+                            {
+                                label: 'Transformed Ellipse',
+                                data: transformed,
+                                showLine: true,
+                                borderColor: '#ea580c',
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                pointRadius: 0,
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: labelColor } } },
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                position: 'bottom',
+                                min: -maxVal,
+                                max: maxVal,
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor }
+                            },
+                            y: {
+                                min: -maxVal,
+                                max: maxVal,
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor }
+                            }
+                        }
+                    }
+                });
+            };
+        })();
+    </script>
+</div>

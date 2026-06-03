@@ -1,0 +1,597 @@
+<div id="view-cqf-m1-l6" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 01: Building Blocks</span>
+            <span class="badge" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #8b5cf6; font-family: var(--font-family-sans);">Lecture 06</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L6: Martingales</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Tower Property, Lévy's Characterization, and Itô Isometry</div>
+    </header>
+
+    <!-- Navigation Tabs for L6 Sections -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
+        <button id="tabL6Core" onclick="switchL6Tab('core')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Martingale Core &amp; Isometry</button>
+        <button id="tabL6Girsanov" onclick="switchL6Tab('girsanov')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Girsanov &amp; Measure Changes</button>
+        <button id="tabL6Exercises" onclick="switchL6Tab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Solutions Sheet</button>
+    </div>
+
+    <!-- Section A: Martingale Core Cards -->
+    <div id="secL6Core" style="display: block;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; align-items: stretch;">
+            <!-- Card 1: What is a Martingale? -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent);">1. The Martingale Property</h3>
+                    <p>A martingale is a mathematical formalization of a **fair game**. Given an information filtration $\mathcal{F}_s$ up to time $s$, the expectation of the future value $X_t$ ($t > s$) is simply the current value $X_s$:</p>
+                    <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
+                        $$\mathbb{E}[X_t \mid \mathcal{F}_s] = X_s$$
+                    </p>
+                    <p>For any continuous diffusion process satisfying $dX_t = A(t, X_t)dt + B(t, X_t)dW_t$, integrating and taking expectations reveals that the martingale property holds **if and only if the drift component is zero**:</p>
+                    <p style="text-align: center; font-weight: 700;">$$A(t, X_t) = 0 \implies dX_t = B(t, X_t)dW_t$$</p>
+                    <p style="font-size: 0.88rem; color: #64748b; margin: 0;">This means standard Brownian motion $W_t$ and all Itô integrals (which are drift-free) are automatically martingales.</p>
+                </div>
+                <div style="background: var(--metric-bg); padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; border-left: 3px solid var(--accent); margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <span>General Rule:</span> A stochastic process is a martingale if and only if its SDE has zero drift.
+                </div>
+            </div>
+
+            <!-- Card 2: Lévy's Characterization & Isometry -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: #8b5cf6;">2. Lévy's Characterization &amp; Itô Isometry</h3>
+                    <p>**Lévy's Martingale Characterization** states that a continuous process $X_t$ is standard Brownian motion if and only if:</p>
+                    <p style="padding-left: 1rem; font-size: 0.9rem; margin: 0.5rem 0;">
+                        1. $X_t$ is a martingale with respect to its filtration.<br>
+                        2. $X_t^2 - t$ is also a martingale (representing the linear accumulation of quadratic variation).
+                    </p>
+                    <p>For any stochastic integrand $\theta_\tau$, the **Itô Isometry** relates the variance of the stochastic integral to the time-integral of the squared integrand:</p>
+                    <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
+                        $$\mathbb{E}\left[ \left( \int_{0}^{t} \theta_\tau dW_\tau \right)^2 \right] = \mathbb{E}\left[ \int_{0}^{t} \theta_\tau^2 d\tau \right]$$
+                    </p>
+                    <p style="font-size: 0.88rem; color: #64748b; margin: 0;">This is a fundamental property used to calculate SDE path variances, such as in interest rate option pricing under Vasicek.</p>
+                </div>
+                <div style="background: var(--metric-bg); padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; border-left: 3px solid #8b5cf6; margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <span>Markov vs Martingale:</span> Martingales describe a constant mean property, while Markov states that future distribution depends solely on current state.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section B: Girsanov & Measure Changes -->
+    <div id="secL6Girsanov" style="display: none;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; align-items: stretch;">
+            <!-- Radon-Nikodym Measure changes -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: #0ea5e9;">1. Equivalent Measures &amp; Radon-Nikodym</h3>
+                    <p>Two probability measures $\mathbb{P}$ and $\mathbb{Q}$ sharing the same sample space $\Omega$ are **equivalent** ($\mathbb{P} \sim \mathbb{Q}$) if they agree on which events are possible or impossible ($\mathbb{P}(A) = 0 \iff \mathbb{Q}(A) = 0$).</p>
+                    <p>The transition between equivalent measures is managed by a strictly positive random variable called the **Radon-Nikodym Derivative** ($\Lambda_t$):</p>
+                    <p style="text-align: center; font-size: 1rem; font-weight: 700; margin: 0.75rem 0;">$$\Lambda_t = \frac{d\mathbb{Q}}{d\mathbb{P}}$$</p>
+                    <p>Using this ratio, expectations are transformed: $\mathbb{E}^\mathbb{Q}[X_t] = \mathbb{E}^\mathbb{P}[\Lambda_t X_t]$. For no-arbitrage financial modeling, we shift probability weights to find equivalent risk-neutral measures.</p>
+                </div>
+                <div style="background: var(--metric-bg); padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; border-left: 3px solid #0ea5e9; margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <span>Equivalent measures:</span> Drift parameters can change across measures, but volatility paths cannot!
+                </div>
+            </div>
+
+            <!-- Girsanov's Theorem -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: #10b981;">2. Girsanov's Theorem &amp; Shifted BM</h3>
+                    <p>If a process $\theta_t$ satisfies the **Novikov condition** $\mathbb{E}[\exp(\frac{1}{2}\int_0^T \theta_s^2 ds)] < \infty$, the Radon-Nikodym derivative $\Lambda_t$ is an exponential martingale:</p>
+                    <p style="text-align: center; font-size: 0.9rem; font-weight: 700;">$$\Lambda_t = \exp\left( -\int_{0}^{t} \theta_s dX_s - \frac{1}{2}\int_{0}^{t} \theta_s^2 ds \right)$$</p>
+                    <p>Under the new measure $\mathbb{Q}$, Girsanov's theorem states that the shifted process $X_t^\mathbb{Q}$ is a standard Brownian motion:</p>
+                    <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
+                        $$X_t^\mathbb{Q} = X_t + \int_{0}^{t} \theta_s ds$$
+                    </p>
+                    <p style="font-size: 0.88rem; color: #64748b; margin: 0;">This allows us to completely eliminate deterministic drift from asset SDEs by choosing the market price of risk $\theta_t = \frac{\mu - r}{\sigma}$.</p>
+                </div>
+                <div style="background: var(--metric-bg); padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; border-left: 3px solid #10b981; margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <span>Girsanov shift:</span> Shifting the coordinate system is equivalent to changing the measure!
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Section C: Worked Exercises Cards -->
+    <div id="secL6Exercises" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Problem A: Integration by Parts -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem A: Stochastic Integration by Parts</h3>
+                <p>In standard calculus, integration by parts is derived directly from the product rule. In stochastic calculus, we must account for quadratic covariation via Itô's product rule.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>State the Stochastic Product Rule:</strong> For two SDEs $dX_t$ and $dY_t$, the differential of their product is:
+                            $$d(X_t Y_t) = X_t dY_t + Y_t dX_t + dX_t dY_t$$
+                            where the cross term $dX_t dY_t$ arises from the non-zero quadratic covariation of paths.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Isolate the Integrand Term:</strong> Rearranging to isolate $X_t dY_t$:
+                            $$X_t dY_t = d(X_t Y_t) - Y_t dX_t - dX_t dY_t$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Integrate over the Horizon $[0, t]$:</strong> Applying standard continuous integration:
+                            $$\int_{0}^{t} X_s dY_s = \int_{0}^{t} d(X_s Y_s) - \int_{0}^{t} Y_s dX_s - \int_{0}^{t} dX_s dY_s$$
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Evaluate the Exact Differential:</strong> Evaluating the first integral on the RHS yields:
+                            $$\int_{0}^{t} X_s dY_s = X_t Y_t - X_0 Y_0 - \int_{0}^{t} Y_s dX_s - \int_{0}^{t} dX_s dY_s$$
+                        </li>
+                    </ol>
+                </div>
+                
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid var(--accent); padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. Why state the product rule?</strong> In ordinary math, if you multiply two changing quantities (like speed and time), the change in their combined value depends on both. In the random world of financial assets, there is a third "friction" or "jiggle" term ($dX_t dY_t$) because asset prices are extremely jagged. We start here to capture this hidden randomness friction.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. Why isolate the term?</strong> We want to find the formula for the accumulated product (represented by the integral $\int X dY$). Moving terms around (simple algebra) places the target term on one side, and everything else on the other.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. Why integrate?</strong> Integration is just summing up tiny changes over time. Summing both sides allows us to find the total accumulated value over the whole time horizon.</p>
+                        <p style="margin: 0;"><strong>4. Why evaluate the exact differential?</strong> The sum of tiny changes in a total product is simply the final product minus the starting product. This simplifies a complex sum into a basic subtraction.</p>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Problem B: Stochastic Quotient Rule -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem B: Stochastic Quotient Rule SDE</h3>
+                <p>We find the differential of the quotient $f(X, Y) = \frac{X}{Y}$ by applying the multi-variable Itô's lemma.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Compute Bivariate Partial Derivatives:</strong>
+                            $$\frac{\partial f}{\partial X} = \frac{1}{Y} \quad , \quad \frac{\partial f}{\partial Y} = -\frac{X}{Y^2}$$
+                            $$\frac{\partial^2 f}{\partial X^2} = 0 \quad , \quad \frac{\partial^2 f}{\partial Y^2} = \frac{2X}{Y^3} \quad , \quad \frac{\partial^2 f}{\partial X \partial Y} = -\frac{1}{Y^2}$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>State the Bivariate Itô Expansion:</strong>
+                            $$df(X, Y) = \frac{\partial f}{\partial X} dX + \frac{\partial f}{\partial Y} dY + \frac{1}{2}\frac{\partial^2 f}{\partial X^2} dX^2 + \frac{1}{2}\frac{\partial^2 f}{\partial Y^2} dY^2 + \frac{\partial^2 f}{\partial X \partial Y} dX dY$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Substitute the Derivatives:</strong>
+                            $$d\left(\frac{X}{Y}\right) = \frac{1}{Y} dX - \frac{X}{Y^2} dY + \frac{1}{2}(0) dX^2 + \frac{1}{2}\left(\frac{2X}{Y^3}\right) dY^2 - \frac{1}{Y^2} dX dY$$
+                            $$d\left(\frac{X}{Y}\right) = \frac{1}{Y} dX - \frac{X}{Y^2} dY - \frac{1}{Y^2} dX dY + \frac{X}{Y^3} dY^2$$
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Formulate Common Denominators:</strong> Grouping terms reveals the final quotient differential:
+                            $$d\left(\frac{X}{Y}\right) = \frac{Y dX - X dY - dX dY}{Y^2} + \frac{X}{Y^3} dY^2$$
+                        </li>
+                    </ol>
+                </div>
+
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: #8b5cf6; font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid #8b5cf6; padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. Why compute partial derivatives?</strong> A quotient ($X/Y$) is a fraction. If $X$ (the numerator) or $Y$ (the denominator) changes, the fraction changes. Derivatives tell us exactly how sensitive the fraction is to changes in $X$ and $Y$ individually.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. Why state the Itô expansion?</strong> This is the master blueprint (Itô's Lemma) for random changes. It tells us: "To find the total change of a fraction, add the sensitivity to $X$, the sensitivity to $Y$, and the extra random jiggle terms."</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. Why substitute?</strong> We plug our specific fraction sensitivity formulas into the master blueprint to customize it for our fraction problem.</p>
+                        <p style="margin: 0;"><strong>4. Why find common denominators?</strong> We do basic algebra to merge all these fractional pieces into a single, neat equation that is easy to read and use.</p>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Problem C: Martingale Drift Elimination -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem C: Martingale Drift Elimination</h3>
+                <p>We solve for the parameter $k$ that guarantees the process $Y_t = W_t^4 - 6tW_t^2 + kt^2$ is a martingale.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Compute Partial Derivatives:</strong>
+                            $$\frac{\partial Y}{\partial t} = -6W_t^2 + 2kt$$
+                            $$\frac{\partial Y}{\partial W} = 4W_t^3 - 12tW_t \quad , \quad \frac{\partial^2 Y}{\partial W^2} = 12W_t^2 - 12t$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Apply Itô's Lemma:</strong>
+                            $$dY_t = \left( \frac{\partial Y}{\partial t} + \frac{1}{2}\frac{\partial^2 Y}{\partial W^2} \right) dt + \frac{\partial Y}{\partial W} dW_t$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Substitute and Simplify the Drift:</strong>
+                            $$dY_t = \left( -6W_t^2 + 2kt + \frac{1}{2}(12W_t^2 - 12t) \right) dt + (4W_t^3 - 12tW_t) dW_t$$
+                            $$dY_t = \left( -6W_t^2 + 2kt + 6W_t^2 - 6t \right) dt + (4W_t^3 - 12tW_t) dW_t$$
+                            $$dY_t = (2k - 6)t \, dt + (4W_t^3 - 12tW_t) dW_t$$
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Enforce Martingale Condition:</strong> For $Y_t$ to be a martingale, its drift must equal zero:
+                            $$(2k - 6)t = 0 \implies 2k - 6 = 0 \implies k = 3$$
+                            Thus, $W_t^4 - 6tW_t^2 + 3t^2$ is a driftless martingale!
+                        </li>
+                    </ol>
+                </div>
+
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: #10b981; font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid #10b981; padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. Why compute partial derivatives?</strong> We want to see how our combined target formula ($Y_t$) changes as time ($t$) ticks forward and as the random walker ($W_t$) moves up or down.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. Why apply Itô's Lemma?</strong> This is the tool that splits any random movement into two piles: "Drift" (a smooth, predictable, one-way conveyor belt) and "Diffusion" (pure, fair, unpredictable random shaking).</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. Why substitute?</strong> We plug in our derivatives to see what the conveyor belt (drift) and the shaker (diffusion) look like for our specific formula.</p>
+                        <p style="margin: 0;"><strong>4. Why set drift to zero?</strong> A **Martingale** is a perfectly fair game. For a game to be fair, there must be NO predictable conveyor belt pushing you up or down over time (drift = 0). Forcing the conveyor belt to zero allows us to solve for the exact value of $k$ ($k=3$) that makes the game perfectly fair.</p>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Problem D: Asymptotic Vasicek Moments -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem D: Asymptotic Vasicek Moments</h3>
+                <p>We evaluate the long-term limits ($t \to \infty$) of the Vasicek interest rate SDE: $dr_t = \kappa(\theta - r_t) dt + \sigma dW_t$.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>State the SDE Exact Solution:</strong>
+                            $$r_t = r_s e^{-\kappa(t-s)} + \theta\left(1 - e^{-\kappa(t-s)}\right) + \sigma \int_s^t e^{-\kappa(t-u)} dW_u$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Compute Conditional Expectation:</strong> Taking expectations conditional on $r_s$:
+                            $$\mathbb{E}[r_t \mid r_s] = r_s e^{-\kappa(t-s)} + \theta\left(1 - e^{-\kappa(t-s)}\right) + \sigma \mathbb{E}\left[\int_s^t e^{-\kappa(t-u)} dW_u\right]$$
+                            Since Itô integrals are driftless martingales with zero expectation:
+                            $$\mathbb{E}[r_t \mid r_s] = r_s e^{-\kappa(t-s)} + \theta\left(1 - e^{-\kappa(t-s)}\right)$$
+                            As $t \to \infty$, the exponential terms decay ($e^{-\kappa(t-s)} \to 0$):
+                            $$\lim_{t \to \infty} \mathbb{E}[r_t \mid r_s] = \theta$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Apply Itô Isometry for Variance:</strong>
+                            $$\text{Var}(r_t \mid r_s) = \mathbb{E}\left[ \left( \sigma \int_s^t e^{-\kappa(t-u)} dW_u \right)^2 \right]$$
+                            Applying Itô Isometry converts the stochastic variance into a deterministic integral:
+                            $$\text{Var}(r_t \mid r_s) = \sigma^2 \int_s^t \left( e^{-\kappa(t-u)} \right)^2 du = \sigma^2 \int_s^t e^{-2\kappa(t-u)} du$$
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Evaluate the Integral &amp; Limit:</strong>
+                            $$\text{Var}(r_t \mid r_s) = \sigma^2 \left[ \frac{1}{2\kappa} e^{-2\kappa(t-u)} \right]_s^t = \frac{\sigma^2}{2\kappa}\left( 1 - e^{-2\kappa(t-s)} \right)$$
+                            Taking the limit as $t \to \infty$ reveals the steady-state variance bounds:
+                            $$\lim_{t \to \infty} \text{Var}(r_t \mid r_s) = \frac{\sigma^2}{2\kappa}$$
+                        </li>
+                    </ol>
+                </div>
+
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: #f59e0b; font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid #f59e0b; padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. Why state the exact solution?</strong> This is the master recipe showing exactly where the interest rate will be in the future. It shows the rate is made of a predictable pull towards a long-term target, and an accumulated sum of random shocks.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. Why compute the conditional expectation?</strong> Expectation is the "average guess." Since random shocks are just as likely to be positive as negative, our average guess for the shocks is exactly zero, making the random part vanish.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. Why take the limit $t \to \infty$?</strong> We want to see what happens in the long run (steady state). Over a very long time, the influence of where we started decays to zero, and the average rate settles exactly on the long-term target ($\theta$).</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>4. Why apply Itô Isometry?</strong> Variance measures the "uncertainty range." The random shocks are a sum of many individual random inputs over time. Itô Isometry is a mathematical magic trick that lets us calculate this complex random variance sum by turning it into a simple, standard area calculation (a deterministic integral).</p>
+                        <p style="margin: 0;"><strong>5. Why evaluate the limit?</strong> In the long run, the accumulated uncertainty doesn't grow infinitely because the interest rate is constantly pulled back to its target (mean-reversion). The variance settles on a stable steady-state limit of $\frac{\sigma^2}{2\kappa}$.</p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Martingale Laboratory -->
+    <div class="card" style="margin-bottom: 2rem;">
+        <div style="margin-bottom: 1.5rem;">
+            <h2 style="margin: 0; font-family: var(--font-family-sans); font-weight: 800; font-size: 1.4rem;">4. Martingale Property &amp; Itô Isometry Laboratory</h2>
+            <div style="color: #6b7280; font-size: 0.95rem; margin-top: 0.25rem;">Explore the martingale drift condition and Itô Isometry. Drag the drift slider to see the running empirical mean of simulated paths drift up/down, or remain perfectly flat when drift is zero. Or verify Itô Isometry variance convergence in real-time.</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 300px 1fr; gap: 2rem; align-items: start;">
+            <!-- Controls Column -->
+            <div style="background: var(--metric-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-family-sans);">
+                <h3 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">Laboratory Inputs</h3>
+                
+                <!-- Drift Slider (μ) -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="martDriftSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Drift Coefficient ($\mu$)</label>
+                        <span id="martDriftVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">0.0%</span>
+                    </div>
+                    <input id="martDriftSlider" type="range" min="-40" max="40" step="5" value="0" style="width: 100%; cursor: pointer;" oninput="updateCqfM1L6Simulation()">
+                    <span style="font-size: 0.72rem; color: #64748b; display: block; margin-top: 0.15rem;">Set to 0.0% to test pure Martingale behavior!</span>
+                </div>
+
+                <!-- Volatility Slider (σ) -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="martVolSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Volatility ($\sigma$)</label>
+                        <span id="martVolVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">20.0%</span>
+                    </div>
+                    <input id="martVolSlider" type="range" min="5" max="50" step="1" value="20" style="width: 100%; cursor: pointer;" oninput="updateCqfM1L6Simulation()">
+                </div>
+
+                <!-- Step slider -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="martStepsSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Steps ($N$)</label>
+                        <span id="martStepsVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">200 Steps</span>
+                    </div>
+                    <input id="martStepsSlider" type="range" min="50" max="400" step="10" value="200" style="width: 100%; cursor: pointer;" oninput="updateCqfM1L6Simulation()">
+                </div>
+
+                <div style="border-top: 1px solid var(--card-border); padding-top: 1rem;">
+                    <button onclick="runMartingaleMonteCarlo()" style="width: 100%; background: var(--accent); color: white; border: none; padding: 0.6rem; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: background 0.2s;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                        Simulate 150 Paths
+                    </button>
+                </div>
+            </div>
+
+            <!-- Visual Charts Column -->
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <!-- Moment statistics header -->
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; font-family: var(--font-family-sans);">
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.6rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Running Expectation $\mathbb{E}[S_t]$</div>
+                        <div id="outMartExpected" style="font-size: 1.1rem; font-weight: 800; margin-top: 0.1rem; font-family: monospace;">100.00</div>
+                    </div>
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.6rem; border-radius: 8px; text-align: center; border-bottom: 2px solid var(--accent);">
+                        <div style="font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Itô Isometry LHS $\mathbb{E}[I^2]$</div>
+                        <div id="outIsometryLHS" style="font-size: 1.1rem; font-weight: 800; margin-top: 0.1rem; font-family: monospace; color: var(--accent);">0.040</div>
+                    </div>
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.6rem; border-radius: 8px; text-align: center; border-bottom: 2px solid var(--accent);">
+                        <div style="font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Itô Isometry RHS $\mathbb{E}[\int \theta^2 d\tau]$</div>
+                        <div id="outIsometryRHS" style="font-size: 1.1rem; font-weight: 800; margin-top: 0.1rem; font-family: monospace; color: var(--accent);">0.040</div>
+                    </div>
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.6rem; border-radius: 8px; text-align: center; border-bottom: 2px solid #10b981;">
+                        <div style="font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Martingale Status</div>
+                        <div id="outMartStatus" style="font-size: 1.1rem; font-weight: 800; margin-top: 0.1rem; font-family: monospace; color: #10b981;">TRUE</div>
+                    </div>
+                </div>
+
+                <!-- Dynamic charts layout -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <!-- Chart A: Martingale Paths -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; min-height: 280px; position: relative;">
+                        <h4 style="margin: 0 0 0.75rem 0; font-family: var(--font-family-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-color); text-transform: uppercase; letter-spacing: 0.05em;">Martingale running paths</h4>
+                        <div style="width: 100%; height: 220px;">
+                            <canvas id="martPathsChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart B: Isometry convergence -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; min-height: 280px; position: relative;">
+                        <h4 style="margin: 0 0 0.75rem 0; font-family: var(--font-family-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-color); text-transform: uppercase; letter-spacing: 0.05em;">Isometry variance convergence</h4>
+                        <div style="width: 100%; height: 220px;">
+                            <canvas id="martIsometryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Javascript Martingale simulation engine -->
+    <script>
+        (function() {
+            let martPathsChartInstance = null;
+            let martIsometryChartInstance = null;
+
+            window.switchL6Tab = function(tab) {
+                const tabCore = document.getElementById('tabL6Core');
+                const tabGirs = document.getElementById('tabL6Girsanov');
+                const tabEx = document.getElementById('tabL6Exercises');
+                
+                const secCore = document.getElementById('secL6Core');
+                const secGirs = document.getElementById('secL6Girsanov');
+                const secEx = document.getElementById('secL6Exercises');
+
+                tabCore.style.color = '#6b7280';
+                tabCore.style.borderBottomColor = 'transparent';
+                tabGirs.style.color = '#6b7280';
+                tabGirs.style.borderBottomColor = 'transparent';
+                tabEx.style.color = '#6b7280';
+                tabEx.style.borderBottomColor = 'transparent';
+
+                secCore.style.display = 'none';
+                secGirs.style.display = 'none';
+                secEx.style.display = 'none';
+
+                if (tab === 'core') {
+                    tabCore.style.color = 'var(--accent)';
+                    tabCore.style.borderBottomColor = 'var(--accent)';
+                    secCore.style.display = 'block';
+                } else if (tab === 'girsanov') {
+                    tabGirs.style.color = 'var(--accent)';
+                    tabGirs.style.borderBottomColor = 'var(--accent)';
+                    secGirs.style.display = 'block';
+                } else {
+                    tabEx.style.color = 'var(--accent)';
+                    tabEx.style.borderBottomColor = 'var(--accent)';
+                    secEx.style.display = 'block';
+                }
+            };
+
+            window.updateCqfM1L6Simulation = function() {
+                const drift = parseFloat(document.getElementById('martDriftSlider').value) / 100.0;
+                const sig = parseFloat(document.getElementById('martVolSlider').value) / 100.0;
+                const steps = parseInt(document.getElementById('martStepsSlider').value);
+
+                document.getElementById('martDriftVal').innerText = (drift * 100.0).toFixed(1) + '%';
+                document.getElementById('martVolVal').innerText = (sig * 100.0).toFixed(1) + '%';
+                document.getElementById('martStepsVal').innerText = steps + ' Steps';
+
+                // Update martingale verification status text
+                const isMart = Math.abs(drift) < 0.001;
+                const statusEl = document.getElementById('outMartStatus');
+                statusEl.innerText = isMart ? 'MARTINGALE' : (drift > 0 ? 'SUBMARTINGALE' : 'SUPERMARTINGALE');
+                statusEl.style.color = isMart ? '#10b981' : '#ea580c';
+
+                runMartingaleMonteCarlo();
+            };
+
+            window.runMartingaleMonteCarlo = function() {
+                const drift = parseFloat(document.getElementById('martDriftSlider').value) / 100.0;
+                const sig = parseFloat(document.getElementById('martVolSlider').value) / 100.0;
+                const steps = parseInt(document.getElementById('martStepsSlider').value);
+
+                const T = 1.0;
+                const dt = T / steps;
+                const sqrtDt = Math.sqrt(dt);
+
+                const numPaths = 150;
+                const paths = [];
+                const S0 = 100.0;
+
+                const timeline = ['0.00'];
+                const empiricalMeanPath = new Array(steps + 1).fill(0);
+                empiricalMeanPath[0] = S0;
+
+                // 1. Simulate paths according to arithmetic/geometric martingale: dS = mu * S * dt + sigma * S * dW
+                for (let p = 0; p < numPaths; p++) {
+                    const path = [S0];
+                    let S = S0;
+                    for (let s = 1; s <= steps; s++) {
+                        const u1 = Math.random() || 0.0001;
+                        const u2 = Math.random() || 0.0001;
+                        const Z = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+
+                        // Euler SDE step
+                        S += drift * S * dt + sig * S * sqrtDt * Z;
+                        path.push(S);
+                        empiricalMeanPath[s] += S;
+                    }
+                    paths.push(path);
+                }
+
+                // Average the mean path
+                for (let s = 0; s <= steps; s++) {
+                    empiricalMeanPath[s] /= numPaths;
+                }
+
+                // Generate timeline tick labels
+                for (let s = 1; s <= steps; s++) {
+                    timeline.push((s * dt).toFixed(2));
+                }
+
+                const expectedVal = empiricalMeanPath[steps];
+                document.getElementById('outMartExpected').innerText = expectedVal.toFixed(2);
+
+                // 2. Numerical Itô Isometry convergence evaluation
+                // Integral: int_0^t theta dW where theta = sig * W_t
+                // LHS: E[ (int theta dW)^2 ]
+                // RHS: E[ int theta^2 dt ] = E[ int sig^2 W^2 dt ] = sig^2 * t^2 / 2
+                let sumItoSq = 0.0;
+                let sumTimeIntegral = 0.0;
+
+                for (let p = 0; p < 200; p++) {
+                    let W = 0.0;
+                    let itoIntegral = 0.0;
+                    let timeIntegral = 0.0;
+
+                    for (let s = 1; s <= steps; s++) {
+                        const u1 = Math.random() || 0.0001;
+                        const u2 = Math.random() || 0.0001;
+                        const Z = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+                        const dW = sqrtDt * Z;
+
+                        // Integrand value
+                        const theta = sig * W;
+
+                        // LHS Integral sum
+                        itoIntegral += theta * dW;
+
+                        // RHS Integral sum
+                        timeIntegral += (theta * theta) * dt;
+
+                        W += dW;
+                    }
+                    sumItoSq += itoIntegral * itoIntegral;
+                    sumTimeIntegral += timeIntegral;
+                }
+
+                const lhsMeanVal = sumItoSq / 200;
+                const rhsMeanVal = sumTimeIntegral / 200;
+
+                document.getElementById('outIsometryLHS').innerText = lhsMeanVal.toFixed(4);
+                document.getElementById('outIsometryRHS').innerText = rhsMeanVal.toFixed(4);
+
+                // Render Charts
+                const isDark = document.body.classList.contains('dark-theme');
+                const axisColor = isDark ? '#444c56' : '#cbd5e1';
+                const gridColor = isDark ? 'rgba(68, 76, 86, 0.2)' : 'rgba(203, 213, 225, 0.2)';
+                const labelColor = isDark ? '#adbac7' : '#475569';
+
+                // Chart A: Martingale paths and running mean
+                if (martPathsChartInstance) martPathsChartInstance.destroy();
+                const ctxA = document.getElementById('martPathsChart').getContext('2d');
+                
+                const datasetsA = paths.slice(0, 7).map((path, idx) => ({
+                    label: `Path ${idx + 1}`,
+                    data: path,
+                    borderColor: `hsla(${(idx * 63) % 360}, 65%, 60%, 0.45)`,
+                    borderWidth: 1.5,
+                    pointRadius: 0,
+                    fill: false
+                }));
+
+                // Add Running Empirical Mean path
+                datasetsA.push({
+                    label: 'Empirical Expected Mean',
+                    data: empiricalMeanPath,
+                    borderColor: '#ef4444',
+                    borderWidth: 3,
+                    pointRadius: 0,
+                    fill: false
+                });
+
+                // Add Theoretical flat expectation line
+                const flatTarget = new Array(steps + 1).fill(S0);
+                datasetsA.push({
+                    label: 'Theoretical Expectation',
+                    data: flatTarget,
+                    borderColor: '#10b981',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    pointRadius: 0,
+                    fill: false
+                });
+
+                martPathsChartInstance = new Chart(ctxA, {
+                    type: 'line',
+                    data: {
+                        labels: timeline,
+                        datasets: datasetsA
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { color: gridColor }, ticks: { color: labelColor, maxTicksLimit: 10 } },
+                            y: { grid: { color: gridColor }, ticks: { color: labelColor } }
+                        }
+                    }
+                });
+
+                // Chart B: Isometry convergence bar chart comparison
+                if (martIsometryChartInstance) martIsometryChartInstance.destroy();
+                const ctxB = document.getElementById('martIsometryChart').getContext('2d');
+                martIsometryChartInstance = new Chart(ctxB, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Expectation of squared Itô integral E[I^2]', 'Expectation of time-integral E[∫ θ^2 dτ]'],
+                        datasets: [{
+                            data: [lhsMeanVal, rhsMeanVal],
+                            backgroundColor: ['#8b5cf6', '#10b981'],
+                            borderColor: ['#7c3aed', '#059669'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { ticks: { color: labelColor } },
+                            y: { grid: { color: gridColor }, ticks: { color: labelColor } }
+                        }
+                    }
+                });
+            };
+
+            window.runCqfM1L6Simulation = function() {
+                setTimeout(() => {
+                    updateCqfM1L6Simulation();
+                }, 50);
+            };
+        })();
+    </script>
+</div>

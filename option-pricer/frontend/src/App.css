@@ -1,0 +1,1564 @@
+/* frontend/src/App.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  /* --- Color Palette (Slate & Indigo) --- */
+
+  /* Backgrounds */
+  --bg-app: #F1F5F9;
+  /* Slate 100 - Darker than pure white for contrast */
+  --bg-panel: #FFFFFF;
+  --bg-subtle: #F8FAFC;
+  /* Slate 50 */
+
+  /* Primary Brand */
+  --primary: #4F46E5;
+  /* Indigo 600 */
+  --primary-dark: #4338CA;
+  /* Indigo 700 */
+  --primary-light: #EEF2FF;
+  /* Indigo 50 */
+
+  /* Text - High Contrast */
+  --text-main: #0F172A;
+  /* Slate 900 */
+  --text-secondary: #334155;
+  /* Slate 700 */
+  --text-muted: #64748B;
+  /* Slate 500 */
+
+  /* Borders & Shadows */
+  --border: #CBD5E1;
+  /* Slate 300 - Visible borders */
+  --border-subtle: #E2E8F0;
+  /* Slate 200 */
+
+  /* Depth */
+  --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  --shadow-glow: 0 0 15px rgba(79, 70, 229, 0.15);
+
+  /* Semantic Colors */
+  --success: #10B981;
+  --danger: #EF4444;
+  --warning: #F59E0B;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body,
+html,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-app);
+  color: var(--text-main);
+  overflow: hidden;
+  /* Prevent body scroll, handle inside layout */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- LAYOUT --- */
+.container {
+  width: 100%;
+  max-width: 1920px;
+  /* Constrain extremely wide screens */
+  margin: 0 auto;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 24px;
+}
+
+/* --- HEADER --- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-shrink: 0;
+  height: 48px;
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  color: var(--text-main);
+  letter-spacing: -0.03em;
+}
+
+.model-selector-wrapper {
+  position: relative;
+}
+
+.model-select {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 2px solid var(--border);
+  /* Stronger border */
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  background-color: #fff;
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+  outline: none;
+  transition: all 0.2s;
+}
+
+.model-select:hover {
+  border-color: var(--primary);
+  color: var(--primary-dark);
+}
+
+.model-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* --- MAIN GRID --- */
+.main-layout {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+  /* Important for scrolling children */
+  align-items: start;
+}
+
+.main-layout.with-math {
+  grid-template-columns: 250px 1fr 360px;
+  transition: grid-template-columns 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.main-layout.with-math.math-collapsed {
+  grid-template-columns: 250px 1fr 48px;
+}
+
+/* --- COMMON CARD STYLING --- */
+.card {
+  background: var(--bg-panel);
+  border-radius: 16px;
+  box-shadow: var(--shadow-soft);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+
+/* --- 1. INPUT PANEL (Left) --- */
+.input-panel {
+  padding: 16px 12px;
+  overflow-y: auto;
+  background: #ffffff;
+  gap: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-row {
+  margin-bottom: 16px;
+}
+
+.input-section-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-weight: 800;
+  margin-bottom: 10px;
+  display: block;
+}
+
+/* Option Type Toggle (Segmented Control) */
+.option-type-group {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-app);
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid var(--border-subtle);
+}
+
+.option-type-btn {
+  flex: 1;
+  padding: 8px 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.option-type-btn:hover:not(.active) {
+  color: var(--text-main);
+}
+
+.option-type-btn.active {
+  background: #fff;
+  color: var(--primary);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  font-weight: 700;
+}
+
+/* Slider Groups */
+.slider-group {
+  margin-bottom: 24px;
+}
+
+.slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.slider-header label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* Number Input Box with Steppers */
+/* Number Input Box with Steppers */
+.stepper-wrapper {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  width: 140px;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  overflow: hidden;
+  /* Ensure children don't overflow rounded corners */
+}
+
+.stepper-wrapper:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+.stepper-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  font-weight: 500;
+  width: 32px;
+  /* Slightly wider for better hit target per Fitts Law */
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  line-height: 1;
+  border-radius: 0;
+  /* Remove individual radius */
+}
+
+.stepper-btn:first-child {
+  border-right: 1px solid var(--border-subtle);
+}
+
+.stepper-btn:last-child {
+  border-left: 1px solid var(--border-subtle);
+}
+
+.stepper-btn:hover {
+  background: var(--bg-subtle);
+  color: var(--primary);
+}
+
+.stepper-btn:active {
+  background: #e2e8f0;
+}
+
+.stepper-input {
+  flex: 1;
+  min-width: 0;
+  /* Critical for flex child text truncation/sizing */
+  border: none;
+  background: transparent;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  outline: none;
+  padding: 0 4px;
+  /* Remove spinner arrows */
+  -moz-appearance: textfield;
+}
+
+.stepper-input::-webkit-outer-spin-button,
+.stepper-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Slider Bounds */
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  /* More breathing room */
+}
+
+.slider-bounds {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  padding: 0 2px;
+  margin-top: -2px;
+}
+
+/* Custom Range Slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  background: transparent;
+  cursor: pointer;
+  margin: 0;
+}
+
+input[type="range"]:focus {
+  outline: none;
+}
+
+/* Track */
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 6px;
+  background: var(--border-subtle);
+  border-radius: 3px;
+}
+
+/* Thumb */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 3px solid var(--primary);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: -6px;
+  /* Centers thumb on track */
+  transition: transform 0.1s, border-color 0.2s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  border-color: var(--primary-dark);
+}
+
+/* Select Dropdown in inputs */
+.slider-group select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-main);
+  outline: none;
+  cursor: pointer;
+}
+
+.slider-group select:focus {
+  border-color: var(--primary);
+}
+
+
+/* --- 2. CENTER PANEL (Charts & Price) --- */
+.center-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Hero Price Card */
+.price-card-header {
+  background: linear-gradient(135deg, #ffffff 0%, #F8FAFC 100%);
+  border-radius: 16px;
+  padding: 24px 32px;
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 10px 15px -3px rgba(0, 0, 0, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.price-main {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+.price-label {
+  font-size: 1.1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 6px 14px;
+  border-radius: 24px;
+  letter-spacing: 0.04em;
+  order: 2;
+  /* Move after price */
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.price-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--text-main);
+  /* Dark text for authority */
+  letter-spacing: -0.05em;
+  line-height: 1;
+  text-shadow: none;
+  order: 1;
+}
+
+
+/* Greek Cards Grid */
+.greek-grid-modern {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.greek-card-modern {
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 16px;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  border-top-width: 4px;
+  /* Fallback color if React prop missing */
+  border-top-color: var(--border);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.greek-card-modern:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--border);
+  /* Keep surrounding border subtle */
+}
+
+/* Viz Card (Charts Area) */
+.viz-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: var(--shadow-soft);
+  padding: 24px;
+  flex: 1;
+  /* Takes remaining height */
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border: 1px solid var(--border-subtle);
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.tabs-left {
+  display: flex;
+  gap: 24px;
+}
+
+.tabs button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-muted);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.9rem;
+  padding: 0 0 12px 0;
+  transition: color 0.2s;
+}
+
+.tabs button:hover {
+  color: var(--text-main);
+}
+
+.tabs button.active-tab {
+  color: var(--primary);
+  border-bottom: 3px solid var(--primary);
+  margin-bottom: -2px;
+  /* Overlap border */
+}
+
+.viz-content {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Chart Footer Info */
+.chart-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-subtle);
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.chart-footer h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chart-footer p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.5;
+  max-width: 800px;
+}
+
+/* Greeks Mini Charts Grid */
+.greeks-charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 100%;
+  overflow-y: auto;
+  padding-right: 4px;
+  /* Space for scrollbar */
+}
+
+.greek-chart-card {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 12px 12px 0 12px;
+  height: 200px;
+}
+
+.greek-chart-header {
+  font-size: 0.75rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  padding-left: 4px;
+  text-transform: uppercase;
+}
+
+/* Heatmap Styles */
+.heatmap-wrapper {
+  overflow-x: auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: 60px repeat(8, minmax(50px, 1fr));
+  gap: 1px;
+  background: var(--border-subtle);
+  /* Gaps color */
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  font-size: 0.8rem;
+}
+
+.heatmap-header,
+.heatmap-row-label,
+.heatmap-cell {
+  background: #fff;
+  padding: 10px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.heatmap-header {
+  background: var(--bg-subtle);
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.heatmap-row-label {
+  background: var(--bg-subtle);
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.heatmap-cell {
+  font-weight: 600;
+  cursor: default;
+  transition: transform 0.1s;
+}
+
+.heatmap-cell:hover {
+  transform: scale(1.15);
+  z-index: 10;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: #fff !important;
+  /* Force white background on hover for clarity */
+}
+
+
+/* --- 3. RIGHT PANEL (Math) --- */
+.right-panel {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: var(--shadow-soft);
+  padding: 0;
+  overflow-y: auto;
+  border: 1px solid var(--border-subtle);
+  height: 100%;
+}
+
+.math-container {
+  padding: 24px;
+  font-size: 0.9rem;
+}
+
+.math-header {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 16px !important;
+  padding-bottom: 8px !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+  width: 100% !important;
+  flex-wrap: nowrap !important;
+}
+
+.math-header h2 {
+  font-size: 1.05rem !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  color: var(--text-main) !important;
+  white-space: nowrap !important;
+}
+
+.math-header-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Step Accordion */
+.step-card {
+  background: white;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.step-card.open {
+  box-shadow: 0 4px 12px -3px rgba(0, 0, 0, 0.05);
+  border-color: var(--border);
+}
+
+.step-trigger {
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  background: var(--bg-subtle);
+  /* Differentiates header from content */
+  user-select: none;
+  border-bottom: 1px solid transparent;
+}
+
+.step-card.open .step-trigger {
+  border-bottom-color: var(--border-subtle);
+  background: #fff;
+}
+
+.step-trigger:hover {
+  background: #F1F5F9;
+}
+
+.step-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.step-circle {
+  background: #fff;
+  color: var(--text-main);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  border: 2px solid var(--border);
+}
+
+.step-title-text {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-main);
+}
+
+.step-summary-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-muted);
+}
+
+.step-content {
+  padding: 20px;
+  background: #fff;
+  animation: slideDown 0.2s ease-out;
+}
+
+/* Math Visuals */
+.latex-box {
+  background: var(--bg-subtle);
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border-subtle);
+  overflow-x: auto;
+  display: block;
+  text-align: center;
+}
+
+.breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.breakdown-item {
+  background: #fff;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 6px 4px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  min-width: 0;
+}
+
+.breakdown-item .label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.breakdown-item .value {
+  font-family: 'JetBrains Mono';
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.calculation-flow {
+  background: var(--bg-subtle);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-wrap: wrap;
+  border: 1px dashed var(--border);
+  color: var(--text-secondary);
+}
+
+/* Probabilities Table */
+.probability-table {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.prob-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background: var(--bg-subtle);
+  border-radius: 8px;
+  border: 1px solid transparent;
+}
+
+.prob-row:hover {
+  border-color: var(--primary-light);
+  background: #fff;
+}
+
+.prob-label {
+  display: flex;
+  flex-direction: column;
+}
+
+.prob-desc {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.prob-val {
+  font-family: 'JetBrains Mono';
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* Receipt Style Valuation */
+.valuation-receipt {
+  background: #fff;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 16px;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.receipt-row:last-child {
+  margin-bottom: 0;
+}
+
+.receipt-label {
+  display: flex;
+  flex-direction: column;
+}
+
+.r-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-main);
+}
+
+.r-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.receipt-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-main);
+}
+
+.receipt-row.positive .receipt-value {
+  color: var(--success);
+}
+
+.receipt-row.negative .receipt-value {
+  color: var(--danger);
+}
+
+.receipt-divider {
+  display: flex;
+  justify-content: center;
+  color: var(--border);
+  margin: 6px 0;
+}
+
+.receipt-total-line {
+  border-bottom: 2px dashed var(--border);
+  margin: 12px 0;
+}
+
+.receipt-row.total .receipt-value {
+  font-size: 1.25rem;
+  color: var(--primary);
+  font-weight: 800;
+}
+
+/* Animations & Utility */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.text-primary {
+  color: var(--primary);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+/* --- RESPONSIVE ADJUSTMENTS --- */
+@media (max-width: 1400px) {
+  .main-layout.with-math {
+    grid-template-columns: 280px 1fr 320px;
+  }
+
+  .price-value {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 1100px) {
+  .container {
+    height: auto;
+    overflow-y: auto;
+    padding: 12px;
+  }
+
+  body {
+    overflow-y: auto;
+  }
+
+  /* Stack layout on tablet/mobile */
+  .main-layout,
+  .main-layout.with-math {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Reorder: Price (Center) -> Inputs -> Math */
+  .center-panel {
+    order: 1;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .input-panel {
+    order: 2;
+    width: 100%;
+    height: auto;
+  }
+
+  .right-panel {
+    order: 3;
+    width: 100%;
+    height: auto;
+  }
+
+  .viz-card {
+    min-height: 450px;
+  }
+
+  .heatmap-grid {
+    min-width: 100%;
+  }
+
+  .greek-grid-modern {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .header h1 {
+    font-size: 1.2rem;
+  }
+
+  .price-value {
+    font-size: 2rem;
+  }
+
+  .greek-grid-modern {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .greeks-charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .breakdown-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Add to src/App.css */
+
+.greek-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.greek-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* --- SharedGreeks Component Styles --- */
+
+.greek-section {
+  margin-bottom: 24px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-main);
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.section-title svg {
+  color: var(--primary);
+}
+
+.header-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border-subtle);
+}
+
+/* THE GRID LAYOUT */
+.greek-grid-modern {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+
+/* CARD BASE */
+.greek-card-modern {
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 8px 10px;
+  position: relative;
+  border-top-width: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.greek-card-modern:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px -3px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.label-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.card-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: none;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.icon-box {
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 2px;
+  color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-desc {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- COLOR THEMES --- */
+
+/* ... (Keep previous CSS up to the COLOR THEMES section) ... */
+
+/* --- COLOR THEMES (Aligned with Chart Colors) --- */
+
+/* Emerald (Delta) - Matches #10B981 */
+.greek-card-modern.theme-emerald {
+  border-top-color: #10B981;
+}
+
+.greek-card-modern.theme-emerald .icon-box {
+  background: #ECFDF5;
+  color: #059669;
+}
+
+
+
+/* Violet (Gamma) - Matches #8B5CF6 */
+.greek-card-modern.theme-violet {
+  border-top-color: #8B5CF6;
+}
+
+.greek-card-modern.theme-violet .icon-box {
+  background: #F5F3FF;
+  color: #7C3AED;
+}
+
+
+
+/* Amber (Theta) - Matches #F59E0B */
+.greek-card-modern.theme-amber {
+  border-top-color: #F59E0B;
+}
+
+.greek-card-modern.theme-amber .icon-box {
+  background: #FFFBEB;
+  color: #D97706;
+}
+
+
+
+/* Red (Vega) - Matches #EF4444 */
+.greek-card-modern.theme-red {
+  border-top-color: #EF4444;
+}
+
+.greek-card-modern.theme-red .icon-box {
+  background: #FEF2F2;
+  color: #DC2626;
+}
+
+
+
+/* Blue (Rho) - Matches #3B82F6 */
+.greek-card-modern.theme-blue {
+  border-top-color: #3B82F6;
+}
+
+.greek-card-modern.theme-blue .icon-box {
+  background: #EFF6FF;
+  color: #2563EB;
+}
+
+
+
+/* Indigo (Phi) - Matches #6366F1 */
+.greek-card-modern.theme-indigo {
+  border-top-color: #6366F1;
+}
+
+.greek-card-modern.theme-indigo .icon-box {
+  background: #EEF2FF;
+  color: #4F46E5;
+}
+
+
+
+/* --- VARIABLE COLOR CODING --- */
+/* Add these classes to your sliders or input labels to match the Math section */
+
+.var-label-S {
+  color: #1d4ed8 !important; /* Premium Dark Blue-700 */
+}
+
+/* Blue */
+.var-label-K {
+  color: #be185d !important; /* Premium Dark Pink-700 */
+}
+
+/* Pink */
+.var-label-T {
+  color: #b45309 !important; /* Premium Dark Amber-700 */
+}
+
+/* Amber */
+.var-label-r {
+  color: #047857 !important; /* Premium Dark Emerald-700 */
+}
+
+/* Emerald */
+.var-label-v {
+  color: #6d28d9 !important; /* Premium Dark Violet-700 */
+}
+
+/* Violet */
+.var-label-q {
+  color: #0369a1 !important; /* Premium Dark Sky-700 */
+}
+
+/* Cyan */
+
+/* Transition for the LaTeX box to make the switch smoother */
+.latex-box {
+  transition: all 0.3s ease;
+}
+
+/* --- Greek Card Interactions --- */
+.greek-card-modern.clickable {
+  cursor: pointer;
+}
+
+.card-chevron {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  color: var(--text-muted);
+  opacity: 0;
+  transition: all 0.2s ease;
+  transform: translateX(-5px);
+}
+
+.greek-card-modern:hover .card-chevron {
+  opacity: 0.6;
+  transform: translateX(0);
+}
+
+.greek-card-modern:hover .card-chevron:hover {
+  opacity: 1;
+}
+
+/* Input Highlight State */
+.slider-group {
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  padding: 8px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.input-highlighted {
+  background-color: #fff;
+  border-color: var(--primary);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Specific Highlight Colors matched to variables */
+.slider-group.input-highlighted:has(.var-label-S) {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+.slider-group.input-highlighted:has(.var-label-K) {
+  border-color: #ec4899;
+  background-color: #fdf2f8;
+}
+
+.slider-group.input-highlighted:has(.var-label-T) {
+  border-color: #f59e0b;
+  background-color: #fffbeb;
+}
+
+.slider-group.input-highlighted:has(.var-label-r) {
+  border-color: #10b981;
+  background-color: #ecfdf5;
+}
+
+.slider-group.input-highlighted:has(.var-label-v) {
+  border-color: #8b5cf6;
+  background-color: #f5f3ff;
+}
+.slider-group.input-highlighted:has(.var-label-q) {
+  border-color: #06b6d4;
+  background-color: #ecfeff;
+}
+
+/* --- COLLAPSIBLE RIGHT MATH PANEL --- */
+.right-panel {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.right-panel.collapsed {
+  width: 48px !important;
+  min-width: 48px !important;
+  height: 100%;
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0 !important;
+}
+
+.right-panel.collapsed:hover {
+  background: #F1F5F9;
+  border-color: var(--primary);
+}
+
+.expand-btn-vertical {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+  padding: 12px 0;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+}
+
+.expand-text-vertical {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* --- MINIMALISTIC MATH ENGINE CONTROLS --- */
+.math-menu-tabs {
+  background: #f8fafc; /* Ultra light slate */
+  padding: 3px;
+  border-radius: 10px;
+  display: flex;
+  margin-bottom: 20px;
+  border: 1px solid #e2e8f0;
+}
+
+.math-menu-btn {
+  flex: 1;
+  text-align: center;
+  padding: 6px 12px !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  border: none !important;
+  cursor: pointer;
+  background: transparent !important;
+  color: #64748b !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: none !important;
+}
+
+.math-menu-btn:hover {
+  color: #334155 !important;
+}
+
+.math-menu-btn.active {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+}
+
+/* Toggle numbers/symbols and collapse buttons */
+.math-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  color: #475569 !important;
+  cursor: pointer;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+}
+
+.math-toggle-btn:hover {
+  background: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+}
+
+.math-collapse-btn {
+  padding: 6px !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #475569 !important;
+  cursor: pointer;
+  transition: all 0.2s ease !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+}
+
+.math-collapse-btn:hover {
+  background: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+}
+
+/* --- EXTRA SPECIFICITY OVERRIDES FOR THE MATH HEADER ICONS --- */
+button.math-header-icon-btn,
+div.math-container button.math-header-icon-btn,
+.math-header button.math-header-icon-btn,
+.math-container .math-header button.math-header-icon-btn {
+  width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  border-radius: 6px !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #475569 !important;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+  flex-shrink: 0 !important;
+  outline: none !important;
+}
+
+button.math-header-icon-btn:hover,
+div.math-container button.math-header-icon-btn:hover,
+.math-header button.math-header-icon-btn:hover {
+  background: #f8fafc !important;
+  background-color: #f8fafc !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+  transform: translateY(-1px) !important;
+}
+
+button.math-header-icon-btn:active {
+  transform: translateY(0) !important;
+}

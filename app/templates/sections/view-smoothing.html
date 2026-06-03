@@ -1,0 +1,526 @@
+<div id="view-smoothing" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">2.3 Smoothing Methods</h1>
+        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Prioritizing smooth forward curves using parametric families (Nelson-Siegel, Svensson) and Lorimier smoothing splines.</div>
+    </header>
+
+    <div style="display: flex; flex-direction: column; gap: 2.5rem; max-width: 1400px; margin-bottom: 4rem;">
+        
+        <!-- SECTION TABS -->
+        <div style="display: flex; gap: 1rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; margin-bottom: 1rem;">
+            <button onclick="switchSmoothingTab('nelson-siegel')" id="tab-btn-ns" style="background: var(--accent); color: white; border: none; padding: 0.5rem 1.25rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Nelson-Siegel &amp; Svensson Curves</button>
+            <button onclick="switchSmoothingTab('lorimier')" id="tab-btn-lor" style="background: transparent; color: var(--text-color); border: 1px solid var(--card-border); padding: 0.5rem 1.25rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Lorimier Smoothing Splines</button>
+        </div>
+
+        <!-- TAB 1: NELSON-SIEGEL AND SVENSSON -->
+        <div id="smoothing-ns-content">
+            <div class="container" style="margin-bottom: 2.5rem; gap: 2rem; align-items: stretch; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+                <div class="card" style="margin-bottom: 0; padding: 2rem; border: 1px solid var(--card-border); background: var(--card-bg);">
+                    <h2>Parametric Forward Families</h2>
+                    <p>Instead of bootstrapping discrete dates, parametric models assume the forward curve $f(T)$ belongs to a smooth, low-dimensional family of functions. The **Nelson-Siegel** family uses four parameters to represent typical shapes:</p>
+                    <div style="background: rgba(37, 99, 235, 0.04); border-left: 4px solid var(--accent); padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+                        $$ f(T) = \beta_0 + \beta_1 e^{-a T} + \beta_2 a T e^{-a T} $$
+                    </div>
+                    <p>The **Svensson** family extends this by adding a second curvature term to accommodate yield curves with multiple humps (using six parameters):</p>
+                    <div style="background: rgba(16, 185, 129, 0.04); border-left: 4px solid #10b981; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+                        $$ f(T) = \beta_0 + \beta_1 e^{-a_1 T} + \beta_2 a_1 T e^{-a_1 T} + \beta_3 a_2 T e^{-a_2 T} $$
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom: 0; padding: 2rem; border: 1px solid var(--card-border); background: var(--card-bg); display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h2>Yield Basis Functions</h2>
+                        <p>Integrating the forward curve yields the spot zero-coupon yield curve: $y(T) = \frac{1}{T} \int_0^T f(u) du$. Under Nelson-Siegel, this decomposes into three interpretable basis elements:</p>
+                        <ul>
+                            <li><strong>Level ($\beta_0$):</strong> Basis is $1.0$ (constant across all maturities).</li>
+                            <li><strong>Slope ($\beta_1$):</strong> Basis is $\frac{1 - e^{-a T}}{a T}$ (decays from 1 to 0).</li>
+                            <li><strong>Curvature ($\beta_2$):</strong> Basis is $\frac{1 - e^{-a T}}{a T} - e^{-a T}$ (starts at 0, humps, then decays).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTERACTIVE PARAMETER EXPLORER -->
+            <div class="card" style="padding: 2.5rem; border: 1px solid var(--card-border); background: var(--card-bg); margin-bottom: 2.5rem;">
+                <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.02em;">Interactive Parameter Explorer</h2>
+                <p style="font-size: 1rem; color: var(--text-color); opacity: 0.75; margin-bottom: 2rem;">
+                    Select between Nelson-Siegel and Svensson models, and adjust parameter sliders to see how the yields and forward rates morph in real-time.
+                </p>
+
+                <!-- Model selector -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="font-weight: 700; font-size: 0.85rem; color: #334155; display: block; margin-bottom: 0.5rem;">Select Parametric Model</label>
+                    <div style="display: flex; gap: 1rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; cursor: pointer;">
+                            <input type="radio" name="nsModelRadio" value="NS" checked onchange="runSmoothingSimulation()"/> Nelson-Siegel (4-Factor)
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: 600; cursor: pointer;">
+                            <input type="radio" name="nsModelRadio" value="Svensson" onchange="runSmoothingSimulation()"/> Svensson (6-Factor)
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Control Sliders Grid -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <label for="nsB0" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Level $\beta_0$: <span id="nsB0Val" style="color: #2563eb;">3.00%</span></label>
+                        <input id="nsB0" max="8.0" min="0.1" step="0.1" type="range" value="3.0" oninput="runSmoothingSimulation()"/>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <label for="nsB1" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Slope $\beta_1$: <span id="nsB1Val" style="color: #2563eb;">-1.50%</span></label>
+                        <input id="nsB1" max="5.0" min="-5.0" step="0.1" type="range" value="-1.5" oninput="runSmoothingSimulation()"/>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <label for="nsB2" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Curvature $\beta_2$: <span id="nsB2Val" style="color: #2563eb;">2.00%</span></label>
+                        <input id="nsB2" max="10.0" min="-10.0" step="0.1" type="range" value="2.0" oninput="runSmoothingSimulation()"/>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <label for="nsA" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Decay $a$ ($a_1$): <span id="nsAVal" style="color: #2563eb;">0.40</span></label>
+                        <input id="nsA" max="2.0" min="0.05" step="0.05" type="range" value="0.4" oninput="runSmoothingSimulation()"/>
+                    </div>
+                    
+                    <!-- Svensson extra sliders -->
+                    <div id="svensson-sliders" style="display: none; grid-column: span 2; grid-template-columns: 1fr 1fr; gap: 1.5rem; width: 100%;">
+                        <div style="display: flex; flex-direction: column; gap: 0.25rem; width: 100%;">
+                            <label for="nsB3" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Second Curvature $\beta_3$: <span id="nsB3Val" style="color: #10b981;">-3.00%</span></label>
+                            <input id="nsB3" max="10.0" min="-10.0" step="0.1" type="range" value="-3.0" oninput="runSmoothingSimulation()"/>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.25rem; width: 100%;">
+                            <label for="nsA2" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Second Decay $a_2$: <span id="nsA2Val" style="color: #10b981;">0.15</span></label>
+                            <input id="nsA2" max="2.0" min="0.05" step="0.05" type="range" value="0.15" oninput="runSmoothingSimulation()"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Curve charts -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                    <div class="card" style="margin-bottom: 0; padding: 1.5rem; border: 1px solid var(--card-border); background: var(--card-bg); height: 380px; position: relative;">
+                        <h4 style="margin: 0 0 1rem 0; font-size: 1.05rem; font-weight: 700; color: var(--text-color); text-align: center;">Parametric Basis Functions</h4>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="nsBasisChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-bottom: 0; padding: 1.5rem; border: 1px solid var(--card-border); background: var(--card-bg); height: 380px; position: relative;">
+                        <h4 style="margin: 0 0 1rem 0; font-size: 1.05rem; font-weight: 700; color: var(--text-color); text-align: center;">Resulting Forward vs. Yield Curves</h4>
+                        <div style="height: 300px; position: relative;">
+                            <canvas id="nsCurvesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: LORIMIER SMOOTHING SPLINES -->
+        <div id="smoothing-lor-content" style="display: none;">
+            <div class="container" style="margin-bottom: 2.5rem; gap: 2rem; align-items: stretch; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+                <div class="card" style="margin-bottom: 0; padding: 2rem; border: 1px solid var(--card-border); background: var(--card-bg);">
+                    <h2>Lorimier Smoothing Splines</h2>
+                    <p>Instead of matching rates exactly or assuming a global parametric formula, Lorimier's spline methodology searches for a continuous forward rate $f(T)$ in a Hilbert space $H$ that balances goodness of fit and curve smoothness by minimizing:</p>
+                    <div style="background: rgba(124, 58, 237, 0.04); border-left: 4px solid #7c3aed; padding: 1rem; border-radius: 6px; margin: 1rem 0; font-size: 0.95rem;">
+                        $$ \min_{f \in H} \int_0^{T_*} (f'(u))^2 du + \alpha \sum_{i=1}^N \left( T_i y_i - \int_0^{T_i} f(u) du \right)^2 $$
+                    </div>
+                    <p>The **smoothing parameter** $\alpha > 0$ determines the exact trade-off: larger $\alpha$ values force the spline to pass exactly through the market yields, while smaller $\alpha$ values prioritize a smooth curve.</p>
+                </div>
+
+                <div class="card" style="margin-bottom: 0; padding: 2rem; border: 1px solid var(--card-border); background: var(--card-bg); display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h2>Hilbert Quadratic Basis Splines</h2>
+                        <p>Lorimier proved that the unique solution $f(u)$ is a quadratic spline composed of basis elements $h_i(u)$ whose derivatives are flat-capped lines:</p>
+                        <div style="background: rgba(124, 58, 237, 0.04); border-left: 4px solid #7c3aed; padding: 0.8rem; border-radius: 6px; margin: 0.5rem 0; font-size: 0.9rem;">
+                            $$ h_i'(u) = (T_i - u)^+, \quad h_i(0) = T_i $$
+                        </div>
+                        <p>We evaluate the scalar products exactly using the closed-form equation:</p>
+                        <div style="background: rgba(124, 58, 237, 0.04); border-left: 4px solid #7c3aed; padding: 0.8rem; border-radius: 6px; margin: 0.5rem 0; font-size: 0.85rem; font-family: monospace;">
+                            &langle;h_i, h_j&rangle; = T_i T_j (1 + m) - 0.5 (T_i + T_j) m² + 0.333 m³
+                        </div>
+                        <p style="margin: 0; font-size: 0.85rem; color: #64748b;">(where $m = \min(T_i, T_j)$)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LORIMIER SPLINE SIMULATOR -->
+            <div class="card" style="padding: 2.5rem; border: 1px solid var(--card-border); background: var(--card-bg);">
+                <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.02em;">Interactive Lorimier Spline Solver</h2>
+                <p style="font-size: 1rem; color: var(--text-color); opacity: 0.75; margin-bottom: 2rem;">
+                    Observe how changing the trade-off parameter $\alpha$ shifts the forward curve spline. Note the transition: $\alpha \to 0$ yields a perfectly flat line, while $\alpha \to \infty$ yields a perfect fit.
+                </p>
+
+                <!-- Alpha control slider -->
+                <div style="margin-bottom: 2rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1.5rem;">
+                    <div style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 0.25rem;">
+                        <label for="lorAlpha" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Smoothing Trade-off ($\alpha$): <span id="lorAlphaVal" style="color: #7c3aed; font-weight: 800;">10.0</span></label>
+                        <input id="lorAlpha" max="1000" min="0.01" step="0.01" style="cursor: pointer; width: 100%;" type="range" value="10.0" oninput="runSmoothingSimulation()"/>
+                    </div>
+
+                    <div style="flex: 1 1 250px; min-width: 0; background: rgba(124, 58, 237, 0.03); border: 1px solid rgba(124, 58, 237, 0.1); border-radius: 8px; padding: 0.75rem 1.25rem;">
+                        <div style="font-size: 0.8rem; color: #5b21b6; font-weight: 700; text-transform: uppercase;">Solver State</div>
+                        <div style="font-size: 0.95rem; color: #334155; font-family: monospace; font-weight: 600; margin-top: 0.25rem;">
+                            Fit Level: <span id="lorSolverState" style="color: #7c3aed; font-weight: bold;">Balanced Fit</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plot -->
+                <div style="height: 400px; position: relative;">
+                    <canvas id="lorSplineChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // Section 2.3: Nelson-Siegel, Svensson & Lorimier Splines
+    // ============================================================
+    let nsBasisChartInstance = null;
+    let nsCurvesChartInstance = null;
+    let lorSplineChartInstance = null;
+
+    let activeSmoothingTab = 'nelson-siegel';
+
+    function switchSmoothingTab(tabName) {
+        activeSmoothingTab = tabName;
+        const btnNs = document.getElementById('tab-btn-ns');
+        const btnLor = document.getElementById('tab-btn-lor');
+        const contentNs = document.getElementById('smoothing-ns-content');
+        const contentLor = document.getElementById('smoothing-lor-content');
+
+        if (tabName === 'nelson-siegel') {
+            btnNs.style.background = 'var(--accent)';
+            btnNs.style.color = 'white';
+            btnNs.style.border = 'none';
+            btnLor.style.background = 'transparent';
+            btnLor.style.color = 'var(--text-color)';
+            btnLor.style.border = '1px solid var(--card-border)';
+            contentNs.style.display = 'block';
+            contentLor.style.display = 'none';
+        } else {
+            btnLor.style.background = 'var(--accent)';
+            btnLor.style.color = 'white';
+            btnLor.style.border = 'none';
+            btnNs.style.background = 'transparent';
+            btnNs.style.color = 'var(--text-color)';
+            btnNs.style.border = '1px solid var(--card-border)';
+            contentNs.style.display = 'none';
+            contentLor.style.display = 'block';
+        }
+        runSmoothingSimulation();
+    }
+
+    function runSmoothingSimulation() {
+        if (activeSmoothingTab === 'nelson-siegel') {
+            runNelsonSiegelSimulation();
+        } else {
+            runLorimierSimulation();
+        }
+    }
+
+    function runNelsonSiegelSimulation() {
+        const isSvensson = document.querySelector('input[name="nsModelRadio"]:checked').value === 'Svensson';
+        const svSliders = document.getElementById('svensson-sliders');
+        if (svSliders) {
+            svSliders.style.display = isSvensson ? 'grid' : 'none';
+        }
+
+        const b0 = parseFloat(document.getElementById('nsB0').value) / 100.0;
+        const b1 = parseFloat(document.getElementById('nsB1').value) / 100.0;
+        const b2 = parseFloat(document.getElementById('nsB2').value) / 100.0;
+        const a = parseFloat(document.getElementById('nsA').value);
+
+        document.getElementById('nsB0Val').textContent = (b0 * 100.0).toFixed(2) + '%';
+        document.getElementById('nsB1Val').textContent = (b1 * 100.0).toFixed(2) + '%';
+        document.getElementById('nsB2Val').textContent = (b2 * 100.0).toFixed(2) + '%';
+        document.getElementById('nsAVal').textContent = a.toFixed(2);
+
+        let b3 = 0.0;
+        let a2 = 1.0;
+        if (isSvensson) {
+            b3 = parseFloat(document.getElementById('nsB3').value) / 100.0;
+            a2 = parseFloat(document.getElementById('nsA2').value);
+            document.getElementById('nsB3Val').textContent = (b3 * 100.0).toFixed(2) + '%';
+            document.getElementById('nsA2Val').textContent = a2.toFixed(2);
+        }
+
+        const maturities = [];
+        const basis0 = [];
+        const basis1 = [];
+        const basis2 = [];
+        const basis3 = [];
+        
+        const f_curve = [];
+        const y_curve = [];
+
+        // Build continuous curves up to 30 years
+        for (let i = 1; i <= 60; i++) {
+            const T = i * 0.5;
+            maturities.push(T.toFixed(1) + 'Y');
+
+            // Basis functions
+            const I0 = 1.0;
+            const I1 = T === 0 ? 1.0 : (1.0 - Math.exp(-a * T)) / (a * T);
+            const I2 = T === 0 ? 0.0 : ((1.0 - Math.exp(-a * T)) / (a * T)) - Math.exp(-a * T);
+            const I3 = T === 0 ? 0.0 : ((1.0 - Math.exp(-a2 * T)) / (a2 * T)) - Math.exp(-a2 * T);
+
+            basis0.push(I0);
+            basis1.push(I1);
+            basis2.push(I2);
+            basis3.push(I3);
+
+            // Forward rate
+            let f = b0 + b1 * Math.exp(-a * T) + b2 * a * T * Math.exp(-a * T);
+            if (isSvensson) {
+                f += b3 * a2 * T * Math.exp(-a2 * T);
+            }
+            f_curve.push(f * 100.0);
+
+            // Yield rate
+            let y = b0 * I0 + b1 * I1 + b2 * I2;
+            if (isSvensson) {
+                y += b3 * I3;
+            }
+            y_curve.push(y * 100.0);
+        }
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#64748b';
+
+        // Render Basis Plot
+        const ctxB = document.getElementById('nsBasisChart').getContext('2d');
+        if (nsBasisChartInstance) { nsBasisChartInstance.destroy(); }
+        
+        const datasetsBasis = [
+            { label: 'Level (I₀)', data: basis0, borderColor: '#3b82f6', borderWidth: 2, pointRadius: 0, fill: false },
+            { label: 'Slope (I₁)', data: basis1, borderColor: '#ef4444', borderWidth: 2, pointRadius: 0, fill: false },
+            { label: 'Curvature (I₂)', data: basis2, borderColor: '#7c3aed', borderWidth: 2, pointRadius: 0, fill: false }
+        ];
+        if (isSvensson) {
+            datasetsBasis.push({ label: 'Svensson (I₃)', data: basis3, borderColor: '#10b981', borderWidth: 2, pointRadius: 0, fill: false });
+        }
+
+        nsBasisChartInstance = new Chart(ctxB, {
+            type: 'line',
+            data: { labels: maturities, datasets: datasetsBasis },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'top', labels: { color: tickColor } } },
+                scales: {
+                    x: { grid: { color: gridColor }, ticks: { color: tickColor, maxTicksLimit: 9 } },
+                    y: { grid: { color: gridColor }, ticks: { color: tickColor } }
+                }
+            }
+        });
+
+        // Render Curves Plot
+        const ctxC = document.getElementById('nsCurvesChart').getContext('2d');
+        if (nsCurvesChartInstance) { nsCurvesChartInstance.destroy(); }
+        nsCurvesChartInstance = new Chart(ctxC, {
+            type: 'line',
+            data: {
+                labels: maturities,
+                datasets: [
+                    { label: 'Forward Curve f(T)', data: f_curve, borderColor: '#f59e0b', borderWidth: 2.5, pointRadius: 0, tension: 0.1, fill: false },
+                    { label: 'Yield Curve y(T)', data: y_curve, borderColor: '#3b82f6', borderWidth: 2.5, pointRadius: 0, tension: 0.1, fill: false }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'top', labels: { color: tickColor } } },
+                scales: {
+                    x: { grid: { color: gridColor }, ticks: { color: tickColor, maxTicksLimit: 9 } },
+                    y: { grid: { color: gridColor }, ticks: { color: tickColor } }
+                }
+            }
+        });
+    }
+
+    // Helper for Hilbert basis scalar product: <h_i, h_j>_H
+    function getHilbertScalarProduct(Ti, Tj) {
+        const m = Math.min(Ti, Tj);
+        // Closed-form exact integration of: Ti * Tj * (1 + u) - 0.5*(Ti + Tj)*u^2 + 0.333*u^3
+        return Ti * Tj * (1.0 + m) - 0.5 * (Ti + Tj) * m * m + (1.0 / 3.0) * m * m * m;
+    }
+
+    // Helper for h_i(u) quadratic spline basis function evaluation
+    function evaluateBasisFunction(Ti, u) {
+        if (u <= Ti) {
+            return Ti * u - 0.5 * u * u;
+        } else {
+            return 0.5 * Ti * Ti;
+        }
+    }
+
+    function runLorimierSimulation() {
+        const alpha = parseFloat(document.getElementById('lorAlpha').value);
+        document.getElementById('lorAlphaVal').textContent = alpha.toFixed(2);
+
+        // Update solver state labels
+        let status = 'Balanced Fit';
+        if (alpha < 0.1) status = 'Maximal Smoothness (Flat Yield)';
+        else if (alpha > 500) status = 'Perfect Matching (Jagged Spline)';
+        document.getElementById('lorSolverState').textContent = status;
+
+        // Sparse target yield points to smooth (e.g., typical upward/humped yield structure)
+        const knownYears = [1.0, 2.0, 3.0, 5.0, 7.0, 10.0, 15.0];
+        const knownYields = [0.005, 0.009, 0.014, 0.021, 0.025, 0.028, 0.030]; // 0.5% to 3.0%
+        const N = knownYears.length;
+
+        // Set up the (N+1) x (N+1) linear system of equations for Lorimier Coefficients
+        // Row 0: sum(beta_i * T_i) = 0
+        // Row i (from 1 to N): beta_0 * T_i + sum_j beta_j * <h_i, h_j> + (1 / alpha) * beta_i = T_i * y_i
+        const sysMat = Array.from({ length: N + 1 }, () => Array(N + 1).fill(0.0));
+        const sysRhs = Array(N + 1).fill(0.0);
+
+        // Row 0 constraints
+        sysMat[0][0] = 0.0;
+        for (let j = 1; j <= N; j++) {
+            sysMat[0][j] = knownYears[j - 1];
+        }
+        sysRhs[0] = 0.0;
+
+        // Rows 1 to N
+        for (let i = 1; i <= N; i++) {
+            const Ti = knownYears[i - 1];
+            const yi = knownYields[i - 1];
+
+            sysMat[i][0] = Ti; // beta_0 coefficient
+            for (let j = 1; j <= N; j++) {
+                const Tj = knownYears[j - 1];
+                let scalarProduct = getHilbertScalarProduct(Ti, Tj);
+                if (i === j) {
+                    scalarProduct += (1.0 / alpha);
+                }
+                sysMat[i][j] = scalarProduct;
+            }
+            sysRhs[i] = Ti * yi;
+        }
+
+        // Solve coefficients using Matrix Inversion
+        const invSys = invertMatrix(sysMat);
+        if (!invSys) {
+            console.error("Lorimier system singular!");
+            return;
+        }
+
+        const coeffs = Array(N + 1).fill(0.0);
+        for (let i = 0; i <= N; i++) {
+            let sum = 0.0;
+            for (let j = 0; j <= N; j++) {
+                sum += invSys[i][j] * sysRhs[j];
+            }
+            coeffs[i] = sum;
+        }
+
+        const beta_0 = coeffs[0];
+        const betas = coeffs.slice(1);
+
+        // Compile coordinates for Chart.js
+        const maturities = [];
+        const splineForward = [];
+        const splineYield = [];
+
+        // Build continuous curves up to 20 years
+        for (let k = 1; k <= 80; k++) {
+            const u = k * 0.25;
+            maturities.push(u.toFixed(2) + 'Y');
+
+            // Evaluate forward spline f(u) = beta_0 + sum beta_i * h_i(u)
+            // Wait, Lorimier basis spline formula: h_i(u) = Ti for u=0, and derivative h_i'(u) = (Ti - u)^+
+            // So spline forward rate function is:
+            // f(u) = beta_0 + sum beta_i * h_i(u)
+            let f = beta_0;
+            let sumF = 0.0;
+            for (let i = 0; i < N; i++) {
+                const Ti = knownYears[i];
+                // h_i(u) is evaluated as the integral of h_i'(u) + h_i(0):
+                // h_i(u) = Ti * u - 0.5 * u^2  for u <= Ti
+                // h_i(u) = 0.5 * Ti^2          for u > Ti
+                const basisVal = evaluateBasisFunction(Ti, u);
+                f += betas[i] * basisVal;
+            }
+            splineForward.push(f * 100.0);
+
+            // Spot Yield curve spline y(u) = 1/u * int_0^u f(v) dv
+            // int_0^u basisVal(v) dv:
+            // For u <= Ti: int_0^u (Ti * v - 0.5 * v^2) dv = 0.5 * Ti * u^2 - 1/6 * u^3
+            // For u > Ti: int_0^Ti (Ti * v - 0.5 * v^2) dv + int_Ti^u (0.5 * Ti^2) dv = (1/3 * Ti^3) + 0.5 * Ti^2 * (u - Ti)
+            let y_sum = beta_0 * u;
+            for (let i = 0; i < N; i++) {
+                const Ti = knownYears[i];
+                let intVal = 0.0;
+                if (u <= Ti) {
+                    intVal = 0.5 * Ti * u * u - (1.0 / 6.0) * u * u * u;
+                } else {
+                    intVal = (1.0 / 3.0) * Ti * Ti * Ti + 0.5 * Ti * Ti * (u - Ti);
+                }
+                y_sum += betas[i] * intVal;
+            }
+            splineYield.push((y_sum / u) * 100.0);
+        }
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#64748b';
+
+        // Render Lorimier spline Plot
+        const ctxLor = document.getElementById('lorSplineChart').getContext('2d');
+        if (lorSplineChartInstance) { lorSplineChartInstance.destroy(); }
+        lorSplineChartInstance = new Chart(ctxLor, {
+            type: 'line',
+            data: {
+                labels: maturities,
+                datasets: [
+                    {
+                        label: 'Lorimier Forward Spline f(T)',
+                        data: splineForward,
+                        borderColor: '#7c3aed',
+                        borderWidth: 2.5,
+                        pointRadius: 0,
+                        tension: 0.1,
+                        fill: false
+                    },
+                    {
+                        label: 'Lorimier Spot Yield Spline y(T)',
+                        data: splineYield,
+                        borderColor: '#2563eb',
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        tension: 0.1,
+                        fill: false
+                    },
+                    {
+                        label: 'Market Quotes (Target)',
+                        data: knownYears.map((T, idx) => ({ x: T.toFixed(2) + 'Y', y: knownYields[idx] * 100.0 })),
+                        borderColor: '#10b981',
+                        backgroundColor: '#10b981',
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        showLine: false,
+                        type: 'scatter'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'top', labels: { color: tickColor } } },
+                scales: {
+                    x: { grid: { color: gridColor }, ticks: { color: tickColor, maxTicksLimit: 12 } },
+                    y: { grid: { color: gridColor }, ticks: { color: tickColor } }
+                }
+            }
+        });
+    }
+
+    // Attach onload event
+    document.addEventListener('DOMContentLoaded', () => {
+        if (document.getElementById('view-smoothing')) {
+            runNelsonSiegelSimulation();
+        }
+    });
+</script>

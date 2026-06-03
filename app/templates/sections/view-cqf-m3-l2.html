@@ -1,0 +1,568 @@
+<div id="view-cqf-m3-l2" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 03: Equities &amp; Currencies</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 02</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L2: Martingales &amp; Black's Model for Futures</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Girsanov Theorem, Change of Measure, Self-Financing Strategies, Black's 1976 Futures Option PDE, and Solvers</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM3L2Measure" onclick="switchM3L2Tab('measure')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. Martingales &amp; Change of Measure</button>
+        <button id="tabM3L2Strategies" onclick="switchM3L2Tab('strategies')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Self-Financing &amp; Pricing</button>
+        <button id="tabM3L2BlackModel" onclick="switchM3L2Tab('blackModel')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Black's Model (Futures)</button>
+        <button id="tabM3L2Sandbox" onclick="switchM3L2Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. Interactive Futures Sandbox</button>
+        <button id="tabM3L2Exercises" onclick="switchM3L2Tab('exercises')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Solved Exercises</button>
+    </div>
+
+    <!-- TAB 1: Martingales & Change of Measure -->
+    <div id="secM3L2Measure" style="display: block;">
+        <div class="container" style="grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Girsanov Theorem &amp; Radon-Nikodym</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563;">
+                        While the PDE approach eliminates the diffusion term (randomness) through delta hedging, the probabilistic martingale approach does the opposite: it eliminates the drift term through a <strong>change of probability measure</strong>, leaving pure randomness in the form of a martingale.
+                    </p>
+
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-top: 1rem; margin-bottom: 1rem;">
+                        <div style="font-size: 0.82rem; font-weight: 700; color: var(--accent); margin-bottom: 0.35rem;">Equivalent Probability Measures</div>
+                        <p style="font-size: 0.78rem; line-height: 1.4; color: #4b5563; margin: 0;">
+                            Two probability measures $\mathbb{P}$ and $\mathbb{Q}$ are equivalent ($\mathbb{P} \sim \mathbb{Q}$) if they share the same sample space and agree on which events are impossible (probability zero). Girsanov's Theorem allows us to transition from the real-world physical measure $\mathbb{P}$ to the risk-neutral equivalent martingale measure $\mathbb{Q}$.
+                        </p>
+                    </div>
+
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 0;">
+                        <div style="font-size: 0.82rem; font-weight: 700; color: var(--accent); margin-bottom: 0.35rem;">The Radon-Nikodym derivative ($\Lambda$)</div>
+                        <p style="font-size: 0.78rem; line-height: 1.4; color: #4b5563; margin-bottom: 0.5rem;">
+                            The change of measure is executed via a strictly positive likelihood ratio $\Lambda = \frac{d\mathbb{Q}}{d\mathbb{P}}$:
+                        </p>
+                        $$\mathbb{Q}(A) = \int_A \Lambda d\mathbb{P}$$
+                        <p style="font-size: 0.78rem; line-height: 1.4; color: #4b5563; margin-top: 0.5rem; margin-bottom: 0;">
+                            In the Black-Scholes model, the Radon-Nikodym derivative takes an exponential form because the underlying assets are driven by normal log-returns:
+                            $$\Lambda = \exp\left( -\theta X_T - \frac{1}{2}\theta^2 T \right)$$
+                            where $\theta = \frac{\mu - r}{\sigma}$ acts as the market price of risk (Sharpe ratio).
+                        </p>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(139, 92, 246, 0.05); border-left: 3px solid #8b5cf6; padding: 0.85rem 1rem; border-radius: 6px; font-size: 0.8rem; line-height: 1.5; margin-top: 1.25rem;">
+                    💡 <strong>Discrete Example:</strong> In a coin-toss game with a biased coin ($P(\text{Head}) = p$, $P(\text{Tail}) = q = 1-p$), we can define a fair measure $\bar{P}$ ($P(\text{Head}) = 0.5$, $P(\text{Tail}) = 0.5$) by applying Radon-Nikodym weights $\Lambda(\text{Head}) = \frac{1}{2p}$ and $\Lambda(\text{Tail}) = \frac{1}{2q}$.
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Stock Price Dynamics &amp; Martingale</h3>
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563; margin-bottom: 1rem;">
+                        Let the physical stock price dynamics be given by:
+                        $$dS_t = \mu S_t dt + \sigma S_t dX_t$$
+                        The discounted stock price process is defined as $S^*_t = \frac{S_t}{B_t} = S_t e^{-rt}$. By Itô's product rule, its SDE is:
+                        $$dS^*_t = (\mu - r) S^*_t dt + \sigma S^*_t dX_t$$
+                        Under Girsanov's change of measure, the driftless process under $\mathbb{Q}$ becomes:
+                        $$dS^*_t = \sigma S^*_t dX_t^{\mathbb{Q}}$$
+                        where $X_t^{\mathbb{Q}} = X_t + \frac{\mu - r}{\sigma} t$ is a standard $\mathbb{Q}$-Brownian motion. Since the discounted stock price SDE has zero drift under $\mathbb{Q}$, it is a Q-martingale:
+                        $$S^*_t = \mathbb{E}^{\mathbb{Q}}[ S^*_T \mid \mathcal{F}_t ]$$
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Self-Financing & Pricing -->
+    <div id="secM3L2Strategies" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Self-Financing Strategies</h3>
+                <p style="font-size:0.85rem; line-height:1.6; color:#4b5563; margin-bottom:1rem;">
+                    A trading strategy $\phi_t = (\phi_t^S, \phi_t^B)$ represents the portfolio holdings at time $t$. The total wealth generated is $V_t = \phi_t^S S_t + \phi_t^B B_t$.
+                </p>
+
+                <div style="display:flex; flex-direction:column; gap:1.15rem; font-size:0.85rem; line-height:1.6; color:#4b5563;">
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong>The Self-Financing Condition</strong><br>
+                        A strategy is self-financing if no external money is injected or withdrawn after inception. The wealth process satisfies:
+                        $$V_t(\phi) = V_0(\phi) + \int_0^t \phi_u^S dS_u + \int_0^t \phi_u^B dB_u$$
+                        Intuitively, rebalancing is done strictly by shifting funds internally between stock and bond.
+                    </div>
+
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong>Discounted Wealth Dynamics</strong><br>
+                        Discounting the wealth process $V^*_t = \frac{V_t}{B_t}$ removes cash growth, leaving only stock returns:
+                        $$dV^*_t = \phi_t^S dS^*_t$$
+                        Integrating and writing under the Q-measure:
+                        $$V^*_t = V^*_0 + \int_0^t \phi_u^S \sigma S^*_u dX_u^{\mathbb{Q}}$$
+                        Since this is an Itô integral, the discounted wealth $V^*_t$ is a $\mathbb{Q}$-martingale.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div style="font-size:0.85rem; line-height:1.6; color:#4b5563;">
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Fundamental Asset Pricing Formula</h3>
+                    <p style="margin-bottom:1rem;">
+                        To prevent arbitrage, the value of the option $\chi(t, S_t)$ must equal the value of the replicating portfolio. Because the discounted replicating portfolio $V^*_t$ is a Q-martingale:
+                    </p>
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border); margin-bottom:1rem; text-align:center;">
+                        $$\frac{\chi(t, S_t)}{B_t} = \mathbb{E}^{\mathbb{Q}}\left[ \frac{G(S_T)}{B_T} \;\middle|\; \mathcal{F}_t \right]$$
+                    </div>
+                    <p>
+                        Assuming deterministic interest rates, this yields the <strong>Fundamental Asset Pricing Formula</strong>:
+                        $$\chi(t, S_t) = e^{-r(T-t)} \mathbb{E}^{\mathbb{Q}}\left[ G(S_T) \mid \mathcal{F}_t \right]$$
+                    </p>
+
+                    <div style="background:var(--metric-bg); padding:1.15rem; border-radius:8px; border:1px solid var(--card-border); margin-top:1rem;">
+                        <strong>The Numeraire Pair</strong><br>
+                        A numeraire is any strictly positive price process $N_t > 0$. The general formula is:
+                        $$\chi(t, S_t) = N_t \mathbb{E}^{\mathbb{Q}^N}\left[ N_T^{-1} G(S_T) \mid \mathcal{F}_t \right]$$
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Black's Model (Futures) -->
+    <div id="secM3L2BlackModel" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Black's 1976 Model for Futures Options</h3>
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563;">
+                        In 1976, Fischer Black published a variant of the option model where the underlying asset is not a traded spot stock, but a futures or forward contract.
+                    </p>
+
+                    <div style="background: var(--metric-bg); padding: 1.15rem; border-radius: 8px; border: 1px solid var(--card-border); margin-top: 1rem; font-size:0.82rem; line-height:1.6; color:#4b5563;">
+                        <strong>Futures Price SDE &amp; Martingale Property</strong><br>
+                        Since interest rates are deterministic, the futures price is equal to the forward price $f_t = S_t e^{r(T-t)}$. Applying Itô's Lemma, its SDE is:
+                        $$df_t = (\mu - r) f_t dt + \sigma f_t dX_t$$
+                        Under Girsanov's change of measure to the risk-neutral EMM $\mathbb{Q}$, the drift is eliminated:
+                        $$df_t = \sigma f_t dX_t^{\mathbb{Q}}$$
+                        Because the futures price SDE is driftless under $\mathbb{Q}$, the futures price process itself is a Q-martingale! Thus, the futures price is already a naturally discounted process.
+                    </div>
+                </div>
+                
+                <div style="background: rgba(16, 185, 129, 0.05); border-left: 3px solid #10b981; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.8rem; line-height: 1.5; margin-top: 1rem;">
+                    💡 <strong>Feynman-Kac BVP for Black's Model:</strong> By Feynman-Kac representation, the futures option value $V(t, f_t)$ satisfies:
+                    $$\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^2 f^2 \frac{\partial^2 V}{\partial f^2} - rV = 0 \quad , \quad V(T, f_T) = G(f_T)$$
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Black's Options Pricing Formulas</h3>
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563; margin-bottom: 1.25rem;">
+                        The closed-form pricing solutions for European call/put options on futures contracts are:
+                    </p>
+
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.82rem; line-height:1.6; color:#4b5563; margin-bottom:1rem;">
+                        <strong>Black's Call Option on Futures</strong>
+                        $$C(f_t, t) = e^{-r(T-t)} \left[ f_t N(d_1) - E N(d_2) \right]$$
+                    </div>
+
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.82rem; line-height:1.6; color:#4b5563; margin-bottom:1rem;">
+                        <strong>Black's Put Option on Futures</strong>
+                        $$P(f_t, t) = e^{-r(T-t)} \left[ E N(-d_2) - f_t N(-d_1) \right]$$
+                    </div>
+
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.82rem; line-height:1.6; color:#4b5563;">
+                        <strong>Futures Options Variables ($d_1$ and $d_2$)</strong>
+                        $$d_1 = \frac{\log(f_t/E) + \frac{1}{2}\sigma^2(T-t)}{\sigma \sqrt{T-t}} \quad , \quad d_2 = d_1 - \sigma \sqrt{T-t}$$
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Interactive Futures Sandbox -->
+    <div id="secM3L2Sandbox" style="display: none;">
+        <div class="container" style="grid-template-columns: 340px 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            
+            <!-- Sliders Panel -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; font-family: var(--font-family-sans); font-size: 0.85rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom:1rem;">Futures Parameters</h3>
+                
+                <div style="display:flex; flex-direction:column; gap:1.15rem;">
+                    <!-- Option Style -->
+                    <div>
+                        <span style="font-weight:700; display:block; margin-bottom:0.25rem;">Option Style</span>
+                        <select id="selectM3L2OptType" onchange="updateM3L2Sandbox()" style="width:100%; padding:0.4rem; border-radius:6px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color); font-weight:600;">
+                            <option value="call">European Futures Call</option>
+                            <option value="put">European Futures Put</option>
+                        </select>
+                    </div>
+
+                    <!-- Slider Futures Price -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Futures Price ($f_t$):</span>
+                            <span id="valM3L2Futures" style="color:var(--accent);">100.00</span>
+                        </div>
+                        <input id="slideM3L2Futures" type="range" min="10" max="200" step="1" value="100" style="width:100%; cursor:pointer;" oninput="updateM3L2Sandbox()">
+                    </div>
+
+                    <!-- Slider Strike Price -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Strike Price ($E$):</span>
+                            <span id="valM3L2Strike" style="color:var(--accent);">100.00</span>
+                        </div>
+                        <input id="slideM3L2Strike" type="range" min="10" max="200" step="1" value="100" style="width:100%; cursor:pointer;" oninput="updateM3L2Sandbox()">
+                    </div>
+
+                    <!-- Slider Volatility -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Volatility ($\sigma_f$):</span>
+                            <span id="valM3L2Vol" style="color:var(--accent);">20.0%</span>
+                        </div>
+                        <input id="slideM3L2Vol" type="range" min="5" max="100" step="1" value="20" style="width:100%; cursor:pointer;" oninput="updateM3L2Sandbox()">
+                    </div>
+
+                    <!-- Slider Time to Expiry -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Time to Expiration ($T$):</span>
+                            <span id="valM3L2Time" style="color:var(--accent);">1.00 Year</span>
+                        </div>
+                        <input id="slideM3L2Time" type="range" min="0.05" max="3.0" step="0.05" value="1.0" style="width:100%; cursor:pointer;" oninput="updateM3L2Sandbox()">
+                    </div>
+
+                    <!-- Slider Interest Rate -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Risk-Free Rate ($r$):</span>
+                            <span id="valM3L2Rate" style="color:var(--accent);">5.0%</span>
+                        </div>
+                        <input id="slideM3L2Rate" type="range" min="0.0" max="15.0" step="0.5" value="5.0" style="width:100%; cursor:pointer;" oninput="updateM3L2Sandbox()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Outputs & Visualization -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Black's Options Futures Calculator</h3>
+                    <p style="font-size:0.8rem; color:#4b5563; margin-bottom:1rem;">Adjust inputs to analyze options on futures pricing dynamics in real-time:</p>
+
+                    <!-- Greeks Grid Outputs -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 1.25rem; font-family: var(--font-family-sans);">
+                        <div style="background:var(--metric-bg); border:1px solid var(--card-border); padding:0.5rem; border-radius:6px; text-align:center;">
+                            <div style="font-size:0.62rem; text-transform:uppercase; color:#6b7280; font-weight:700;">Option Value ($V$)</div>
+                            <strong id="outM3L2Price" style="font-size:1.15rem; color:var(--accent); font-family:monospace;">$10.45</strong>
+                        </div>
+                        <div style="background:var(--metric-bg); border:1px solid var(--card-border); padding:0.5rem; border-radius:6px; text-align:center;">
+                            <div style="font-size:0.62rem; text-transform:uppercase; color:#6b7280; font-weight:700;">Delta ($\Delta$)</div>
+                            <strong id="outM3L2Delta" style="font-size:1.15rem; color:var(--text-color); font-family:monospace;">0.636</strong>
+                        </div>
+                        <div style="background:var(--metric-bg); border:1px solid var(--card-border); padding:0.5rem; border-radius:6px; text-align:center;">
+                            <div style="font-size:0.62rem; text-transform:uppercase; color:#6b7280; font-weight:700;">Gamma ($\Gamma$)</div>
+                            <strong id="outM3L2Gamma" style="font-size:1.15rem; color:var(--text-color); font-family:monospace;">0.019</strong>
+                        </div>
+                        <div style="background:var(--metric-bg); border:1px solid var(--card-border); padding:0.5rem; border-radius:6px; text-align:center;">
+                            <div style="font-size:0.62rem; text-transform:uppercase; color:#6b7280; font-weight:700;">Theta ($\Theta$/day)</div>
+                            <strong id="outM3L2Theta" style="font-size:1.15rem; color:var(--text-color); font-family:monospace;">-0.017</strong>
+                        </div>
+                        <div style="background:var(--metric-bg); border:1px solid var(--card-border); padding:0.5rem; border-radius:6px; text-align:center;">
+                            <div style="font-size:0.62rem; text-transform:uppercase; color:#6b7280; font-weight:700;">Vega ($\mathcal{V}$/1% $\sigma$)</div>
+                            <strong id="outM3L2Vega" style="font-size:1.15rem; color:var(--text-color); font-family:monospace;">0.375</strong>
+                        </div>
+                        <div style="background:var(--metric-bg); border:1px solid var(--card-border); padding:0.5rem; border-radius:6px; text-align:center;">
+                            <div style="font-size:0.62rem; text-transform:uppercase; color:#6b7280; font-weight:700;">Rho ($\rho$/1% $r$)</div>
+                            <strong id="outM3L2Rho" style="font-size:1.15rem; color:var(--text-color); font-family:monospace;">0.521</strong>
+                        </div>
+                    </div>
+
+                    <!-- Option Payoff Chart -->
+                    <div style="height: 180px; position: relative;">
+                        <canvas id="m3l2PayoffChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: Solved Exercises -->
+    <div id="secM3L2Exercises" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Module 3 Martingales Solved Exercises</h3>
+                <p style="font-size: 0.88rem; line-height: 1.5; color: #4b5563; margin-bottom: 1.5rem;">
+                    Examine detailed structural proofs for options pricing under martingale measures:
+                </p>
+
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    
+                    <!-- Exercise 1 -->
+                    <details style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden;">
+                        <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
+                            Exercise 1: Derive Black's Formula Step-by-Step
+                        </summary>
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                            <strong>Problem:</strong><br>
+                            Derive the pricing formula for a European call option on a futures contract under the equivalent martingale measure $\mathbb{Q}$ where futures price dynamics are $df_t = \sigma f_t dX_t^{\mathbb{Q}}$.
+                            <hr style="border:0; border-top:1px solid var(--card-border); margin:1rem 0;">
+                            <strong>Detailed Solution 1: Direct Expectation Integration</strong><br>
+                            Under risk-neutral pricing:
+                            $$V(f_t, t) = e^{-r(T-t)} \mathbb{E}^{\mathbb{Q}}[ \max(f_T - E, 0) \mid \mathcal{F}_t ]$$
+                            Integrating the SDE yields:
+                            $$f_T = f_t \exp\left( -\frac{1}{2}\sigma^2(T-t) + \sigma (X_T^{\mathbb{Q}} - X_t^{\mathbb{Q}}) \right)$$
+                            Let $Y_T = \log(f_T / f_t)$. Under $\mathbb{Q}$, we have $Y_T \sim \mathcal{N}\left( -\frac{1}{2}\sigma^2 \tau, \sigma^2 \tau \right)$ where $\tau = T - t$. Express $f_T$:
+                            $$f_T = f_t \exp\left( -\frac{1}{2}\sigma^2 \tau + \sigma\sqrt{\tau} Z \right) \quad , \quad Z \sim \mathcal{N}(0, 1)$$
+                            Option price integration only covers when $f_T \ge E$, which is true when:
+                            $$z \ge z_0 := \frac{\ln(E/f_t) + \frac{1}{2}\sigma^2 \tau}{\sigma \sqrt{\tau}}$$
+                            The integral becomes:
+                            $$V(f_t, t) = e^{-r\tau} \int_{z_0}^{\infty} \left( f_t e^{-\frac{1}{2}\sigma^2 \tau + \sigma\sqrt{\tau}z} - E \right) \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2}z^2} dz$$
+                            Splitting and integrating both terms (completing the square on the first term) yields:
+                            $$V(f_t, t) = e^{-r\tau} f_t N\left( \frac{\ln(f_t/E) + \frac{1}{2}\sigma^2 \tau}{\sigma \sqrt{\tau}} \right) - e^{-r\tau} E N\left( \frac{\ln(f_t/E) - \frac{1}{2}\sigma^2 \tau}{\sigma \sqrt{\tau}} \right)$$
+                            Writing $d_1, d_2$ gives the standard Black's formula:
+                            $$V(f_t, t) = e^{-r(T-t)} \left[ f_t N(d_1) - E N(d_2) \right]$$
+                            <hr style="border:0; border-top:1px solid var(--card-border); margin:1rem 0;">
+                            <strong>Detailed Solution 2: Change of Measure (Radon-Nikodym)</strong><br>
+                            Define a new equivalent measure $\bar{\mathbb{Q}}$ using Radon-Nikodym:
+                            $$\frac{d\bar{\mathbb{Q}}}{d\mathbb{Q}} = \exp\left( \sigma X_T^{\mathbb{Q}} - \frac{1}{2}\sigma^2 T \right)$$
+                            Under $\bar{\mathbb{Q}}$, the stock price process is $f_T = f_0 \exp\left( \sigma X_T^{\bar{\mathbb{Q}}} + \frac{1}{2}\sigma^2 T \right)$.
+                            The expectation splits into:
+                            $$\mathbb{E}^{\mathbb{Q}}[ B_T^{-1}(f_T - E)^+ ] = e^{-rT} f_0 \bar{\mathbb{Q}}(f_T > E) - e^{-rT} E \mathbb{Q}(f_T > E)$$
+                            * The risk-neutral probability $\mathbb{Q}(f_T > E) = N(d_2)$.
+                            * The share-measure probability $\bar{\mathbb{Q}}(f_T > E) = N(d_1)$.
+                            This simplifies directly to Black's formula.
+                        </div>
+                    </details>
+
+                    <!-- Exercise 2 -->
+                    <details style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden;">
+                        <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
+                            Exercise 2: Deducing the BVP through Feynman-Kac
+                        </summary>
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                            <strong>Problem:</strong><br>
+                            Applying the Feynman-Kac formula, deduce the boundary value problem (i.e. PDE and terminal condition) satisfied by the value $V(t, f_t)$ of an option on a futures contract.
+                            <hr style="border:0; border-top:1px solid var(--card-border); margin:1rem 0;">
+                            <strong>Detailed Solution:</strong><br>
+                            Under risk-neutral pricing, the option value is written as:
+                            $$V(t, f_t) = e^{-r(T-t)} \mathbb{E}^{\mathbb{Q}}[ G(f_T) \mid \mathcal{F}_t ]$$
+                            where the underlying futures price $f_t$ evolves according to:
+                            $$df_t = 0 dt + \sigma f_t dX_t^{\mathbb{Q}}$$
+                            This is a standard stochastic process of the form $df_t = \mu(t, f_t)dt + \sigma(t, f_t)dX_t^{\mathbb{Q}}$ where $\mu(t, f) = 0$ and $\sigma(t, f) = \sigma f$.
+                            According to the general Feynman-Kac theorem, the expectation $V(t, f) = e^{-r(T-t)} \mathbb{E}^{\mathbb{Q}}[ G(f_T) \mid f_t = f ]$ is the unique solution to the backward parabolic boundary value problem:
+                            $$\frac{\partial V}{\partial t} + \mu(t, f)\frac{\partial V}{\partial f} + \frac{1}{2}\sigma^2(t, f)\frac{\partial^2 V}{\partial f^2} - r V = 0$$
+                            Substituting $\mu(t, f) = 0$ and $\sigma(t, f) = \sigma f$ gives:
+                            $$\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^2 f^2 \frac{\partial^2 V}{\partial f^2} - r V = 0$$
+                            with the terminal boundary condition at $t=T$:
+                            $$V(T, f_T) = G(f_T)$$
+                            Which is the exact PDE governing options on futures.
+                        </div>
+                    </details>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    window.switchM3L2Tab = function(tab) {
+        const tabs = ['measure', 'strategies', 'blackModel', 'sandbox', 'exercises'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM3L2' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM3L2' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) {
+                sec.style.display = (t === tab ? 'block' : 'none');
+                if (t === tab && !sec.dataset.typeset) {
+                    if (typeof window.safeTypeset === 'function') {
+                        window.safeTypeset([sec]);
+                        sec.dataset.typeset = 'true';
+                    }
+                }
+            }
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        if (tab === 'sandbox') {
+            setTimeout(updateM3L2Sandbox, 100);
+        }
+    };
+
+    let m3l2PayoffChartInstance = null;
+
+    // Normal Cumulative Distribution Function (normCdf approximation)
+    function m3l2NormCdf(x) {
+        const b1 =  0.319381530;
+        const b2 = -0.356563782;
+        const b3 =  1.781477937;
+        const b4 = -1.821255978;
+        const b5 =  1.330274429;
+        const p  =  0.2316419;
+        const c  =  0.39894228;
+
+        if (x >= 0.0) {
+            let k = 1.0 / (1.0 + p * x);
+            return 1.0 - c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        } else {
+            let k = 1.0 / (1.0 - p * x);
+            return c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        }
+    }
+
+    // Normal PDF
+    function m3l2NormPdf(x) {
+        return (1 / Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * x * x);
+    }
+
+    // Core Black's futures option calculations
+    window.updateM3L2Sandbox = function() {
+        const f = parseFloat(document.getElementById('slideM3L2Futures').value);
+        const E = parseFloat(document.getElementById('slideM3L2Strike').value);
+        const vol = parseFloat(document.getElementById('slideM3L2Vol').value) / 100;
+        const T = parseFloat(document.getElementById('slideM3L2Time').value);
+        const r = parseFloat(document.getElementById('slideM3L2Rate').value) / 100;
+        const optType = document.getElementById('selectM3L2OptType').value;
+
+        // Update Labels
+        document.getElementById('valM3L2Futures').innerText = f.toFixed(2);
+        document.getElementById('valM3L2Strike').innerText = E.toFixed(2);
+        document.getElementById('valM3L2Vol').innerText = (vol * 100).toFixed(1) + "%";
+        document.getElementById('valM3L2Time').innerText = T.toFixed(2) + (T === 1 ? " Year" : " Years");
+        document.getElementById('valM3L2Rate').innerText = (r * 100).toFixed(1) + "%";
+
+        // Black's Option Variables d1 and d2
+        const d1 = (Math.log(f / E) + 0.5 * vol * vol * T) / (vol * Math.sqrt(T));
+        const d2 = d1 - vol * Math.sqrt(T);
+
+        let price = 0;
+        let delta = 0;
+        let gamma = Math.exp(-r * T) * m3l2NormPdf(d1) / (f * vol * Math.sqrt(T));
+        let theta = 0;
+        let vega = Math.exp(-r * T) * f * Math.sqrt(T) * m3l2NormPdf(d1);
+        let rho = 0;
+
+        if (optType === 'call') {
+            price = Math.exp(-r * T) * (f * m3l2NormCdf(d1) - E * m3l2NormCdf(d2));
+            delta = Math.exp(-r * T) * m3l2NormCdf(d1);
+            theta = -(f * vol * Math.exp(-r * T) * m3l2NormPdf(d1)) / (2 * Math.sqrt(T)) + r * f * Math.exp(-r * T) * m3l2NormCdf(d1) - r * E * Math.exp(-r * T) * m3l2NormCdf(d2);
+            rho = -T * price;
+        } else if (optType === 'put') {
+            price = Math.exp(-r * T) * (E * m3l2NormCdf(-d2) - f * m3l2NormCdf(-d1));
+            delta = -Math.exp(-r * T) * m3l2NormCdf(-d1);
+            theta = -(f * vol * Math.exp(-r * T) * m3l2NormPdf(d1)) / (2 * Math.sqrt(T)) - r * f * Math.exp(-r * T) * m3l2NormCdf(-d1) + r * E * Math.exp(-r * T) * m3l2NormCdf(-d2);
+            rho = -T * price;
+        }
+
+        // Update Output fields
+        document.getElementById('outM3L2Price').innerText = "$" + price.toFixed(2);
+        document.getElementById('outM3L2Delta').innerText = delta.toFixed(3);
+        document.getElementById('outM3L2Gamma').innerText = gamma.toFixed(4);
+        document.getElementById('outM3L2Theta').innerText = (theta / 365).toFixed(4); // Per-day theta
+        document.getElementById('outM3L2Vega').innerText = (vega / 100).toFixed(4);   // Per 1% vol change
+        document.getElementById('outM3L2Rho').innerText = (rho / 100).toFixed(4);     // Per 1% rate change
+
+        // Generate Plot points
+        const futuresPoints = [];
+        const pricesPoints = [];
+        const payoffsPoints = [];
+
+        for (let s = 10; s <= 200; s += 2) {
+            futuresPoints.push(s);
+            // Payoff
+            let pay = 0;
+            if (optType === 'call') pay = Math.max(s - E, 0);
+            else if (optType === 'put') pay = Math.max(E - s, 0);
+            payoffsPoints.push(pay);
+
+            // Curve Price
+            let crv = 0;
+            const c_d1 = (Math.log(s / E) + 0.5 * vol * vol * T) / (vol * Math.sqrt(T));
+            const c_d2 = c_d1 - vol * Math.sqrt(T);
+            
+            if (optType === 'call') {
+                crv = Math.exp(-r * T) * (s * m3l2NormCdf(c_d1) - E * m3l2NormCdf(c_d2));
+            } else if (optType === 'put') {
+                crv = Math.exp(-r * T) * (E * m3l2NormCdf(-c_d2) - s * m3l2NormCdf(-c_d1));
+            }
+            pricesPoints.push(crv);
+        }
+
+        renderM3L2PayoffChart(futuresPoints, pricesPoints, payoffsPoints, f, price);
+    };
+
+    function renderM3L2PayoffChart(futures, prices, payoffs, activeFutures, activePrice) {
+        const ctx = document.getElementById('m3l2PayoffChart');
+        if (!ctx) return;
+
+        if (m3l2PayoffChartInstance) {
+            m3l2PayoffChartInstance.data.labels = futures;
+            m3l2PayoffChartInstance.data.datasets[0].data = prices;
+            m3l2PayoffChartInstance.data.datasets[1].data = payoffs;
+            m3l2PayoffChartInstance.data.datasets[2].data = [{x: activeFutures, y: activePrice}];
+            m3l2PayoffChartInstance.update();
+            return;
+        }
+
+        m3l2PayoffChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: futures,
+                datasets: [
+                    {
+                        label: 'Futures Option Price',
+                        data: prices,
+                        borderColor: 'var(--accent)',
+                        borderWidth: 2.5,
+                        fill: false,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Intrinsic Payoff',
+                        data: payoffs,
+                        borderColor: '#6b7280',
+                        borderWidth: 1.5,
+                        borderDash: [4, 4],
+                        fill: false,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Active Pricing Point',
+                        data: [{x: activeFutures, y: activePrice}],
+                        backgroundColor: '#8b5cf6',
+                        borderColor: '#8b5cf6',
+                        pointRadius: 6,
+                        type: 'scatter',
+                        showLine: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom',
+                        title: { display: true, text: 'Futures Price ($)', font: { size: 9, weight: 'bold' } },
+                        ticks: { font: { size: 8 } }
+                    },
+                    y: {
+                        title: { display: true, text: 'Value ($)', font: { size: 9, weight: 'bold' } },
+                        ticks: { font: { size: 8 } }
+                    }
+                }
+            }
+        });
+    }
+</script>

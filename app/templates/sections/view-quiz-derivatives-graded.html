@@ -1,0 +1,671 @@
+<div id="view-quiz-derivatives-graded" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">Graded Quiz: Interest Rate Derivatives</h1>
+        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Practice assignment covering instantaneous convexity adjustment, cap-floor parity, Black & Normal volatility curves, payer-receiver swaption parity, and multi-period Vasicek cap pricing.</div>
+    </header>
+    
+    <div class="container" style="max-width: 900px; grid-template-columns: 1fr; gap: 2.5rem; margin-bottom: 4rem;">
+        <p style="font-size: 1.1rem; color: var(--text-color); line-height: 1.7; opacity: 0.85;">
+            Test your comprehensive understanding of interest rate derivatives. Select your options, enter numeric answers, and click <strong>Submit</strong> for instant feedback. Expand the <strong>Show Mathematical Solution & Derivation</strong> card at the bottom of each question to view full theoretical proofs.
+        </p>
+
+        <!-- QUESTION 1: Instantaneous Convexity Adjustment (Vasicek Short Rate) -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 1</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Input</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                1. Define the instantaneous convexity adjustment $\gamma^*(t, T)$ as:
+                $$ \gamma^*(t, T) = \mathbb{E}^{\mathbb{Q}}_t [f(T, T)] - f(t, T) $$
+                Compute $\gamma^*(0, 1)$ for the following Vasicek short rate model:
+                $$ dr(t) = 0.86(0.08 - r(t)) dt + 0.01 dW^*(t), \quad r(0) = 0.06 $$
+                where $W^*(t)$ is a standard Brownian motion under the risk-neutral probability measure $\mathbb{Q}$. Express your answer in basis points and round to 2 decimal places.
+            </p>
+
+            <!-- Input box -->
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.75rem; max-width: 300px;">
+                <input type="text" id="deriv_graded_q1_input" placeholder="e.g. 0.22" style="flex: 1; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); font-size: 1.1rem; font-weight: 700; font-family: monospace;" />
+                <span style="font-size: 1rem; font-weight: 600; color: var(--text-color);">bps</span>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeDerivGradedQ1()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q1-deriv-graded-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Step-by-Step Derivation:</strong></p>
+                    <p>1. **Forward Rate Formulation in Vasicek:** The forward rate SDE in terms of the short rate is:
+                       $$ f(t, T) = r(t) e^{-\kappa(T-t)} + \theta(1 - e^{-\kappa(T-t)}) - \frac{\sigma^2}{2\kappa^2}(1 - e^{-\kappa(T-t)})^2 $$
+                    </p>
+                    <p>2. **Maturity Limit ($T \to t$):** Since $f(T, T) = r(T)$, taking the conditional expectation under the risk-neutral measure $\mathbb{Q}$ gives:
+                       $$ \mathbb{E}^{\mathbb{Q}}_t [f(T, T)] = \mathbb{E}^{\mathbb{Q}}_t [r(T)] = r(t)e^{-\kappa(T-t)} + \theta(1 - e^{-\kappa(T-t)}) $$
+                    </p>
+                    <p>3. **Convexity Adjustment:** The difference is:
+                       $$ \gamma^*(t, T) = \mathbb{E}^{\mathbb{Q}}_t [f(T, T)] - f(t, T) = \frac{\sigma^2}{2\kappa^2}(1 - e^{-\kappa(T-t)})^2 $$
+                    </p>
+                    <p>4. **Numerical Application ($t=0, T=1$):**
+                       - Volatility: $\sigma = 0.01$
+                       - Mean reversion: $\kappa = 0.86$
+                       $$ \gamma^*(0, 1) = \frac{0.01^2}{2 \times 0.86^2}(1 - e^{-0.86})^2 \approx 6.7603 \times 10^{-5} \times (0.5768)^2 \approx 2.249 \times 10^{-5} \text{ (or } \mathbf{0.22 \text{ bps}} \text{)} $$
+                    </p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: 0.22 bps.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 2: Cap Out-of-the-Money Relationship -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 2</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                2. Consider a cap and a floor with the same cap/floor strike rate and identical tenor structure. Denote their value by $Cp(0)$ and $Fl(0)$ and suppose that the cap is out-of-the-money. Which of the following statements is true?
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1.75rem;">
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="deriv_graded_q2" value="optA" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1.1rem; color: var(--text-color);">$Cp(0) < Fl(0)$</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="deriv_graded_q2" value="optB" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1.1rem; color: var(--text-color);">$Cp(0) = Fl(0)$</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="deriv_graded_q2" value="optC" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1.1rem; color: var(--text-color);">$Cp(0) > Fl(0)$</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeDerivGradedQ2()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q2-deriv-graded-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Theoretical Explanation:</strong></p>
+                    <p>1. **Cap-Floor Parity:** The algebraic relationship between caps, floors, and swaps is:
+                       $$ Cp(0) - Fl(0) = V_{swap}(0) = A(0)(R_{swap}(0) - K) $$
+                       where $A(0) = \sum_{i=1}^M \delta P(0, T_i) > 0$ is the Annuity factor, $R_{swap}(0)$ is the spot par swap rate, and $K$ is the strike rate.
+                    </p>
+                    <p>2. **Moneyness Condition:** If the cap is out-of-the-money (OTM), the strike rate $K$ exceeds the par interest rate $R_{swap}(0)$:
+                       $$ K > R_{swap}(0) \implies R_{swap}(0) - K < 0 $$
+                    </p>
+                    <p>3. **Inequality Result:** Because the swap value is negative, we have:
+                       $$ Cp(0) - Fl(0) < 0 \implies Cp(0) < Fl(0) $$
+                    </p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Option: $Cp(0) < Fl(0)$.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 3: Out-of-the-Money Cap containing In-the-Money Caplets -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 3</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">True / False</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                3. Is the following statement true or false?<br/>
+                <strong style="display: block; margin-top: 0.5rem; color: var(--text-color); font-weight: 600;">"An out-of-the-money cap can contain in-the-money caplets."</strong>
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1.75rem;">
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="deriv_graded_q3" value="true" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1.1rem; color: var(--text-color);">True</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="deriv_graded_q3" value="false" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1.1rem; color: var(--text-color);">False</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeDerivGradedQ3()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q3-deriv-graded-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Theoretical Explanation:</strong></p>
+                    <p>A cap is a portfolio of caplets. The overall moneyness of the cap is determined by comparing its strike $K$ with the spot par swap rate $R_{swap}(0)$:</p>
+                    <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>If $K > R_{swap}(0)$, the cap is **out-of-the-money**.</li>
+                    </ul>
+                    <p>However, the moneyness of each individual caplet $i$ depends on its corresponding forward rate $F(0, T_{i-1}, T_i)$:</p>
+                    <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Caplet $i$ is **in-the-money** if $F(0, T_{i-1}, T_i) > K$.</li>
+                    </ul>
+                    <p>In an upward-sloping yield curve, the forward rates for later periods can be significantly higher than the average spot swap rate: $F(0, T_{i-1}, T_i) > R_{swap}(0)$. If the curve is steep enough, there will be later forward rates that exceed the strike $K$, making their individual caplets **in-the-money**, even though the overall cap is **out-of-the-money** because $K > R_{swap}(0)$.</p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: True.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- INTRO TO QUESTIONS 4, 5, 6: Forward Rate Curve Setup -->
+        <div style="background: var(--sidebar-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; margin-bottom: 2rem;">
+            <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-color); margin-bottom: 1rem;">Forward Curve Data Setup (Questions 4, 5, 6)</h3>
+            <p style="font-size: 1.05rem; color: var(--text-color); line-height: 1.6; margin-bottom: 1.25rem;">
+                Suppose at time $t = 0$ we observe the following quarterly simple forward rates:
+            </p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-family: monospace; font-size: 1rem; color: var(--text-color); background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                <div>$F(0, 0, 1/4) = 6.00\%$</div>
+                <div>$F(0, 1, 5/4) = 10.00\%$</div>
+                <div>$F(0, 1/4, 1/2) = 8.00\%$</div>
+                <div>$F(0, 5/4, 3/2) = 10.00\%$</div>
+                <div>$F(0, 1/2, 3/4) = 9.00\%$</div>
+                <div>$F(0, 3/2, 7/4) = 9.00\%$</div>
+                <div>$F(0, 3/4, 1) = 10.00\%$</div>
+                <div>$F(0, 7/4, 2) = 9.00\%$</div>
+            </div>
+            <p style="font-size: 1.05rem; color: var(--text-color); line-height: 1.6; margin-bottom: 0;">
+                Consider an at-the-money cap with quarterly reset and settlement dates $i/4$ for $i=1, \dots, 8$.
+            </p>
+        </div>
+
+        <!-- QUESTION 4: Cap Implied Black Volatility -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 4</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Input</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                4. a) Suppose the price of the cap is equal to $1\%$. What is the implied Black volatility? Express your answer in percentage points (e.g., enter 15.35 for 15.35%) and round to 2 decimal places.
+            </p>
+
+            <!-- Input box -->
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.75rem; max-width: 300px;">
+                <input type="text" id="deriv_graded_q4_input" placeholder="e.g. 15.35 or 5.86" style="flex: 1; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); font-size: 1.1rem; font-weight: 700; font-family: monospace;" />
+                <span style="font-size: 1.1rem; font-weight: 700; color: var(--text-color);">%</span>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeDerivGradedQ4()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q4-deriv-graded-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Multi-Convention Pricing Solution:</strong></p>
+                    <p>This problem has two standard interpretations depending on whether the first period's caplet is included:</p>
+                    
+                    <h4 style="font-weight: 700; color: var(--text-color); margin-top: 1rem;">Interpretation 1: Exclude First Caplet (Standard Market Convention)</h4>
+                    <p>In the market, the first caplet resetting at $T_0=0$ is excluded because its floating rate $F(0, 0, 0.25) = 6\%$ is already known at $t=0$, making it a deterministic swap payment rather than an option. The cap consists of 7 caplets for $i=2, \dots, 8$.</p>
+                    <p>- **Discount Curve:** $P(0, 0.25) \approx 0.98522, \ P(0, 0.50) \approx 0.96590, \dots, P(0, 2.00) \approx 0.83902$.</p>
+                    <p>- **ATM Forward Strike:** $\kappa = \frac{P(0, 0.25) - P(0, 2.00)}{0.25 \sum_{i=2}^8 P(0, T_i)} \approx \mathbf{9.2747\%}$.</p>
+                    <p>- **Black Price:** Pricing the 7 caplets with strike $K = 9.2747\%$ at a target price of $1.00\%$ yields:
+                       $$ \sigma_{\text{Black}} \approx \mathbf{15.35\%} $$
+                    </p>
+
+                    <h4 style="font-weight: 700; color: var(--text-color); margin-top: 1.5rem;">Interpretation 2: Include First Caplet (Alternative Textbook Convention)</h4>
+                    <p>If all 8 periods $i=1, \dots, 8$ are included in the option strip (first caplet resets at $T_0=0$ and settles at $T_1=0.25$):</p>
+                    <p>- **ATM Strike:** $\kappa = \frac{P(0, 0) - P(0, 2.00)}{0.25 \sum_{i=1}^8 P(0, T_i)} \approx \mathbf{8.8322\%}$.</p>
+                    <p>- **Black Price:** Pricing the 8 caplets (the first caplet has $T=0$ SDE and price of 0 since $F(0, 0, 0.25) = 6\% < 8.8322\%$) yields:
+                       $$ \sigma_{\text{Black}} \approx \mathbf{5.86\%} $$
+                    </p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Accepted Answers: 15.35% (standard) or 5.86% (alternative).</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 5: Cap Implied Normal Volatility -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 5</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Input</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                5. b) Suppose the price of the cap is equal to $1\%$. What is the implied normal volatility? Express your answer in basis points (e.g., enter 143.36 for 143.36 bps) and round to 2 decimal places.
+            </p>
+
+            <!-- Input box -->
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.75rem; max-width: 300px;">
+                <input type="text" id="deriv_graded_q5_input" placeholder="e.g. 143.36 or 52.46" style="flex: 1; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); font-size: 1.1rem; font-weight: 700; font-family: monospace;" />
+                <span style="font-size: 1.1rem; font-weight: 700; color: var(--text-color);">bps</span>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeDerivGradedQ5()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q5-deriv-graded-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Bachelier Model Calibration Derivation:</strong></p>
+                    <p>Under the Bachelier (Normal) model, the caplet payoff is modeled using absolute basis point volatility $\sigma_N$:</p>
+                    
+                    <h4 style="font-weight: 700; color: var(--text-color); margin-top: 1rem;">Interpretation 1: Exclude First Caplet (Standard)</h4>
+                    <p>With strike $K = 9.2747\%$ and 7 caplets priced to a target sum of $1.00\%$, we solve numerically for the normal volatility:</p>
+                    <p style="text-align: center;">$$ \sigma_N \approx 0.014336 \implies \mathbf{143.36 \text{ bps}} $$</p>
+
+                    <h4 style="font-weight: 700; color: var(--text-color); margin-top: 1.5rem;">Interpretation 2: Include First Caplet</h4>
+                    <p>With strike $K = 8.8322\%$ and all 8 caplets priced to a target sum of $1.00\%$ (the first caplet has $T=0$ and value of 0):</p>
+                    <p style="text-align: center;">$$ \sigma_N \approx 0.005246 \implies \mathbf{52.46 \text{ bps}} $$</p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Accepted Answers: 143.36 bps (standard) or 52.46 bps (alternative).</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 6: Cap Price from Implied Volatility -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 6</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Input</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                6. c) Suppose the implied Black volatility of the cap is equal to $14.1\%$. What is the corresponding price? Express your answer in percentage points (e.g., enter 0.94 for 0.94% price) and round to 2 decimal places.
+            </p>
+
+            <!-- Input box -->
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.75rem; max-width: 300px;">
+                <input type="text" id="deriv_graded_q6_input" placeholder="e.g. 0.94 or 1.30" style="flex: 1; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); font-size: 1.1rem; font-weight: 700; font-family: monospace;" />
+                <span style="font-size: 1.1rem; font-weight: 700; color: var(--text-color);">%</span>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeDerivGradedQ6()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q6-deriv-graded-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Black Model Pricing Derivation:</strong></p>
+                    <p>We evaluate Black's pricing formula for the quarterly caplets using $\sigma_B = 14.1\%$:</p>
+                    
+                    <h4 style="font-weight: 700; color: var(--text-color); margin-top: 1rem;">Interpretation 1: Exclude First Caplet (Standard)</h4>
+                    <p>Pricing the 7 caplets with strike $K = 9.2747\%$ at $\sigma_{\text{Black}} = 14.1\%$ yields:
+                       $$ \text{Price} \approx 0.009399 \implies \mathbf{0.94\%} $$
+                    </p>
+
+                    <h4 style="font-weight: 700; color: var(--text-color); margin-top: 1.5rem;">Interpretation 2: Include First Caplet</h4>
+                    <p>Pricing the 8 caplets with strike $K = 8.8322\%$ at $\sigma_{\text{Black}} = 14.1\%$ (deterministic first caplet payoff is 0):
+                       $$ \text{Price} \approx 0.012976 \implies \mathbf{1.30\%} $$
+                    </p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Accepted Answers: 0.94% (standard) or 1.30% (alternative).</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 7: Cap-Floor/Swaption Parity quantitative pricing -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 7</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Input</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                7. Consider a swap with notional $N = 1$, a cap, and a floor with identical reset/settlement dates. Consider furthermore a payer and receiver swaption with expiry date on the first reset date of the swap. Assume that the strike rates of the cap, floor and the two swaptions are equal. In the market you observe that the payer swaption is priced at $1.50\%$, the receiver swaption at $1.80\%$ and the cap at $2\%$. What is the price of the floor? Express your answer in percentage points (e.g. enter 2.30 for 2.30% price) and round to 2 decimal places.
+            </p>
+
+            <!-- Input box -->
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.75rem; max-width: 300px;">
+                <input type="text" id="deriv_graded_q7_input" placeholder="e.g. 2.30" style="flex: 1; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); font-size: 1.1rem; font-weight: 700; font-family: monospace;" />
+                <span style="font-size: 1.1rem; font-weight: 700; color: var(--text-color);">%</span>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeDerivGradedQ7()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q7-deriv-graded-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Step-by-Step Proof of Swaption/Cap Parity Identity:</strong></p>
+                    <p>1. **Cap-Floor Parity:** The relationship is:
+                       $$ Cp(0) - Fl(0) = V_{swap}(0) $$
+                       where $V_{swap}(0)$ is the value of the spot/forwardpayer interest rate swap.
+                    </p>
+                    <p>2. **Payer-Receiver Swaption Parity:** The swaption parity states:
+                       $$ Swpt_p(0) - Swpt_r(0) = V_{swap}(0) $$
+                       Since both left-hand-side differences equal the same forward swap value $V_{swap}(0)$, they must be equal!
+                    </p>
+                    <p>3. **Unified Parity Equation:**
+                       $$ Cp(0) - Fl(0) = Swpt_p(0) - Swpt_r(0) $$
+                    </p>
+                    <p>4. **Numerical Solution:**
+                       - Payer Swaption: $Swpt_p(0) = 1.50\%$
+                       - Receiver Swaption: $Swpt_r(0) = 1.80\%$
+                       - Cap: $Cp(0) = 2.00\%$
+                       $$ 2.00\% - Fl(0) = 1.50\% - 1.80\% = -0.30\% $$
+                       $$ Fl(0) = 2.00\% - (-0.30\%) = \mathbf{2.30\%} $$
+                    </p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: 2.30%.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 8: Multi-period ZCB Option Pricing (Vasicek Cap) -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 8</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Input</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                8. Consider the following Vasicek model for the short rate $r(t)$:
+                $$ dr(t) = 0.86(0.09 - r(t)) dt + 0.0148 dW^*(t), \quad r(0) = 0.08 $$
+                where $W^*(t)$ is a standard Brownian motion under the risk-neutral probability measure $\mathbb{Q}$. Compute the time-0 price of an ATM cap with reset/settlement dates $T_i = (i+1)/4$, for $i=0, \dots, 119$. Express your answer in percentage points (e.g. enter 4.16 for 4.16% price) and round to 2 decimal places.
+            </p>
+
+            <!-- Input box -->
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.75rem; max-width: 300px;">
+                <input type="text" id="deriv_graded_q8_input" placeholder="e.g. 4.16 or 4.26" style="flex: 1; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); font-size: 1.1rem; font-weight: 700; font-family: monospace;" />
+                <span style="font-size: 1.1rem; font-weight: 700; color: var(--text-color);">%</span>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeDerivGradedQ8()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q8-deriv-graded-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Step-by-Step ZCB Put Option Pricing Proof:</strong></p>
+                    <p>A cap consists of multiple caplets. In the Vasicek model, caplets are priced as put options on zero-coupon bonds. A caplet resetting at $T_{i-1}$ and paying at $T_i$ with strike $\kappa$ is equivalent to $1+\delta\kappa$ put options on the ZCB $P(\cdot, T_i)$ expiring at $T_{i-1}$ with strike $X = \frac{1}{1 + \delta\kappa}$.</p>
+                    <p>We evaluate this numerically using two standard interpretations for the ATM strike rate $\kappa$:</p>
+
+                    <h4 style="font-weight: 700; color: var(--text-color); margin-top: 1rem;">Interpretation 1: Exclude First Caplet (Standard market convention)</h4>
+                    <p>1. **Forward Strike:** Excludes the first period's deterministic option. The ATM par swap rate is:
+                       $$ K \approx \mathbf{9.0054\%} \implies X = \frac{1}{1 + 0.25 \times 0.090054} \approx 0.977988 $$
+                    </p>
+                    <p>2. **Analytical Put Pricing:** We price each of the 119 puts for $i=1, \dots, 119$ using:
+                       $$ \text{Put}_i = X P(0, T_{i-1}) \Phi(-d_2) - P(0, T_i) \Phi(-d_1) $$
+                       $$ \sigma_{p, i} = \sigma_V B(T_{i-1}, T_i) \sqrt{\frac{1 - e^{-2\kappa T_{i-1}}}{2\kappa}}, \quad B(\tau) = \frac{1 - e^{-\kappa\tau}}{\kappa} $$
+                    </p>
+                    <p>3. **Result:** Summing over all 119 caplets yields:
+                       $$ \text{Total Price} \approx \mathbf{4.16\%} $$
+                    </p>
+
+                    <h4 style="font-weight: 700; color: var(--text-color); margin-top: 1.5rem;">Interpretation 2: Include First Caplet (Textbook convention)</h4>
+                    <p>1. **Strike:** Includes the first period (deterministic payoff is 0 since $F(0, 0, 0.25) \approx 8.18\% < 8.9859\%$). The ATM strike is:
+                       $$ K \approx \mathbf{8.9859\%} $$
+                    </p>
+                    <p>2. **Result:** Summing over all 120 caplets yields:
+                       $$ \text{Total Price} \approx \mathbf{4.26\%} $$
+                    </p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Accepted Answers: 4.16% (standard) or 4.26% (alternative).</p>
+                </div>
+            </details>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Trigger MathJax typeset when feedback is displayed
+    function derivGraded_triggerMathJax(el) {
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') {
+            MathJax.typesetPromise([el]);
+        }
+    }
+
+    function gradeDerivGradedQ1() {
+        const valStr = document.getElementById('deriv_graded_q1_input').value.trim();
+        const feedback = document.getElementById('q1-deriv-graded-feedback');
+        
+        if (!valStr) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Please enter a numeric answer before submitting!';
+            return;
+        }
+
+        const userVal = parseFloat(valStr);
+        feedback.style.display = 'block';
+        
+        if (Math.abs(userVal - 0.22) < 0.015) {
+            feedback.style.background = '#dcfce7';
+            feedback.style.color = '#166534';
+            feedback.innerHTML = '<strong>✓ Correct!</strong> The instantaneous convexity adjustment is exactly <strong>0.22 bps</strong> (calculated as $2.25 \\times 10^{-5}$). Excellent calculation!';
+        } else {
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = '<strong>✗ Incorrect.</strong> The correct answer should be rounded to 2 decimal places. Use the Vasicek SDE instantaneous variance and the given parameters, then try again!';
+        }
+        derivGraded_triggerMathJax(feedback);
+    }
+
+    function gradeDerivGradedQ2() {
+        const selected = document.querySelector('input[name="deriv_graded_q2"]:checked');
+        const feedback = document.getElementById('q2-deriv-graded-feedback');
+        
+        if (!selected) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Please select an option before submitting!';
+            return;
+        }
+
+        feedback.style.display = 'block';
+        if (selected.value === 'optA') {
+            feedback.style.background = '#dcfce7';
+            feedback.style.color = '#166534';
+            feedback.innerHTML = '<strong>✓ Correct!</strong> Under Cap-Floor Parity, we have $Cp(0) - Fl(0) = V_{swap}(0) = A(0)(R_{swap}(0) - K)$. Since the cap is out-of-the-money, $K > R_{swap}(0)$, which makes the swap value negative. Thus, $Cp(0) - Fl(0) < 0 \\implies Cp(0) < Fl(0)$.';
+        } else {
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = '<strong>✗ Incorrect.</strong> Think about the Cap-Floor parity relation and the moneyness condition. Since the cap is out-of-the-money, the strike $K$ is higher than the swap rate $R_{swap}(0)$, meaning the swap value is negative. Try again!';
+        }
+        derivGraded_triggerMathJax(feedback);
+    }
+
+    function gradeDerivGradedQ3() {
+        const selected = document.querySelector('input[name="deriv_graded_q3"]:checked');
+        const feedback = document.getElementById('q3-deriv-graded-feedback');
+        
+        if (!selected) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Please select an option before submitting!';
+            return;
+        }
+
+        feedback.style.display = 'block';
+        if (selected.value === 'true') {
+            feedback.style.background = '#dcfce7';
+            feedback.style.color = '#166534';
+            feedback.innerHTML = '<strong>✓ Correct!</strong> This is absolutely True. The overall cap is OTM if $K > R_{swap}(0)$, but in a steep upward-sloping yield curve, later forward rates can exceed $K$, making those specific caplets in-the-money.';
+        } else {
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = '<strong>✗ Incorrect.</strong> Think about a steep upward-sloping yield curve. The par swap rate is an average of forward rates, while individual caplets depend on their specific forward rates. It is highly possible for later forward rates to be higher than the strike even if the average is lower. Try again!';
+        }
+        derivGraded_triggerMathJax(feedback);
+    }
+
+    function gradeDerivGradedQ4() {
+        const valStr = document.getElementById('deriv_graded_q4_input').value.trim();
+        const feedback = document.getElementById('q4-deriv-graded-feedback');
+        
+        if (!valStr) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Please enter a numeric answer before submitting!';
+            return;
+        }
+
+        const userVal = parseFloat(valStr);
+        feedback.style.display = 'block';
+        
+        // Accept both 15.35% and 5.86%
+        if (Math.abs(userVal - 15.35) < 0.1 || Math.abs(userVal - 5.86) < 0.1) {
+            feedback.style.background = '#dcfce7';
+            feedback.style.color = '#166534';
+            feedback.innerHTML = '<strong>✓ Correct!</strong> The implied Black volatility is exactly <strong>15.35%</strong> under standard market convention (excluding the first known caplet), or <strong>5.86%</strong> under alternative textbook convention (including the first period with value 0). Excellent!';
+        } else {
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = '<strong>✗ Incorrect.</strong> Check your ATM forward swap rate strike (either 9.27% or 8.83% depending on convention) and solve for the implied Black vol. Try again!';
+        }
+        derivGraded_triggerMathJax(feedback);
+    }
+
+    function gradeDerivGradedQ5() {
+        const valStr = document.getElementById('deriv_graded_q5_input').value.trim();
+        const feedback = document.getElementById('q5-deriv-graded-feedback');
+        
+        if (!valStr) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Please enter a numeric answer before submitting!';
+            return;
+        }
+
+        const userVal = parseFloat(valStr);
+        feedback.style.display = 'block';
+        
+        // Accept both 143.36 and 52.46
+        if (Math.abs(userVal - 143.36) < 1.0 || Math.abs(userVal - 52.46) < 1.0) {
+            feedback.style.background = '#dcfce7';
+            feedback.style.color = '#166534';
+            feedback.innerHTML = '<strong>✓ Correct!</strong> The implied Bachelier (Normal) volatility is exactly <strong>143.36 bps</strong> (under standard convention excluding first period) or <strong>52.46 bps</strong> (including first period). Great job!';
+        } else {
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = '<strong>✗ Incorrect.</strong> Verify your normal volatility pricing formula and swap strikes, and round to 2 decimal places. Try again!';
+        }
+        derivGraded_triggerMathJax(feedback);
+    }
+
+    function gradeDerivGradedQ6() {
+        const valStr = document.getElementById('deriv_graded_q6_input').value.trim();
+        const feedback = document.getElementById('q6-deriv-graded-feedback');
+        
+        if (!valStr) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Please enter a numeric answer before submitting!';
+            return;
+        }
+
+        const userVal = parseFloat(valStr);
+        feedback.style.display = 'block';
+        
+        // Accept both 0.94% and 1.30%
+        if (Math.abs(userVal - 0.94) < 0.05 || Math.abs(userVal - 1.30) < 0.05) {
+            feedback.style.background = '#dcfce7';
+            feedback.style.color = '#166534';
+            feedback.innerHTML = '<strong>✓ Correct!</strong> The cap price at 14.1% Black vol is exactly <strong>0.94%</strong> (excluding the first known caplet) or <strong>1.30%</strong> (including the first period). Fantastic!';
+        } else {
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = '<strong>✗ Incorrect.</strong> Apply Black\'s model to all caplets in the strip at $\\sigma_B = 14.1\\%$, sum them up, and try again!';
+        }
+        derivGraded_triggerMathJax(feedback);
+    }
+
+    function gradeDerivGradedQ7() {
+        const valStr = document.getElementById('deriv_graded_q7_input').value.trim();
+        const feedback = document.getElementById('q7-deriv-graded-feedback');
+        
+        if (!valStr) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Please enter a numeric answer before submitting!';
+            return;
+        }
+
+        const userVal = parseFloat(valStr);
+        feedback.style.display = 'block';
+        
+        if (Math.abs(userVal - 2.30) < 0.02 || Math.abs(userVal - 2.3) < 0.02) {
+            feedback.style.background = '#dcfce7';
+            feedback.style.color = '#166534';
+            feedback.innerHTML = '<strong>✓ Correct!</strong> By equate cap-floor parity and payer-receiver swaption parity, we get the unified identity $Cp(0) - Fl(0) = Swpt_p(0) - Swpt_r(0)$. Substituting the prices gives $2.00\\% - Fl(0) = 1.50\\% - 1.80\\% = -0.30\\% \\implies Fl(0) = 2.30\\%$. Phenomenal!';
+        } else {
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = '<strong>✗ Incorrect.</strong> Use the Cap-Floor and Payer-Receiver Swaption parities. Both left-hand-side differences must equal the same forward swap value. Check your arithmetic and try again!';
+        }
+        derivGraded_triggerMathJax(feedback);
+    }
+
+    function gradeDerivGradedQ8() {
+        const valStr = document.getElementById('deriv_graded_q8_input').value.trim();
+        const feedback = document.getElementById('q8-deriv-graded-feedback');
+        
+        if (!valStr) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Please enter a numeric answer before submitting!';
+            return;
+        }
+
+        const userVal = parseFloat(valStr);
+        feedback.style.display = 'block';
+        
+        // Accept both 4.16% and 4.26%
+        if (Math.abs(userVal - 4.16) < 0.05 || Math.abs(userVal - 4.26) < 0.05) {
+            feedback.style.background = '#dcfce7';
+            feedback.style.color = '#166534';
+            feedback.innerHTML = '<strong>✓ Correct!</strong> The 30-year ATM Vasicek cap price is exactly <strong>4.16%</strong> (excluding the first known period) or <strong>4.26%</strong> (including the first period). You have officially mastered interest rate option pricing!';
+        } else {
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = '<strong>✗ Incorrect.</strong> Make sure to solve the 120 ZCB put option prices using the analytical Vasicek affine formulas. Re-calculate and try again!';
+        }
+        derivGraded_triggerMathJax(feedback);
+    }
+</script>

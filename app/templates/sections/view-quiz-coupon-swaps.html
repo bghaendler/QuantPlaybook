@@ -1,0 +1,367 @@
+<div id="view-quiz-coupon-swaps" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">Quiz: Coupon Bonds &amp; Interest Rate Swaps</h1>
+        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Practice Assignment covering fixed coupon bond pricing, FRN replicating strategies, swap value derivations, par spot swap rates, and forward starting swaps.</div>
+    </header>
+
+    <div class="container" style="max-width: 900px; grid-template-columns: 1fr; gap: 2rem;">
+        <p style="margin-bottom: 2rem; font-size: 1.15rem; color: var(--text-color); opacity: 0.8; line-height: 1.7;">
+            Test your understanding of coupon bonds and interest rate swaps with these practice problems. Input or select your options, then click <strong>Submit Answer</strong> to get instant feedback. Expand the <strong>Show Mathematical Solution &amp; Derivation</strong> card at the bottom of each question to review the full step-by-step analytical proof.
+        </p>
+
+        <!-- QUESTION 1 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 1 (Fixed Coupon Bond Pricing)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Input</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                Suppose a 3-year fixed coupon bond has a par value of $100$ and pays annual coupons of $6\%$ (at the end of years 1, 2, and 3). If the continuously compounded spot yields are constant at $4\%$ across all maturities (flat yield curve $y(0, T) = 4\%$), what is the ex-dividend price of the bond today ($t=0$)? Round your answer to two decimal places.
+            </p>
+
+            <!-- Numeric Input Field -->
+            <div style="margin-bottom: 1.5rem;">
+                <input type="text" id="qcs1_input" placeholder="e.g. 100.00" style="padding: 0.75rem 1rem; font-size: 1.1rem; font-family: monospace; font-weight: bold; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; width: 100%; max-width: 250px;" />
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQcs1()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qcs1-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Derivation:</strong></p>
+                    <p>Given continuously compounded yields $y(0, T) = 4\% = 0.04$, the Zero-Coupon Bond (discount factor) prices maturing in $T=1, 2, 3$ years are:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ P(0, 1) = e^{-0.04 \times 1} \approx 0.960789 $$
+                        $$ P(0, 2) = e^{-0.04 \times 2} \approx 0.923116 $$
+                        $$ P(0, 3) = e^{-0.04 \times 3} \approx 0.886920 $$
+                    </div>
+                    <p>The annual coupon rate is $6\%$, so coupon payments are $c_1 = c_2 = c_3 = 6$ on a principal of $N = 100$. Today at $t = 0$, prior to any payment dates, the ex-dividend bond price is:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ p(0) = c_1 P(0, 1) + c_2 P(0, 2) + (c_3 + N) P(0, 3) $$
+                        $$ p(0) = 6 \times 0.960789 + 6 \times 0.923116 + 106 \times 0.886920 $$
+                        $$ p(0) \approx 5.764734 + 5.538696 + 94.013520 = 105.31695 \approx \mathbf{105.32} $$
+                    </div>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answer: 105.32</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 2 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 2 (Floating Rate Note Pricing)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                A floating rate note (FRN) is issued today at $t=0$ with principal $N = 100$. The reset and settlement dates are $T_0 = 1$, $T_1 = 2$, and $T_2 = 3$ (in years), where the floating coupons are tied to the simple spot rate $L(T_{i-1}, T_i)$. If we observe that the zero-coupon bond price maturing in 1 year is $P(0, 1) = 0.95$, what is the price of the FRN today at $t=0$, prior to the first reset date $T_0$?
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qcs2_option" value="A" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">A. 100.00</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qcs2_option" value="B" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">B. 95.00</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qcs2_option" value="C" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">C. 90.25</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qcs2_option" value="D" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">D. Cannot be determined without knowing future floating spot rates.</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQcs2()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qcs2-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Explanation:</strong></p>
+                    <p>According to the floating rate note replication theorem, we can perfectly hedge and replicate all coupon payments $C_i$ and the final principal $N$ by buying ZCBs maturing at the first reset date $T_0$ (which is $T_0 = 1$ year here).</p>
+                    <p>Prior to the first reset date (at $t < T_0$), the price of the note is simply:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ p(t) = N P(t, T_0) $$
+                    </div>
+                    <p>Evaluating this today at $t = 0$ with $T_0 = 1$ year and $P(0, 1) = 0.95$:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ p(0) = N P(0, 1) = 100 \times 0.95 = \mathbf{95.00} $$
+                    </div>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Option: B. 95.00</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 3 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 3 (Spot Swap Rate Calculation)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Input</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                Consider a spot-starting interest rate swap ($t = T_0 = 0$) with a length of 3 years and annual payments ($\delta = 1.0$). The zero-coupon bond prices are observed to be $P(0, 1) = 0.96$, $P(0, 2) = 0.91$, and $P(0, 3) = 0.85$. Calculate the spot swap rate $R_{swap}(0)$. Express your answer in percentage points (e.g. 5.50 for 5.50%) and round to two decimal places.
+            </p>
+
+            <!-- Numeric Input Field -->
+            <div style="margin-bottom: 1.5rem;">
+                <input type="text" id="qcs3_input" placeholder="e.g. 5.50" style="padding: 0.75rem 1rem; font-size: 1.1rem; font-family: monospace; font-weight: bold; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; width: 100%; max-width: 250px;" />
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQcs3()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qcs3-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Derivation:</strong></p>
+                    <p>The swap starts today at spot $T_0 = 0$ (so $P(0, T_0) = P(0, 0) = 1.0$). Payment settlement dates are $T_1 = 1$, $T_2 = 2$, and $T_3 = 3$ with year fractions $\delta = 1.0$. The spot swap rate formula is:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ R_{swap}(0) = \frac{P(0, T_0) - P(0, T_3)}{\delta \sum_{i=1}^3 P(0, T_i)} = \frac{1.0 - P(0, 3)}{\delta \bigl( P(0, 1) + P(0, 2) + P(0, 3) \bigr)} $$
+                    </div>
+                    <p>Substituting the observed discount factors:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ R_{swap}(0) = \frac{1.0 - 0.85}{1.0 \times (0.96 + 0.91 + 0.85)} = \frac{0.15}{2.72} $$
+                        $$ R_{swap}(0) \approx 0.055147 \text{ (or } \mathbf{5.51\%}\text{)} $$
+                    </div>
+                    <p>Expressed in percentage points, the par spot swap rate is exactly <strong>5.51</strong>.</p>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answer: 5.51</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 4 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 4 (Forward Starting Swap Rate)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                Suppose you enter into a forward-starting payer swap today at $t=0$ where the first reset date is $T_0 = 1$ (one year from now), the swap length is 2 years, and payments are annual ($\delta = 1.0$). The maturity date is $T_2 = 3$. If the discount factors observed today are $P(0, 1) = 0.95$, $P(0, 2) = 0.90$, and $P(0, 3) = 0.84$, calculate the forward swap rate $R_{swap}(0)$.
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qcs4_option" value="A" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">A. 5.50%</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qcs4_option" value="B" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">B. 6.32%</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qcs4_option" value="C" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">C. 5.79%</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qcs4_option" value="D" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">D. 6.11%</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQcs4()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qcs4-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Derivation:</strong></p>
+                    <p>A forward starting swap starts at future reset date $T_0 = 1$. The payments settle at $T_1 = 2$ and $T_2 = 3$ with year fractions $\delta = 1.0$. The forward swap rate is given by:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ R_{swap}(0) = \frac{P(0, T_0) - P(0, T_2)}{\delta \bigl( P(0, T_1) + P(0, T_2) \bigr)} = \frac{P(0, 1) - P(0, 3)}{\delta \bigl( P(0, 2) + P(0, 3) \bigr)} $$
+                    </div>
+                    <p>Substitute the observed discount factors today:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ R_{swap}(0) = \frac{0.95 - 0.84}{1.0 \times (0.90 + 0.84)} = \frac{0.11}{1.74} $$
+                        $$ R_{swap}(0) \approx 0.063218 \text{ (or } \mathbf{6.32\%}\text{)} $$
+                    </div>
+                    <p>Thus, the forward swap rate is exactly **6.32%**.</p>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Option: B. 6.32%</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 5 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 5 (Lemma 1 - Coupon Bonds Par Value)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">True / False</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                Is the following statement true or false?<br/>
+                <em>According to Lemma 1, a fixed coupon bond with annual coupon rate $c$ and par value $1.0$ trades at exactly par (ex-coupon price $= 1.0$) at the first reset date $T_0$ if and only if its coupon rate $c$ is equal to the corresponding spot swap rate $R_{swap}(T_0)$ for the same tenor structure.</em>
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qcs5_option" value="true" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">True</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qcs5_option" value="false" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">False</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQcs5()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qcs5-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Derivation:</strong></p>
+                    <p>This is exactly the statement of **Lemma 1** in the lecture notes. Under the ex-coupon pricing convention at valuation time $t = T_0$, the price of a fixed-coupon bond with principal $N=1$, annual payment frequency $\delta$, and coupon rate $c$ is:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ p(T_0) = \sum_{i=1}^n P(T_0, T_i) \delta c + P(T_0, T_n) $$
+                    </div>
+                    <p>We solve for the coupon rate $c$ that makes the bond trade exactly at par value ($p(T_0) = 1$):</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ 1 = \sum_{i=1}^n P(T_0, T_i) \delta c + P(T_0, T_n) $$
+                        $$ 1 - P(T_0, T_n) = c \delta \sum_{i=1}^n P(T_0, T_i) $$
+                        $$ c = \frac{1 - P(T_0, T_n)}{\delta \sum_{i=1}^n P(T_0, T_i)} $$
+                    </div>
+                    <p>The right-hand side is exactly the spot swap rate $R_{swap}(T_0)$ starting at $T_0$. Thus:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ c = R_{swap}(T_0) $$
+                    </div>
+                    <p>Which completes the proof. The statement is strictly **True**.</p>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answer: True</p>
+                </div>
+            </details>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // Coupon Bonds & Interest Rate Swaps Quiz Grading Logic
+    // ============================================================
+    function _showQuizFeedback(elId, isCorrect, htmlContent) {
+        const feedback = document.getElementById(elId);
+        feedback.innerHTML = htmlContent;
+        feedback.style.display = 'block';
+        if (isCorrect) {
+            feedback.style.background = '#f0fdf4';
+            feedback.style.border = '1px solid #bbf7d0';
+            feedback.style.color = '#15803d';
+        } else {
+            feedback.style.background = '#fef2f2';
+            feedback.style.border = '1px solid #fecaca';
+            feedback.style.color = '#b91c1c';
+        }
+        if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+            MathJax.typesetPromise([feedback]);
+        }
+    }
+
+    function checkQcs1() {
+        const val = document.getElementById('qcs1_input').value.trim();
+        if (!val) {
+            _showQuizFeedback('qcs1-feedback', false, '<strong>⚠️ Please enter your answer first.</strong>');
+            return;
+        }
+        const numericVal = parseFloat(val);
+        if (Math.abs(numericVal - 105.32) < 0.015) {
+            _showQuizFeedback('qcs1-feedback', true, '<strong>✓ Correct!</strong> The bond price is indeed exactly <strong>105.32</strong>. Excellent calculation!');
+        } else {
+            _showQuizFeedback('qcs1-feedback', false, '<strong>❌ Incorrect.</strong> Your calculated value is ' + val + '. Check your ZCB discount factor values: $P(0,1) = e^{-0.04} \\approx 0.9608$, $P(0,2) = e^{-0.08} \\approx 0.9231$, and $P(0,3) = e^{-0.12} \\approx 0.8869$.');
+        }
+    }
+
+    function checkQcs2() {
+        const selected = document.querySelector('input[name="qcs2_option"]:checked');
+        if (!selected) {
+            _showQuizFeedback('qcs2-feedback', false, '<strong>⚠️ Please select an option first.</strong>');
+            return;
+        }
+        if (selected.value === 'B') {
+            _showQuizFeedback('qcs2-feedback', true, '<strong>✓ Correct!</strong> According to the FRN replication theorem, $p(0) = N P(0, T_0) = 100 \\times 0.95 = <strong>95.00</strong>.');
+        } else {
+            _showQuizFeedback('qcs2-feedback', false, '<strong>❌ Incorrect.</strong> Remember that at any date $t \\le T_0$ prior to the first reset date, the price of a floating rate note ex-coupon is exactly equal to the principal $N$ discounted by the first ZCB $P(t, T_0)$.');
+        }
+    }
+
+    function checkQcs3() {
+        const val = document.getElementById('qcs3_input').value.trim();
+        if (!val) {
+            _showQuizFeedback('qcs3-feedback', false, '<strong>⚠️ Please enter your answer first.</strong>');
+            return;
+        }
+        const numericVal = parseFloat(val);
+        if (Math.abs(numericVal - 5.51) < 0.015) {
+            _showQuizFeedback('qcs3-feedback', true, '<strong>✓ Correct!</strong> The spot swap rate is exactly <strong>5.51%</strong>.');
+        } else {
+            _showQuizFeedback('qcs3-feedback', false, '<strong>❌ Incorrect.</strong> Check your sum of ZCB discount factors in the denominator: $\\sum P = 0.96 + 0.91 + 0.85 = 2.72$. The numerator is $1.0 - 0.85 = 0.15$. The quotient is $\\frac{0.15}{2.72} \\approx 5.51\\%$.');
+        }
+    }
+
+    function checkQcs4() {
+        const selected = document.querySelector('input[name="qcs4_option"]:checked');
+        if (!selected) {
+            _showQuizFeedback('qcs4-feedback', false, '<strong>⚠️ Please select an option first.</strong>');
+            return;
+        }
+        if (selected.value === 'B') {
+            _showQuizFeedback('qcs4-feedback', true, '<strong>✓ Correct!</strong> The forward swap rate is exactly <strong>6.32%</strong>.');
+        } else {
+            _showQuizFeedback('qcs4-feedback', false, '<strong>❌ Incorrect.</strong> The forward swap starts at $T_0 = 1$ year. The numerator is $P(0, 1) - P(0, 3) = 0.95 - 0.84 = 0.11$. The denominator is $1.0 \\times (P(0, 2) + P(0, 3)) = 1.74$. The quotient is $\\frac{0.11}{1.74} \\approx 6.32\\%$.');
+        }
+    }
+
+    function checkQcs5() {
+        const selected = document.querySelector('input[name="qcs5_option"]:checked');
+        if (!selected) {
+            _showQuizFeedback('qcs5-feedback', false, '<strong>⚠️ Please select an option first.</strong>');
+            return;
+        }
+        if (selected.value === 'true') {
+            _showQuizFeedback('qcs5-feedback', true, '<strong>✓ Correct!</strong> This is exactly Lemma 1: a coupon bond has par value at $T_0$ if and only if its coupon rates equal the corresponding swap rate.');
+        } else {
+            _showQuizFeedback('qcs5-feedback', false, '<strong>❌ Incorrect.</strong> The statement is true. A bond trades at par ex-coupon if and only if its coupon rates match the swap rate for that exact maturity structure.');
+        }
+    }
+</script>

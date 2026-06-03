@@ -1,0 +1,642 @@
+<div id="view-cqf-m3-l7" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 03: Equities &amp; Currencies</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 07</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L7: Exotic Options</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Taxonomy of Non-Vanilla Contracts, Path-Dependent PDEs, Similarity Reductions, and Monte Carlo Pricing</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM3L7Taxonomy" onclick="switchM3L7Tab('taxonomy')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. The Exotics Taxonomy</button>
+        <button id="tabM3L7Pde" onclick="switchM3L7Tab('pde')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Path Dependence &amp; PDEs</button>
+        <button id="tabM3L7Reduction" onclick="switchM3L7Tab('reduction')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Similarity Reductions</button>
+        <button id="tabM3L7Discrete" onclick="switchM3L7Tab('discrete')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. Discrete Updating Rules</button>
+        <button id="tabM3L7Guide" onclick="switchM3L7Tab('guide')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Master Study Guide</button>
+        <button id="tabM3L7Sandbox" onclick="switchM3L7Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Exotics Pricing Sandbox</button>
+    </div>
+
+    <!-- TAB 1: The Exotics Taxonomy -->
+    <div id="secM3L7Taxonomy" style="display: block;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem;">Classifying the Exotics Zoo</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6; color: #4b5563; margin-bottom: 1.25rem;">
+                    Dr. Riaz Ahmad explains that exotic options represent a major breakthrough in financial engineering, allowing virtually any bespoke terms to be embedded into a contract. Because of their customized nature and legal requirements, most exotic options are traded **over the counter (OTC)**.
+                </p>
+
+                <!-- Grid of 5 Classification Features -->
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 0.5rem;">
+                    <div style="background: var(--metric-bg); padding: 1.15rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem;">1. Time Dependence</h4>
+                        <p style="font-size: 0.8rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                            Contracts with important dates where structural elements change (time inhomogeneous). Examples include **Bermudan options** (exercise only on specific dates) and resetting barriers. Time-dependence can cause sharp jumps in option values and Greeks.
+                        </p>
+                    </div>
+                    <div style="background: var(--metric-bg); padding: 1.15rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: #10b981; font-size: 0.95rem;">2. Cash Flows</h4>
+                        <p style="font-size: 0.8rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                            Payments made by the contract itself. Can be **discrete** (fixed jump $Q$ in option value on payment dates) or **continuous** ($Q(S)$). Discrete cash flows break analytical Black-Scholes formulas, requiring finite difference schemes.
+                        </p>
+                    </div>
+                    <div style="background: var(--metric-bg); padding: 1.15rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: #8b5cf6; font-size: 0.95rem;">3. Path Dependence</h4>
+                        <p style="font-size: 0.8rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                            Payoffs affected by the entire history of the asset path. **Weak path dependence** (e.g. barriers) preserves the original 2D PDE but alters boundary conditions. **Strong path dependence** (e.g. Asian averages) introduces a new state variable, increasing the PDE's dimensionality.
+                        </p>
+                    </div>
+                    <div style="background: var(--metric-bg); padding: 1.15rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: #ea580c; font-size: 0.95rem;">4. Dimensionality</h4>
+                        <p style="font-size: 0.8rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                            The number of random sources or state variables. Up to four dimensions, finite difference schemes and Monte Carlo are comparable. Beyond four dimensions, PDEs become computationally impractical, and **Monte Carlo simulation is strongly preferred**.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 5. Order full card -->
+                <div style="background: var(--metric-bg); padding: 1.15rem; border-radius: 8px; border: 1px solid var(--card-border); margin-top: 1rem;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: #ec4899; font-size: 0.95rem;">5. Order (Options on Options)</h4>
+                    <p style="font-size: 0.8rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                        First-order options depend on the asset. Second-order or higher options depend on the value of *another* option. The primary example is **compound options**, which exist in four types: Call on Call (**CoCa**), Call on Put (**CoP**), Put on Call (**PoC**), and Put on Put (**PoP**).
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Path Dependence & PDEs -->
+    <div id="secM3L7Pde" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Strong Path Dependence SDE &amp; PDE Formulation</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    For continuously sampled path-dependent options, we track historical path information by defining a running integral state variable $I(t)$ driven by a function of the asset $f(S, \tau)$:
+                    $$I(t) = \int_{0}^{t} f(S, \tau) d\tau$$
+                    Taking the infinitesimal change yields an ordinary differential equation in time with **no diffusion term**:
+                    $$dI = f(S, t) dt$$
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); margin-bottom:1rem;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Deriving the Path-Dependent PDE</h4>
+                    <p style="font-size: 0.85rem; line-height: 1.6; color:#4b5563; margin:0;">
+                        Applying Itô's Lemma to the 3-variable option price $V(S, I, t)$ with the SDE $dS = \mu S dt + \sigma S dW$:
+                        $$dV = \frac{\partial V}{\partial S} dS + \frac{\partial V}{\partial I} dI + \left( \frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} \right) dt$$
+                        Substitute $dI = f(S, t) dt$:
+                        $$dV = \frac{\partial V}{\partial S} dS + \left( \frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} + f(S, t) \frac{\partial V}{\partial I} \right) dt$$
+                        We set up a risk-free portfolio $\Pi = V - \Delta S$, choosing $\Delta = \frac{\partial V}{\partial S}$ to eliminate the stochastic risk $dS$. 
+                        Equating the risk-free portfolio growth $d\Pi = r(V - S\frac{\partial V}{\partial S}) dt$ with the deterministic option changes yields the **Strongly Path-Dependent PDE**:
+                        $$\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} + f(S, t) \frac{\partial V}{\partial I} + rS \frac{\partial V}{\partial S} - rV = 0$$
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Similarity Reductions -->
+    <div id="secM3L7Reduction" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Dimensionality Reduction via Similarity Transform</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    For an arithmetic average Asian option, $f(S, t) = S$, so $I(t) = \int_0^t S(\tau)d\tau$. The pricing PDE has 3 variables ($S, I, t$). 
+                    By exploiting the mathematical structure of the payoff (for a floating strike call: $\max(S - I/T, 0)$), we can perform a **similarity reduction** to reduce the PDE to 2 variables ($R, t$), where:
+                    $$R = \frac{I}{S}$$
+                    We propose the ansatz $V(S, I, t) = S W(R, t)$.
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); margin-bottom:1rem;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Reduced PDE Derivation Steps</h4>
+                    <p style="font-size: 0.82rem; line-height: 1.6; color:#4b5563; margin:0;">
+                        Using the chain rule, we compute the partial derivatives:
+                        $$\frac{\partial V}{\partial t} = S \frac{\partial W}{\partial t}, \quad \frac{\partial V}{\partial I} = \frac{\partial W}{\partial R}, \quad \frac{\partial V}{\partial S} = W - R \frac{\partial W}{\partial R}, \quad \frac{\partial^2 V}{\partial S^2} = \frac{R^2}{S} \frac{\partial^2 W}{\partial R^2}$$
+                        Substituting these into the strongly path-dependent Asian PDE:
+                        $$S \frac{\partial W}{\partial t} + \frac{1}{2}\sigma^2 S^2 \left( \frac{R^2}{S} \frac{\partial^2 W}{\partial R^2} \right) + S \frac{\partial W}{\partial R} + rS \left( W - R \frac{\partial W}{\partial R} \right) - r S W = 0$$
+                        Dividing by the stock price $S$ simplifies to the **Reduced Asian PDE**:
+                        $$\frac{\partial W}{\partial t} + \frac{1}{2}\sigma^2 R^2 \frac{\partial^2 W}{\partial R^2} + (1 - rR) \frac{\partial W}{\partial R} = 0$$
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Discrete Updating Rules -->
+    <div id="secM3L7Discrete" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Discrete Updating Rules</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    In the real world, option paths are sampled at discrete dates $t_1, t_2, \dots, t_M$ rather than continuously. To prevent having to save the entire historical path (which is highly inefficient), we use **updating rules** that express the state variable dynamically using only the most recent sample.
+                </p>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+                    <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">1. Discrete Arithmetic Average</h4>
+                        <p style="font-size: 0.8rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                            The arithmetic average $A_M$ of $M$ samples:
+                            $$A_M = \frac{1}{M}\sum_{k=1}^M S(t_k)$$
+                            At sampling date $t_i$, the new average $A_i$ is computed from the previous average $A_{i-1}$ and today's stock price $S(t_i)$:
+                            $$A_i = \frac{1}{i} S(t_i) + \frac{i-1}{i} A_{i-1}$$
+                        </p>
+                    </div>
+                    <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: #8b5cf6; font-size: 0.95rem; text-align:center;">2. Discrete Lookback Maximum</h4>
+                        <p style="font-size: 0.8rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                            For lookbacks (options whose payoffs depend on the absolute peak/valley of the path), the realized maximum $I_i$ is updated on sampling date $t_i$ according to:
+                            $$I_i = \max\left(S(t_i), I_{i-1}\right)$$
+                            Generalizing updating rules for any path-dependent quantity:
+                            $$I_i = F\left(S(t_i), I_{i-1}, i\right)$$
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: Master Study Guide -->
+    <div id="secM3L7Guide" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 1.5rem;">Exotic Options Worked Solutions Sheet</h3>
+
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <!-- Problem 1 -->
+                    <details style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden;">
+                        <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
+                            Exercise 1: Power Option with Continuous Cash Flow
+                        </summary>
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                            <strong>Problem:</strong><br>
+                            An option pays a continuous cash flow rate $S^2 dt$ during interval $dt$. At expiry, the payoff is $V(S, T) = S^2$.
+                            Derive the non-homogeneous pricing PDE and solve for $\phi(t)$ assuming a solution $V(S, t) = \phi(t)S^2$.
+                            <hr style="border:0; border-top:1px solid var(--card-border); margin:1rem 0;">
+                            <strong>Detailed Solution:</strong><br>
+                            <p><strong>1. Non-Homogeneous PDE Derivation:</strong><br>
+                            Portfolio $\Pi = V - \Delta S$. Infinitesimal change includes the continuous cash flow:
+                            $$d\Pi = dV - \Delta dS + S^2 dt$$
+                            Apply Itô's Lemma to expand $dV$, and choose $\Delta = \frac{\partial V}{\partial S}$ to eliminate the $dS$ risk:
+                            $$d\Pi = \left( \frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} + S^2 \right) dt$$
+                            Under no-arbitrage, $d\Pi = r\Pi dt = r(V - S\frac{\partial V}{\partial S})dt$. Equating and dividing by $dt$:
+                            $$\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} + rS\frac{\partial V}{\partial S} - rV = -S^2$$
+                            </p>
+                            
+                            <p><strong>2. Solving the ODE for $\phi(t)$:</strong><br>
+                            Substitute $V = \phi(t)S^2$ and its derivatives into the PDE, dividing through by $S^2$:
+                            $$\dot{\phi}(t) + \sigma^2 \phi(t) + 2r\phi(t) - r\phi(t) = -1 \implies \dot{\phi}(t) + (\sigma^2 + r)\phi(t) = -1$$
+                            Using integrating factor $e^{(\sigma^2+r)t}$, integrating from $t$ to $T$, and using the final boundary condition $\phi(T) = 1$ yields:
+                            $$\phi(t) = \frac{1}{\sigma^2 + r} \left( \left(\sigma^2 + r + 1\right) e^{(\sigma^2 + r)(T-t)} - 1 \right)$$
+                            </p>
+                        </div>
+                    </details>
+
+                    <!-- Problem 2 -->
+                    <details style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden;">
+                        <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
+                            Exercise 2: Cauchy-Euler Separable Solutions
+                        </summary>
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                            <strong>Problem:</strong><br>
+                            Solve the Black-Scholes separable equation $V(S, t) = f(S)g(t)$ for Cauchy-Euler roots:
+                            $$\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} + (r-D)S\frac{\partial V}{\partial S} - rV = 0$$
+                            <hr style="border:0; border-top:1px solid var(--card-border); margin:1rem 0;">
+                            <strong>Detailed Solution:</strong><br>
+                            <p><strong>1. Splitting into ODEs:</strong><br>
+                            Substitute $V(S,t) = f(S)g(t)$ and divide by $fg$ to isolate variables equal to constant $\lambda$:
+                            $$\frac{dg}{dt} - \lambda g = 0 \implies g(t) = e^{\lambda t}$$
+                            $$\frac{1}{2}\sigma^2 S^2 f'' + (r-D)Sf' + (\lambda - r)f = 0$$
+                            </p>
+                            <p><strong>2. Solving Cauchy-Euler $f(S) = S^\alpha$:</strong><br>
+                            Substitute $f(S) = S^\alpha$ to obtain the quadratic auxiliary equation:
+                            $$\alpha^2 + \left( \frac{2(r-D)}{\sigma^2} - 1 \right)\alpha + \frac{2(\lambda - r)}{\sigma^2} = 0$$
+                            Solving the quadratic roots $\alpha_\pm = \left(\frac{1}{2} - \frac{r-D}{\sigma^2}\right) \pm \bar{d}_\pm$ where:
+                            $$\bar{d}_\pm = \pm \sqrt{ \left( \frac{r-D}{\sigma^2} - \frac{1}{2} \right)^2 - \frac{2(\lambda - r)}{\sigma^2} }$$
+                            - **Distinct Roots**: $V(S, t) = e^{\lambda t} S^{\frac{1}{2} - \frac{r-D}{\sigma^2}} \left( A S^{\bar{d}_+} + B S^{\bar{d}_-} \right)$
+                            - **Repeated Root**: Occurs when $\lambda = r + \frac{\sigma^2}{2} \left( \frac{r-D}{\sigma^2} - \frac{1}{2} \right)^2$, yielding:
+                              $$V(S, t) = e^{\lambda t} S^{\frac{1}{2} - \frac{r-D}{\sigma^2}} \left( \epsilon + \zeta \log S \right)$$
+                            </p>
+                        </div>
+                    </details>
+
+                    <!-- Problem 3 -->
+                    <details style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden;">
+                        <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
+                            Exercise 3: Pricing with Dividends &amp; Cash Flows
+                        </summary>
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                            <strong>Problem:</strong><br>
+                            For an asset paying dividend yield $D S dt$, and an option paying continuous cash flow $f(t) S dt$, show the derivative's delta is:
+                            $$\Delta(S, t) = e^{-D(T-t)} + \int_{t}^{T} e^{-D(\tau - t)} f(\tau) d\tau$$
+                            <hr style="border:0; border-top:1px solid var(--card-border); margin:1rem 0;">
+                            <strong>Detailed Solution:</strong><br>
+                            <p><strong>1. Portfolio SDE with Dividends:</strong><br>
+                            Since the portfolio is short the stock, we must pay the dividend yield $D\Delta S dt$. Holding the option pays $f(t)S dt$:
+                            $$d\Pi = dV - \Delta dS - D \Delta S dt + f(t)S dt$$
+                            Choosing $\Delta = \frac{\partial V}{\partial S}$ and equating to $r\Pi dt$ yields:
+                            $$\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} + (r-D)S\frac{\partial V}{\partial S} - rV = -f(t)S$$
+                            </p>
+                            <p><strong>2. Solving for Delta:</strong><br>
+                            Substitute $V(S,t) = \phi(t)S$, which simplifies to:
+                            $$\dot{\phi}(t)S + (r-D)S\phi(t) - rS\phi(t) = -f(t)S \implies \dot{\phi}(t) - D\phi(t) = -f(t)$$
+                            Using integrating factor $e^{-Dt}$ and terminal boundary condition $\phi(T) = 1$:
+                            $$\phi(t) = e^{-D(T-t)} + \int_{t}^{T} e^{-D(\tau - t)} f(\tau) d\tau$$
+                            Since $\Delta(S,t) = \frac{\partial V}{\partial S} = \phi(t)$, we obtain the required delta.
+                            </p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Exotic Options Pricing Sandbox -->
+    <div id="secM3L7Sandbox" style="display: none;">
+        <div class="container" style="grid-template-columns: 325px 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <!-- Inputs Panel -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem; font-family: var(--font-family-sans); font-size: 0.85rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom:1rem;">Inputs</h3>
+                
+                <div style="display:flex; flex-direction:column; gap:1.1rem;">
+                    <!-- Exotic Option Selector -->
+                    <div>
+                        <span style="font-weight:600; display:block; margin-bottom:0.4rem;">Exotic Option Type:</span>
+                        <select id="selectM3L7Type" style="width:100%; padding:0.4rem; border-radius:4px; border: 1px solid var(--input-border); background:var(--input-bg); color:var(--text-color); font-weight:700; cursor:pointer;" onchange="toggleM3L7Inputs()">
+                            <option value="asian_fixed">Asian Fixed Strike Call</option>
+                            <option value="asian_float">Asian Floating Strike Call</option>
+                            <option value="barrier_uo">Up-and-Out Barrier Call</option>
+                            <option value="barrier_ui">Up-and-In Barrier Call</option>
+                            <option value="barrier_do">Down-and-Out Barrier Call</option>
+                            <option value="barrier_di">Down-and-In Barrier Call</option>
+                        </select>
+                    </div>
+
+                    <!-- Stock Price -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Stock Price ($S_0$):</span>
+                            <span id="valM3L7Stock" style="color:var(--accent);">100</span>
+                        </div>
+                        <input id="slideM3L7Stock" type="range" min="60" max="140" step="2" value="100" style="width:100%; cursor:pointer;" oninput="updateM3L7Simulation()">
+                    </div>
+
+                    <!-- Strike Price -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Strike Price ($E$):</span>
+                            <span id="valM3L7Strike" style="color:var(--accent);">100</span>
+                        </div>
+                        <input id="slideM3L7Strike" type="range" min="60" max="140" step="2" value="100" style="width:100%; cursor:pointer;" oninput="updateM3L7Simulation()">
+                    </div>
+
+                    <!-- Volatility -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Volatility ($\sigma$):</span>
+                            <span id="valM3L7Vol" style="color:var(--accent);">20%</span>
+                        </div>
+                        <input id="slideM3L7Vol" type="range" min="5" max="60" step="5" value="20" style="width:100%; cursor:pointer;" oninput="updateM3L7Simulation()">
+                    </div>
+
+                    <!-- Time to Expiry -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Time to Expiry ($T$):</span>
+                            <span id="valM3L7Time" style="color:var(--accent);">1.0 Year</span>
+                        </div>
+                        <input id="slideM3L7Time" type="range" min="0.25" max="2.0" step="0.25" value="1.0" style="width:100%; cursor:pointer;" oninput="updateM3L7Simulation()">
+                    </div>
+
+                    <!-- Barrier Level -->
+                    <div id="panelM3L7Barrier" style="display:none;">
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Barrier Level ($B$):</span>
+                            <span id="valM3L7Barrier" style="color:var(--accent);">110</span>
+                        </div>
+                        <input id="slideM3L7Barrier" type="range" min="50" max="150" step="2" value="110" style="width:100%; cursor:pointer;" oninput="updateM3L7Simulation()">
+                    </div>
+
+                    <!-- Averaging Samples -->
+                    <div id="panelM3L7Samples">
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Averaging Samples ($N$):</span>
+                            <span id="valM3L7Samples" style="color:var(--accent);">20</span>
+                        </div>
+                        <input id="slideM3L7Samples" type="range" min="5" max="50" step="5" value="20" style="width:100%; cursor:pointer;" oninput="updateM3L7Simulation()">
+                    </div>
+
+                    <button class="btn" style="background:var(--accent); color:#ffffff; font-weight:700; border:none; padding:0.5rem; border-radius:4px; cursor:pointer;" onclick="updateM3L7Simulation()">Regenerate Paths</button>
+                </div>
+            </div>
+
+            <!-- Visualization Canvas -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Exotic Options Paths Plot</h3>
+                    <div style="height: 180px; position: relative; margin-bottom: 0.5rem;">
+                        <canvas id="m3l7ExoticChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Pricing Results Grid -->
+                <div style="background: var(--metric-bg); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); display:grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; text-align:center; font-size:0.8rem; margin-bottom:0.5rem;">
+                    <div>
+                        <div style="font-size: 0.6rem; color:#6b7280; font-weight:700; text-transform:uppercase;">Vanilla European:</div>
+                        <div id="outM3L7Vanilla" style="font-size:1rem; font-weight:800; color:var(--text-color);">0.00</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.6rem; color:#6b7280; font-weight:700; text-transform:uppercase;">Exotic MC Price:</div>
+                        <div id="outM3L7Price" style="font-size:1rem; font-weight:800; color:var(--accent);">0.00</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.6rem; color:#6b7280; font-weight:700; text-transform:uppercase;">MC Std Error:</div>
+                        <div id="outM3L7Error" style="font-size:1rem; font-weight:800; color:#10b981;">0.00</div>
+                    </div>
+                </div>
+
+                <!-- Theory summary -->
+                <div id="m3l7OutcomeSummary" style="background: var(--metric-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size:0.78rem; line-height:1.45; color:#374151;">
+                    Loading simulation...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching logic for CQF M3 L7
+    window.switchM3L7Tab = function(tab) {
+        const tabs = ['taxonomy', 'pde', 'reduction', 'discrete', 'guide', 'sandbox'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM3L7' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM3L7' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) {
+                sec.style.display = (t === tab ? 'block' : 'none');
+                if (t === tab && !sec.dataset.typeset) {
+                    if (typeof window.safeTypeset === 'function') {
+                        window.safeTypeset([sec]);
+                        sec.dataset.typeset = 'true';
+                    }
+                }
+            }
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        if (tab === 'sandbox') {
+            setTimeout(updateM3L7Simulation, 100);
+        }
+    };
+
+    let m3l7ChartInstance = null;
+
+    // Normal Cumulative Distribution Function
+    function m3l7NormCdf(x) {
+        const b1 =  0.319381530;
+        const b2 = -0.356563782;
+        const b3 =  1.781477937;
+        const b4 = -1.821255978;
+        const b5 =  1.330274429;
+        const p  =  0.2316419;
+        const c  =  0.39894228;
+
+        if (x >= 0.0) {
+            let k = 1.0 / (1.0 + p * x);
+            return 1.0 - c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        } else {
+            let k = 1.0 / (1.0 - p * x);
+            return c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        }
+    }
+
+    // Box-Muller transform for normal distribution
+    function m3l7RandomNormal() {
+        let u = 0, v = 0;
+        while(u === 0) u = Math.random(); 
+        while(v === 0) v = Math.random();
+        return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    }
+
+    // Vanilla European Call Black-Scholes price
+    function m3l7BsCall(S, E, T, r, vol) {
+        if (T <= 0) return Math.max(S - E, 0);
+        const d1 = (Math.log(S / E) + (r + 0.5 * vol * vol) * T) / (vol * Math.sqrt(T));
+        const d2 = d1 - vol * Math.sqrt(T);
+        return S * m3l7NormCdf(d1) - E * Math.exp(-r * T) * m3l7NormCdf(d2);
+    }
+
+    window.toggleM3L7Inputs = function() {
+        const type = document.getElementById('selectM3L7Type').value;
+        const panelB = document.getElementById('panelM3L7Barrier');
+        const panelS = document.getElementById('panelM3L7Samples');
+
+        if (type.startsWith('barrier')) {
+            panelB.style.display = 'block';
+            panelS.style.display = 'none';
+        } else {
+            panelB.style.display = 'none';
+            panelS.style.display = 'block';
+        }
+        updateM3L7Simulation();
+    };
+
+    window.updateM3L7Simulation = function() {
+        const S0 = parseFloat(document.getElementById('slideM3L7Stock').value);
+        const E = parseFloat(document.getElementById('slideM3L7Strike').value);
+        const vol = parseFloat(document.getElementById('slideM3L7Vol').value) / 100;
+        const T = parseFloat(document.getElementById('slideM3L7Time').value);
+        const type = document.getElementById('selectM3L7Type').value;
+        const B = parseFloat(document.getElementById('slideM3L7Barrier').value);
+        const N_samples = parseInt(document.getElementById('slideM3L7Samples').value);
+
+        const r = 0.05; // Risk-free rate 5%
+
+        // Update Labels
+        document.getElementById('valM3L7Stock').innerText = S0.toFixed(0);
+        document.getElementById('valM3L7Strike').innerText = E.toFixed(0);
+        document.getElementById('valM3L7Vol').innerText = (vol * 100).toFixed(0) + "%";
+        document.getElementById('valM3L7Time').innerText = T.toFixed(2) + (T === 1 ? " Year" : " Years");
+        document.getElementById('valM3L7Barrier').innerText = B.toFixed(0);
+        document.getElementById('valM3L7Samples').innerText = N_samples;
+
+        // European Vanilla Price
+        const vanillaPrice = m3l7BsCall(S0, E, T, r, vol);
+        document.getElementById('outM3L7Vanilla').innerText = "$" + vanillaPrice.toFixed(2);
+
+        // Simulation parameters
+        const N_steps = 50;
+        const dt = T / N_steps;
+        const N_sim_paths = 500; // Background paths for statistics
+        const N_plot_paths = 8;  // Foreground paths for display
+
+        let paths = [];
+        let timeSteps = [];
+        for (let j = 0; j <= N_steps; j++) {
+            timeSteps.push(j * dt);
+        }
+
+        let payoffSum = 0;
+        let payoffSqSum = 0;
+
+        for (let p = 0; p < N_sim_paths; p++) {
+            let path = [S0];
+            let S = S0;
+            let sumS = S0;
+            let hitBarrier = false;
+
+            // Generate path steps
+            for (let j = 1; j <= N_steps; j++) {
+                const rand = m3l7RandomNormal();
+                // Risk-neutral SDE
+                S = S * Math.exp((r - 0.5 * vol * vol) * dt + vol * Math.sqrt(dt) * rand);
+                path.push(S);
+                sumS += S;
+
+                // Check barrier hit
+                if (type === 'barrier_uo' && S >= B) hitBarrier = true;
+                if (type === 'barrier_ui' && S >= B) hitBarrier = true;
+                if (type === 'barrier_do' && S <= B) hitBarrier = true;
+                if (type === 'barrier_di' && S <= B) hitBarrier = true;
+            }
+
+            // Save the first N_plot_paths for drawing
+            if (p < N_plot_paths) {
+                paths.push({ path: path, hit: hitBarrier });
+            }
+
+            // Calculate payoffs
+            let payoff = 0;
+            if (type === 'asian_fixed') {
+                // Fixed Strike Asian Call
+                const avgS = sumS / (N_steps + 1);
+                payoff = Math.max(avgS - E, 0);
+            } else if (type === 'asian_float') {
+                // Floating Strike Asian Call
+                const avgS = sumS / (N_steps + 1);
+                payoff = Math.max(S - avgS, 0);
+            } else if (type === 'barrier_uo') {
+                // Up-and-Out Call
+                payoff = hitBarrier ? 0 : Math.max(S - E, 0);
+            } else if (type === 'barrier_ui') {
+                // Up-and-In Call
+                payoff = hitBarrier ? Math.max(S - E, 0) : 0;
+            } else if (type === 'barrier_do') {
+                // Down-and-Out Call
+                payoff = hitBarrier ? 0 : Math.max(S - E, 0);
+            } else if (type === 'barrier_di') {
+                // Down-and-In Call
+                payoff = hitBarrier ? Math.max(S - E, 0) : 0;
+            }
+
+            payoffSum += payoff;
+            payoffSqSum += payoff * payoff;
+        }
+
+        // Pricing values
+        const price = Math.exp(-r * T) * (payoffSum / N_sim_paths);
+        const variance = (payoffSqSum / N_sim_paths) - (payoffSum / N_sim_paths) * (payoffSum / N_sim_paths);
+        const stdError = Math.exp(-r * T) * Math.sqrt(variance / N_sim_paths);
+
+        document.getElementById('outM3L7Price').innerText = "$" + price.toFixed(2);
+        document.getElementById('outM3L7Error').innerText = "$" + stdError.toFixed(3);
+
+        // Summarize behavior inside card
+        const elSummary = document.getElementById('m3l7OutcomeSummary');
+        if (type.startsWith('asian')) {
+            elSummary.innerHTML = `
+                <strong>Behavior: Arithmetic Asian Call</strong><br>
+                Estimated price: <strong>$${price.toFixed(2)}</strong> (Vanilla European Call: $${vanillaPrice.toFixed(2)}).<br>
+                <span style="color:var(--accent); font-weight:700;">Taxonomy Insight:</span> The Asian option's payoff depends on the historical average asset price. Because the average of an asset is mathematically less volatile than the terminal asset price itself ($\sigma_{\\text{average}} < \\sigma_{\\text{underlying}}$), the option has a lower variance profile and is **always cheaper** than its equivalent European vanilla counterpart!
+            `;
+        } else {
+            elSummary.innerHTML = `
+                <strong>Behavior: Barrier Call</strong><br>
+                Estimated price: <strong>$${price.toFixed(2)}</strong> (Vanilla European Call: $${vanillaPrice.toFixed(2)}).<br>
+                <span style="color:#8b5cf6; font-weight:700;">Taxonomy Insight:</span> Barrier options represent weak path-dependency. For Out options (e.g. Up-and-Out), there is a significant risk of crossing the barrier and getting nullified, making them much **cheaper** than standard calls. For In options (e.g. Up-and-In), they only activate upon hitting the barrier, keeping their premium low.
+            `;
+        }
+
+        renderM3L7Plot(timeSteps, paths, type, B);
+    };
+
+    function renderM3L7Plot(timeSteps, paths, type, barrierLevel) {
+        const ctx = document.getElementById('m3l7ExoticChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+        
+        let datasets = [];
+
+        // Add Monte Carlo paths
+        paths.forEach((pObj, idx) => {
+            let borderColor = 'rgba(59, 130, 246, 0.45)'; // Default blue
+            if (type.startsWith('barrier') && pObj.hit) {
+                // If it crossed the barrier, mark it in red or faded purple
+                borderColor = type.endsWith('o') ? 'rgba(239, 68, 68, 0.25)' : 'rgba(16, 185, 129, 0.5)';
+            }
+            datasets.push({
+                label: 'Path ' + (idx + 1),
+                data: pObj.path.map((y, i) => ({ x: timeSteps[i], y: y })),
+                borderColor: borderColor,
+                borderWidth: 1.5,
+                showLine: true,
+                pointRadius: 0,
+                fill: false
+            });
+        });
+
+        // Add Barrier Line if it is a barrier option
+        if (type.startsWith('barrier')) {
+            datasets.push({
+                label: 'Barrier Level',
+                data: timeSteps.map(t => ({ x: t, y: barrierLevel })),
+                borderColor: '#ef4444',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                showLine: true,
+                pointRadius: 0,
+                fill: false
+            });
+        }
+
+        if (m3l7ChartInstance) {
+            m3l7ChartInstance.destroy();
+        }
+
+        m3l7ChartInstance = new Chart(ctx, {
+            type: 'scatter',
+            data: { datasets: datasets },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom',
+                        title: { display: true, text: 'Time (Years)', font: { size: 9 }, color: tickColor },
+                        ticks: { color: tickColor, font: { size: 8 } },
+                        grid: { color: gridColor }
+                    },
+                    y: {
+                        title: { display: true, text: 'Stock Price ($)', font: { size: 9 }, color: tickColor },
+                        ticks: { color: tickColor, font: { size: 8 } },
+                        grid: { color: gridColor }
+                    }
+                }
+            }
+        });
+    }
+</script>

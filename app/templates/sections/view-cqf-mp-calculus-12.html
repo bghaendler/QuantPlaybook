@@ -1,0 +1,315 @@
+<div id="view-cqf-mp-calculus-12" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9; font-family: var(--font-family-sans);">1.2 Mappings &amp; Inverses</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.2 Mapping Theory, Domains &amp; Inverses</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Functional mapping classifications, domain boundaries, and inverse pricing transforms.</div>
+    </header>
+
+    <!-- Core Theory Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">1.2.1 Rigorous Mapping Classifications</h3>
+        <p>A mathematical function $f: X \to Y$ is a rule that assigns to each element $x \in X$ (the **Domain**) exactly one element $y \in Y$ (the **Codomain**). The set of all actual mapped values $f(X) \subseteq Y$ is called the **Range**.</p>
+        
+        <p>To analyze the behavior and invertibility of functional transformations in finance, we classify mappings into three fundamental categories:</p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+            <li><strong>Injective (One-to-One):</strong> $f$ is injective if distinct domain elements map to distinct codomain elements:
+            $$\forall x_1, x_2 \in X, \quad f(x_1) = f(x_2) \implies x_1 = x_2$$
+            An injective mapping is strictly required for the existence of a unique **inverse function** $f^{-1}(y)$.</li>
+            
+            <li><strong>Surjective (Onto):</strong> $f$ is surjective if every element in the codomain $Y$ is mapped to by at least one element in the domain:
+            $$\forall y \in Y, \quad \exists x \in X \quad \text{s.t.} \quad f(x) = y$$
+            This means the Range is exactly equal to the Codomain ($f(X) = Y$).</li>
+            
+            <li><strong>Bijective:</strong> A function that is both **injective** and **surjective**. A bijective mapping has a perfect, unique one-to-one correspondence, guaranteeing that a unique, stable inverse transform $f^{-1}: Y \to X$ exists across the entire range.</li>
+        </ul>
+
+        <div style="background: var(--metric-bg); border-left: 4px solid #8b5cf6; padding: 1rem; border-radius: 6px; margin: 1.5rem 0;">
+            <h4 style="margin: 0 0 0.5rem 0; font-size: 0.9rem; font-weight: 700; color: #8b5cf6;">Real-World Quantitative Finance Examples:</h4>
+            <p style="font-size: 0.88rem; margin: 0 0 0.5rem 0; line-height: 1.5;">
+                • <strong>Many-to-One Payoffs (Symmetric Payoffs):</strong> An option straddle payoff $V(S) = |S - K|$ maps two different spot prices (e.g. $S_1 = K + \delta S$ and $S_2 = K - \delta S$) to the exact same payoff value $\delta S$. This makes it non-invertible.
+            </p>
+            <p style="font-size: 0.88rem; margin: 0; line-height: 1.5;">
+                • <strong>One-to-Many Mappings (Implied Volatility Branches):</strong> When solving for implied volatility $\sigma$ from option prices, extreme option boundaries or non-monotonic local volatility grids can create multiple branches (One-to-Many). We must apply strict physical domain boundaries to select the singular active branch.
+            </p>
+        </div>
+
+        <h4 style="margin-top: 1rem; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">Even vs. Odd Functions &amp; Integration Shortcuts</h4>
+        <p>Functional symmetry yields powerful simplifications when performing definite integrals:</p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li><strong>Even Functions:</strong> Symmetric over the $Y$-axis: $f(-x) = f(x)$ (e.g. $\cos x$, $x^2$).
+            $$\int_{-a}^{a} f(x) dx = 2 \int_{0}^{a} f(x) dx$$</li>
+            <li><strong>Odd Functions:</strong> Symmetric over the origin: $f(-x) = -f(x)$ (e.g. $\sin x$, $x^3$).
+            $$\int_{-a}^{a} f(x) dx = 0$$</li>
+        </ul>
+    </div>
+
+    <!-- Always Visible Interactive Mapping Laboratory and Graph -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700;">1.2.2 Interactive Mapping &amp; Inverse Reflection Visualizer</h3>
+        <p>Test mapping constraints and observe branch selection for inverse function conversions, with geometrical reflections across the diagonal $y = x$ axis:</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; margin-top: 1rem;">
+            <!-- Inputs Column -->
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); display: flex; flex-direction: column; gap: 1rem;">
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <div>
+                        <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Select Function $f(x)$:</label>
+                        <select id="mapFuncSelect" onchange="calculateInteractiveMapping()" style="padding: 0.35rem 0.5rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600; outline: none; cursor: pointer;">
+                            <option value="linear">1-1 Linear: 3x + 1</option>
+                            <option value="quadratic">Many-1 Quadratic: 2x² - 1</option>
+                            <option value="multivalued">One-Many: ±√x (x ≥ 0)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Input $x$:</label>
+                        <input id="mapFuncInputX" type="number" value="2" step="0.5" oninput="calculateInteractiveMapping()" style="width: 80px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
+                    </div>
+                </div>
+                <div style="font-size: 0.88rem; line-height: 1.6; color: var(--text-color); background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid var(--accent);">
+                    <div id="mapOutputF"><strong>Mapping:</strong> $f(2) = 7$</div>
+                    <div id="mapOutputInv" style="margin-top: 0.25rem;"><strong>Inverse Mapping:</strong> $f^{-1}(7) = 2$</div>
+                    <div id="mapOutputStatus" style="font-weight: 700; color: #10b981; margin-top: 0.5rem;">Status: Valid One-to-One (1-1) Function</div>
+                </div>
+            </div>
+
+            <!-- Graph Column -->
+            <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; position: relative;">
+                <canvas id="calc12Canvas" width="400" height="200" style="width: 100%; height: 200px; background: #000; border-radius: 6px;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Proofs and Exercises -->
+    <div class="card" style="padding: 1.5rem; margin-bottom: 2rem;">
+        <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Worked Solutions &amp; Proofs</h3>
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem;">
+            <!-- Exercise 1 -->
+            <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6;">
+                <strong>Exercise 1: Rigorous Injectivity Proof for $f(x) = 3x + 1$</strong>
+                <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                    <li style="margin-bottom: 0.5rem;">
+                        <strong>State the Injectivity Condition:</strong>
+                        To prove injectivity, we assume $f(x_1) = f(x_2)$ and show that it must logically imply $x_1 = x_2$.
+                    </li>
+                    <li style="margin-bottom: 0.5rem;">
+                        <strong>Substitute the algebraic rule:</strong>
+                        $$f(x_1) = f(x_2) \implies 3x_1 + 1 = 3x_2 + 1$$
+                    </li>
+                    <li style="margin-bottom: 0.5rem;">
+                        <strong>Subtract 1 from both sides:</strong>
+                        $$3x_1 = 3x_2$$
+                    </li>
+                    <li style="margin: 0;">
+                        <strong>Divide by 3:</strong>
+                        $$x_1 = x_2$$
+                        Since $f(x_1) = f(x_2) \implies x_1 = x_2$, the function is rigorously proven to be injective. $\blacksquare$
+                    </li>
+                </ol>
+            </div>
+
+            <!-- Exercise 2 -->
+            <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6;">
+                <strong>Exercise 2: Deriving Option Straddle Non-Injectivity</strong>
+                <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                    <li style="margin-bottom: 0.5rem;">Let strike price $K = 100$.</li>
+                    <li style="margin-bottom: 0.5rem;">Choose two distinct domain elements: $S_1 = 105$ and $S_2 = 95$ ($S_1 \neq S_2$).</li>
+                    <li style="margin-bottom: 0.5rem;">
+                        Evaluate payoffs:
+                        $$V(S_1) = |105 - 100| = |5| = 5$$
+                        $$V(S_2) = |95 - 100| = |-5| = 5$$
+                    </li>
+                    <li style="margin: 0;">
+                        Since $S_1 \neq S_2$ but $V(S_1) = V(S_2)$, the payoff is **many-to-one**, confirming it is non-injective and therefore has no unique inverse function without branch partition.
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.calculateInteractiveMapping = function() {
+                const fn = document.getElementById('mapFuncSelect').value;
+                const xVal = parseFloat(document.getElementById('mapFuncInputX').value);
+                const elF = document.getElementById('mapOutputF');
+                const elInv = document.getElementById('mapOutputInv');
+                const elStat = document.getElementById('mapOutputStatus');
+
+                if (isNaN(xVal)) {
+                    elF.innerHTML = "<strong>Mapping:</strong> Please input a valid number!";
+                    elInv.innerHTML = "";
+                    elStat.innerText = "Status: Awaiting Input";
+                    elStat.style.color = "#ea580c";
+                    return;
+                }
+
+                if (fn === 'linear') {
+                    const yVal = 3 * xVal + 1;
+                    const xInv = (yVal - 1) / 3;
+                    elF.innerHTML = `<strong>Mapping:</strong> $f(${xVal}) = 3(${xVal}) + 1 = ${yVal}$`;
+                    elInv.innerHTML = `<strong>Unique Inverse:</strong> $f^{-1}(${yVal}) = (${yVal} - 1)/3 = ${xInv.toFixed(2)}$`;
+                    elStat.innerText = "Status: Valid One-to-One (1-1) Function";
+                    elStat.style.color = "#10b981";
+                } else if (fn === 'quadratic') {
+                    const yVal = 2 * xVal * xVal - 1;
+                    if (yVal < -1) {
+                        elF.innerHTML = `<strong>Mapping:</strong> $f(${xVal}) = 2(${xVal})^2 - 1 = ${yVal}$`;
+                        elInv.innerHTML = `<strong>Inverse:</strong> Complex conjugate roots (undefined on $\\mathbb{R}$)`;
+                        elStat.innerText = "Status: Domain Restriction Exceeded";
+                        elStat.style.color = "#ef4444";
+                    } else {
+                        const root1 = Math.sqrt((yVal + 1) / 2);
+                        const root2 = -root1;
+                        elF.innerHTML = `<strong>Mapping:</strong> $f(${xVal}) = 2(${xVal})^2 - 1 = ${yVal}$`;
+                        elInv.innerHTML = `<strong>Inverse (Multivalued Branches):</strong> $f^{-1}(${yVal}) = \\pm\\sqrt{(${yVal} + 1)/2} = ${root1.toFixed(2)}$ and ${root2.toFixed(2)}$`;
+                        elStat.innerText = "Status: Valid Many-to-One Function";
+                        elStat.style.color = "#10b981";
+                    }
+                } else if (fn === 'multivalued') {
+                    if (xVal < 0) {
+                        elF.innerHTML = `<strong>Mapping:</strong> $f(${xVal}) = \\pm\\sqrt{${xVal}}$ (Undefined for $x < 0$)`;
+                        elInv.innerHTML = `<strong>Inverse:</strong> $f^{-1}(y) = y^2$`;
+                        elStat.innerText = "Status: Out of Domain ($x < 0$)";
+                        elStat.style.color = "#ef4444";
+                    } else {
+                        const root1 = Math.sqrt(xVal);
+                        const root2 = -root1;
+                        elF.innerHTML = `<strong>Multivalued Mapping (2 Branches):</strong> $f(${xVal}) = +${root1.toFixed(2)}$ and $-${root2.toFixed(2)}$`;
+                        elInv.innerHTML = `<strong>Inverse Mapping:</strong> $f^{-1}(y) = y^2$ (maps both back to $x = ${xVal}$)`;
+                        elStat.innerText = "Status: One-to-Many Relation (NOT a single-valued function!)";
+                        elStat.style.color = "#ea580c";
+                    }
+                }
+
+                drawMappingGraph();
+
+                const parent = document.getElementById('view-cqf-mp-calculus-12');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            window.drawMappingGraph = function() {
+                const canvas = document.getElementById('calc12Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const fn = document.getElementById('mapFuncSelect').value;
+                const xVal = parseFloat(document.getElementById('mapFuncInputX').value);
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Grid lines & axes
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= canvas.width; i += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, canvas.height);
+                    ctx.stroke();
+                }
+                for (let i = 0; i <= canvas.height; i += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(canvas.width, i);
+                    ctx.stroke();
+                }
+
+                // Coordinates Mapping
+                const xMin = -5.0, xMax = 5.0;
+                const yMin = -8.0, yMax = 8.0;
+
+                const toCanvasX = (x) => ((x - xMin) / (xMax - xMin)) * canvas.width;
+                const toCanvasY = (y) => canvas.height - ((y - yMin) / (yMax - yMin)) * canvas.height;
+
+                // Draw X and Y Axes
+                ctx.strokeStyle = '#52525b';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(0, toCanvasY(0));
+                ctx.lineTo(canvas.width, toCanvasY(0));
+                ctx.moveTo(toCanvasX(0), 0);
+                ctx.lineTo(toCanvasX(0), canvas.height);
+                ctx.stroke();
+
+                // Draw Diagonal Line y = x (Dashed violet)
+                ctx.strokeStyle = '#8b5cf6';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath();
+                ctx.moveTo(toCanvasX(xMin), toCanvasY(xMin));
+                ctx.lineTo(toCanvasX(xMax), toCanvasY(xMax));
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Evaluate function
+                const evalFn = (x) => {
+                    if (fn === 'linear') return 3 * x + 1;
+                    if (fn === 'quadratic') return 2 * x * x - 1;
+                    if (fn === 'multivalued') return x >= 0 ? Math.sqrt(x) : NaN;
+                    return 0;
+                };
+
+                // Draw Function f(x) (Cyan)
+                ctx.strokeStyle = '#0ea5e9';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                let started = false;
+                for (let px = 0; px <= canvas.width; px++) {
+                    const x = xMin + (px / canvas.width) * (xMax - xMin);
+                    const y = evalFn(x);
+                    if (isNaN(y) || y < yMin || y > yMax) {
+                        started = false;
+                        continue;
+                    }
+                    if (!started) {
+                        ctx.moveTo(px, toCanvasY(y));
+                        started = true;
+                    } else {
+                        ctx.lineTo(px, toCanvasY(y));
+                    }
+                }
+                ctx.stroke();
+
+                // Draw Mapped Point and its Geometrical Reflection
+                if (!isNaN(xVal)) {
+                    const yVal = evalFn(xVal);
+                    if (!isNaN(yVal)) {
+                        // Original point (x, y) - Blue
+                        ctx.fillStyle = '#0ea5e9';
+                        ctx.beginPath();
+                        ctx.arc(toCanvasX(xVal), toCanvasY(yVal), 6, 0, 2 * Math.PI);
+                        ctx.fill();
+
+                        // Reflection line between (x, y) and (y, x)
+                        ctx.strokeStyle = 'rgba(239, 68, 68, 0.4)';
+                        ctx.lineWidth = 1;
+                        ctx.setLineDash([2, 2]);
+                        ctx.beginPath();
+                        ctx.moveTo(toCanvasX(xVal), toCanvasY(yVal));
+                        ctx.lineTo(toCanvasX(yVal), toCanvasY(xVal));
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+
+                        // Reflected Inverse Point (y, x) - Red
+                        if (yVal >= xMin && yVal <= xMax && xVal >= yMin && xVal <= yMax) {
+                            ctx.fillStyle = '#ef4444';
+                            ctx.beginPath();
+                            ctx.arc(toCanvasX(yVal), toCanvasY(xVal), 6, 0, 2 * Math.PI);
+                            ctx.fill();
+                        }
+                    }
+                }
+            };
+
+            setTimeout(() => {
+                if (document.getElementById('mapFuncSelect')) calculateInteractiveMapping();
+            }, 100);
+        })();
+    </script>
+</div>

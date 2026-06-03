@@ -1,0 +1,760 @@
+<div id="view-cqf-m1-l1" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 01: Building Blocks</span>
+            <span class="badge" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #8b5cf6; font-family: var(--font-family-sans);">Lecture 01</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L1: The Random Behaviour of Assets</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Returns Modeling, Time-Scaling Properties, and Normality Testing</div>
+    </header>
+
+    <!-- Navigation Tabs for L1 Sections -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
+        <button id="tabL1Core" onclick="switchL1Tab('core')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Asset Random Behaviour Core</button>
+        <button id="tabL1Exercises" onclick="switchL1Tab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Solutions Sheet</button>
+    </div>
+
+    <!-- Section A: L1 Core Cards -->
+    <div id="secL1Core" style="display: block;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; align-items: stretch;">
+        <!-- Card 1: Returns -->
+        <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent);">1. Simple vs. Logarithmic Returns</h3>
+                <p>Returns represent relative price growth, making them comparable across assets. In quantitative finance, we distinguish between two primary return metrics:</p>
+                <ul style="padding-left: 1.2rem; font-size: 0.92rem; line-height: 1.6;">
+                    <li style="margin-bottom: 0.75rem;">
+                        <strong>Simple (Arithmetic) Return ($R^s_t$):</strong> Relative change in price over a step.
+                        $$R^s_t = \frac{S_{t+1} - S_t}{S_t} = \frac{S_{t+1}}{S_t} - 1$$
+                        <em>Multi-period projection:</em> Multiplicative over time.
+                        $$1 + R_{t+\tau} = (1 + R_t)(1 + R_{t+1})\dots(1 + R_{t+n-1})$$
+                    </li>
+                    <li style="margin-bottom: 0;">
+                        <strong>Logarithmic (Compound) Return ($R^c_t$):</strong> Natural log of price ratios.
+                        $$R^c_t = \ln\left(\frac{S_{t+1}}{S_t}\right)$$
+                        <em>Multi-period projection:</em> Additive over time, making it exceptionally convenient for continuous-time modeling.
+                        $$R_{t+\tau} = R_t + R_{t+1} + \dots + R_{t+n-1}$$
+                    </li>
+                </ul>
+            </div>
+            <div style="background: var(--metric-bg); padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; display: flex; justify-content: space-between; border-left: 3px solid var(--accent); margin-top: 1rem; font-family: var(--font-family-sans);">
+                <span>Conversion Rule:</span>
+                <span>$R^s_t = \exp(R^c_t) - 1 \quad \iff \quad R^c_t = \ln(1 + R^s_t)$</span>
+            </div>
+        </div>
+
+        <!-- Card 2: Scaling -->
+        <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: #8b5cf6;">2. Scaling with Time Step ($\delta t$)</h3>
+                <p>To transition returns from discrete intervals (e.g. daily/weekly) to continuous time, we must scale the parameters with the time step $\delta t$:</p>
+                <ul style="padding-left: 1.2rem; font-size: 0.92rem; line-height: 1.6;">
+                    <li style="margin-bottom: 0.75rem;">
+                        <strong>Scaling of the Mean (Drift):</strong> The average expected asset return scales linearly with the size of the time step:
+                        $$\text{Mean} = \mu \delta t$$
+                        where $\mu$ is the annualized drift (growth rate).
+                    </li>
+                    <li style="margin-bottom: 0;">
+                        <strong>Scaling of standard deviation (Volatility):</strong> Under independence assumptions, variances (not standard deviations) are additive. Thus, the variance scales linearly with $\delta t$:
+                        $$\text{Variance} = \sigma^2 \delta t$$
+                        Consequently, the volatility scales with the square root of the step:
+                        $$\text{Volatility} = \sigma \sqrt{\delta t}$$
+                        where $\sigma$ is the annualized volatility.
+                    </li>
+                </ul>
+            </div>
+            <div style="background: var(--metric-bg); padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; display: flex; justify-content: space-between; border-left: 3px solid #8b5cf6; margin-top: 1rem; font-family: var(--font-family-sans);">
+                <span>Key Scaling Intuition:</span>
+                <span>Variance $\propto \delta t \implies$ Volatility $\propto \sqrt{\delta t}$</span>
+            </div>
+        </div>
+
+        <!-- Card 3: Asset Models -->
+        <div class="card" style="grid-column: span 2; margin-bottom: 0;">
+            <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: #10b981;">3. Discrete and Continuous Asset Models</h3>
+            <p>Combining time-scaling properties with random draws, we build standard models for asset price path simulations:</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem;">
+                <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border-top: 3px solid #10b981;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-sans); font-size: 0.95rem; font-weight: 700;">Discrete-Time Random Walk</h4>
+                    <p style="font-size: 0.9rem; margin-bottom: 0.75rem;">If $\phi \sim N(0, 1)$ is a standard normal variable, the asset return over a step $\delta t$ is:</p>
+                    <p style="text-align: center; font-size: 1rem; font-weight: 700; margin: 0.5rem 0;">
+                        $$R_i = \frac{S_{i+1} - S_i}{S_i} = \mu \delta t + \sigma \phi \sqrt{\delta t}$$
+                    </p>
+                    <p style="font-size: 0.9rem; margin: 0;">Rearranged for Monte Carlo simulations:
+                        $$S_{i+1} - S_i = \mu S_i \delta t + \sigma S_i \phi \sqrt{\delta t}$$
+                    </p>
+                </div>
+                <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border-top: 3px solid #0f766e;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-sans); font-size: 0.95rem; font-weight: 700;">Continuous-Time SDE (Geometric Brownian Motion)</h4>
+                    <p style="font-size: 0.9rem; margin-bottom: 0.75rem;">Taking the limit as $\delta t \to 0$, the discrete shock term $\phi \sqrt{\delta t}$ transitions to the Wiener increment $dW_t$ where $\text{E}[dW_t] = 0$ and $\text{E}[dW_t^2] = dt$:</p>
+                    <p style="text-align: center; font-size: 1rem; font-weight: 700; margin: 0.5rem 0;">
+                        $$dS_t = \mu S_t dt + \sigma S_t dW_t \quad \text{or} \quad \frac{dS_t}{S_t} = \mu dt + \sigma dW_t$$
+                    </p>
+                    <p style="font-size: 0.9rem; margin: 0;"><em>No Randomness Case ($\sigma = 0$):</em> reduces to ODE $\frac{dS}{dt} = \mu S \implies S(t) = S_0 e^{\mu t}$.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Section B: Worked Solutions Sheet -->
+    <div id="secL1Exercises" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Problem A: Arithmetic and Log Returns -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem A: Log Return Additivity &amp; Relationship</h3>
+                <p>Prove that logarithmic returns are additive over multiple time periods, whereas arithmetic returns are multiplicative, and derive their exact mathematical relationship.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>State the Arithmetic return of a multi-period series:</strong>
+                            Let an asset price evolve as $S_0, S_1, \dots, S_n$. The simple return over the entire period $R^s_{0,n}$ is:
+                            $$1 + R^s_{0,n} = \frac{S_n}{S_0} = \frac{S_1}{S_0} \times \frac{S_2}{S_1} \times \dots \times \frac{S_n}{S_{n-1}} = \prod_{i=1}^n (1 + R^s_{i-1, i})$$
+                            This shows arithmetic returns are multiplicative, requiring compounding multiplication.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>State the Logarithmic return:</strong>
+                            The log return over a single step $R^c_{i-1, i}$ is:
+                            $$R^c_{i-1, i} = \ln\left(\frac{S_i}{S_{i-1}}\right)$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Derive Multi-Period Log Return Additivity:</strong>
+                            Summing single-period log returns from $i=1$ to $n$:
+                            $$\sum_{i=1}^n R^c_{i-1, i} = \sum_{i=1}^n \ln\left(\frac{S_i}{S_{i-1}}\right) = \ln\left(\frac{S_1}{S_0} \times \frac{S_2}{S_1} \times \dots \times \frac{S_n}{S_{n-1}}\right) = \ln\left(\frac{S_n}{S_0}\right) = R^c_{0,n}$$
+                            Because of the logarithmic product-to-sum identity, multi-period log return is simply the sum of individual log returns.
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Derive the Relationship:</strong>
+                            From definitions, $\frac{S_t}{S_{t-1}} = 1 + R^s_t$. Taking the natural log of both sides:
+                            $$R^c_t = \ln\left(\frac{S_t}{S_{t-1}}\right) = \ln(1 + R^s_t)$$
+                            Exponentiating both sides yields:
+                            $$R^s_t = e^{R^c_t} - 1$$
+                        </li>
+                    </ol>
+                </div>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid var(--accent); padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. Why are arithmetic returns multiplicative?</strong> If you make 10% today and lose 10% tomorrow, your total return is not 0%. Your money grew to 110%, then fell to 99%. Multiplication preserves the exact compounding path.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. Why use log returns?</strong> Working with products (multiplication) in statistics and probability is extremely difficult. Logs transform multiplication into simple addition, which is vastly easier to analyze mathematically.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. Why do the sums cancel out?</strong> When you sum log fractions, the numerator of one term cancels with the denominator of the next (a telescoping series). Only the starting and final prices remain, representing a direct, additive path.</p>
+                        <p style="margin: 0;"><strong>4. Why convert between them?</strong> Simple returns are intuitive for humans and reporting, but logarithmic returns are required for continuous-time mathematical models (like Black-Scholes). Converting lets us toggle between human intuition and rigorous math.</p>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Problem B: Annualizing Volatility -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem B: The Square Root of Time Volatility Scaling</h3>
+                <p>Derive why the standard deviation of asset returns scales with the square root of time ($\sigma \sqrt{t}$) rather than linearly with time.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>State Independence Assumption:</strong>
+                            Assume returns $R_1, R_2, \dots, R_N$ across $N$ disjoint time intervals of length $\delta t$ are independent and identically distributed (i.i.d.) random variables, each with variance $\sigma^2_d = \text{Var}(R_i)$.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Apply Variance Additivity:</strong>
+                            For independent random variables, the variance of their sum is the sum of their variances:
+                            $$\text{Var}\left( \sum_{i=1}^N R_i \right) = \sum_{i=1}^N \text{Var}(R_i) = N \times \sigma^2_d$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Relate Steps to Time Horizon:</strong>
+                            Let the total time horizon be $T = N \delta t$, which implies $N = \frac{T}{\delta t}$. Substituting $N$:
+                            $$\text{Var}(\text{Total Return over } T) = \frac{T}{\delta t} \sigma^2_d = T \times \left( \frac{\sigma^2_d}{\delta t} \right)$$
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Derive Standard Deviation Scaling:</strong>
+                            Standard deviation (volatility) is the square root of variance:
+                            $$\sigma(T) = \sqrt{\text{Var}(\text{Total Return})} = \sqrt{T \times \left(\frac{\sigma^2_d}{\delta t}\right)} = \left(\frac{\sigma_d}{\sqrt{\delta t}}\right) \sqrt{T}$$
+                            Defining the annualized volatility as $\sigma = \frac{\sigma_d}{\sqrt{\delta t}}$ gives the famous square-root-of-time scaling rule:
+                            $$\sigma(T) = \sigma \sqrt{T}$$
+                        </li>
+                    </ol>
+                </div>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: #8b5cf6; font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid #8b5cf6; padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. Why assume independence?</strong> Independence means that what the stock market does today has no bearing on what it does tomorrow. While not 100% true in reality, it is a highly accurate baseline assumption for asset pricing models.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. Why sum variances instead of standard deviations?</strong> Standard deviations represent absolute uncertainty widths, which don't add up directly because random ups and downs cancel each other out over time. Variances represent total "energy" or "variability", which accumulates cleanly.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. Why does time divide the variance?</strong> If you want to scale up from 1 day to 252 days (a typical trading year), you sum 252 days of daily variance to get the yearly variance.</p>
+                        <p style="margin: 0;"><strong>4. Why the square root?</strong> Since yearly variance is 252 times daily variance, yearly volatility (which is the square root of variance) must be the square root of 252 times daily volatility: $\sigma_{annual} = \sigma_{daily} \sqrt{252}$. This explains why long-term uncertainty grows slower than a straight line.</p>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Problem C: Lognormal Asset Price PDF -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem C: Lognormal Distribution of Asset Prices</h3>
+                <p>Show why asset prices follow a lognormal distribution under Geometric Brownian Motion, and derive the probability density function (PDF).</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>State the SDE for Geometric Brownian Motion:</strong>
+                            $$dS_t = \mu S_t dt + \sigma S_t dW_t$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Apply Itô's Lemma to $f(S) = \ln S$:</strong>
+                            The derivatives are $\frac{df}{dS} = \frac{1}{S}$ and $\frac{d^2f}{dS^2} = -\frac{1}{S^2}$. Applying Itô's formula:
+                            $$d(\ln S_t) = \left( \mu S_t \frac{1}{S_t} - \frac{1}{2}\sigma^2 S_t^2 \frac{1}{S_t^2} \right) dt + \sigma S_t \frac{1}{S_t} dW_t$$
+                            $$d(\ln S_t) = \left( \mu - \frac{1}{2}\sigma^2 \right) dt + \sigma dW_t$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Integrate to find the price level:</strong>
+                            $$\ln S_t - \ln S_0 = \left( \mu - \frac{1}{2}\sigma^2 \right)t + \sigma W_t \implies S_t = S_0 \exp\left( \left(\mu - \frac{1}{2}\sigma^2\right)t + \sigma W_t \right)$$
+                            Since $W_t \sim N(0, t)$, the log asset price $\ln S_t$ is normally distributed:
+                            $$\ln S_t \sim N\left( \ln S_0 + \left(\mu - \frac{1}{2}\sigma^2\right)t \, , \, \sigma^2 t \right)$$
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Formulate the Lognormal PDF:</strong>
+                            Let $x$ represent the price $S_t$. Performing a probability change of variable yields the lognormal density function:
+                            $$f(x; \mu, \sigma, t) = \frac{1}{x \sigma \sqrt{2\pi t}} \exp\left( -\frac{\left(\ln(x/S_0) - (\mu - \frac{1}{2}\sigma^2)t\right)^2}{2\sigma^2 t} \right) \quad \text{for } x > 0$$
+                        </li>
+                    </ol>
+                </div>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: #10b981; font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid #10b981; padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. Why use Geometric Brownian Motion?</strong> In standard Brownian motion, the stock price could jump down by $10 even if the price is $1, meaning the price could go negative. In GBM, jumps scale with the stock price (percentage returns), guaranteeing the price never drops below zero.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. Why take the log?</strong> Taking the log transforms the stock price (which multiplies over time) into log-price (which adds up over time). This removes the dependency on the price level.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. What is that $-\frac{1}{2}\sigma^2$ term?</strong> This is the "Itô drift correction." In a random world, volatility actually acts as a drag on geometric growth. If a stock goes up 50% and down 50% repeatedly, you lose money. The correction term accounts for this variance drag.</p>
+                        <p style="margin: 0;"><strong>4. Why is the PDF divided by $x$?</strong> Because a stock price cannot go negative, the distribution is skewed to the right (has a long tail representing potential unlimited upside). The $1/x$ term accounts for this asymmetric skew in the coordinate mapping.</p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive normality Q-Q Plot simulator lab -->
+    <div id="secL1Lab" style="display: block;">
+    <div class="card" style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+            <div>
+                <h2 style="margin: 0; font-family: var(--font-family-sans); font-weight: 800; font-size: 1.4rem;">4. Testing Model Assumptions (Empirical Normality)</h2>
+                <div style="color: #6b7280; font-size: 0.95rem; margin-top: 0.25rem;">Lognormal asset models assume normal log-returns. Market empirical data, however, exhibits skewness and fat tails (excess kurtosis). Analyze returns distributions and theoretical normal Q-Q plots in real-time below.</div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 320px 1fr; gap: 2rem; align-items: start;">
+            <!-- Simulation Controls Column -->
+            <div style="background: var(--metric-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-family-sans);">
+                <h3 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">Distribution &amp; Sampling</h3>
+                
+                <!-- Returns distribution selection -->
+                <div>
+                    <span style="font-weight: 600; display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-color);">Asset Returns Regime</span>
+                    <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
+                            <input type="radio" name="qqRegime" value="normal" checked onchange="updateCqfQqSimulation()" style="cursor: pointer;"> Lognormal: Normal Returns
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
+                            <input type="radio" name="qqRegime" value="fat" onchange="updateCqfQqSimulation()" style="cursor: pointer;"> Fat-Tailed (Student-t)
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
+                            <input type="radio" name="qqRegime" value="skew" onchange="updateCqfQqSimulation()" style="cursor: pointer;"> Skewed (Crash Jumps)
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Sample size slider -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="qqSamplesSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Sample Size ($N$)</label>
+                        <span id="qqSamplesVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">400</span>
+                    </div>
+                    <input id="qqSamplesSlider" type="range" min="100" max="1000" step="50" value="400" style="width: 100%; cursor: pointer;" oninput="updateCqfQqSimulation()">
+                </div>
+
+                <!-- Annual Drift slider -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="qqDriftSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Expected Drift ($\mu$)</label>
+                        <span id="qqDriftVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">10.0%</span>
+                    </div>
+                    <input id="qqDriftSlider" type="range" min="-10" max="30" step="1" value="10" style="width: 100%; cursor: pointer;" oninput="updateCqfQqSimulation()">
+                </div>
+
+                <!-- Annual Volatility slider -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="qqVolSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Annual Volatility ($\sigma$)</label>
+                        <span id="qqVolVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">20.0%</span>
+                    </div>
+                    <input id="qqVolSlider" type="range" min="5" max="60" step="1" value="20" style="width: 100%; cursor: pointer;" oninput="updateCqfQqSimulation()">
+                </div>
+
+                <!-- Tail Thickness slider (Only for student-t) -->
+                <div id="qqTailWeightRow" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="qqTailWeightSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Degrees of Freedom ($df$)</label>
+                        <span id="qqTailWeightVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">4</span>
+                    </div>
+                    <input id="qqTailWeightSlider" type="range" min="3" max="30" step="1" value="4" style="width: 100%; cursor: pointer;" oninput="updateCqfQqSimulation()">
+                </div>
+
+                <!-- Crash Size slider (Only for Skewed) -->
+                <div id="qqCrashRow" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="qqCrashSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Crash Scale ($C$)</label>
+                        <span id="qqCrashVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">15.0%</span>
+                    </div>
+                    <input id="qqCrashSlider" type="range" min="5" max="30" step="1" value="15" style="width: 100%; cursor: pointer;" oninput="updateCqfQqSimulation()">
+                </div>
+
+                <!-- Re-seed random generation button -->
+                <button onclick="updateCqfQqSimulation()" style="width: 100%; padding: 0.6rem; font-size: 0.85rem; font-weight: 700; color: white; background: var(--accent); border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s; outline: none; margin-top: 0.5rem;">
+                    Re-seed Normal Walk
+                </button>
+            </div>
+
+            <!-- Charts and Statistical Moments Outputs Column -->
+            <div>
+                <!-- Computed Moments Metrics -->
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; font-family: var(--font-family-sans);">
+                    <!-- Empirical Mean -->
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 0.68rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Empirical Mean ($\hat{m}$)</div>
+                        <div id="outQqMean" style="font-size: 1.25rem; font-weight: 800; margin-top: 0.2rem; font-family: monospace; color: var(--text-color);">0.038%</div>
+                    </div>
+                    <!-- Empirical Volatility -->
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 0.68rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Empirical Vol ($\hat{s}$)</div>
+                        <div id="outQqVol" style="font-size: 1.25rem; font-weight: 800; margin-top: 0.2rem; font-family: monospace; color: var(--text-color);">1.25%</div>
+                    </div>
+                    <!-- Empirical Skewness -->
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; text-align: center; border-bottom: 2px solid var(--accent);">
+                        <div style="font-size: 0.68rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Skewness ($S$)</div>
+                        <div id="outQqSkew" style="font-size: 1.25rem; font-weight: 800; margin-top: 0.2rem; font-family: monospace; color: var(--text-color);">0.021</div>
+                    </div>
+                    <!-- Empirical Excess Kurtosis -->
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; text-align: center; border-bottom: 2px solid #ea580c;">
+                        <div style="font-size: 0.68rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Excess Kurtosis ($K_{exc}$)</div>
+                        <div id="outQqKurt" style="font-size: 1.25rem; font-weight: 800; margin-top: 0.2rem; font-family: monospace; color: var(--text-color);">0.084</div>
+                    </div>
+                </div>
+
+                <!-- Two Charts Layout (Flex/Grid) -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <!-- Distribution Histogram Card -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px;">
+                        <h4 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-color);">Empirical Returns Histogram vs Fitted Normal</h4>
+                        <div class="chart-container" style="position: relative; height: 250px; width: 100%;">
+                            <canvas id="qqHistChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Quantile-Quantile Plot Card -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px;">
+                        <h4 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-color);">Theoretical Normal Q-Q Probability Plot</h4>
+                        <div class="chart-container" style="position: relative; height: 250px; width: 100%;">
+                            <canvas id="qqPlotChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Mathematical Explanation -->
+        <details style="margin-top: 1.5rem; color: var(--text-color);">
+            <summary style="cursor: pointer; font-weight: 600; color: var(--accent); font-family: var(--font-family-sans); font-size: 0.95rem; user-select: none;">View Normality Verification Steps</summary>
+            <div style="padding: 1.5rem; background: var(--metric-bg); border-radius: 8px; border-left: 4px solid var(--accent); margin-top: 0.75rem; font-size: 0.95rem; line-height: 1.6; font-family: var(--font-family-sans);">
+                <p>Quant traders use two standard processes to verify if empirical return data fits the lognormal assumption:</p>
+                <ol style="padding-left: 1.5rem;">
+                    <li style="margin-bottom: 0.75rem;">
+                        <strong>Standardization (Z-score Scaling):</strong> Raw returns $r_t$ are converted to Z-scores $Z_t$ by subtracting the sample mean and dividing by the sample standard deviation, ensuring a mean of 0 and variance of 1:
+                        $$Z_t = \frac{r_t - \mu}{\sigma}$$
+                    </li>
+                    <li style="margin-bottom: 0;">
+                        <strong>Theoretical Q-Q Plot Matching:</strong>
+                        <ul style="padding-left: 1.2rem; margin-top: 0.25rem; list-style-type: circle;">
+                            <li>Log-returns are converted to scaled Z-scores.</li>
+                            <li>Z-scores are sorted in ascending order: $Z_{(1)} \le Z_{(2)} \le \dots \le Z_{(N)}$.</li>
+                            <li>For each rank index $i$, the corresponding empirical quantile probability is estimated as $P_i = \frac{i - 0.5}{N}$ (Hazen's plotting position).</li>
+                            <li>The theoretical standard normal quantile is calculated using the inverse standard normal cumulative distribution (CDF): $\text{Theoretical Quantile}_i = \Phi^{-1}(P_i)$.</li>
+                            <li>Sorted empirical Z-scores are plotted against these theoretical quantiles. Deviation from the $y=x$ reference line indicates heavy tails (S-shape curve) or asymmetrical skewness (bended curve).</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </details>
+    </div>
+    </div>
+
+    <!-- Javascript Simulation Scripts -->
+    <script>
+        window.switchL1Tab = function(tab) {
+            const tabCore = document.getElementById('tabL1Core');
+            const tabEx = document.getElementById('tabL1Exercises');
+            const secCore = document.getElementById('secL1Core');
+            const secLab = document.getElementById('secL1Lab');
+            const secEx = document.getElementById('secL1Exercises');
+
+            if (tab === 'core') {
+                tabCore.style.color = 'var(--accent)';
+                tabCore.style.borderBottomColor = 'var(--accent)';
+                tabEx.style.color = '#6b7280';
+                tabEx.style.borderBottomColor = 'transparent';
+                secCore.style.display = 'block';
+                if (secLab) secLab.style.display = 'block';
+                secEx.style.display = 'none';
+            } else {
+                tabEx.style.color = 'var(--accent)';
+                tabEx.style.borderBottomColor = 'var(--accent)';
+                tabCore.style.color = '#6b7280';
+                tabCore.style.borderBottomColor = 'transparent';
+                secEx.style.display = 'block';
+                secCore.style.display = 'none';
+                if (secLab) secLab.style.display = 'none';
+            }
+        };
+
+        // Global references to L1 charts to prevent re-creation canvas error
+        window.m1L1HistChart = null;
+        window.m1L1QqChart = null;
+
+        // Moro/Acklam rational inverse standard normal CDF approximation
+        function m1L1_inv_normal_cdf(p) {
+            if (p <= 0 || p >= 1) return 0;
+            let a1 = -3.969683028665376e+01, a2 = 2.209460984245205e+02, a3 = -2.759285108770086e+02, a4 = 1.383577518672690e+02, a5 = -3.066479803616981e+01, a6 = 2.506628277459239e+00;
+            let b1 = -5.447609879822406e+01, b2 = 1.615858368580409e+02, b3 = -1.556989798598866e+02, b4 = 6.680131188771972e+01, b5 = -1.328068155288572e+01;
+            let c1 = -7.784894002430293e-03, c2 = -3.223964580411365e-01, c3 = -2.400758277161838e+00, c4 = -2.549732539343734e+00, c5 = 4.374664141464968e+00, c6 = 2.938163982698783e+00;
+            let d1 = 7.784695709041462e-03, d2 = 3.224671290700398e-01, d3 = 2.445134137142996e+00, d4 = 3.754408661907416e+00;
+            let p_low = 0.02425, p_high = 1 - p_low;
+            let q, r, z;
+            if (p < p_low) {
+                q = Math.sqrt(-2 * Math.log(p));
+                z = (((((c1 * q + c2) * q + c3) * q + c4) * q + c5) * q + c6) / ((((d1 * q + d2) * q + d3) * q + d4) * q + 1);
+            } else if (p > p_high) {
+                q = Math.sqrt(-2 * Math.log(1 - p));
+                z = -(((((c1 * q + c2) * q + c3) * q + c4) * q + c5) * q + c6) / ((((d1 * q + d2) * q + d3) * q + d4) * q + 1);
+            } else {
+                q = p - 0.5;
+                r = q * q;
+                z = (((((a1 * r + a2) * r + a3) * r + a4) * r + a5) * r + a6) * q / (((((b1 * r + b2) * r + b3) * r + b4) * r + b5) * r + 1);
+            }
+            return z;
+        }
+
+        // Standard Normal PDF Density
+        function m1L1_npdf(x) {
+            return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
+        }
+
+        // Box-Muller generator for standard Normal variable
+        function m1L1_normal_draw() {
+            let u = 0, v = 0;
+            while(u === 0) u = Math.random();
+            while(v === 0) v = Math.random();
+            return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+        }
+
+        // Chi-Square distribution draw (sum of standard normal squares)
+        function m1L1_chi_square_draw(df) {
+            let sum = 0;
+            for (let i = 0; i < df; i++) {
+                let z = m1L1_normal_draw();
+                sum += z * z;
+            }
+            return sum;
+        }
+
+        // Student-t Symmetrical Volatility shock generator
+        function m1L1_student_t_draw(df) {
+            let z = m1L1_normal_draw();
+            let chi = m1L1_chi_square_draw(df);
+            return z / Math.sqrt(chi / df);
+        }
+
+        // Main Simulation and update calculations
+        window.updateCqfQqSimulation = function() {
+            // Get inputs
+            const regime = document.querySelector('input[name="qqRegime"]:checked').value;
+            const N = parseInt(document.getElementById('qqSamplesSlider').value);
+            const driftAnn = parseFloat(document.getElementById('qqDriftSlider').value) / 100.0;
+            const volAnn = parseFloat(document.getElementById('qqVolSlider').value) / 100.0;
+            const df = parseInt(document.getElementById('qqTailWeightSlider').value);
+            const crashVal = parseFloat(document.getElementById('qqCrashSlider').value) / 100.0;
+
+            // UI Slider visibility
+            document.getElementById('qqSamplesVal').innerText = N;
+            document.getElementById('qqDriftVal').innerText = (driftAnn * 100.0).toFixed(1) + '%';
+            document.getElementById('qqVolVal').innerText = (volAnn * 100.0).toFixed(1) + '%';
+            document.getElementById('qqTailWeightVal').innerText = df;
+            document.getElementById('qqCrashVal').innerText = (crashVal * 100.0).toFixed(1) + '%';
+
+            document.getElementById('qqTailWeightRow').style.display = (regime === 'fat' ? 'block' : 'none');
+            document.getElementById('qqCrashRow').style.display = (regime === 'skew' ? 'block' : 'none');
+
+            // Daily step scale conversions (daily basis, assuming 252 business days/yr)
+            const dt = 1.0 / 252.0;
+            const meanDaily = driftAnn * dt;
+            const volDaily = volAnn * Math.sqrt(dt);
+
+            const returns = [];
+
+            // Draw N sample log-returns
+            for (let i = 0; i < N; i++) {
+                let shock = 0;
+                if (regime === 'normal') {
+                    // Standard Lognormal Asset Walk
+                    shock = m1L1_normal_draw();
+                    returns.push(meanDaily + volDaily * shock);
+                } else if (regime === 'fat') {
+                    // Symmetrical heavy tailed Student-t distribution
+                    // Scaled so that variance is standardized relative to df
+                    // Student-t variance is df / (df-2) for df > 2
+                    let tDraw = m1L1_student_t_draw(df);
+                    let scalingCorrection = Math.sqrt((df - 2.0) / df);
+                    shock = tDraw * scalingCorrection;
+                    returns.push(meanDaily + volDaily * shock);
+                } else if (regime === 'skew') {
+                    // Negative skewed crisis/crash mixture
+                    // 8% probability of experiencing a severe negative jump (crash)
+                    if (Math.random() < 0.08) {
+                        shock = m1L1_normal_draw() - 2.5; // Jump component shifted left
+                    } else {
+                        shock = m1L1_normal_draw() + 0.22; // Small drift shift right to preserve mean
+                    }
+                    returns.push(meanDaily + volDaily * shock);
+                }
+            }
+
+            // Calculate moments
+            let sum = 0;
+            for (let i = 0; i < N; i++) sum += returns[i];
+            let meanEmp = sum / N;
+
+            let sumSq = 0;
+            for (let i = 0; i < N; i++) sumSq += Math.pow(returns[i] - meanEmp, 2);
+            let varEmp = sumSq / (N - 1);
+            let volEmp = Math.sqrt(varEmp);
+
+            let sumCube = 0;
+            let sumQuad = 0;
+            for (let i = 0; i < N; i++) {
+                sumCube += Math.pow(returns[i] - meanEmp, 3);
+                sumQuad += Math.pow(returns[i] - meanEmp, 4);
+            }
+
+            let skewness = (sumCube / N) / Math.pow(sumSq / N, 1.5);
+            let kurtosis = (sumQuad / N) / Math.pow(sumSq / N, 2);
+            let excessKurt = kurtosis - 3.0;
+
+            // Update UI Moment Stats
+            // Convert mean to % (Daily basis) and vol to % (Daily basis) for quick display
+            document.getElementById('outQqMean').innerText = (meanEmp * 100.0).toFixed(3) + '%';
+            document.getElementById('outQqVol').innerText = (volEmp * 100.0).toFixed(3) + '%';
+            document.getElementById('outQqSkew').innerText = skewness.toFixed(3);
+            document.getElementById('outQqKurt').innerText = excessKurt.toFixed(3);
+
+            // 1. Sort Returns for Quantile plotting position
+            const sortedReturns = [...returns].sort((a, b) => a - b);
+            
+            // Build Q-Q data coordinates
+            const qqPoints = [];
+            for (let i = 0; i < N; i++) {
+                // Hazen's plotting position cumulative probability
+                let p = (i + 0.5) / N;
+                // Theoretical normal quantile
+                let x_theoretical = m1L1_inv_normal_cdf(p);
+                // Empirical standardized Z-score
+                let y_empirical_z = (sortedReturns[i] - meanEmp) / volEmp;
+                qqPoints.push({ x: x_theoretical, y: y_empirical_z });
+            }
+
+            // 2. Build Histogram Bins
+            const numBins = Math.max(10, Math.floor(Math.sqrt(N)));
+            const minRet = sortedReturns[0];
+            const maxRet = sortedReturns[N-1];
+            const binWidth = (maxRet - minRet) / numBins;
+            const binEdges = [];
+            const binCounts = new Array(numBins).fill(0);
+
+            for (let b = 0; b <= numBins; b++) {
+                binEdges.push(minRet + b * binWidth);
+            }
+
+            // Allocate counts to bins
+            for (let i = 0; i < N; i++) {
+                let r = returns[i];
+                let bIdx = Math.floor((r - minRet) / binWidth);
+                if (bIdx >= numBins) bIdx = numBins - 1;
+                if (bIdx < 0) bIdx = 0;
+                binCounts[bIdx]++;
+            }
+
+            // Convert bin counts to density coordinates (area sums to 1.0)
+            const binCenters = [];
+            const empiricalDensities = [];
+            const fittedNormalDensities = [];
+
+            for (let b = 0; b < numBins; b++) {
+                let center = (binEdges[b] + binEdges[b+1]) / 2.0;
+                binCenters.push(center);
+                
+                // Density formula: Count / (Total * BinWidth)
+                let density = binCounts[b] / (N * binWidth);
+                empiricalDensities.push(density);
+
+                // Fitted analytical normal density line
+                let z = (center - meanEmp) / volEmp;
+                let fitDensity = m1L1_npdf(z) / volEmp;
+                fittedNormalDensities.push(fitDensity);
+            }
+
+            // Render Charts
+            plotCqfHistChart(binCenters, empiricalDensities, fittedNormalDensities, meanEmp, volEmp);
+            plotCqfQqChart(qqPoints);
+        }
+
+        // Render Histogram & fitted bell curve
+        function plotCqfHistChart(centers, empirical, fitted, mean, std) {
+            const ctx = document.getElementById('qqHistChart').getContext('2d');
+            const isDark = document.body.classList.contains('dark-theme');
+            const gridColor = isDark ? '#2c2c2c' : '#edece9';
+            const labelColor = isDark ? '#a3a3a3' : '#64748b';
+
+            // Format X Labels into nicely rounded percentage points
+            const labelsFormatted = centers.map(c => (c * 100.0).toFixed(2) + '%');
+
+            if (window.m1L1HistChart) {
+                window.m1L1HistChart.destroy();
+            }
+                window.m1L1HistChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labelsFormatted,
+                        datasets: [
+                            {
+                                label: 'Empirical Density',
+                                data: empirical,
+                                backgroundColor: isDark ? 'rgba(59, 130, 246, 0.15)' : 'rgba(37, 99, 235, 0.1)',
+                                borderColor: '#2563eb',
+                                borderWidth: 1.5,
+                                barPercentage: 0.9,
+                                categoryPercentage: 0.9,
+                                order: 2
+                            },
+                            {
+                                label: 'Fitted Normal PDF',
+                                type: 'line',
+                                data: fitted,
+                                borderColor: '#ef4444',
+                                borderWidth: 2,
+                                fill: false,
+                                pointRadius: 0,
+                                order: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: labelColor,
+                                    font: { family: 'Inter', size: 9 }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Daily Return (%)', color: labelColor, font: { size: 9 } },
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor, font: { size: 8 } }
+                            },
+                            y: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+        }
+
+        // Render Q-Q probability plot scatter
+        function plotCqfQqChart(points) {
+            const ctx = document.getElementById('qqPlotChart').getContext('2d');
+            const isDark = document.body.classList.contains('dark-theme');
+            const gridColor = isDark ? '#2c2c2c' : '#edece9';
+            const labelColor = isDark ? '#a3a3a3' : '#64748b';
+
+            // Generate ideal normal diagonal line dataset coordinates y = x
+            const idealLine = [
+                { x: -3.2, y: -3.2 },
+                { x: 3.2, y: 3.2 }
+            ];
+
+            if (window.m1L1QqChart) {
+                window.m1L1QqChart.destroy();
+            }
+
+            window.m1L1QqChart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        {
+                            label: 'Reference Normal y=x',
+                            type: 'line',
+                            data: idealLine,
+                            borderColor: isDark ? '#4b5563' : '#94a3b8',
+                            borderDash: [4, 4],
+                            borderWidth: 1.5,
+                            fill: false,
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'Empirical Z-Scores',
+                            data: points,
+                            borderColor: '#8b5cf6',
+                            backgroundColor: 'rgba(139, 92, 246, 0.6)',
+                            borderWidth: 1,
+                            pointRadius: 3,
+                            showLine: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: labelColor,
+                                font: { family: 'Inter', size: 9 }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Theoretical Normal Quantiles', color: labelColor, font: { size: 9 } },
+                            min: -3.5,
+                            max: 3.5,
+                            grid: { color: gridColor },
+                            ticks: { color: labelColor, font: { size: 8 } }
+                        },
+                        y: {
+                            title: { display: true, text: 'Sorted Empirical Z-Scores', color: labelColor, font: { size: 9 } },
+                            min: -3.5,
+                            max: 3.5,
+                            grid: { color: gridColor },
+                            ticks: { color: labelColor, font: { size: 8 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Onload simulation trigger
+        window.runCqfM1L1Simulation = function() {
+            updateCqfQqSimulation();
+        }
+    </script>
+</div>

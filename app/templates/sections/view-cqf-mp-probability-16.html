@@ -1,0 +1,149 @@
+<div id="view-cqf-mp-probability-16" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">1.6 Random Variables</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.6 Random Variables</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Mathematical notation, mapping sample spaces, and discrete vs continuous classifications.</div>
+    </header>
+
+    <!-- Core Theory Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.6.1 Mathematical Notation &amp; Mapping</h3>
+        <p>Outcomes of experiments are not always numbers (e.g., getting "heads", or picking a card). A **Random Variable (RV)** $X$ acts as a formal function mapping elements from the sample space $\Omega$ onto the real number line $\mathbb{R}$:</p>
+        <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+            $$X : \Omega \to \mathbb{R}$$
+        </p>
+        <p>We denote random variables using uppercase letters ($X, Y$) and their observed numerical realizations using lowercase letters ($x, y$).</p>
+        <p><strong>Two Classes of RVs:</strong></p>
+        <ol style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li><strong>Discrete RVs:</strong> Countable number of possible outcomes (e.g. number of heads, default events, discrete asset counts).</li>
+            <li><strong>Continuous RVs:</strong> Infinite, uncountable spectrum of possible outcomes (e.g. exact portfolio return percentage, asset price drift, interest rate shifts).</li>
+        </ol>
+    </div>
+
+    <!-- Mapping Visualizer -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.6.2 Interactive Mapping &amp; Classification Sandbox</h3>
+        <p>Select different real-world experiments to observe how outcomes are mapped to numerical states:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls -->
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Select Scenario:</label>
+                    <select id="prob16Scenario" onchange="runProb16Mapping()" style="padding: 0.35rem 0.5rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600; outline: none; cursor: pointer; width: 100%; margin-bottom: 1rem;">
+                        <option value="coin">Coin Flip: {Heads, Tails} -> {1, 0}</option>
+                        <option value="portfolio">Daily Stock Return % (Continuous)</option>
+                    </select>
+
+                    <div style="font-size: 0.85rem; line-height: 1.5; background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid #10b981;">
+                        <div id="prob16OutputClass"><strong>RV Type:</strong> Discrete</div>
+                        <div id="prob16OutputMap" style="margin-top: 0.25rem;"><strong>Mapping Function:</strong> X(Heads)=1, X(Tails)=0</div>
+                    </div>
+                </div>
+
+                <!-- Custom Drawing Canvas -->
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
+                    <canvas id="prob16Canvas" width="300" height="150" style="width: 100%; height: 150px; background: #000; border-radius: 6px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.runProb16Mapping = function() {
+                const scenario = document.getElementById('prob16Scenario').value;
+                const elClass = document.getElementById('prob16OutputClass');
+                const elMap = document.getElementById('prob16OutputMap');
+
+                if (scenario === 'coin') {
+                    elClass.innerHTML = `<strong>RV Type:</strong> Discrete (Countable values)`;
+                    elMap.innerHTML = `<strong>Mapping Function:</strong> $X(\\text{Heads}) = 1, \\ X(\\text{Tails}) = 0$`;
+                } else {
+                    elClass.innerHTML = `<strong>RV Type:</strong> Continuous (Infinite spectrum)`;
+                    elMap.innerHTML = `<strong>Mapping Function:</strong> $X(\\omega) = \\text{Percentage change } \\Delta S / S \\in \\mathbb{R}$`;
+                }
+
+                drawMappingGraph(scenario);
+
+                const parent = document.getElementById('view-cqf-mp-probability-16');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawMappingGraph(scenario) {
+                const canvas = document.getElementById('prob16Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Draw real line axis
+                const startX = 30;
+                const endX = canvas.width - 30;
+                const y = canvas.height / 2 + 10;
+
+                ctx.strokeStyle = '#52525b';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(startX, y);
+                ctx.lineTo(endX, y);
+                ctx.stroke();
+
+                // Draw arrow heads
+                ctx.fillStyle = '#52525b';
+                ctx.beginPath();
+                ctx.moveTo(startX, y - 5);
+                ctx.lineTo(startX - 8, y);
+                ctx.lineTo(startX, y + 5);
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.moveTo(endX, y - 5);
+                ctx.lineTo(endX + 8, y);
+                ctx.lineTo(endX, y + 5);
+                ctx.fill();
+
+                if (scenario === 'coin') {
+                    // Draw two discrete dots (0 and 1)
+                    const x0 = startX + 0.3 * (endX - startX);
+                    const x1 = startX + 0.7 * (endX - startX);
+
+                    ctx.fillStyle = '#ec4899';
+                    ctx.beginPath();
+                    ctx.arc(x0, y, 6, 0, 2 * Math.PI);
+                    ctx.arc(x1, y, 6, 0, 2 * Math.PI);
+                    ctx.fill();
+
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = '11px sans-serif';
+                    ctx.fillText('x = 0 (Tails)', x0 - 25, y - 15);
+                    ctx.fillText('x = 1 (Heads)', x1 - 25, y - 15);
+                } else {
+                    // Draw continuous shaded region showingStock Return spectrum
+                    ctx.fillStyle = 'rgba(16, 185, 129, 0.3)';
+                    ctx.fillRect(startX + 10, y - 10, endX - startX - 20, 20);
+
+                    ctx.strokeStyle = '#10b981';
+                    ctx.lineWidth = 1.5;
+                    ctx.strokeRect(startX + 10, y - 10, endX - startX - 20, 20);
+
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = '10px sans-serif';
+                    ctx.fillText('Continuous Return Spectrum (-∞, +∞)', startX + 25, y - 18);
+                }
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('prob16Scenario')) runProb16Mapping();
+            }, 100);
+        })();
+    </script>
+</div>

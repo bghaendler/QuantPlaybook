@@ -1,0 +1,595 @@
+<div id="view-cqf-m1-l4" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 01: Building Blocks</span>
+            <span class="badge" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #8b5cf6; font-family: var(--font-family-sans);">Lecture 04</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L4: Applied Stochastic Calculus I</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Itô's Lemma, Financial SDE Models, and the Stochastic Integral Formula</div>
+    </header>
+
+    <!-- Navigation Tabs for L4 Sections -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
+        <button id="tabL4Core" onclick="switchL4Tab('core')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Stochastic Calculus I Core</button>
+        <button id="tabL4Exercises" onclick="switchL4Tab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Solutions Sheet</button>
+    </div>
+
+    <!-- Section A: L4 Core Cards -->
+    <div id="secL4Core" style="display: block;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; align-items: stretch;">
+        <!-- Card 1: Itô's Lemma (1D & 2D) -->
+        <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent);">1. Itô's Lemma (Taylor Series &amp; Volatility)</h3>
+                <p>Ordinary calculus fails for functions of Brownian motion because $dX_t \sim O(dt^{1/2})$ has infinite first variation. Taylor-expanding $F(t, X_t)$ requires retaining second-order spatial terms:</p>
+                <p style="text-align: center; font-size: 0.95rem;">$$dF = \frac{\partial F}{\partial t} dt + \frac{\partial F}{\partial X} dX + \frac{1}{2}\frac{\partial^2 F}{\partial X^2} dX^2 + \dots$$</p>
+                <p>Applying the **Itô multiplication rule** ($dX_t^2 = dt$, while $dt \, dX_t = dt^2 = 0$) incorporates the path's quadratic variation, yielding the standard **Itô's Lemma for Two Variables**:</p>
+                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
+                    $$dF = \left( \frac{\partial F}{\partial t} + \frac{1}{2} \frac{\partial^2 F}{\partial X^2} \right) dt + \frac{\partial F}{\partial X} dX$$
+                </p>
+            </div>
+            <div style="background: var(--metric-bg); padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; border-left: 3px solid var(--accent); margin-top: 1rem; font-family: var(--font-family-sans);">
+                <span>Volatility Correction:</span> The deterministic $\frac{1}{2}\frac{\partial^2 F}{\partial X^2} dt$ drift correction is generated entirely by path roughness.
+            </div>
+        </div>
+
+        <!-- Card 2: Foundational SDE Models -->
+        <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: #8b5cf6;">2. Foundational Financial SDEs</h3>
+                <p>Asset prices and rates are modeled via SDEs defining a deterministic drift component and a random diffusion component ($dS = f(S,t)dt + g(S,t)dX_t$):</p>
+                <ul style="padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.5;">
+                    <li style="margin-bottom: 0.4rem;"><strong>Arithmetic Brownian Motion:</strong> $dS = \mu dt + \sigma dX$ (can cross into negative values).</li>
+                    <li style="margin-bottom: 0.4rem;"><strong>Geometric Brownian Motion (GBM):</strong> $dS = \mu S dt + \sigma S dX$ (always remains positive).</li>
+                    <li style="margin-bottom: 0.4rem;"><strong>Vasicek (Mean-Reverting):</strong> $dr = -\gamma(r - \bar{r})dt + \sigma dX$ (pulls rate back to target $\bar{r}$ at speed $\gamma$).</li>
+                    <li style="margin-bottom: 0;"><strong>Cox-Ingersoll-Ross (CIR):</strong> $dr = -\gamma(r - \bar{r})dt + \sigma \sqrt{r} dX$ (volatility scales down to zero at boundary, preventing negative rates).</li>
+                </ul>
+            </div>
+            <div style="background: var(--metric-bg); padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; border-left: 3px solid #8b5cf6; margin-top: 1rem; font-family: var(--font-family-sans);">
+                <span>SDE Calibration:</span> Mean-reversion models pull rates back to target, while volatility scalings preserve boundary integrity.
+            </div>
+        </div>
+
+        <!-- Card 3: The Stochastic Integral Formula -->
+        <div class="card" style="grid-column: span 2; margin-bottom: 0;">
+            <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: #10b981;">3. Evaluating Stochastic Integrals</h3>
+            <p>Stochastic integrals cannot be evaluated using Riemann-Stieltjes rules. By rearranging Itô's Lemma, we isolate the random integration term to construct the general **Stochastic Integral Formula**:</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 0.75rem;">
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-sans); font-size: 0.92rem; font-weight: 700; color: #10b981;">Integral Formulation</h4>
+                    <p style="margin: 0.5rem 0;">Integrating Itô's spatial differential term:</p>
+                    <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+                        $$\int_{0}^{t} \frac{\partial F}{\partial X_\tau} dX_\tau = F(X_t, t) - F(X_0, 0) - \int_{0}^{t} \left( \frac{\partial F}{\partial \tau} + \frac{1}{2} \frac{\partial^2 F}{\partial X_\tau^2} \right) d\tau$$
+                    </p>
+                </div>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-sans); font-size: 0.92rem; font-weight: 700; color: #0f766e;">Example: Evaluating $\int_0^t W_\tau dW_\tau$</h4>
+                    <p style="margin: 0;">Setting $F(W_t, t) = \frac{1}{2} W_t^2$ gives $\frac{\partial F}{\partial W} = W$ and $\frac{\partial^2 F}{\partial W^2} = 1$:</p>
+                    <p style="text-align: center; font-size: 1rem; font-weight: 700; margin: 0.4rem 0;">
+                        $$\int_{0}^{t} W_\tau dW_\tau = \frac{1}{2} W_t^2 - \frac{1}{2} t$$
+                    </p>
+                    <p style="font-size: 0.85rem; line-height: 1.4; color: #64748b; margin: 0;">Ordinary calculus would omit the $-\frac{1}{2}t$ term. This deterministic adjustment represents the accumulated path variance of Brownian motion.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Section B: Worked Solutions Sheet -->
+    <div id="secL4Exercises" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Problem A: Taylor Series vs Itô multiplications -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem A: The Taylor Series Volatility Link</h3>
+                <p>Derive why the second-order spatial derivative term $\frac{1}{2}\frac{\partial^2 F}{\partial X^2} dX^2$ cannot be discarded in stochastic calculus, proving the Itô multiplication rule $dX_t^2 = dt$.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>State the Standard Taylor Expansion:</strong>
+                            For a smooth function $F(t, X_t)$ where $X_t$ is a random walker, the multi-variable Taylor expansion over a step $dt$ and spatial change $dX_t$ is:
+                            $$dF = \frac{\partial F}{\partial t} dt + \frac{\partial F}{\partial X} dX_t + \frac{1}{2}\frac{\partial^2 F}{\partial X^2} dX_t^2 + \frac{\partial^2 F}{\partial t \partial X} dt dX_t + \frac{1}{2}\frac{\partial^2 F}{\partial t^2} dt^2 + O(dX_t^3)$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Incorporate Brownian Scaling:</strong>
+                            Under standard Brownian motion, the spatial change scales with the square root of the time step:
+                            $$dX_t \sim \phi \sqrt{dt} \implies dX_t^2 \sim \phi^2 dt$$
+                            where $\phi \sim N(0, 1)$. Since $dX_t^2 \sim O(dt)$, it is of the same order of magnitude as the linear time step $dt$, unlike ordinary calculus where spatial increments squared $dx^2 \sim dt^2$ are discarded.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Evaluate Variance of $dX_t^2$:</strong>
+                            The expected value of $\phi^2$ is $\mathbb{E}[\phi^2] = 1$. The variance of the increment $dX_t^2$ scales with $dt^2$:
+                            $$\text{Var}(dX_t^2) = \text{Var}(\phi^2 dt) = dt^2 \text{Var}(\phi^2) = 2 dt^2 \to 0$$
+                            As $dt \to 0$, the variance decays infinitely faster than its mean, meaning the random variable $dX_t^2$ converges deterministically to its expected value:
+                            $$dX_t^2 \to \mathbb{E}[dX_t^2] = dt$$
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Formulate completed Itô multiplication rule:</strong>
+                            Similarly, the cross product term scales as $dt \, dX_t \sim dt^{1.5} \to 0$ and $dt^2 \to 0$. Discarding all terms of order higher than $dt$ yields:
+                            $$dF = \left( \frac{\partial F}{\partial t} + \frac{1}{2}\frac{\partial^2 F}{\partial X^2} \right) dt + \frac{\partial F}{\partial X} dX_t$$
+                        </li>
+                    </ol>
+                </div>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid var(--accent); padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. What makes random calculus different?</strong> In ordinary calculus, curves are smooth. If you zoom in on a curve, it looks like a straight line, meaning small changes squared are extremely tiny and can be safely ignored. Random paths (like stock prices) are extremely jagged and never look straight no matter how much you zoom in. Small changes squared are actually large enough to matter.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. Why does $dX_t^2$ act like a deterministic time step?</strong> While the step $dX_t$ is highly random and volatile, the square of the step $dX_t^2$ is always positive. The jiggles cancel out, leaving a smooth, steady accumulation of variance that ticks forward exactly like standard clock time.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. What does "variance of $dX_t^2 \to 0$" mean?</strong> It means the uncertainty about $dX_t^2$ vanishes in the continuous limit. It becomes a 100% predictable fact that the squared random change is exactly equal to the time step.</p>
+                        <p style="margin: 0;"><strong>4. Why does this create a "drift correction"?</strong> Because random paths are jagged, a function of a random variable gets pushed upward on average due to Jensen's inequality (for convex functions). The extra $\frac{1}{2}\frac{\partial^2 F}{\partial X^2} dt$ term acts as a deterministic "volatility conveyor belt" that corrects for this upward pressure.</p>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Problem B: Evaluating the Stochastic Integral of W_t -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem B: Evaluating the Stochastic Integral $\int W dW$</h3>
+                <p>Prove that $\int_{0}^t W_s dW_s = \frac{1}{2}W_t^2 - \frac{1}{2}t$ using Itô's Lemma, explaining why it differs from Riemann calculus.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Choose the target function:</strong>
+                            Let $F(W_t, t) = \frac{1}{2}W_t^2$.
+                            We compute its partial derivatives:
+                            $$\frac{\partial F}{\partial t} = 0 \quad , \quad \frac{\partial F}{\partial W} = W_t \quad , \quad \frac{\partial^2 F}{\partial W^2} = 1$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Apply Itô's Lemma:</strong>
+                            $$dF = \left( \frac{\partial F}{\partial t} + \frac{1}{2}\frac{\partial^2 F}{\partial W^2} \right) dt + \frac{\partial F}{\partial W} dW_t$$
+                            $$d\left( \frac{1}{2}W_t^2 \right) = \left( 0 + \frac{1}{2}(1) \right) dt + W_t dW_t = \frac{1}{2}dt + W_t dW_t$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Isolate the Integrand Term:</strong>
+                            $$W_t dW_t = d\left( \frac{1}{2}W_t^2 \right) - \frac{1}{2}dt$$
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Integrate both sides over $[0, t]$:</strong>
+                            $$\int_{0}^{t} W_s dW_s = \int_{0}^{t} d\left( \frac{1}{2}W_s^2 \right) - \frac{1}{2}\int_{0}^{t} ds$$
+                            Evaluating the exact differential integral on the RHS:
+                            $$\int_{0}^{t} W_s dW_s = \frac{1}{2}W_t^2 - \frac{1}{2}W_0^2 - \frac{1}{2}t$$
+                            Since standard Brownian motion starts at zero ($W_0 = 0$):
+                            $$\int_{0}^{t} W_s dW_s = \frac{1}{2}W_t^2 - \frac{1}{2}t$$
+                        </li>
+                    </ol>
+                </div>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: #8b5cf6; font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid #8b5cf6; padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. Why guess $F = \frac{1}{2}W_t^2$?</strong> In standard calculus, the integral of $x \, dx$ is $\frac{1}{2}x^2$. We guess a similar looking function as a starting point to exploit Itô's derivatives.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. Why does the second derivative equal 1?</strong> Taking the derivative of $\frac{1}{2}W^2$ once gives $W$; taking it a second time gives a constant 1. This represents the constant rate at which the slope of our parabola is changing.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. What does the $-\frac{1}{2}t$ term represent?</strong> Because random paths are jagged, if you sum up $W_i dW_i$ using the starting values of each step (Itô integration), the walker is constantly moving away from the starting point on average. The $-\frac{1}{2}t$ term is the "unearned drift" or "accumulated variance drag" that balances out this directional pressure, keeping the integral fair (a martingale).</p>
+                        <p style="margin: 0;"><strong>4. Why is $W_0 = 0$?</strong> Brownian motion is modeled after a random walker starting at the origin. Setting the initial value to zero simplifies the algebra.</p>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Problem C: Evaluating Itô's Lemma on W_t^3 -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem C: Evaluating Itô's Lemma on $W_t^3$</h3>
+                <p>Apply Itô's Lemma to the function $F(W_t, t) = W_t^3$, and use it to evaluate the stochastic integral $\int_{0}^t W_s^2 dW_s$.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Compute Partial Derivatives of $F(W, t) = W^3$:</strong>
+                            $$\frac{\partial F}{\partial t} = 0 \quad , \quad \frac{\partial F}{\partial W} = 3W^2 \quad , \quad \frac{\partial^2 F}{\partial W^2} = 6W$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Apply Itô's formula:</strong>
+                            $$d(W_t^3) = \left( 0 + \frac{1}{2}(6W_t) \right) dt + 3W_t^2 dW_t = 3W_t dt + 3W_t^2 dW_t$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Isolate the $W_t^2 dW_t$ term:</strong>
+                            $$3W_t^2 dW_t = d(W_t^3) - 3W_t dt \implies W_t^2 dW_t = d\left( \frac{1}{3}W_t^3 \right) - W_t dt$$
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Integrate both sides over $[0, t]$:</strong>
+                            $$\int_{0}^{t} W_s^2 dW_s = \int_{0}^{t} d\left( \frac{1}{3}W_s^3 \right) - \int_{0}^{t} W_s ds$$
+                            $$\int_{0}^{t} W_s^2 dW_s = \frac{1}{3}W_t^3 - \int_{0}^{t} W_s ds$$
+                        </li>
+                    </ol>
+                </div>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: #10b981; font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid #10b981; padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. Why compute derivatives?</strong> We analyze $W_t^3$ to see how its value changes as the walker moves. The first derivative ($3W^2$) captures the standard slope; the second derivative ($6W$) captures the bending curvature.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. Why is there a $3W_t dt$ term?</strong> This is the Itô correction. Because the second derivative is $6W_t$, the parabolic curvature is not constant; it depends on where the walker is standing. The correction term is $3W_t dt$.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. Why isolate the term?</strong> We rearrange the equation to put the target stochastic integral on one side and the clean differential/time integrals on the other.</p>
+                        <p style="margin: 0;"><strong>4. Why does the final term remain an integral?</strong> The term $\int W_s ds$ is a continuous sum of the walker's position over time. Since this is a standard, non-random area integral, it cannot be simplified further without knowing the exact path the walker took. It remains as a path-dependent time integral.</p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stochastic Applied Calculus Sandbox -->
+    <div id="secL4Lab" style="display: block;">
+    <div class="card" style="margin-bottom: 2rem;">
+        <div style="margin-bottom: 1.5rem;">
+            <h2 style="margin: 0; font-family: var(--font-family-sans); font-weight: 800; font-size: 1.4rem;">4. Applied Stochastic Calculus &amp; SDE Sandbox</h2>
+            <div style="color: #6b7280; font-size: 0.95rem; margin-top: 0.25rem;">Explore stochastic differential equations and numerical Itô integration. Toggle SDE models to simulate paths, or view real-time convergence of numerical integrals to theoretical Itô bounds as grid granularity increases.</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 300px 1fr; gap: 2rem; align-items: start;">
+            <!-- Controls Column -->
+            <div style="background: var(--metric-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-family-sans);">
+                <h3 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">Laboratory Inputs</h3>
+                
+                <!-- SDE Model Selector -->
+                <div>
+                    <span style="font-weight: 600; display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-color);">SDE Model</span>
+                    <select id="sdeModelSelect" onchange="updateCqfM1L4Simulation()" style="width: 100%; padding: 0.4rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; cursor: pointer; font-family: var(--font-family-sans); font-weight: 600;">
+                        <option value="gbm">Geometric Brownian Motion</option>
+                        <option value="abm">Arithmetic Brownian Motion</option>
+                        <option value="vasicek">Vasicek (Mean-Reverting)</option>
+                        <option value="cir">Cox-Ingersoll-Ross (CIR)</option>
+                    </select>
+                </div>
+
+                <!-- Slider 1: Drift or Reversion Speed -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label id="lblSdeParam1" for="sdeParam1Slider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Drift ($\mu$)</label>
+                        <span id="sdeParam1Val" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">5.0%</span>
+                    </div>
+                    <input id="sdeParam1Slider" type="range" min="-100" max="300" step="5" value="5" style="width: 100%; cursor: pointer;" oninput="updateCqfM1L4Simulation()">
+                </div>
+
+                <!-- Slider 2: Volatility -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="sdeVolSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Volatility ($\sigma$)</label>
+                        <span id="sdeVolVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">20.0%</span>
+                    </div>
+                    <input id="sdeVolSlider" type="range" min="5" max="80" step="1" value="20" style="width: 100%; cursor: pointer;" oninput="updateCqfM1L4Simulation()">
+                </div>
+
+                <!-- Slider 3: Reversion Target (hidden if not Vasicek/CIR) -->
+                <div id="divSdeTarget" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="sdeTargetSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Reversion Target ($\bar{r}$)</label>
+                        <span id="sdeTargetVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">6.0%</span>
+                    </div>
+                    <input id="sdeTargetSlider" type="range" min="1" max="25" step="0.5" value="6" style="width: 100%; cursor: pointer;" oninput="updateCqfM1L4Simulation()">
+                </div>
+
+                <!-- Slider 4: Time Steps -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="sdeStepsSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Steps ($N$)</label>
+                        <span id="sdeStepsVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">200 Steps</span>
+                    </div>
+                    <input id="sdeStepsSlider" type="range" min="50" max="500" step="10" value="200" style="width: 100%; cursor: pointer;" oninput="updateCqfM1L4Simulation()">
+                </div>
+
+                <div style="border-top: 1px solid var(--card-border); padding-top: 1rem;">
+                    <button onclick="runSdePathsSimulation()" style="width: 100%; background: var(--accent); color: white; border: none; padding: 0.6rem; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: background 0.2s;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                        Generate SDE Paths
+                    </button>
+                </div>
+            </div>
+
+            <!-- Visual Charts Grid Column -->
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <!-- Statistics Calibration Header -->
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; font-family: var(--font-family-sans);">
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.6rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Riemann Sum $\sum W \Delta W$</div>
+                        <div id="outItoRiemann" style="font-size: 1.1rem; font-weight: 800; margin-top: 0.1rem; font-family: monospace;">2.341</div>
+                    </div>
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.6rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Itô Integral value</div>
+                        <div id="outItoFormula" style="font-size: 1.1rem; font-weight: 800; margin-top: 0.1rem; font-family: monospace;">2.345</div>
+                    </div>
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.6rem; border-radius: 8px; text-align: center; border-bottom: 2px solid var(--accent);">
+                        <div style="font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Itô residual error</div>
+                        <div id="outItoError" style="font-size: 1.1rem; font-weight: 800; margin-top: 0.1rem; font-family: monospace; color: var(--accent);">0.004</div>
+                    </div>
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.6rem; border-radius: 8px; text-align: center; border-bottom: 2px solid #10b981;">
+                        <div style="font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Simulated End Mean</div>
+                        <div id="outSdeEndMean" style="font-size: 1.1rem; font-weight: 800; margin-top: 0.1rem; font-family: monospace; color: #10b981;">100.21</div>
+                    </div>
+                </div>
+
+                <!-- Dynamic charts layout -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <!-- Chart A: SDE Paths -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; min-height: 280px; position: relative;">
+                        <h4 style="margin: 0 0 0.75rem 0; font-family: var(--font-family-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-color); text-transform: uppercase; letter-spacing: 0.05em;">Monte Carlo paths simulation</h4>
+                        <div style="width: 100%; height: 220px;">
+                            <canvas id="sdePathsChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart B: Itô Integration Convergence -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; min-height: 280px; position: relative;">
+                        <h4 style="margin: 0 0 0.75rem 0; font-family: var(--font-family-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-color); text-transform: uppercase; letter-spacing: 0.05em;">Stochastic Integral convergence path</h4>
+                        <div style="width: 100%; height: 220px;">
+                            <canvas id="sdeItoChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Javascript SDE Models simulation engine -->
+    <script>
+        (function() {
+            window.switchL4Tab = function(tab) {
+                const tabCore = document.getElementById('tabL4Core');
+                const tabEx = document.getElementById('tabL4Exercises');
+                const secCore = document.getElementById('secL4Core');
+                const secLab = document.getElementById('secL4Lab');
+                const secEx = document.getElementById('secL4Exercises');
+
+                if (tab === 'core') {
+                    tabCore.style.color = 'var(--accent)';
+                    tabCore.style.borderBottomColor = 'var(--accent)';
+                    tabEx.style.color = '#6b7280';
+                    tabEx.style.borderBottomColor = 'transparent';
+                    secCore.style.display = 'block';
+                    if (secLab) secLab.style.display = 'block';
+                    secEx.style.display = 'none';
+                } else {
+                    tabEx.style.color = 'var(--accent)';
+                    tabEx.style.borderBottomColor = 'var(--accent)';
+                    tabCore.style.color = '#6b7280';
+                    tabCore.style.borderBottomColor = 'transparent';
+                    secEx.style.display = 'block';
+                    secCore.style.display = 'none';
+                    if (secLab) secLab.style.display = 'none';
+                }
+            };
+
+            let sdePathsChartInstance = null;
+            let sdeItoChartInstance = null;
+
+            window.updateCqfM1L4Simulation = function() {
+                const model = document.getElementById('sdeModelSelect').value;
+                const param1 = parseFloat(document.getElementById('sdeParam1Slider').value) / 100.0;
+                const sig = parseFloat(document.getElementById('sdeVolSlider').value) / 100.0;
+                const target = parseFloat(document.getElementById('sdeTargetSlider').value) / 100.0;
+                const steps = parseInt(document.getElementById('sdeStepsSlider').value);
+
+                // Update text UI values
+                document.getElementById('sdeVolVal').innerText = (sig * 100.0).toFixed(1) + '%';
+                document.getElementById('sdeStepsVal').innerText = steps + ' Steps';
+                document.getElementById('sdeTargetVal').innerText = (target * 100.0).toFixed(1) + '%';
+
+                const divTarget = document.getElementById('divSdeTarget');
+                const lblParam1 = document.getElementById('lblSdeParam1');
+
+                if (model === 'gbm') {
+                    divTarget.style.display = 'none';
+                    lblParam1.innerText = 'Drift (μ)';
+                    document.getElementById('sdeParam1Val').innerText = (param1 * 100.0).toFixed(1) + '%';
+                } else if (model === 'abm') {
+                    divTarget.style.display = 'none';
+                    lblParam1.innerText = 'Drift (μ)';
+                    document.getElementById('sdeParam1Val').innerText = (param1 * 100.0).toFixed(1) + '%';
+                } else if (model === 'vasicek') {
+                    divTarget.style.display = 'block';
+                    lblParam1.innerText = 'Reversion Speed (γ)';
+                    // Reversion speed slider mapped differently (range -1 to 3 scaled)
+                    const speed = parseFloat(document.getElementById('sdeParam1Slider').value) / 100.0;
+                    document.getElementById('sdeParam1Val').innerText = speed.toFixed(2);
+                } else if (model === 'cir') {
+                    divTarget.style.display = 'block';
+                    lblParam1.innerText = 'Reversion Speed (γ)';
+                    const speed = parseFloat(document.getElementById('sdeParam1Slider').value) / 100.0;
+                    document.getElementById('sdeParam1Val').innerText = speed.toFixed(2);
+                }
+
+                // Auto-generate SDE paths
+                runSdePathsSimulation();
+            };
+
+            window.runSdePathsSimulation = function() {
+                const model = document.getElementById('sdeModelSelect').value;
+                const param1Val = parseFloat(document.getElementById('sdeParam1Slider').value);
+                const sig = parseFloat(document.getElementById('sdeVolSlider').value) / 100.0;
+                const target = parseFloat(document.getElementById('sdeTargetSlider').value) / 100.0;
+                const steps = parseInt(document.getElementById('sdeStepsSlider').value);
+
+                const T = 1.0; // Fixed time horizon 1 year
+                const dt = T / steps;
+                const sqrtDt = Math.sqrt(dt);
+
+                const numPaths = 6;
+                const paths = [];
+                let S0 = 100.0;
+                if (model === 'vasicek' || model === 'cir') {
+                    S0 = 0.08; // start rate at 8%
+                }
+
+                // 1. Simulate paths according to SDE dynamics
+                for (let p = 0; p < numPaths; p++) {
+                    const path = [S0];
+                    let S = S0;
+                    for (let s = 1; s <= steps; s++) {
+                        // Generate Gaussian random step
+                        // Box-Muller transform
+                        const u1 = Math.random() || 0.0001;
+                        const u2 = Math.random() || 0.0001;
+                        const Z = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+
+                        if (model === 'gbm') {
+                            const mu = param1Val / 100.0;
+                            S += mu * S * dt + sig * S * sqrtDt * Z;
+                        } else if (model === 'abm') {
+                            const mu = param1Val / 100.0 * 100.0; // scale absolute drift
+                            S += mu * dt + sig * 100.0 * sqrtDt * Z;
+                        } else if (model === 'vasicek') {
+                            const gamma = param1Val / 100.0;
+                            S += -gamma * (S - target) * dt + sig * sqrtDt * Z;
+                        } else if (model === 'cir') {
+                            const gamma = param1Val / 100.0;
+                            const volCoeff = sig * Math.sqrt(Math.max(0.001, S));
+                            S += -gamma * (S - target) * dt + volCoeff * sqrtDt * Z;
+                        }
+                        path.push(S);
+                    }
+                    paths.push(path);
+                }
+
+                // Compute Simulated Mean of Endpoints
+                const endSum = paths.reduce((sum, p) => sum + p[p.length - 1], 0);
+                const endMean = endSum / numPaths;
+                document.getElementById('outSdeEndMean').innerText = (model === 'vasicek' || model === 'cir') ? (endMean * 100.0).toFixed(2) + '%' : '$' + endMean.toFixed(2);
+
+                // 2. Perform Itô Stochastic Integral Verification on Path 0
+                // We verify that numerical Riemann sum of W dW converges to 1/2 * W_t^2 - 1/2 * t
+                let W = 0.0;
+                const wPath = [0.0];
+                const riemannIntegralPath = [0.0];
+                const itoFormulaPath = [0.0];
+                const timeline = ['0.00'];
+
+                let riemannSum = 0.0;
+                for (let s = 1; s <= steps; s++) {
+                    const u1 = Math.random() || 0.0001;
+                    const u2 = Math.random() || 0.0001;
+                    const Z = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+                    const dW = sqrtDt * Z;
+
+                    // Riemann sum: sum_{i=0}^{N-1} W_i * (W_{i+1} - W_i)
+                    riemannSum += W * dW;
+
+                    W += dW;
+                    wPath.push(W);
+
+                    const time = s * dt;
+                    riemannIntegralPath.push(riemannSum);
+
+                    // Analytical Itô Integral value: 1/2 * W_t^2 - 1/2 * t
+                    const analyticalValue = 0.5 * W * W - 0.5 * time;
+                    itoFormulaPath.push(analyticalValue);
+
+                    timeline.push(time.toFixed(2));
+                }
+
+                const finalRiemannVal = riemannIntegralPath[riemannIntegralPath.length - 1];
+                const finalItoVal = itoFormulaPath[itoFormulaPath.length - 1];
+                const finalError = Math.abs(finalRiemannVal - finalItoVal);
+
+                document.getElementById('outItoRiemann').innerText = finalRiemannVal.toFixed(3);
+                document.getElementById('outItoFormula').innerText = finalItoVal.toFixed(3);
+                document.getElementById('outItoError').innerText = finalError.toFixed(4);
+
+                // Render Charts
+                const isDark = document.body.classList.contains('dark-theme');
+                const axisColor = isDark ? '#444c56' : '#cbd5e1';
+                const gridColor = isDark ? 'rgba(68, 76, 86, 0.2)' : 'rgba(203, 213, 225, 0.2)';
+                const labelColor = isDark ? '#adbac7' : '#475569';
+
+                // Chart A: SDE Paths
+                if (sdePathsChartInstance) {
+                    sdePathsChartInstance.destroy();
+                }
+
+                const pathDatasets = paths.map((path, idx) => ({
+                    label: `Path ${idx + 1}`,
+                    data: path,
+                    borderColor: `hsla(${(idx * 55) % 360}, 75%, 60%, 0.7)`,
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    fill: false
+                }));
+
+                const ctxA = document.getElementById('sdePathsChart').getContext('2d');
+                sdePathsChartInstance = new Chart(ctxA, {
+                    type: 'line',
+                    data: {
+                        labels: timeline,
+                        datasets: pathDatasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Time (Years)', color: labelColor },
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor, maxTicksLimit: 10 }
+                            },
+                            y: {
+                                title: { display: true, text: (model === 'vasicek' || model === 'cir') ? 'Interest Rate (r)' : 'Asset Price (S)', color: labelColor },
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor }
+                            }
+                        }
+                    }
+                });
+
+                // Chart B: Itô Integration Convergence
+                if (sdeItoChartInstance) {
+                    sdeItoChartInstance.destroy();
+                }
+
+                const ctxB = document.getElementById('sdeItoChart').getContext('2d');
+                sdeItoChartInstance = new Chart(ctxB, {
+                    type: 'line',
+                    data: {
+                        labels: timeline,
+                        datasets: [
+                            {
+                                label: 'Numerical Riemann Sum',
+                                data: riemannIntegralPath,
+                                borderColor: '#8b5cf6',
+                                borderWidth: 2,
+                                pointRadius: 0,
+                                fill: false
+                            },
+                            {
+                                label: 'Analytical Itô Formula',
+                                data: itoFormulaPath,
+                                borderColor: '#10b981',
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                pointRadius: 0,
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                labels: { color: labelColor }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Time (Years)', color: labelColor },
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor, maxTicksLimit: 10 }
+                            },
+                            y: {
+                                title: { display: true, text: 'Stochastic Value', color: labelColor },
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor }
+                            }
+                        }
+                    }
+                });
+            };
+
+            window.runCqfM1L4Simulation = function() {
+                setTimeout(() => {
+                    updateCqfM1L4Simulation();
+                }, 50);
+            };
+        })();
+    </script>
+</div>

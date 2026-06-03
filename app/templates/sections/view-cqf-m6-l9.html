@@ -1,0 +1,533 @@
+<div id="view-cqf-m6-l9" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 06: Fixed Income &amp; Credit</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 09</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L9: Credit Default Swaps (CDS)</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Credit Events, Recovery Rates, Survival Probabilities, Hazard Rate Bootstrapping, and Proxy CDS Curve Calibration</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM6L9Mechanics" onclick="switchM6L9Tab('mechanics')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. CDS Mechanics &amp; Settlement</button>
+        <button id="tabM6L9Valuation" onclick="switchM6L9Tab('valuation')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Risky Discounting &amp; Valuation</button>
+        <button id="tabM6L9Proxies" onclick="switchM6L9Tab('proxies')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Proxy Curves (FRTB-CVA)</button>
+        <button id="tabM6L9Counterparty" onclick="switchM6L9Tab('counterparty')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. Wrong-Way Risk &amp; Copulas</button>
+        <button id="tabM6L9CaseStudies" onclick="switchM6L9Tab('caseStudies')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Sovereign Case Studies</button>
+        <button id="tabM6L9Sandbox" onclick="switchM6L9Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Interactive CDS Labs</button>
+    </div>
+
+    <!-- TAB 1: CDS Mechanics & Settlement -->
+    <div id="secM6L9Mechanics" style="display: block;">
+        <div class="container" style="grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; margin-bottom: 2rem; display: grid; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">What is a Credit Default Swap?</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        Dr. Jon Gregory defines a **Credit Default Swap (CDS)** as a bilateral derivative contract enabling market participants to transfer or trade default credit risk. 
+                        - **Protection Buyer:** Pays a periodic premium (the spread, quoted in basis points per annum) to the seller.
+                        - **Protection Seller:** Receives premium and commits to pay a lump sum of $1 - \\text{RR}$ (Loss Given Default, or $\\text{LGD}$) if a **Credit Event** occurs.
+                    </p>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        <strong>Credit Events:</strong> Governed by ISDA rules and decided by a regional Determination Committee (10 dealers, 5 buy-side), events include: Bankruptcy, Failure to Pay, Repudiation/Moratorium, Restructuring, and Government Intervention.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Settlement: Physical vs. Cash</h3>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                        - **Physical Settlement:** Buyer delivers the defaulted bond to the seller, who pays full par notional. Historically suffered from **cheapest-to-deliver (CTD)** options (buyers searching for distressed, low-value bonds) and **delivery squeezes** (when gross CDS notional exceeds the total outstanding deliverable debt, such as during the Delphi 2005 default).
+                        - **Cash Settlement:** Seller pays $\\text{Notional} \\times (1 - \\text{RR})$. Most defaults are now cash-settled via **ISDA Credit Event Auctions** to establish the final recovery price.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Risky Discounting & Valuation -->
+    <div id="secM6L9Valuation" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Risky Discount Factors &amp; Survival Probability</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    Default is modeled as a Poisson process driven by an instantaneous conditional default intensity or **hazard rate** $h$:
+                    - **Survival Probability:** The probability that the reference entity survives up to time $t$:
+                      $$S(t) = \\exp(-ht)$$
+                    - **Risky Discount Factor:** Combining risk-free discounting $B(t) = \\exp(-rt)$ and survival probability $S(t)$ yields the credit-risk adjusted discount factor:
+                      $$DF_{\\text{risky}}(t) = \\exp[-(r + h)t]$$
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); margin-bottom:1.25rem; font-size:0.85rem; line-height:1.6;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">CDS Present Value &amp; Fair Spread Calibration</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        A CDS comprises two legs:
+                        - **Premium Leg:** Paid by the buyer while the reference entity survives:
+                          $$PV_{\\text{premium}} = s \\cdot \\int_0^T \\exp[-(r+h)t] \\,\\mathrm{d}t = s \\cdot \\frac{1 - \\exp[-(r+h)T]}{r + h}$$
+                        - **Default Leg:** Paid by the seller at default:
+                          $$PV_{\\text{default}} = (1 - \\text{RR}) \\cdot h \\cdot \\frac{1 - \\exp[-(r+h)T]}{r + h}$$
+                        Equating the two legs yields the fair **CDS spread** formula:
+                          $$s_{\\text{CDS}} = (1 - \\text{RR}) \\cdot h \\implies h = \\frac{s_{\\text{CDS}}}{1 - \\text{RR}}$$
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Proxy Curves (FRTB-CVA) -->
+    <div id="secM6L9Proxies" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Proxy CDS Curve Modeling for Illiquid Names</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    Under Basel's **Fundamental Review of the Trading Book (FRTB-CVA)** and Credit Valuation Adjustment (CVA) capital frameworks, banks must hold capital against counterparty spread risks. For illiquid counterparties lacking traded CDS curves, banks are required to approximate spreads using **Proxy CDS Curves**.
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); margin-bottom:1.25rem; font-size:0.85rem; line-height:1.6;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">The Cross-Sectional Log-Linear Regression Model</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        To estimate credit default swaps, banks perform a regression on observable liquid names in **log-space** (to ensure spreads are strictly positive):
+                        $$\\log\\left(s_i^{\\text{proxy}}\\right) = \\beta_{\\text{glob}} + \\beta_{\\text{rating}(i)} + \\beta_{\\text{region}(i)} + \\beta_{\\text{sector}(i)}$$
+                        Where:
+                        - **Rating:** AAA, AA, A, BBB, BB, B, CCC
+                        - **Region:** Europe, North America, Japan, LatAm
+                        - **Sector:** Financials, Energy, Healthcare, Tech
+                        Regulators explicitly require these broad category attributes rather than granular metrics to avoid overfitting sparse interbank data.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Wrong-Way Risk & Copulas -->
+    <div id="secM6L9Counterparty" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; margin-bottom: 2rem; display: grid; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Counterparty Wrong-Way Risk (WWR)</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        Purchasing a CDS creates counterparty credit risk to the protection seller. **Wrong-Way Risk (WWR)** occurs when there is a strong positive correlation between the default probability of the reference entity and the default probability of the protection seller itself (e.g. buying corporate bond protection from a financial bank).
+                    </p>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        If the default correlation $\\rho_{12}$ approaches $1.0$, the present value of the protection leg collapses because the counterparty is highly likely to default at the same moment they owe the payout.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Bivariate Gaussian Copula</h3>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                        To model joint default probabilities $p_{12}$ given marginal default probabilities $p_1$ (seller) and $p_2$ (reference):
+                        $$p_{12} = \\Phi_2\\left( \\Phi^{-1}(p_1), \\Phi^{-1}(p_2); \\lambda_{12} \\right)$$
+                        Where $\\lambda_{12}$ is the asset correlation calibrated via equity markets, and $\\Phi_2$ represents the bivariate normal cumulative distribution function.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: Sovereign Case Studies -->
+    <div id="secM6L9CaseStudies" style="display: none; max-height: 600px; overflow-y: auto; padding-right: 0.5rem;">
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Sovereign Defaults: The Ukraine Moratorium</h3>
+            <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563;">
+                <strong>Case Background:</strong> During the 2022 wartime crisis, Ukraine suspended debt interest payments. While a sovereign suspension may not be a formal bankruptcy, the ISDA regional Determination Committee ruled it a **Repudiation/Moratorium Credit Event**, triggering full CDS payouts.
+            </p>
+            <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color:#374151;">
+                <strong>Pricing Impact:</strong> Sovereign spreads often spike to extreme ranges (exceeding 10,000 basis points). At this stage, quoting standard annual spreads becomes meaningless; instead, contracts trade on an **upfront premium basis** due to extreme annuity default risk (the risk that premium streams stop instantly).
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Credit Suisse vs. UBS Government Intervention</h3>
+            <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563;">
+                <strong>Case Background:</strong> In 2023, the Swiss government forced the acquisition of Credit Suisse by UBS, writing down Additional Tier 1 (AT1) bonds to zero. However, existing CDS contracts referenced Tier 2 subordinated debt, meaning AT1 bondholders lost everything without being able to trigger a CDS protection payout.
+            </p>
+            <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color:#374151;">
+                <strong>Regulatory Reform:</strong> This structural mismatch prompted the addition of **Government Intervention** to credit event definitions to bridge the gap between bank restructuring write-downs and derivative protection triggers.
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Interactive CDS Labs -->
+    <div id="secM6L9Sandbox" style="display: none;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            
+            <!-- LAB A: Hazard Rate Bootstrapper -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab A: Implied Survival Probability Bootstrapper</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Market CDS Spread (5Y):</label>
+                        <input id="numM6L9CdsSpread" type="number" value="150" min="10" max="2000" step="10" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L9BootstrapLab()">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Assumed Recovery Rate (RR):</label>
+                        <input id="numM6L9Recovery" type="number" value="0.40" min="0.0" max="0.9" step="0.05" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L9BootstrapLab()">
+                    </div>
+                </div>
+                <div style="height: 180px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m6l9BootstrapChart"></canvas>
+                </div>
+                <div id="outM6L9Bootstrap" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Calibrating default intensity hazard curves...
+                </div>
+            </div>
+
+            <!-- LAB B: Cross-Sectional Proxy Spread Regressor -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab B: Cross-Sectional Proxy Spread Regressor</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.5rem; font-size:0.75rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Rating:</label>
+                        <select id="selectM6L9Rating" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L9ProxyLab()">
+                            <option value="AA">AA (Strong credit)</option>
+                            <option value="BBB" selected>BBB (Investment Grade)</option>
+                            <option value="BB">BB (High Yield)</option>
+                            <option value="CCC">CCC (Distressed)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Region:</label>
+                        <select id="selectM6L9Region" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L9ProxyLab()">
+                            <option value="Europe" selected>Europe</option>
+                            <option value="NorthAmerica">North America</option>
+                            <option value="Japan">Japan</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Sector:</label>
+                        <select id="selectM6L9Sector" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L9ProxyLab()">
+                            <option value="Financials" selected>Financials</option>
+                            <option value="Tech">Technology</option>
+                            <option value="Energy">Energy</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="height: 180px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m6l9ProxyChart"></canvas>
+                </div>
+                <div id="outM6L9Proxy" style="font-size:0.75rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Predicting proxy CDS spreads...
+                </div>
+            </div>
+
+            <!-- LAB C: Wrong-Way Risk (WWR) Copula Sandbox -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem; grid-column: span 2;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab C: Wrong-Way Risk (WWR) Bivariate Gaussian Copula Sandbox</h3>
+                <div style="display:grid; grid-template-columns:1.2fr 1.2fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Asset Correlation ($\lambda_{12}$):</label>
+                        <input id="rangeM6L9Correlation" type="range" min="0" max="1" step="0.05" value="0.3" style="width:100%;" oninput="document.getElementById('outM6L9CorrVal').innerText = this.value; runM6L9WwrLab()">
+                        <span style="font-size:0.72rem; font-weight:bold; color:var(--accent);">Selected: <span id="outM6L9CorrVal">0.3</span></span>
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Counterparty PD ($p_1$):</label>
+                        <input id="rangeM6L9Pd1" type="range" min="0.01" max="0.10" step="0.01" value="0.02" style="width:100%;" oninput="document.getElementById('outM6L9Pd1Val').innerText = (this.value*100).toFixed(0) + '%'; runM6L9WwrLab()">
+                        <span style="font-size:0.72rem; font-weight:bold; color:var(--accent);">Selected: <span id="outM6L9Pd1Val">2%</span></span>
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Reference PD ($p_2$):</label>
+                        <input id="rangeM6L9Pd2" type="range" min="0.01" max="0.15" step="0.01" value="0.04" style="width:100%;" oninput="document.getElementById('outM6L9Pd2Val').innerText = (this.value*100).toFixed(0) + '%'; runM6L9WwrLab()">
+                        <span style="font-size:0.72rem; font-weight:bold; color:var(--accent);">Selected: <span id="outM6L9Pd2Val">4%</span></span>
+                    </div>
+                </div>
+                <div style="height: 180px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m6l9WwrChart"></canvas>
+                </div>
+                <div id="outM6L9Wwr" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Simulating joint default dependencies...
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching logic for CQF M6 L9
+    window.switchM6L9Tab = function(tab) {
+        const tabs = ['mechanics', 'valuation', 'proxies', 'counterparty', 'caseStudies', 'sandbox'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM6L9' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM6L9' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) {
+                sec.style.display = (t === tab ? 'block' : 'none');
+                if (t === tab && !sec.dataset.typeset) {
+                    if (typeof window.safeTypeset === 'function') {
+                        window.safeTypeset([sec]);
+                        sec.dataset.typeset = 'true';
+                    }
+                }
+            }
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        if (tab === 'sandbox') {
+            setTimeout(initM6L9Labs, 100);
+        }
+    };
+
+    let m6l9BootstrapChartInstance = null;
+    let m6l9ProxyChartInstance = null;
+    let m6l9WwrChartInstance = null;
+
+    window.initM6L9Labs = function() {
+        runM6L9BootstrapLab();
+        runM6L9ProxyLab();
+        runM6L9WwrLab();
+    };
+
+    window.runM6L9BootstrapLab = function() {
+        const spreadBps = parseFloat(document.getElementById('numM6L9CdsSpread').value);
+        const rr = parseFloat(document.getElementById('numM6L9Recovery').value);
+        
+        const s = spreadBps / 10000;
+        const h = s / (1 - rr); // Constant hazard rate proxy
+
+        let years = [0, 1, 2, 3, 4, 5, 7, 10];
+        let survivalProbs = [];
+        years.forEach(t => {
+            survivalProbs.push(Math.exp(-h * t) * 100);
+        });
+
+        const outEl = document.getElementById('outM6L9Bootstrap');
+        outEl.innerHTML = `Assumed Recovery Rate (RR): <strong>${(rr*100).toFixed(0)}%</strong>. Implied Hazard Rate (h): <strong>${(h*100).toFixed(2)}%</strong>.<br>
+        5-Year Survival Probability: <strong style="color:var(--accent);">${Math.exp(-h * 5 * 100).toFixed(1)}%</strong>. (Implied PD: <strong style="color:#ef4444;">${((1 - Math.exp(-h * 5)) * 100).toFixed(1)}%</strong>).`;
+
+        const ctx = document.getElementById('m6l9BootstrapChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m6l9BootstrapChartInstance) m6l9BootstrapChartInstance.destroy();
+
+        m6l9BootstrapChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: years.map(y => y + 'Y'),
+                datasets: [{
+                    label: 'Survival Probability (%)',
+                    data: survivalProbs,
+                    borderColor: 'var(--accent)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { title: { display: true, text: 'Survival Probability (%)', font: { size: 8 }, color: tickColor }, ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+
+    window.runM6L9ProxyLab = function() {
+        const rating = document.getElementById('selectM6L9Rating').value;
+        const region = document.getElementById('selectM6L9Region').value;
+        const sector = document.getElementById('selectM6L9Sector').value;
+
+        // Base log-linear parameters
+        let baseLog = 3.5; // log(spread bps)
+        let ratingCoeff = 0;
+        if (rating === 'AA') ratingCoeff = -0.8;
+        else if (rating === 'BBB') ratingCoeff = 0.5;
+        else if (rating === 'BB') ratingCoeff = 1.3;
+        else if (rating === 'CCC') ratingCoeff = 2.5;
+
+        let regionCoeff = 0;
+        if (region === 'Europe') regionCoeff = 0.1;
+        else if (region === 'NorthAmerica') regionCoeff = -0.1;
+        else if (region === 'Japan') regionCoeff = -0.3;
+
+        let sectorCoeff = 0;
+        if (sector === 'Financials') sectorCoeff = 0.3;
+        else if (sector === 'Tech') sectorCoeff = -0.15;
+        else if (sector === 'Energy') sectorCoeff = 0.1;
+
+        const logSpread = baseLog + ratingCoeff + regionCoeff + sectorCoeff;
+        const predictedSpread = Math.exp(logSpread);
+
+        const outEl = document.getElementById('outM6L9Proxy');
+        outEl.innerHTML = `Illiquid Counterparty Attributes: <strong>${rating} | ${region} | ${sector}</strong>.<br>
+        Predicted Proxy Credit Default Swap Spread: <strong style="color:var(--accent);">${predictedSpread.toFixed(1)} bps</strong>.<br>
+        Log-Linear Fit: $\\log(s) = ${baseLog} + (${ratingCoeff}) + (${regionCoeff}) + (${sectorCoeff}) = ${logSpread.toFixed(3)}$.`;
+
+        const ctx = document.getElementById('m6l9ProxyChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m6l9ProxyChartInstance) m6l9ProxyChartInstance.destroy();
+
+        m6l9ProxyChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['AAA Benchmark', 'Predicted Proxy Name', 'CCC Benchmark'],
+                datasets: [{
+                    label: 'CDS Spread (bps)',
+                    data: [25.0, predictedSpread, 1200.0],
+                    backgroundColor: ['rgba(16, 185, 129, 0.65)', 'rgba(59, 130, 246, 0.8)', 'rgba(239, 68, 68, 0.65)'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { title: { display: true, text: 'CDS Spread (bps)', font: { size: 8 }, color: tickColor }, ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+
+    // Standard Normal CDF and Inverse CDF for Bivariate normal
+    function m6l9NormCdf(x) {
+        const b1 =  0.319381530;
+        const b2 = -0.356563782;
+        const b3 =  1.781477937;
+        const b4 = -1.821255978;
+        const b5 =  1.330274429;
+        const p  =  0.2316419;
+        const c  =  0.39894228;
+        if (x >= 0.0) {
+            let k = 1.0 / (1.0 + p * x);
+            return 1.0 - c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        } else {
+            let k = 1.0 / (1.0 - p * x);
+            return c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        }
+    }
+
+    function m6l9NormInv(p) {
+        if (p <= 0.0 || p >= 1.0) return 0.0;
+        const a = [2.50662823884, -18.61500062529, 41.39119773534, -28.44120361287];
+        const b = [-8.47351082858, 23.08336743743, -21.06224101826, 3.13082909833];
+        const c = [0.3374754822726147, 0.976169013223269, 0.1607979714918209, 0.0276438810916503, 0.0038405729373609, 0.000395189343119, 0.000321767881768, 0.0000002888167364, 0.0000003960315187];
+        
+        let y = p - 0.5;
+        if (Math.abs(y) < 0.42) {
+            let r = y * y;
+            let num = (((a[3]*r + a[2])*r + a[1])*r + a[0]) * y;
+            let den = (((b[3]*r + b[2])*r + b[1])*r + 1.0);
+            return num / den;
+        } else {
+            let r = p;
+            if (y > 0) r = 1.0 - p;
+            let z = Math.log(-Math.log(r));
+            let num = (((((((c[8]*z + c[7])*z + c[6])*z + c[5])*z + c[4])*z + c[3])*z + c[2])*z + c[1])*z + c[0];
+            let ans = num;
+            if (y < 0) return -ans;
+            return ans;
+        }
+    }
+
+    // Bivariate normal CDF approximation (Simpson's rule over 10 steps)
+    function m6l9BivariateNormalCdf(h, k, r) {
+        if (r === 0) return m6l9NormCdf(h) * m6l9NormCdf(k);
+        if (r === 1) return m6l9NormCdf(Math.min(h, k));
+        if (r === -1) return Math.max(0, m6l9NormCdf(h) + m6l9NormCdf(k) - 1);
+        
+        function pdf2d(x, y, rho) {
+            const denom = 2 * Math.PI * Math.sqrt(1 - rho*rho);
+            const expr = -(x*x - 2*rho*x*y + y*y) / (2 * (1 - rho*rho));
+            return Math.exp(expr) / denom;
+        }
+        
+        let sum = 0;
+        const steps = 10;
+        const dr = r / steps;
+        for (let i = 0; i <= steps; i++) {
+            const rho = i * dr;
+            const w = (i === 0 || i === steps) ? 1 : (i % 2 === 0 ? 2 : 4);
+            sum += w * pdf2d(h, k, rho);
+        }
+        const integral = (dr / 3) * sum;
+        return Math.max(0, Math.min(1, m6l9NormCdf(h) * m6l9NormCdf(k) + integral));
+    }
+
+    window.runM6L9WwrLab = function() {
+        const corr = parseFloat(document.getElementById('rangeM6L9Correlation').value);
+        const p1 = parseFloat(document.getElementById('rangeM6L9Pd1').value);
+        const p2 = parseFloat(document.getElementById('rangeM6L9Pd2').value);
+
+        // Map to normal space
+        const z1 = m6l9NormInv(p1);
+        const z2 = m6l9NormInv(p2);
+
+        // Bivariate normal joint probability
+        const p12 = m6l9BivariateNormalCdf(z1, z2, corr);
+
+        // CDS premium reduction factor (1 - p12 / p2)
+        const premiumReduction = Math.max(0, 1 - p12 / p2);
+
+        const outEl = document.getElementById('outM6L9Wwr');
+        outEl.innerHTML = `Bivariate Gaussian Copula results:<br>
+        Joint Default Probability ($p_{12}$): <strong style="color:#ef4444;">${(p12*100).toFixed(3)}%</strong> (Uncorrelated baseline: ${(p1*p2*100).toFixed(3)}%).<br>
+        WWR CDS Protection Discount Factor: <strong style="color:var(--accent);">${(premiumReduction*100).toFixed(1)}%</strong>. (Fair Premium reduces by ${( (1 - premiumReduction)*100 ).toFixed(1)}% due to seller default risk).`;
+
+        const ctx = document.getElementById('m6l9WwrChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        // Plot joint default probability across correlation range
+        let correlations = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0];
+        let jointProbs = [];
+        correlations.forEach(c => {
+            jointProbs.push(m6l9BivariateNormalCdf(z1, z2, c) * 100);
+        });
+
+        if (m6l9WwrChartInstance) m6l9WwrChartInstance.destroy();
+
+        m6l9WwrChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: correlations.map(c => c.toFixed(2)),
+                datasets: [{
+                    label: 'Joint Default Probability (%)',
+                    data: jointProbs,
+                    borderColor: '#a855f7',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { title: { display: true, text: 'Asset Correlation (lambda)', font: { size: 8 }, color: tickColor }, ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { title: { display: true, text: 'Joint Default Prob (%)', font: { size: 8 }, color: tickColor }, ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+</script>

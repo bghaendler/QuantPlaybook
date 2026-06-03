@@ -1,0 +1,115 @@
+<div id="dashboard">
+<header>
+    <h1>Module 2: Estimating the Term Structure</h1>
+    <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280;">Interactive visualization of Curve Construction, PCA &amp;
+                    Smoothing Splines</div>
+</header>
+<div class="container">
+<!-- Curve Construction Results -->
+<div class="card" id="bootstrapping">
+<h2>Exact Methods (Forward Rates)</h2>
+<div class="metric">
+<span class="metric-label">Bootstrap Method (1Y Fwd 29Y-30Y)</span>
+<span class="metric-value" id="fwd_boot">...</span>
+</div>
+<div class="metric secondary">
+<span class="metric-label">Pseudoinverse Method (1Y Fwd 29Y-30Y)</span>
+<span class="metric-value" id="fwd_pseudo">...</span>
+</div>
+<details style="margin-top: 1rem; color: var(--text-color);">
+    <summary style="cursor: pointer; font-weight: 600; color: var(--accent);">View Mathematical Steps
+                        </summary>
+    <div style="padding: 1.5rem; background: #f8fafc; border-radius: 8px; border-left: 4px solid var(--accent); margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.6;">
+        <p><strong>Bootstrap Method:</strong> Iteratively solve for the discount factor \(P(T_n)\)
+                                by matching the present value of swap cash flows to par:</p>
+        <p>$$ P(T_n) = \frac{1 - S_n \sum_{i=1}^{n-1} \Delta t_i P(T_i)}{1 + S_n \Delta t_n} $$</p>
+        <p><strong>Pseudoinverse Method:</strong> Given the underdetermined system \( M P = b \),
+                                introduce a cumulative sum matrix \( C \) and a time-weighted diagonal matrix \( W =
+                                \text{diag}(\sqrt{\Delta t}) \). We solve for the perturbation \( y \) that minimizes
+                                the first derivative's \( L_2 \) norm:</p>
+        <p>$$ \min_y \|y\|^2 \quad \text{s.t.} \quad M C W y = b - M \mathbf{1} $$</p>
+        <p>$$ y = (MCW)^+ (b - M \mathbf{1}) \implies P = \mathbf{1} + C W y $$</p>
+    </div>
+</details>
+</div>
+<!-- PCA Results -->
+<div class="card" id="pca">
+<h2>Principal Component Analysis</h2>
+<div class="metric">
+<span class="metric-label">Variance Explained (First 2 PCs)</span>
+<span class="metric-value" id="var_explained">...</span>
+</div>
+<div class="metric secondary">
+<span class="metric-label">Portfolio Std. Dev (Monthly ΔV)</span>
+<span class="metric-value" id="std_dv">...</span>
+</div>
+<details style="margin-top: 1rem; color: var(--text-color);">
+    <summary style="cursor: pointer; font-weight: 600; color: var(--accent);">View Mathematical Steps
+                        </summary>
+    <div style="padding: 1.5rem; background: #f8fafc; border-radius: 8px; border-left: 4px solid var(--accent); margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.6;">
+        <p>Compute the covariance matrix \( \Sigma \) of monthly yield changes \( \Delta Y \).
+                                Decompose into eigenvalues \( \lambda_j \) and eigenvectors \( A \):</p>
+        <p>$$ \Sigma = A \Lambda A^T $$</p>
+        <p>To approximate the portfolio's monthly price change \( \Delta V \):</p>
+        <p>$$ \Delta V \approx \frac{\partial V}{\partial t} \Delta t + \sum_{i} \frac{\partial
+                                V}{\partial y_i} \Delta y_i $$</p>
+        <p>Where \( \frac{\partial V}{\partial y_i} = -CF_i \cdot T_i \cdot \exp(-y_i T_i) \). We
+                                reconstruct \( \Delta y_i \) using only the first two PCs and calculate the empirical
+                                standard deviation of the resulting \( \Delta V \) series.</p>
+    </div>
+</details>
+</div>
+<!-- Spline Result -->
+<div class="card" id="smoothing" style="grid-column: 1 / -1;">
+<h2>Smoothing Splines (Lorimier)</h2>
+<div class="metric" style="border-left-color: #10b981;">
+<span class="metric-label">Interpolated Yield for T = 6</span>
+<span class="metric-value" id="yield_6" style="color: #34d399;">...</span>
+</div>
+<details style="margin-top: 1rem; color: var(--text-color); margin-bottom: 1.5rem;">
+    <summary style="cursor: pointer; font-weight: 600; color: #10b981;">View Mathematical Steps
+                        </summary>
+    <div style="padding: 1.5rem; background: #f8fafc; border-radius: 8px; border-left: 4px solid #10b981; margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.6;">
+        <p>We build a smoothing spline curve using a specific inner product matrix \( H \)
+                                constructed from the maturities \( t_i \):</p>
+        <p>$$ H_{i,j} = t_i t_j + \frac{1}{2} \min(t_i, t_j)^2 \max(t_i, t_j) - \frac{1}{6}
+                                \min(t_i, t_j)^3 $$</p>
+        <p>Solve the linear system for the weights \( \beta \):</p>
+        <p>$$ \begin{bmatrix} 0 &amp; T^T \\ T &amp; H + \frac{1}{\alpha} I \end{bmatrix} \begin{bmatrix}
+                                \beta_0 \\ \beta \end{bmatrix} = \begin{bmatrix} 0 \\ Y \cdot T \end{bmatrix} $$</p>
+        <p>The interpolated yield at any target maturity \( T \) is given by:</p>
+        <p>$$ y(T) = \beta_0 + \frac{1}{T} \sum_{i=1}^N \beta_i H(T, T_i) $$</p>
+    </div>
+</details>
+<div class="chart-container" style="height: 350px;">
+<canvas id="splineChart"></canvas>
+</div>
+</div>
+<!-- Discount Curve Comparison -->
+<div class="card" style="grid-column: 1 / -1;">
+<h2>Discount Curves Comparison</h2>
+<div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
+<div style="width: 100%;">
+<h3 style="color: #94a3b8; font-size: 1rem; margin-bottom: 0;">Discount Factors (P)</h3>
+<div class="chart-container" style="height: 300px;">
+<canvas id="curveChart"></canvas>
+</div>
+</div>
+<div style="width: 100%;">
+<h3 style="color: #94a3b8; font-size: 1rem; margin-bottom: 0;">Difference (Bootstrap -
+                                Pseudoinverse) in Basis Points</h3>
+<div class="chart-container" style="height: 250px;">
+<canvas id="spreadChart"></canvas>
+</div>
+</div>
+</div>
+</div>
+<!-- PCA Variance Chart -->
+<div class="card" style="grid-column: 1 / -1;">
+<h2>PCA Scree Plot (Eigenvalues)</h2>
+<div class="chart-container">
+<canvas id="pcaChart"></canvas>
+</div>
+</div>
+</div>
+</div>

@@ -1,0 +1,462 @@
+<div id="view-quiz-caps-floors" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">Quiz: Interest Rate Caps and Floors</h1>
+        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Practice assignment covering swap rates, floor/cap moneyness conditions, parity, and floored swap math.</div>
+    </header>
+    
+    <div class="container" style="max-width: 900px; grid-template-columns: 1fr; gap: 2rem;">
+        <p style="margin-bottom: 2rem; font-size: 1.15rem; color: var(--text-color); line-height: 1.7; opacity: 0.85;">
+            Test your understanding with these exam-style problems. Select your options, then click <strong>Submit</strong> to get instant feedback. Expand the <strong>Show Mathematical Solution & Derivation</strong> card at the bottom of each question to review the full step-by-step analytical proof.
+        </p>
+
+        <!-- QUESTION 1 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 1</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                1. Which of the following statements is true? A cap is out-of-the-money if its cap rate $\kappa$ is...
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="q1_cf_real" value="q1_1" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">smaller than the corresponding swap rate, $\kappa < R_{swap}$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="q1_cf_real" value="q1_2" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">equal to the corresponding swap rate, $\kappa = R_{swap}$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="q1_cf_real" value="q1_3" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">larger than the corresponding swap rate, $\kappa > R_{swap}$</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkCFRealQ1()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q1-cf-real-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Step-by-Step Explanation:</strong></p>
+                    <p>A cap protects the holder against high interest rates. It consists of a strip of caplets whose discounted payoff is given by the difference between the simple spot rate and the strike rate $\kappa$, positive part: $\delta (L(T_{i-1}, T_i) - \kappa)^+$.</p>
+                    <p>By Cap-Floor Parity, the difference between a Cap and a Floor is the value of a payer swap with fixed rate $\kappa$:</p>
+                    <p style="text-align: center;">$$ Cp(t) - Fl(t) = V_p(t) $$</p>
+                    <p>The payer swap value is proportional to the difference between the prevailing swap rate $R_{swap}(t)$ and the strike rate $\kappa$:</p>
+                    <p style="text-align: center;">$$ V_p(t) = \bigl( R_{swap}(t) - \kappa \bigr) \sum_{i=1}^n \delta P(t, T_i) $$</p>
+                    <p>A cap is defined to be:</p>
+                    <ul style="padding-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                        <li><strong>In-the-Money (ITM)</strong> if $\kappa < R_{swap}$ (the strike is below the swap rate, making the option highly valuable).</li>
+                        <li><strong>At-the-Money (ATM)</strong> if $\kappa = R_{swap}$ (the swap value is zero).</li>
+                        <li><strong>Out-of-the-Money (OTM)</strong> if $\kappa > R_{swap}$ (the strike is higher than the swap rate, so market rates are currently lower than the protection limit).</li>
+                    </ul>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: larger than the corresponding swap rate, $\kappa > R_{swap}$</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 2 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 2</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                2. Which of the following statements is true? A floor is out-of-the-money if its floor rate $\kappa$ is...
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="q2_cf_real" value="q2_1" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">smaller than the corresponding swap rate, $\kappa < R_{swap}$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="q2_cf_real" value="q2_2" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">equal to the corresponding swap rate, $\kappa = R_{swap}$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="q2_cf_real" value="q2_3" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">larger than the corresponding swap rate, $\kappa > R_{swap}$</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkCFRealQ2()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q2-cf-real-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Step-by-Step Explanation:</strong></p>
+                    <p>A floor protects the holder against too low interest rates. It pays off when the spot rate drops below the strike rate $\kappa$ (payoff is $\delta(\kappa - L(T_{i-1}, T_i))^+$).</p>
+                    <p>By Cap-Floor Parity, we can see the relative moneyness relationship is the exact opposite (converse) of a cap:</p>
+                    <ul style="padding-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                        <li><strong>In-the-Money (ITM)</strong> if $\kappa > R_{swap}$ (the strike is above the swap rate, making the floor option highly valuable).</li>
+                        <li><strong>At-the-Money (ATM)</strong> if $\kappa = R_{swap}$ (values of Cap and Floor are equal, swap value is zero).</li>
+                        <li><strong>Out-of-the-Money (OTM)</strong> if $\kappa < R_{swap}$ (the floor strike is below the prevailing swap rate, so market rates are higher than the floor and it is unlikely to trigger).</li>
+                    </ul>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: smaller than the corresponding swap rate, $\kappa < R_{swap}$</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 3 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 3</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Select</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                3. Consider an ordinary swap contract that swaps fixed for floating and an alternative swap contract with the same characteristics, except that the floating payments are floored at some fixed lower bound $\kappa$. Denote by $R_1(0)$ and $R_2(0)$ the fixed rates that make the values of the respective swap contracts equal to zero. Denote by $Cp(0)$ and $Fl(0)$ the value of a cap and a floor with notional 1, cap/floor rate $\kappa$ and the same tenor structure $T_0 < T_1 < \dots < T_M$, with $T_i - T_{i-1} \equiv \delta$, as the swap contracts. Which of the following statements are true?
+            </p>
+
+            <!-- Checkbox Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="checkbox" id="q3_cf_real_opt1" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">$R_2(0) = R_1(0) + \frac{Fl(0)}{\delta \sum_{i=1}^M P(0, T_i)}$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="checkbox" id="q3_cf_real_opt2" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">$R_1(0) = R_2(0) + \frac{Cp(0)}{\delta \sum_{i=1}^M P(0, T_i)}$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="checkbox" id="q3_cf_real_opt3" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">$R_2(0) = \kappa + \frac{Cp(0)}{\delta \sum_{i=1}^M P(0, T_i)}$</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkCFRealQ3()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q3-cf-real-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Derivation:</strong></p>
+                    <p>Let's represent the value of the two swap contracts at $t=0$ where we pay fixed and receive floating.</p>
+                    <p><strong>1. Value of ordinary swap $V_1(0)$:</strong></p>
+                    <p style="text-align: center;">$$ V_1(0) = \sum_{i=1}^M \delta P(0, T_i) \left( F(0, T_{i-1}, T_i) - R_1 \right) $$</p>
+                    <p>Since $R_1(0)$ makes the value equal to zero, we have:</p>
+                    <p style="text-align: center;">$$ R_1(0) \sum_{i=1}^M \delta P(0, T_i) = \sum_{i=1}^M \delta P(0, T_i) F(0, T_{i-1}, T_i) $$</p>
+                    
+                    <p><strong>2. Value of alternative swap $V_2(0)$:</strong></p>
+                    <p>In this contract, the floating payment is floored at $\kappa$. The payoff is $\max(L(T_{i-1}, T_i), \kappa) = L(T_{i-1}, T_i) + (\kappa - L(T_{i-1}, T_i))^+$. This is a standard spot rate plus a floorlet payoff!</p>
+                    <p style="text-align: center;">$$ V_2(0) = \sum_{i=1}^M \delta P(0, T_i) \left( F(0, T_{i-1}, T_i) - R_2 \right) + \sum_{i=1}^M Fll_i(0) $$</p>
+                    <p>where $Fll_i(0) = P(0, T_i) \mathbb{E}^{\mathbb{Q}^{T_i}}_0 \left[ \delta (\kappa - L(T_{i-1}, T_i))^+ \right]$. Summing over all period intervals gives the total floor price $Fl(0) = \sum_{i=1}^M Fll_i(0)$.</p>
+                    <p>Since $R_2(0)$ makes $V_2(0) = 0$, we have:</p>
+                    <p style="text-align: center;">$$ R_2(0) \sum_{i=1}^M \delta P(0, T_i) = \sum_{i=1}^M \delta P(0, T_i) F(0, T_{i-1}, T_i) + Fl(0) $$</p>
+                    <p>Substitute the ordinary swap relation into this expression:</p>
+                    <p style="text-align: center;">$$ R_2(0) \sum_{i=1}^M \delta P(0, T_i) = R_1(0) \sum_{i=1}^M \delta P(0, T_i) + Fl(0) $$</p>
+                    <p>Dividing by $\delta \sum_{i=1}^M P(0, T_i)$ gives **Statement 1**:</p>
+                    <p style="text-align: center; font-weight: 700; color: var(--accent);">$$ R_2(0) = R_1(0) + \frac{Fl(0)}{\delta \sum_{i=1}^M P(0, T_i)} $$</p>
+                    
+                    <p><strong>3. Deriving the Cap Relation:</strong></p>
+                    <p>Recall the **Cap-Floor Parity Relation**: $Cp(0) - Fl(0) = V_p(0)$, where $V_p(0)$ is the value of a payer swap with strike $\kappa$:</p>
+                    <p style="text-align: center;">$$ Cp(0) - Fl(0) = \sum_{i=1}^M \delta P(0, T_i) F(0, T_{i-1}, T_i) - \kappa \sum_{i=1}^M \delta P(0, T_i) $$</p>
+                    <p style="text-align: center;">$$ Cp(0) - Fl(0) = \left( R_1(0) - \kappa \right) \sum_{i=1}^M \delta P(0, T_i) $$</p>
+                    <p>Rearranging this yields the floor price expressed in terms of the cap price:</p>
+                    <p style="text-align: center;">$$ Fl(0) = Cp(0) - \left( R_1(0) - \kappa \right) \delta \sum_{i=1}^M P(0, T_i) $$</p>
+                    <p>Substitute this back into our expression for $R_2(0)$ in Statement 1:</p>
+                    <p style="text-align: center;">$$ R_2(0) = R_1(0) + \frac{Cp(0) - (R_1(0) - \kappa) \delta \sum_{i=1}^M P(0, T_i)}{\delta \sum_{i=1}^M P(0, T_i)} $$</p>
+                    <p style="text-align: center;">$$ R_2(0) = R_1(0) + \frac{Cp(0)}{\delta \sum_{i=1}^M P(0, T_i)} - R_1(0) + \kappa $$</p>
+                    <p>The $R_1(0)$ terms cancel out! This yields **Statement 3**:</p>
+                    <p style="text-align: center; font-weight: 700; color: var(--accent);">$$ R_2(0) = \kappa + \frac{Cp(0)}{\delta \sum_{i=1}^M P(0, T_i)} $$</p>
+                    
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answers: Statement 1 and Statement 3 are correct.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 4 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 4</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                4. Consider a cap and a floor with the same cap/floor rate and identical tenor structure. Denote their value by $Cp(0)$ and $Fl(0)$ and suppose that the cap is at-the-money. Which of the following statements is true?
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="q4_cf_real" value="q4_1" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">$Cp(0) < Fl(0)$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="q4_cf_real" value="q4_2" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">$Cp(0) = Fl(0)$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="q4_cf_real" value="q4_3" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">$Cp(0) > Fl(0)$</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkCFRealQ4()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q4-cf-real-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Step-by-Step Explanation:</strong></p>
+                    <p>Recall the Cap-Floor Swap Parity Relation:</p>
+                    <p style="text-align: center;">$$ Cp(0) - Fl(0) = V_p(0) $$</p>
+                    <p>where $V_p(0)$ is the value of the payer swap with fixed rate $\kappa$ and notional 1.</p>
+                    <p>By definition, a cap and a floor are <strong>at-the-money (ATM)</strong> if their values are equal. This occurs when the payer swap value is exactly equal to zero ($V_p(0) = 0$), which happens when the strike rate $\kappa$ equals the forward swap rate $R_{swap}(0)$:</p>
+                    <p style="text-align: center;">$$ Cp(0) - Fl(0) = 0 \implies Cp(0) = Fl(0) $$</p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: $Cp(0) = Fl(0)$</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 5 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 5</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">True / False</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                5. Is the following statement true or false?<br>
+                <em style="display: block; margin-top: 0.75rem; font-style: normal; font-weight: 700; background: var(--nav-hover); padding: 1rem; border-radius: 6px; border-left: 4px solid var(--accent);">A cap composed of out-of-the-money caplets is out-of-the-money.</em>
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="q5_cf_real" value="q5_true" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">True</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="q5_cf_real" value="q5_false" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">False</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkCFRealQ5()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q5-cf-real-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Mathematical Proof & Explanation:</strong></p>
+                    <p>Let's prove this statement algebraically. A caplet for the period $[T_{i-1}, T_i]$ is **out-of-the-money (OTM)** if its strike $\kappa$ is strictly greater than the corresponding forward simple spot rate $F(t, T_{i-1}, T_i)$:</p>
+                    <p style="text-align: center;">$$ \kappa > F(t, T_{i-1}, T_i) \quad \forall \; i = 1, \dots, n $$</p>
+                    <p>The forward swap rate $R_{swap}(t)$ is defined as the weighted average of the forward spot rates $F(t, T_{i-1}, T_i)$ with positive weights $w_i > 0$ summing to 1:</p>
+                    <p style="text-align: center;">$$ R_{swap}(t) = \frac{\sum_{i=1}^n \delta P(t, T_i) F(t, T_{i-1}, T_i)}{\sum_{i=1}^n \delta P(t, T_i)} = \sum_{i=1}^n w_i F(t, T_{i-1}, T_i) $$</p>
+                    <p>where the weights are $w_i = \frac{\delta P(t, T_i)}{\sum_{j=1}^n \delta P(t, T_j)} > 0$, satisfying $\sum_{i=1}^n w_i = 1$.</p>
+                    <p>Since $\kappa > F(t, T_{i-1}, T_i)$ for all $i \in \{1, \dots, n\}$, and weights $w_i > 0$, we have:</p>
+                    <p style="text-align: center;">$$ R_{swap}(t) = \sum_{i=1}^n w_i F(t, T_{i-1}, T_i) < \sum_{i=1}^n w_i \kappa = \kappa \sum_{i=1}^n w_i = \kappa $$</p>
+                    <p>So, $\kappa > R_{swap}(t)$ always holds. By definition, a cap is **out-of-the-money (OTM)** if the strike rate is greater than the swap rate, $\kappa > R_{swap}(t)$.</p>
+                    <p>This proves that if every caplet is out-of-the-money, the cap is guaranteed to be out-of-the-money. Thus, the statement is strictly <strong>True</strong>.</p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: True</p>
+                </div>
+            </details>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function checkCFRealQ1() {
+        const options = document.getElementsByName('q1_cf_real');
+        let selectedValue = null;
+        for (const option of options) {
+            if (option.checked) {
+                selectedValue = option.value;
+                break;
+            }
+        }
+        const result = document.getElementById('q1-cf-real-feedback');
+        if (!selectedValue) {
+            result.innerHTML = '<strong>⚠️ Please select an option first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        if (selectedValue === 'q1_3') {
+            result.innerHTML = '<strong>✓ Correct!</strong> By definition of moneyness, a cap is out-of-the-money (OTM) if the strike (cap rate) $\\kappa$ is strictly <strong>larger</strong> than the forward swap rate $R_{swap}$.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: A cap protects against rising interest rates. If the protection strike $\\kappa$ is set extremely high (larger than swap rate), it is unlikely to trigger and is thus out-of-the-money.';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+
+    function checkCFRealQ2() {
+        const options = document.getElementsByName('q2_cf_real');
+        let selectedValue = null;
+        for (const option of options) {
+            if (option.checked) {
+                selectedValue = option.value;
+                break;
+            }
+        }
+        const result = document.getElementById('q2-cf-real-feedback');
+        if (!selectedValue) {
+            result.innerHTML = '<strong>⚠️ Please select an option first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        if (selectedValue === 'q2_1') {
+            result.innerHTML = '<strong>✓ Correct!</strong> A floor protects against low interest rates. It is out-of-the-money (OTM) if the floor strike rate $\\kappa$ is strictly <strong>smaller</strong> than the forward swap rate $R_{swap}$.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: For a floor, you receive floating and want protection against too low rates. If the strike $\\kappa$ is extremely low (smaller than the swap rate), it is out-of-the-money.';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+
+    function checkCFRealQ3() {
+        const opt1 = document.getElementById('q3_cf_real_opt1').checked;
+        const opt2 = document.getElementById('q3_cf_real_opt2').checked;
+        const opt3 = document.getElementById('q3_cf_real_opt3').checked;
+        
+        const result = document.getElementById('q3-cf-real-feedback');
+        
+        if (!opt1 && !opt2 && !opt3) {
+            result.innerHTML = '<strong>⚠️ Please select at least one option first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+
+        // Options 1 and 3 are correct, Option 2 is incorrect
+        if (opt1 && !opt2 && opt3) {
+            result.innerHTML = '<strong>✓ Correct!</strong> Excellent! Using swap-pricing and the max operator $\\max(L,\\kappa) = L + (\\kappa - L)^+$, we find the floored floating rate equals spot plus a floorlet. This proves $R_2(0) = R_1(0) + \\frac{Fl(0)}{\\delta \\sum P(0,T_i)}$. Furthermore, applying Cap-Floor Parity $Cp - Fl = (R_1 - \\kappa)\\delta \\sum P(0,T_i)$ and substituting in cancels $R_1(0)$, proving $R_2(0) = \\kappa + \\frac{Cp(0)}{\\delta \\sum P(0,T_i)}$.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: Expand the floored payoff $\\max(L,\\kappa)$ as $L + (\\kappa-L)^+$ (a standard spot rate plus a floorlet). That proves Option A. Then use Cap-Floor parity $Fl(0) = Cp(0) - (R_1(0) - \\kappa)\\delta \\sum P(0,T_i)$ and plug it in to verify Option C.';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+
+    function checkCFRealQ4() {
+        const options = document.getElementsByName('q4_cf_real');
+        let selectedValue = null;
+        for (const option of options) {
+            if (option.checked) {
+                selectedValue = option.value;
+                break;
+            }
+        }
+        const result = document.getElementById('q4-cf-real-feedback');
+        if (!selectedValue) {
+            result.innerHTML = '<strong>⚠️ Please select an option first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        if (selectedValue === 'q4_2') {
+            result.innerHTML = '<strong>✓ Correct!</strong> By definition, a cap and a floor are at-the-money (ATM) when their values are equal: $Cp(0) = Fl(0)$. This corresponds to a swap value of zero: $V_p(0) = 0$.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: Recall the parity relation $Cp(0) - Fl(0) = V_p(0)$. At-the-money means that the payer swap value $V_p(0) = 0$. What does this imply for $Cp(0)$ and $Fl(0)$?';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+
+    function checkCFRealQ5() {
+        const options = document.getElementsByName('q5_cf_real');
+        let selectedValue = null;
+        for (const option of options) {
+            if (option.checked) {
+                selectedValue = option.value;
+                break;
+            }
+        }
+        const result = document.getElementById('q5-cf-real-feedback');
+        if (!selectedValue) {
+            result.innerHTML = '<strong>⚠️ Please select an option first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        if (selectedValue === 'q5_true') {
+            result.innerHTML = '<strong>✓ Correct!</strong> True. Since the forward swap rate $R_{swap}$ is a weighted average of individual forward spot rates $F(t, T_{i-1}, T_i)$, if every caplet is out-of-the-money (i.e. $\\kappa > F_i$ for all $i$), then the strike $\\kappa$ must be strictly greater than their weighted average $R_{swap}$, rendering the cap out-of-the-money.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: Write the swap rate as $R_{swap}(t) = \\sum w_i F(t, T_{i-1}, T_i)$ where $\\sum w_i = 1$ and $w_i > 0$. If $\\kappa > F_i$ for all $i$, can $R_{swap}(t)$ ever exceed $\\kappa$?';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+</script>

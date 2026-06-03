@@ -1,0 +1,161 @@
+<div id="view-arbitrage-pricing-theory" style="display: none;">
+    <header>
+        <h1>Module 3.1: Stochastic Calculus</h1>
+        <div class="subtitle" style="color: #6b7280;">5. Arbitrage Pricing Theory &amp; Option Valuation</div>
+    </header>
+    <div class="container" style="grid-template-columns: 1fr; gap: 3rem; max-width: 1400px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+            <div class="card" style="margin-bottom: 0;">
+                <h2>Arbitrage Pricing Theory &amp; Risk-Neutrality</h2>
+                <p>By combining Itô's formula and Girsanov's theorem, we arrive at the cornerstone of modern quantitative finance: the **Arbitrage Pricing Theory** and risk-neutral pricing framework.</p>
+                <p>Suppose a risky asset (stock) $S(t)$ has real-world dynamics:
+                <p style="text-align: center;">$$ \frac{dS(t)}{S(t)} = \mu(t) dt + \sigma(t) dW(t) = \left( r(t) + \sigma(t) \lambda(t) \right) dt + \sigma(t) dW(t) $$</p>
+                where $r(t)$ is the risk-free short rate, $\sigma(t)$ is stock volatility, and $\lambda(t)$ is the **market price of risk** (risk premium per unit of volatility).</p>
+                <div style="background: #eff6ff; padding: 1.5rem; border-radius: 4px; border-left: 4px solid var(--accent); margin: 1.5rem 0;">
+                    <strong>The Risk-Neutral Measure $\mathbb{Q}$:</strong> Switching to the equivalent probability measure $\mathbb{Q}$ defined by Girsanov removes the risk premium. Under $\mathbb{Q}$, <em>all</em> traded assets grow exactly at the risk-free rate:
+                    <p style="text-align: center; font-size: 1.1rem; margin-top: 1rem; margin-bottom: 0.5rem;">
+                        $$ \frac{dS(t)}{S(t)} = r(t) dt + \sigma(t) dW^*(t) $$
+                    </p>
+                    Consequently, the discounted asset price process $S^*(t) = e^{-\int_0^t r(s) ds} S(t)$ is a **pure $\mathbb{Q}$-martingale**.
+                </div>
+                <p>This allows us to value any derivative payoff $V(T)$ at time $T$ as the discounted expectation of its future value under the risk-neutral measure: $V(0) = \mathbb{E}^{\mathbb{Q}}\left[ e^{-\int_0^T r(s) ds} V(T) \right]$. To hedge this option, a trader maintains a **replicating portfolio** holding $\Delta = \frac{\partial V}{\partial S}$ shares of stock.</p>
+            </div>
+            <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px;">
+                <h3 style="margin-top:0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+                <p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> How do you price a complex option whose value depends on a random stock? Real investors hate risk, and their risk aversion is impossible to measure. The breakthrough of Black, Scholes, and Merton was showing that we can pretend *everyone is risk-neutral* if we hedge our risk away using stock and bonds. Under this "fake" probability measure $\mathbb{Q}$, all assets grow at the interest rate, making option valuation a simple exercise in averaging.</p>
+                <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+                    <li style="margin-bottom: 1rem;"><strong>No Arbitrage:</strong> The "no free lunch" rule. If you can replicate the option's payoff perfectly by constantly buying and selling stock ($\Delta$ shares) and depositing cash in the bank, the option *must* cost exactly the same as the replicating portfolio today.</li>
+                    <li style="margin-bottom: 1rem;"><strong>Risk-Neutral Valuation:</strong> You do not need to guess if the stock will rise or fall in the real world. You just simulate it growing at the bank rate ($r$), find the average option payout, and discount it back to today.</li>
+                    <li style="margin-bottom: 1rem;"><strong>Delta ($\Delta$):</strong> The sensitivity of the option price to stock price moves. If $\Delta = 0.60$, the option price moves by $0.60 for every $1.00 move in the stock. To perfectly hedge, you buy exactly $0.60 shares of stock.</li>
+                    <li style="margin-bottom: 0;"><strong>Example:</strong> Pricing a Call option with strike $100. We simulate risk-neutral stock paths. At expiry $T$, if a path ends at $120, the payoff is $20. If it ends at $90, the payoff is $0. The discounted average of these payoffs is the option's fair price.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Interactive Visualization -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <h2>Interactive Simulation: Replicating Portfolio &amp; Option Pricing</h2>
+            <p style="margin-bottom: 1.5rem;">Adjust the parameters below to simulate stock price paths under the risk-neutral measure $\mathbb{Q}$. Compare the **Black-Scholes Analytical Option Price** with the empirical **Monte Carlo Simulation Average** from 100 paths. Note how they align, and examine the replicating delta ratio $\Delta$ and the hedging parameters.</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <!-- Sliders Column 1 -->
+                <div style="display: flex; flex-direction: column; gap: 1rem; grid-column: span 2;">
+                    <div style="display: flex; gap: 1rem;">
+                        <div style="flex: 1;">
+                            <label for="aptS0Slider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Stock Price $S_0$: <span id="aptS0Value">100.0</span></label>
+                            <input id="aptS0Slider" max="130" min="70" step="1.0" style="width: 100%;" type="range" value="100.0"/>
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="aptStrikeSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Strike Price $K$: <span id="aptStrikeValue">100.0</span></label>
+                            <input id="aptStrikeSlider" max="130" min="70" step="1.0" style="width: 100%;" type="range" value="100.0"/>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <div style="flex: 1;">
+                            <label for="aptRSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Interest Rate $r$: <span id="aptRValue">5.0%</span></label>
+                            <input id="aptRSlider" max="0.15" min="0.01" step="0.005" style="width: 100%;" type="range" value="0.05"/>
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="aptSigmaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Stock Volatility $\sigma$: <span id="aptSigmaValue">20.0%</span></label>
+                            <input id="aptSigmaSlider" max="0.50" min="0.05" step="0.01" style="width: 100%;" type="range" value="0.20"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Option Type Selection & Metrics -->
+                <div style="border-left: 2px solid #cbd5e1; padding-left: 1.5rem; display: flex; flex-direction: column; justify-content: center; gap: 0.5rem;">
+                    <label style="font-weight: 600; font-size: 0.85rem; color: #334155;">Option Type:</label>
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <button id="btnAptCall" style="flex: 1; background: var(--primary-color); color: white; border: none; padding: 0.4rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">Call Option</button>
+                        <button id="btnAptPut" style="flex: 1; background: #e2e8f0; color: #334155; border: none; padding: 0.4rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">Put Option</button>
+                    </div>
+                    <div style="font-size: 0.8rem; font-weight: 600; color: #64748b;">HEDGE RATIO (DELTA):</div>
+                    <div id="aptDeltaBox" style="font-size: 1.25rem; font-weight: 800; color: #1e3a8a; font-family: monospace;">$\Delta$ = 0.5982</div>
+                </div>
+
+                <!-- Live Results -->
+                <div style="border-left: 2px solid #cbd5e1; padding-left: 1.5rem; display: flex; flex-direction: column; justify-content: center; gap: 0.75rem;">
+                    <div>
+                        <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase;">Black-Scholes Price</div>
+                        <div id="aptBsPrice" style="font-size: 1.2rem; font-weight: 800; color: #1e293b; font-family: monospace;">$10.45</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase;">Monte Carlo Price</div>
+                        <div id="aptMcPrice" style="font-size: 1.2rem; font-weight: 800; color: var(--accent); font-family: monospace;">$10.38</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+                <div>
+                    <h3 style="margin-top:0; font-family: 'Inter', sans-serif; font-size: 1.1rem; color: #475569; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem;">Risk-Neutral Stock Paths (Under $\mathbb{Q}$)</h3>
+                    <div class="chart-container" style="height: 350px;">
+                        <canvas id="aptChart"></canvas>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <div class="card" style="margin-bottom: 0; background: #f8fafc; border: 1px solid #e2e8f0;">
+                        <h4 style="margin-top: 0; font-family: 'Inter', sans-serif; color: #334155; font-size: 0.95rem; border-bottom: 1px solid #cbd5e1; padding-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Replicating Portfolio Stats</h4>
+                        <ul style="padding-left: 1.2rem; font-size: 0.85rem; line-height: 1.8; color: #475569; margin-bottom: 0;">
+                            <li style="margin-bottom: 0.5rem;"><strong>Shares to Hold ($\Delta$):</strong> Buy <span id="statAptDelta" style="font-weight: 600; color: #1e3a8a;">0.5982</span> shares of stock.</li>
+                            <li style="margin-bottom: 0.5rem;"><strong>Cash in Bank ($B$):</strong> Borrow <span id="statAptCash" style="font-weight: 600; color: #dc2626;">-$49.37</span> at interest rate $r$.</li>
+                            <li style="margin-bottom: 0.5rem;"><strong>Option Beta:</strong> Leverage is <span id="statAptBeta" style="font-weight: 600;">5.72</span> (highly geared!).</li>
+                            <li style="margin-bottom: 0;"><strong>Probability of In-The-Money:</strong> $N(d_2) =$ <span id="statAptProb" style="font-weight: 600; color: var(--success);">52.3%</span>.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sample Exercise -->
+        <div class="card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
+            <h2 style="color: #166534;">Practice Exercise: Pricing Binary Options</h2>
+            <p style="color: #166534; font-weight: 500;">A **Binary (Digital) Call Option** pays out exactly $1.00 if the stock price $S(T) \ge K$ at expiry $T$, and $0.00 otherwise. Using the risk-neutral pricing formula, write down the pricing formula for this digital option in terms of the standard normal CDF $N(d_2)$, and calculate its price if $S_0 = 100$, $K = 100$, $r = 5\%$, $\sigma = 20\%$, and $T = 1$ year.</p>
+            <details style="background: white; padding: 1rem; border-radius: 6px; border: 1px solid #bbf7d0;">
+                <summary style="cursor: pointer; font-weight: 600; color: #15803d; list-style: none; display: flex; align-items: center;">
+                    <span style="margin-right: 0.5rem;">👉</span> Show Step-by-Step Solution
+                </summary>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; color: #334155;">
+                    <ol style="line-height: 1.8;">
+                        <li>Under the risk-neutral pricing framework, the value of the digital option is the discounted expected payoff under measure $\mathbb{Q}$:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$V(0) = e^{-rT} \mathbb{E}^{\mathbb{Q}}\left[ \mathbf{1}_{\{S(T) \ge K\}} \right] = e^{-rT} \mathbb{Q}\left( S(T) \ge K \right)$$
+                            </div>
+                        </li>
+                        <li>In the Black-Scholes model, the stock price at maturity $T$ is:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$S(T) = S_0 \exp\left( \left(r - \frac{1}{2}\sigma^2\right)T + \sigma \sqrt{T} Z \right) \quad \text{where } Z \sim \mathcal{N}(0,1)$$
+                            </div>
+                        </li>
+                        <li>Solve the inequality $S(T) \ge K$ for $Z$:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$S_0 \exp\left( \left(r - \frac{1}{2}\sigma^2\right)T + \sigma \sqrt{T} Z \right) \ge K \iff Z \ge \frac{\ln(K/S_0) - (r - 0.5\sigma^2)T}{\sigma \sqrt{T}}$$
+                            </div>
+                        </li>
+                        <li>This is exactly equivalent to $Z \ge -d_2$, where:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$d_2 = \frac{\ln(S_0/K) + (r - 0.5\sigma^2)T}{\sigma \sqrt{T}}$$
+                            </div>
+                            By symmetry of the standard normal distribution, $\mathbb{Q}(Z \ge -d_2) = N(d_2)$.
+                        </li>
+                        <li>Thus, the Black-Scholes digital option price formula is:
+                            <div style="text-align: center; margin: 0.5rem 0;">$$V(0) = e^{-rT} N(d_2)$$</div>
+                        </li>
+                        <li>Substitute the given values ($S_0=100$, $K=100$, $r=0.05$, $\sigma=0.20$, $T=1$):
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$d_2 = \frac{\ln(100/100) + (0.05 - 0.5 \times 0.20^2) \times 1}{0.20 \times \sqrt{1}} = \frac{0 + (0.05 - 0.02)}{0.20} = \frac{0.03}{0.20} = 0.15$$
+                            </div>
+                        </li>
+                        <li>Compute $N(d_2) = N(0.15) \approx 0.5596$ (55.96% probability of expiring in the money).</li>
+                        <li>Discount back to today:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$V(0) = e^{-0.05 \times 1} \times 0.5596 = 0.9512 \times 0.5596 \approx 0.5323$$
+                            </div>
+                        </li>
+                    </ol>
+                    <p><strong>Answer:</strong> The digital call option price formula is **$e^{-rT} N(d_2)$**. Under the given parameters, its price is **$0.5323$** (or **$53.23** cents per $1 payout).</p>
+                </div>
+            </details>
+        </div>
+    </div>
+</div>

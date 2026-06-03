@@ -1,0 +1,317 @@
+<div id="view-cqf-fp-deriv-futures-fundamentals" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <span class="badge" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #4f46e5;">Finance Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9;">Derivatives</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.5rem; font-weight: 800; border-bottom: none; padding-bottom: 0; background: linear-gradient(135deg, var(--text-color), #4f46e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Derivatives: Fundamentals of Futures &amp; Forwards</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1.05rem;">Exploring obligations, delivery models, index multipliers, and exchange vs. OTC clearing mechanics.</div>
+    </header>
+
+    <!-- Interactive Simulator Sandbox -->
+    <div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--accent);">
+        <h3 style="margin-top: 0; color: var(--accent); font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
+            <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Interactive Future Contract Settlement Sandbox
+        </h3>
+        <p style="font-size: 0.9rem; color: #6b7280; margin-bottom: 1.5rem;">Explore how physical commodities and stock index futures settle at expiration between Investor A (Short) and Investor B (Long):</p>
+
+        <!-- Tabs switcher -->
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+            <button class="nav-item tab-btn active" id="btn-fut-oil" onclick="selectFutScenario('oil')" style="padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: 1px solid var(--card-border); background: var(--metric-bg); color: var(--text-color);">1. 3m Crude Oil ($80 Agreed Price)</button>
+            <button class="nav-item tab-btn" id="btn-fut-idx" onclick="selectFutScenario('idx')" style="padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: 1px solid var(--card-border); background: var(--metric-bg); color: var(--text-color);">2. 3m Equity Index (1,500 Agreed Price)</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem; align-items: start;">
+            <!-- Simulation Inputs and Ledgers -->
+            <div>
+                <!-- Scenario notes -->
+                <div id="fut-scenario-desc" style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); font-size: 0.88rem; line-height: 1.5; margin-bottom: 1.5rem;">
+                    <!-- Updated dynamically -->
+                </div>
+
+                <!-- Price Slider -->
+                <div style="margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <label id="fut-slider-label" style="font-weight: 700; font-size: 0.9rem;">Expiry Delivery Spot Price ($S_T$):</label>
+                        <span id="fut-slider-val" style="font-size: 1.1rem; font-weight: 800; color: var(--accent);">$90.00 pb</span>
+                    </div>
+                    <input id="fut-price-slider" type="range" min="50" max="110" step="1" value="90" oninput="updateFutSimulation()" style="width: 100%;">
+                    
+                    <!-- Presets -->
+                    <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                        <button onclick="setFutSpotPreset(70)" class="nav-item" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; border-radius: 4px; cursor: pointer; border: 1px solid var(--card-border); background: var(--card-bg);">Preset: Low Price</button>
+                        <button onclick="setFutSpotPreset(80)" class="nav-item" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; border-radius: 4px; cursor: pointer; border: 1px solid var(--card-border); background: var(--card-bg);">Preset: Strike/Agreed Price</button>
+                        <button onclick="setFutSpotPreset(90)" class="nav-item" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; border-radius: 4px; cursor: pointer; border: 1px solid var(--card-border); background: var(--card-bg);">Preset: High Price</button>
+                    </div>
+                </div>
+
+                <!-- Double Sided Ledger -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <!-- Investor A (Short / Seller) -->
+                    <div id="fut-ledger-writer" style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; text-align: center;">
+                        <div style="font-weight: 700; font-size: 0.85rem; color: #6b7280; text-transform: uppercase;">Investor A (Short / Seller)</div>
+                        <div id="fut-emoji-writer" style="font-size: 3rem; margin: 0.5rem 0;">😡</div>
+                        <div style="font-size: 0.8rem; margin-bottom: 0.25rem;">Obligation: <strong>Sell Asset @ Strike</strong></div>
+                        <div style="border-top: 1px solid var(--card-border); padding-top: 0.5rem; font-size: 0.95rem; font-weight: 800;">
+                            Net P/L: <span id="fut-overall-writer" style="color: #ef4444;">-$10.00 pb</span>
+                        </div>
+                    </div>
+
+                    <!-- Investor B (Long / Buyer) -->
+                    <div id="fut-ledger-holder" style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; text-align: center;">
+                        <div style="font-weight: 700; font-size: 0.85rem; color: #6b7280; text-transform: uppercase;">Investor B (Long / Buyer)</div>
+                        <div id="fut-emoji-holder" style="font-size: 3rem; margin: 0.5rem 0;">😊</div>
+                        <div style="font-size: 0.8rem; margin-bottom: 0.25rem;">Obligation: <strong>Buy Asset @ Strike</strong></div>
+                        <div style="border-top: 1px solid var(--card-border); padding-top: 0.5rem; font-size: 0.95rem; font-weight: 800;">
+                            Net P/L: <span id="fut-overall-holder" style="color: #10b981;">+$10.00 pb</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settlement Flow Diagram -->
+            <div id="fut-settle-diagram" style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.5rem; border-radius: 12px; height: 100%; text-align: center;">
+                <h4 style="margin: 0 0 1rem 0; font-size: 1rem; font-weight: 700; color: var(--text-color);">Settlement &amp; Delivery Modality</h4>
+                
+                <div style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1.5rem;">
+                    <button class="nav-item set-style-btn active" id="btn-set-physical" onclick="toggleSetStyle('physical')" style="padding: 0.3rem 0.75rem; font-size: 0.75rem; border-radius: 6px; cursor: pointer; border: 1px solid var(--card-border); background: var(--card-bg);">Physical Delivery</button>
+                    <button class="nav-item set-style-btn" id="btn-set-cash" onclick="toggleSetStyle('cash')" style="padding: 0.3rem 0.75rem; font-size: 0.75rem; border-radius: 6px; cursor: pointer; border: 1px solid var(--card-border); background: var(--card-bg);">Cash Settlement</button>
+                </div>
+
+                <div id="diagram-canvas" style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.5rem; border-radius: 8px; font-size: 0.85rem; line-height: 1.5;">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- COMPARISON CARDS: Futures vs Forwards -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;">
+        <div class="card" style="border-top: 4px solid #8b5cf6;">
+            <h3 style="margin-top: 0; color: #8b5cf6; font-size: 1.15rem; font-weight: 700;">Over-the-Counter Forwards</h3>
+            <p style="font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                Bilateral, customizable agreements settled directly between two parties:
+            </p>
+            <ul style="font-size: 0.85rem; padding-left: 1.25rem; line-height: 1.6; color: var(--text-color);">
+                <li><strong>Tailored Sizing:</strong> Contracts are fully bespoke (e.g. customized delivery dates, unique grades).</li>
+                <li><strong>Counterparty Credit Risk:</strong> Performance depends on the other party's creditworthiness. Governed by bilateral collateral margin agreements.</li>
+            </ul>
+        </div>
+
+        <div class="card" style="border-top: 4px solid #f59e0b;">
+            <h3 style="margin-top: 0; color: #f59e0b; font-size: 1.15rem; font-weight: 700;">Exchange-Traded Futures</h3>
+            <p style="font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                Standardized contracts traded on centralized central exchanges (e.g. CME):
+            </p>
+            <ul style="font-size: 0.85rem; padding-left: 1.25rem; line-height: 1.6; color: var(--text-color);">
+                <li><strong>Highly Standardized:</strong> Contract dimensions, expiration increments, and delivery grading are rigidly predefined.</li>
+                <li><strong>Central Clearinghouse:</strong> Default risk is completely bypassed through clearinghouses requiring initial and daily maintenance margins.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+let activeFutScenario = 'oil';
+let activeSetStyle = 'physical';
+
+const futScenarios = {
+    'oil': {
+        name: '3-Month WTI Crude Oil Future',
+        agreed: 80,
+        min: 50,
+        max: 110,
+        default: 90,
+        multiplier: 1000, // 1000 barrels per contract
+        unit: ' pb',
+        currencySymbol: '$',
+        description: 'Investor B (Long) agrees to buy and Investor A (Short) agrees to sell 1,000 barrels of oil at $80 in 3 months. Physical delivery or cash difference settles at expiry.',
+        sliderLabel: 'Expiry Oil Spot Price ($/bbl):'
+    },
+    'idx': {
+        name: '3-Month Stock Equity Index Future',
+        agreed: 1500,
+        min: 1400,
+        max: 1600,
+        default: 1580,
+        multiplier: 25, // $25 per index point
+        unit: ' points',
+        currencySymbol: '$',
+        description: 'Investor B (Long) agrees to buy and Investor A (Short) agrees to sell the stock index value at 1,500 strike. Settles cash-only at $25 per index point above/below 1,500.',
+        sliderLabel: 'Expiry Index Level (Points):'
+    }
+};
+
+function selectFutScenario(scenKey) {
+    activeFutScenario = scenKey;
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.background = 'var(--metric-bg)';
+        btn.style.borderColor = 'var(--card-border)';
+    });
+
+    const activeBtn = document.getElementById('btn-fut-' + scenKey);
+    if (activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.style.background = 'rgba(79, 70, 229, 0.1)';
+        activeBtn.style.borderColor = '#4f46e5';
+    }
+
+    const config = futScenarios[scenKey];
+    
+    // Set Slider boundaries
+    const slider = document.getElementById('fut-price-slider');
+    slider.min = config.min;
+    slider.max = config.max;
+    slider.value = config.default;
+
+    // Index can only be cash settled!
+    const physBtn = document.getElementById('btn-set-physical');
+    if (scenKey === 'idx') {
+        physBtn.style.display = 'none';
+        toggleSetStyle('cash');
+    } else {
+        physBtn.style.display = 'inline-block';
+        toggleSetStyle('physical');
+    }
+
+    document.getElementById('fut-scenario-desc').innerHTML = `<strong>${config.name}:</strong> ${config.description}`;
+
+    updateFutSimulation();
+}
+
+function setFutSpotPreset(val) {
+    const config = futScenarios[activeFutScenario];
+    let spot = val;
+    if (activeFutScenario === 'idx') {
+        if (val === 70) spot = 1480;
+        else if (val === 80) spot = 1500;
+        else if (val === 90) spot = 1580;
+    }
+    document.getElementById('fut-price-slider').value = spot;
+    updateFutSimulation();
+}
+
+function toggleSetStyle(style) {
+    activeSetStyle = style;
+
+    document.querySelectorAll('.set-style-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.background = 'var(--card-bg)';
+        btn.style.borderColor = 'var(--card-border)';
+    });
+
+    const activeBtn = document.getElementById('btn-set-' + style);
+    if (activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.style.background = 'rgba(79, 70, 229, 0.1)';
+        activeBtn.style.borderColor = '#4f46e5';
+    }
+
+    updateFutSimulation();
+}
+
+function updateFutSimulation() {
+    const config = futScenarios[activeFutScenario];
+    const spot = parseFloat(document.getElementById('fut-price-slider').value);
+
+    // Update labels
+    document.getElementById('fut-slider-label').innerText = config.sliderLabel;
+    document.getElementById('fut-slider-val').innerText = config.currencySymbol + spot.toLocaleString() + config.unit;
+
+    // Mathematics Calculations
+    const diff = spot - config.agreed;
+    const isLongProfit = diff >= 0;
+
+    const longPLVal = diff * config.multiplier;
+    const shortPLVal = -diff * config.multiplier;
+
+    // Ledgers Formatting
+    const fmt = (val) => {
+        const sign = val >= 0 ? '+' : '';
+        return sign + config.currencySymbol + val.toLocaleString();
+    };
+
+    document.getElementById('fut-overall-holder').innerText = fmt(longPLVal);
+    document.getElementById('fut-overall-writer').innerText = fmt(shortPLVal);
+
+    const longOverallEl = document.getElementById('fut-overall-holder');
+    const shortOverallEl = document.getElementById('fut-overall-writer');
+    longOverallEl.style.color = longPLVal >= 0 ? '#10b981' : '#ef4444';
+    shortOverallEl.style.color = shortPLVal >= 0 ? '#10b981' : '#ef4444';
+
+    const longEmoji = document.getElementById('fut-emoji-holder');
+    const shortEmoji = document.getElementById('fut-emoji-writer');
+
+    if (diff === 0) {
+        longEmoji.innerText = '😐';
+        shortEmoji.innerText = '😐';
+    } else if (isLongProfit) {
+        longEmoji.innerText = '😊';
+        shortEmoji.innerText = '😡';
+    } else {
+        longEmoji.innerText = '😡';
+        shortEmoji.innerText = '😊';
+    }
+
+    // Update Flow Diagram
+    const flowCanvas = document.getElementById('diagram-canvas');
+    if (activeFutScenario === 'idx') {
+        // Index is Cash-Settled Only
+        const sign = diff >= 0 ? '➡️' : '⬅️';
+        const flowDir = diff >= 0 ? 'A pays B' : 'B pays A';
+        flowCanvas.innerHTML = `
+            <div style="font-weight: 700; color: #10b981; margin-bottom: 0.5rem;">Cash Settled Only (Index Futures)</div>
+            <div style="display:flex; justify-content:space-around; align-items:center; margin: 1rem 0;">
+                <strong>Short (A)</strong>
+                <div style="text-align:center;">
+                    <div style="font-size:1.5rem; line-height:1;">${sign}</div>
+                    <div style="font-size:0.75rem; font-family:monospace; font-weight:700;">${flowDir}<br>$${Math.abs(longPLVal).toLocaleString()} Cash</div>
+                </div>
+                <strong>Long (B)</strong>
+            </div>
+            <p style="font-size: 0.78rem; color: #6b7280; margin: 0;">No physical shares exist for indexes. The cash difference completely settles the transaction.</p>
+        `;
+    } else {
+        // Oil can be Cash or Physical
+        if (activeSetStyle === 'physical') {
+            flowCanvas.innerHTML = `
+                <div style="font-weight: 700; color: #4f46e5; margin-bottom: 0.5rem;">Physical Delivery flow</div>
+                <div style="display:flex; flex-direction:column; gap:0.5rem; margin:1rem 0;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:var(--metric-bg); padding:0.4rem; border-radius:6px;">
+                        <span>Long (B) Pays Cash to A:</span>
+                        <strong>$80,000 Cash</strong>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:var(--metric-bg); padding:0.4rem; border-radius:6px;">
+                        <span>Short (A) Delivers Oil to B:</span>
+                        <strong>1,000 Physical Barrels</strong>
+                    </div>
+                </div>
+                <p style="font-size: 0.78rem; color: #6b7280; margin: 0;">Regardless of current spot value, B exercises their $80 purchase right physically.</p>
+            `;
+        } else {
+            const sign = diff >= 0 ? '➡️' : '⬅️';
+            const flowDir = diff >= 0 ? 'A pays B' : 'B pays A';
+            flowCanvas.innerHTML = `
+                <div style="font-weight: 700; color: #10b981; margin-bottom: 0.5rem;">Cash Settled flow</div>
+                <div style="display:flex; justify-content:space-around; align-items:center; margin: 1rem 0;">
+                    <strong>Short (A)</strong>
+                    <div style="text-align:center;">
+                        <div style="font-size:1.5rem; line-height:1;">${sign}</div>
+                        <div style="font-size:0.75rem; font-family:monospace; font-weight:700;">${flowDir}<br>$${Math.abs(longPLVal).toLocaleString()} Cash</div>
+                    </div>
+                    <strong>Long (B)</strong>
+                </div>
+                <p style="font-size: 0.78rem; color: #6b7280; margin: 0;">No physical barrels are shipped. Only the net profit or loss is cash transferred.</p>
+            `;
+        }
+    }
+}
+
+// Initialise everything
+setTimeout(() => {
+    selectFutScenario('oil');
+}, 500);
+</script>

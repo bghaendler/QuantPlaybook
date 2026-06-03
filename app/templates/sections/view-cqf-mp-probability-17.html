@@ -1,0 +1,167 @@
+<div id="view-cqf-mp-probability-17" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">1.7 PMF &amp; PDF</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.7 Probability Distributions (PMF &amp; PDF)</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Discrete mass functions, continuous density functions, integration properties, and normalizations.</div>
+    </header>
+
+    <!-- Core Theory Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.7.1 Probability Functions &amp; Integration</h3>
+        <p>Depending on the type of Random Variable (Discrete or Continuous), the probability distribution is defined differently:</p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+            <li><strong>Discrete RVs (Probability Mass Function, PMF):</strong> Maps individual outcomes to specific probability values. E.g. Sum of two fair dice: $P(X=7) = \frac{6}{36} = \frac{1}{6}$.</li>
+            <li><strong>Continuous RVs (Probability Density Function, PDF):</strong> Because continuous random variables take an infinite number of exact values, the probability of hitting any specific value is strictly zero: $P(X=x) = 0$. Instead, we define a PDF $f(x)$ where probability corresponds to area under the curve:</li>
+        </ul>
+        <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.6rem 0;">
+            $$P(a < X < b) = \int_a^b f(x) \, dx$$
+        </p>
+        <p><strong>Two Core Properties of a PDF:</strong></p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li>$f(x) \ge 0$ for all $x \in \mathbb{R}$ (no negative probability densities).</li>
+            <li>$\int_{-\infty}^{+\infty} f(x) \, dx = 1$ (the total area under the density curve is exactly 1).</li>
+        </ul>
+    </div>
+
+    <!-- Area Integration Visualizer -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.7.2 Interactive Continuous PDF Integration Laboratory</h3>
+        <p>Evaluate and shade the area under the exponential density curve $f(x) = \lambda e^{-\lambda x}$ (for $x \ge 0$) dynamically between bounds $a$ and $b$:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls -->
+                <div>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; align-items: center;">
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Rate parameter $\lambda$:</label>
+                            <input id="prob17Lambda" type="number" value="1.0" step="0.2" min="0.2" max="3" oninput="calculateInteractivePDF()" style="width: 60px; padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 700;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Lower bound $a$:</label>
+                            <input id="prob17A" type="number" value="0.2" step="0.1" min="0" max="4" oninput="calculateInteractivePDF()" style="width: 60px; padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 700;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Upper bound $b$:</label>
+                            <input id="prob17B" type="number" value="2.0" step="0.2" min="0" max="4" oninput="calculateInteractivePDF()" style="width: 60px; padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 700;">
+                        </div>
+                    </div>
+
+                    <div style="font-size: 0.85rem; line-height: 1.6; color: var(--text-color); background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid #10b981;">
+                        <div id="prob17OutputVal"><strong>Analytical Integral:</strong> $\int_{0.20}^{2.00} 1.0 e^{-1.0 x} dx = 0.6835$</div>
+                    </div>
+                </div>
+
+                <!-- Canvas Visualizer -->
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
+                    <canvas id="prob17Canvas" width="300" height="180" style="width: 100%; height: 180px; background: #000; border-radius: 6px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.calculateInteractivePDF = function() {
+                const lambda = parseFloat(document.getElementById('prob17Lambda').value);
+                const a = parseFloat(document.getElementById('prob17A').value);
+                const b = parseFloat(document.getElementById('prob17B').value);
+
+                const elVal = document.getElementById('prob17OutputVal');
+
+                if (isNaN(lambda) || isNaN(a) || isNaN(b) || lambda <= 0) {
+                    return;
+                }
+
+                // Analytical solution: F(b) - F(a) where F(x) = 1 - e^{-\lambda x}
+                const F = (x) => 1 - Math.exp(-lambda * x);
+                const prob = F(b) - F(a);
+
+                elVal.innerHTML = `<strong>Analytical Area Integral:</strong> $P(${a.toFixed(2)} < X < ${b.toFixed(2)}) = e^{-${lambda.toFixed(1)}a} - e^{-${lambda.toFixed(1)}b} = ${prob.toFixed(4)}$`;
+
+                drawPDFGraph(lambda, a, b);
+
+                const parent = document.getElementById('view-cqf-mp-probability-17');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawPDFGraph(lambda, a, b) {
+                const canvas = document.getElementById('prob17Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Grid
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= canvas.width; i += 30) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, canvas.height);
+                    ctx.stroke();
+                }
+
+                const xMin = 0, xMax = 4.0;
+                const yMin = 0, yMax = 3.0;
+
+                const toCanvasX = (x) => ((x - xMin) / (xMax - xMin)) * canvas.width;
+                const toCanvasY = (y) => canvas.height - ((y - yMin) / (yMax - yMin)) * canvas.height;
+
+                const f = (x) => lambda * Math.exp(-lambda * x);
+
+                // Shade area under the curve
+                ctx.fillStyle = 'rgba(16, 185, 129, 0.25)';
+                ctx.beginPath();
+                let firstShade = true;
+                const startPX = Math.round(toCanvasX(Math.min(a, b)));
+                const endPX = Math.round(toCanvasX(Math.max(a, b)));
+
+                for (let px = startPX; px <= endPX; px++) {
+                    const x = xMin + (px / canvas.width) * (xMax - xMin);
+                    const y = f(x);
+                    if (firstShade) {
+                        ctx.moveTo(px, toCanvasY(0));
+                        ctx.lineTo(px, toCanvasY(y));
+                        firstShade = false;
+                    } else {
+                        ctx.lineTo(px, toCanvasY(y));
+                    }
+                }
+                ctx.lineTo(toCanvasX(Math.max(a, b)), toCanvasY(0));
+                ctx.closePath();
+                ctx.fill();
+
+                // Plot PDF curve
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                let firstCurve = true;
+                for (let px = 0; px <= canvas.width; px++) {
+                    const x = xMin + (px / canvas.width) * (xMax - xMin);
+                    const y = f(x);
+                    if (y < yMin || y > yMax) continue;
+                    if (firstCurve) {
+                        ctx.moveTo(px, toCanvasY(y));
+                        firstCurve = false;
+                    } else {
+                        ctx.lineTo(px, toCanvasY(y));
+                    }
+                }
+                ctx.stroke();
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('prob17Lambda')) calculateInteractivePDF();
+            }, 100);
+        })();
+    </script>
+</div>

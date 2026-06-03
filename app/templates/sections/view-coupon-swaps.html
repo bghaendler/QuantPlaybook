@@ -1,0 +1,390 @@
+<div id="view-coupon-swaps" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">1.3 Coupon Bonds and Interest Rate Swaps</h1>
+        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Pricing fixed coupon bonds, floating rate notes, and interest rate swaps, including the par-swap rate and the ex-dividend convention.</div>
+    </header>
+
+    <div style="display: flex; flex-direction: column; gap: 2.5rem; max-width: 1400px; margin-bottom: 4rem;">
+        
+        <!-- 1. Fixed Coupon Bonds -->
+        <div class="container" style="margin-bottom: 0; gap: 2rem; align-items: stretch; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+            <div class="card" style="margin-bottom: 0; padding: 2rem; border: 1px solid var(--card-border); background: var(--card-bg);">
+                <h2>Fixed Coupon Bonds</h2>
+                <p>Bonds with maturities beyond a year typically pay coupons. If these coupon rates are fixed, the instrument is a <strong>fixed coupon bond</strong>. It is specified by:</p>
+                <ul style="margin-left: 1.25rem; line-height: 1.7; display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem;">
+                    <li>Coupon payment dates $T_1 < T_2 < \dots < T_n$, where $T_n$ is the <strong>maturity</strong>.</li>
+                    <li>Fixed coupon payments $c_1, c_2, \dots, c_n$ paid at each coupon date $T_i$.</li>
+                    <li>A principal (notional) value $N$ paid at maturity $T_n$.</li>
+                </ul>
+                <p>The price of the coupon bond at calendar date $t \le T_n$ is given by multiplying the remaining cash flows by the respective zero-coupon bond prices and summing them up.</p>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; background: #f8fafc; border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; color: #334155; font-family: 'Inter', sans-serif;">The Ex-Dividend Pricing Convention</h3>
+                    <p>In interest rate markets, if the valuation date $t$ coincides exactly with a coupon date $T_i$, then the coupon itself is not part of the price anymore (the buyer does not receive it). In other words, the price is quoted <strong>ex-dividend</strong>.</p>
+                    <p>Mathematically, the time-$t$ price of the coupon bond is:</p>
+                    <div style="background: rgba(37, 99, 235, 0.04); padding: 1.25rem; border-left: 4px solid var(--accent); border-radius: 6px; margin: 1rem 0; font-family: 'Inter', sans-serif;">
+                        $$ p(t) = \sum_{i=1}^n P(t, T_i) c_i \mathbb{1}_{\{t < T_i\}} + P(t, T_n) N $$
+                    </div>
+                    <p style="margin-bottom: 0; font-size: 0.9rem; color: #64748b;">The indicator function $\mathbb{1}_{\{t < T_i\}}$ enforces the ex-dividend convention: coupons paid on or before $t$ are excluded.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Floating Rate Notes & Replication -->
+        <div class="card" style="margin-bottom: 0;">
+            <h2>Floating Rate Notes (FRNs) & Replication Proof</h2>
+            <p>If coupon payments are floating instead of fixed, the instrument is a <strong>floating rate note (FRN)</strong>. It is specified by a sequence of reset and settlement dates $T_0 < T_1 < \dots < T_n$, where $T_n$ is the maturity, and $T_0$ is the first reset date (there is no cash flow at $T_0$).</p>
+            <p>The floating coupon paid at $T_i$ is determined by the simple spot rate prevailing over the prior period $[T_{i-1}, T_i]$:</p>
+            <div style="text-align: center; margin: 1.25rem 0;">
+                $$ C_i = (T_i - T_{i-1}) L(T_{i-1}, T_i) N $$
+            </div>
+            
+            <h3 style="color: var(--accent); margin-top: 1.5rem;">Replication Strategy (Absence of Arbitrage)</h3>
+            <p>We can prove that the price of an FRN at any calendar date $t \le T_0$ is surprisingly simple: <strong>$p(t) = N P(t, T_0)$</strong>. We prove this by constructing a self-financing strategy that yields the exact same cash flows as the FRN:</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                <div style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h4 style="margin-top: 0; color: #475569;">Step 1: Inception at $t \le T_0$</h4>
+                    <p style="font-size: 0.9rem; line-height: 1.6;">Buy $N$ units of zero-coupon bonds maturing at $T_0$. The initial cost today is exactly:</p>
+                    <div style="font-weight: 700; text-align: center; color: #2563eb; margin: 0.5rem 0;">
+                        $$ \text{Initial Cost} = N P(t, T_0) $$
+                    </div>
+                </div>
+                <div style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h4 style="margin-top: 0; color: #475569;">Step 2: At Reset Date $T_0$</h4>
+                    <p style="font-size: 0.9rem; line-height: 1.6;">The ZCBs mature, paying $N$ cash. Reinvest this amount to buy ZCBs maturing at $T_1$. The number of $T_1$-bonds purchased is:</p>
+                    <div style="font-weight: 700; text-align: center; color: #2563eb; margin: 0.5rem 0;">
+                        $$ \text{Bonds Held} = \frac{N}{P(T_0, T_1)} $$
+                    </div>
+                </div>
+                <div style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h4 style="margin-top: 0; color: #475569;">Step 3: At Coupon Date $T_1$</h4>
+                    <p style="font-size: 0.9rem; line-height: 1.6;">The $T_1$-bonds mature, paying $\frac{N}{P(T_0, T_1)}$ units. This maturing payoff can be decomposed as:</p>
+                    <div style="font-weight: 700; text-align: center; color: #16a34a; margin: 0.5rem 0;">
+                        $$ N + N \left(\frac{1}{P(T_0, T_1)} - 1\right) = N + C_1 $$
+                    </div>
+                    <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 0;">We pay out the floating coupon $C_1$, keep the principal $N$, and repeat the scheme for $T_2$!</p>
+                </div>
+            </div>
+            
+            <p>Repeating this process until maturity $T_n$ perfectly matches the floating coupon payouts $C_i$ at each $T_i$, and pays the principal $N$ at maturity. Because the cash flows are replicated perfectly, the initial cost must equal the price, proving that:</p>
+            <div style="background: rgba(16, 185, 129, 0.05); padding: 1.25rem; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.15); text-align: center; font-size: 1.15rem; font-weight: 700; color: #065f46; margin: 1rem 0;">
+                $$ p(t) = N P(t, T_0) \quad \text{for } t \le T_0 $$
+                At the first reset date ($t = T_0$), the price of the FRN ex-coupon is exactly the par value: $p(T_0) = N$.
+            </div>
+        </div>
+
+        <!-- 3. Interest Rate Swaps -->
+        <div class="container" style="margin-bottom: 0; gap: 2rem; align-items: stretch; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+            <div class="card" style="margin-bottom: 0;">
+                <h2>Interest Rate Swaps (IRS)</h2>
+                <p>An <strong>Interest Rate Swap (IRS)</strong> is an over-the-counter derivative contract in which two parties exchange cash flows of a fixed coupon bond and a floating rate note. It is specified by:</p>
+                <ul style="margin-left: 1.25rem; line-height: 1.7; display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem;">
+                    <li>Reset and settlement dates $T_0 < T_1 < \dots < T_n$.</li>
+                    <li>A fixed rate $K$, a notional $N$, and constant payment frequency $\delta = T_i - T_{i-1}$.</li>
+                </ul>
+                <p>In a <strong>payer interest rate swap</strong> settled in arrears, the holder pays the fixed rate $K$ and receives the floating rate. The net cash flows match holding an FRN and going short a fixed coupon bond.</p>
+                <p>The value of a payer swap at calendar date $t \le T_0$ is:</p>
+                <div style="background: rgba(124, 58, 237, 0.04); padding: 1rem; border-left: 4px solid #7c3aed; border-radius: 6px; margin: 1rem 0;">
+                    $$ V_p(t) = N \left( P(t, T_0) - P(t, T_n) - \delta K \sum_{i=1}^n P(t, T_i) \right) $$
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; padding: 2rem; color: #451a03; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; color: #b45309; font-size: 1.25rem; font-weight: 800; font-family: 'Inter', sans-serif;">The Swap Rate $R_{swap}(t)$</h3>
+                    <p>The **Swap Rate** is the unique fixed rate $K$ which makes the present value of the swap equal to zero at inception ($V_p(t) = 0$):</p>
+                    <div style="margin: 1.25rem 0; font-weight: 700; text-align: center; color: #b45309;">
+                        $$ R_{swap}(t) = \frac{P(t, T_0) - P(t, T_n)}{\delta \sum_{i=1}^n P(t, T_i)} $$
+                    </div>
+                    <p style="font-size: 0.95rem; line-height: 1.65; margin-bottom: 0;">We can also express the swap rate as an annuity-weighted average of forward rates:</p>
+                    <div style="margin: 0.5rem 0; text-align: center;">
+                        $$ R_{swap}(t) = \sum_{i=1}^n w_i(t) F(t, T_{i-1}, T_i) $$
+                    </div>
+                    <p style="font-size: 0.9rem; opacity: 0.9; margin-top: 0.5rem;">with weights $w_i(t) = \frac{P(t, T_i)}{\sum_{j=1}^n P(t, T_j)}$.</p>
+                </div>
+                
+                <div style="background: rgba(180, 83, 9, 0.05); padding: 1rem; border-radius: 8px; border: 1px solid rgba(180, 83, 9, 0.1); margin-top: 1rem;">
+                    <strong style="color: #b45309;">Lemma 1 (Par Value Relation):</strong> A fixed-coupon bond has par value at $T_0$ if and only if its coupon rates equal the corresponding swap rate:
+                    $$ 1 = \sum_{i=1}^n P(T_0, T_i) \delta R_{swap}(T_0) + P(T_0, T_n) $$
+                </div>
+            </div>
+        </div>
+
+        <!-- INTERACTIVE TERM STRUCTURE & SWAP SIMULATOR -->
+        <div class="card" style="padding: 2.5rem; border: 1px solid var(--card-border); background: var(--card-bg);">
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.02em;">Interactive Spot Swap Rate Curve & Valuation Engine</h2>
+            <p style="font-size: 1rem; color: var(--text-color); opacity: 0.75; margin-bottom: 2rem;">
+                Adjust base yield parameters to see how the ZCB spot yield curve and the resulting spot swap rate curve shift side-by-side. Use the Swap Product Builder to value custom swap contracts in real-time.
+            </p>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0; justify-content: space-between; align-items: stretch;">
+                <div style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 0.25rem;">
+                    <label for="csInitialSlider" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Base Short Rate $r(0)$: <span id="csInitialValue" style="color: #2563eb;">4.0%</span></label>
+                    <input id="csInitialSlider" max="0.15" min="0.005" step="0.005" style="width: 100%; cursor: pointer;" type="range" value="0.04"/>
+                </div>
+                <div style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 0.25rem;">
+                    <label for="csSlopeSlider" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Yield Curve Slope: <span id="csSlopeValue" style="color: #2563eb;">2.0%</span></label>
+                    <input id="csSlopeSlider" max="0.08" min="-0.08" step="0.002" style="width: 100%; cursor: pointer;" type="range" value="0.02"/>
+                </div>
+                <div style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 0.25rem;">
+                    <label for="csHumpSlider" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Yield Curve Hump: <span id="csHumpValue" style="color: #2563eb;">-1.0%</span></label>
+                    <input id="csHumpSlider" max="0.10" min="-0.10" step="0.005" style="width: 100%; cursor: pointer;" type="range" value="-0.01"/>
+                </div>
+                <div style="flex: 1 1 150px; min-width: 0; display: flex; flex-direction: column; gap: 0.25rem;">
+                    <label for="csFrequencySelect" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Payment Frequency ($\delta$)</label>
+                    <select id="csFrequencySelect" style="padding: 0.5rem; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-weight: 600; color: #334155; outline: none; cursor: pointer;">
+                        <option value="1.0" selected>Annual (&delta; = 1.0)</option>
+                        <option value="0.5">Semi-Annual (&delta; = 0.5)</option>
+                        <option value="0.25">Quarterly (&delta; = 0.25)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Dynamic Graphs & Market Quotes side-by-side -->
+            <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem; margin-bottom: 2.5rem; align-items: stretch;">
+                <div class="card" style="margin-bottom: 0; padding: 1.5rem; border: 1px solid var(--card-border); background: var(--card-bg); height: 420px; position: relative;">
+                    <h4 style="margin: 0 0 1rem 0; font-size: 1.05rem; font-weight: 700; color: var(--text-color); text-align: center;">Spot Yield Curve $y(0, T)$ vs. Spot Swap Rate Curve $R_{swap}(0)$</h4>
+                    <div style="height: 340px; position: relative;">
+                        <canvas id="couponSwapsChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom: 0; padding: 1.5rem; border: 1px solid var(--card-border); background: var(--card-bg); display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h4 style="margin: 0 0 0.75rem 0; font-size: 1.05rem; font-weight: 700; color: var(--text-color); text-align: center;">Spot Swap Rates Quote Sheet</h4>
+                        <div style="max-height: 280px; overflow-y: auto; border: 1px solid var(--card-border); border-radius: 8px;">
+                            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+                                <thead>
+                                    <tr style="background: var(--metric-bg); border-bottom: 1px solid var(--card-border);">
+                                        <th style="padding: 0.6rem 1rem; color: var(--text-color); font-weight: 700;">Swap Length</th>
+                                        <th style="padding: 0.6rem 1rem; color: var(--text-color); font-weight: 700;">ZCB Price $P(0, T)$</th>
+                                        <th style="padding: 0.6rem 1rem; color: #2563eb; font-weight: 700;">Swap Rate $R_{swap}$</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="swapQuotesTableBody">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.75rem; color: #64748b; margin-top: 0.5rem; text-align: center;">Quotes generated using a Nelson-Siegel yield curve calibration model.</p>
+                </div>
+            </div>
+
+            <!-- Swap Product Builder & Valuation Calculator -->
+            <div style="background: rgba(37, 99, 235, 0.02); border: 1px solid rgba(37, 99, 235, 0.15); border-radius: 12px; padding: 2rem;">
+                <h3 style="margin-top: 0; margin-bottom: 1.25rem; color: #1e3a8a; font-size: 1.25rem; font-weight: 800;">Live Swap Product Builder &amp; Valuation Calculator</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <label for="sbLengthSlider" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Swap Maturity (Length): <span id="sbLengthValue" style="color: #2563eb; font-family: monospace;">10Y</span></label>
+                        <input id="sbLengthSlider" max="30" min="1" step="1" style="width: 100%; cursor: pointer;" type="range" value="10"/>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <label for="sbStrikeSlider" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Fixed Strike Rate $K$: <span id="sbStrikeValue" style="color: #2563eb; font-family: monospace;">4.00%</span></label>
+                        <input id="sbStrikeSlider" max="0.15" min="0.005" step="0.0005" style="width: 100%; cursor: pointer;" type="range" value="0.04"/>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <label for="sbTypeSelect" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Swap Position Type</label>
+                        <select id="sbTypeSelect" style="padding: 0.5rem; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-weight: 600; color: #334155; outline: none; cursor: pointer;">
+                            <option value="payer" selected>Payer Swap (Pay Fixed, Rec Float)</option>
+                            <option value="receiver">Receiver Swap (Pay Float, Rec Fixed)</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <label for="sbNotionalInput" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Notional Principal $N$</label>
+                        <input id="sbNotionalInput" type="number" value="1000000" style="padding: 0.5rem; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-weight: 600; color: #334155; outline: none; width: 100%;"/>
+                    </div>
+                </div>
+
+                <!-- Live Metrics Output -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; align-items: stretch;">
+                    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; border-left: 4px solid #3b82f6;">
+                        <div style="font-size: 0.8rem; color: #64748b; font-weight: 700; text-transform: uppercase;">At-The-Money Swap Rate $R_{swap}$</div>
+                        <div id="sbAtmSwapRate" style="font-size: 1.8rem; font-weight: 800; color: #1e3a8a; font-family: monospace; margin-top: 0.25rem;">4.2513%</div>
+                    </div>
+                    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; border-left: 4px solid #7c3aed;">
+                        <div style="font-size: 0.8rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Annuity factor $A(0) = \sum \delta P(0, T_i)$</div>
+                        <div id="sbAnnuityFactor" style="font-size: 1.8rem; font-weight: 800; color: #6d28d9; font-family: monospace; margin-top: 0.25rem;">8.1092</div>
+                    </div>
+                    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; border-left: 4px solid #10b981;" id="sbSwapValueCard">
+                        <div style="font-size: 0.8rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Swap Net Present Value $V(0)$</div>
+                        <div id="sbSwapValue" style="font-size: 1.8rem; font-weight: 800; color: #10b981; font-family: monospace; margin-top: 0.25rem;">+$24,189.20</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // Section 1.3: Coupon Bonds & IR Swaps Charting & Calculations
+    // ============================================================
+    let csChartInstance = null;
+
+    function runCouponSwapsSimulation() {
+        const r0 = parseFloat(document.getElementById('csInitialSlider').value);
+        const slope = parseFloat(document.getElementById('csSlopeSlider').value);
+        const hump = parseFloat(document.getElementById('csHumpSlider').value);
+        const delta = parseFloat(document.getElementById('csFrequencySelect').value);
+
+        // Update labels
+        document.getElementById('csInitialValue').textContent = (r0 * 100).toFixed(1) + '%';
+        document.getElementById('csSlopeValue').textContent = (slope * 100).toFixed(1) + '%';
+        document.getElementById('csHumpValue').textContent = (hump * 100).toFixed(1) + '%';
+
+        // Nelson-Siegel Curve definitions
+        const tau = 4.0;
+        function getNSYield(T) {
+            if (T === 0) return r0;
+            const factor1 = (1 - Math.exp(-T / tau)) / (T / tau);
+            const factor2 = factor1 - Math.exp(-T / tau);
+            const beta0 = r0 + slope; 
+            const beta1 = -slope;
+            const beta2 = hump * 3.0;
+            return beta0 + beta1 * factor1 + beta2 * factor2;
+        }
+
+        function getNSDiscount(T) {
+            return Math.exp(-getNSYield(T) * T);
+        }
+
+        // Calculate Spot Swap Rate for length L (years) with frequency delta
+        function calculateSwapRate(L) {
+            const steps = Math.round(L / delta);
+            let sumZCB = 0.0;
+            for (let i = 1; i <= steps; i++) {
+                sumZCB += getNSDiscount(i * delta);
+            }
+            const p0 = 1.0; // Spot starting
+            const pN = getNSDiscount(L);
+            return (p0 - pN) / (delta * sumZCB);
+        }
+
+        // Compile Plot Data
+        const maturities = [];
+        const yields = [];
+        const swapRates = [];
+
+        for (let i = 1; i <= 30; i++) {
+            maturities.push(i);
+            yields.push(getNSYield(i) * 100);
+            swapRates.push(calculateSwapRate(i) * 100);
+        }
+
+        // Render Quotes Table
+        const quoteTenors = [1, 2, 3, 4, 5, 7, 10, 15, 20, 30];
+        const tbody = document.getElementById('swapQuotesTableBody');
+        tbody.innerHTML = '';
+        quoteTenors.forEach(tenor => {
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = '1px solid var(--card-border)';
+            tr.innerHTML = `
+                <td style="padding: 0.6rem 1rem; font-weight: 700; color: var(--text-color);">${tenor}Y</td>
+                <td style="padding: 0.6rem 1rem; font-family: monospace; color: var(--text-color); opacity: 0.85;">${getNSDiscount(tenor).toFixed(5)}</td>
+                <td style="padding: 0.6rem 1rem; font-family: monospace; font-weight: bold; color: #2563eb;">${(calculateSwapRate(tenor) * 100).toFixed(4)}%</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        // Render Spot Yield vs. Spot Swap Curve Chart
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#64748b';
+
+        const ctx = document.getElementById('couponSwapsChart').getContext('2d');
+        if (csChartInstance) { csChartInstance.destroy(); }
+        csChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: maturities,
+                datasets: [
+                    {
+                        label: 'ZCB Spot Yield y(0, T)',
+                        data: yields,
+                        borderColor: '#2563eb',
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        tension: 0.2,
+                        fill: false
+                    },
+                    {
+                        label: 'Spot Swap Rate R_swap(0)',
+                        data: swapRates,
+                        borderColor: '#7c3aed',
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        tension: 0.2,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'top', labels: { color: tickColor } } },
+                scales: {
+                    x: {
+                        grid: { color: gridColor },
+                        ticks: { color: tickColor },
+                        title: { display: true, text: 'Maturity / Swap Length (Years)', color: tickColor }
+                    },
+                    y: {
+                        grid: { color: gridColor },
+                        ticks: { color: tickColor },
+                        title: { display: true, text: 'Rate (%)', color: tickColor }
+                    }
+                }
+            }
+        });
+
+        // Swap Product Builder Valuation
+        const swapLength = parseInt(document.getElementById('sbLengthSlider').value);
+        const fixedStrike = parseFloat(document.getElementById('sbStrikeSlider').value);
+        const swapType = document.getElementById('sbTypeSelect').value;
+        const notional = parseFloat(document.getElementById('sbNotionalInput').value) || 0.0;
+
+        document.getElementById('sbLengthValue').textContent = swapLength + 'Y';
+        document.getElementById('sbStrikeValue').textContent = (fixedStrike * 100).toFixed(2) + '%';
+
+        const atmSwapRate = calculateSwapRate(swapLength);
+        const steps = Math.round(swapLength / delta);
+        let annuity = 0.0;
+        for (let i = 1; i <= steps; i++) {
+            annuity += getNSDiscount(i * delta);
+        }
+        annuity *= delta;
+
+        // Swap Value V(0) = N * A(0) * (R_swap - K) for Payer
+        const valueSign = swapType === 'payer' ? 1.0 : -1.0;
+        const swapValue = notional * annuity * (atmSwapRate - fixedStrike) * valueSign;
+
+        document.getElementById('sbAtmSwapRate').textContent = (atmSwapRate * 100).toFixed(4) + '%';
+        document.getElementById('sbAnnuityFactor').textContent = annuity.toFixed(4);
+
+        const valEl = document.getElementById('sbSwapValue');
+        const cardEl = document.getElementById('sbSwapValueCard');
+        valEl.textContent = (swapValue >= 0 ? '+' : '-') + '$' + Math.abs(swapValue).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        
+        if (Math.abs(swapValue) < 0.01) {
+            valEl.style.color = '#1e3a8a';
+            cardEl.style.borderLeft = '4px solid #3b82f6';
+        } else if (swapValue > 0) {
+            valEl.style.color = '#059669';
+            cardEl.style.borderLeft = '4px solid #10b981';
+        } else {
+            valEl.style.color = '#dc2626';
+            cardEl.style.borderLeft = '4px solid #ef4444';
+        }
+    }
+
+    // Attach Listeners
+    ['csInitialSlider', 'csSlopeSlider', 'csHumpSlider', 'csFrequencySelect', 'sbLengthSlider', 'sbStrikeSlider', 'sbTypeSelect', 'sbNotionalInput'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', runCouponSwapsSimulation);
+    });
+</script>

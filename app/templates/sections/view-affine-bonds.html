@@ -1,0 +1,110 @@
+<div id="view-affine-bonds" style="display: none;">
+<header>
+<h1>Module 3.2: Short Rate Models</h1>
+<div class="subtitle" style="color: #6b7280;">3. Affine Bond Prices (Vasicek)</div>
+</header>
+<div class="container" style="grid-template-columns: 1fr; gap: 3rem; max-width: 1400px;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+<div class="card" style="margin-bottom: 0;">
+<h2>3. Affine Bond Prices (Vasicek)</h2>
+<p>By showing that the time-integrated short rate $\int r(s)ds$ is conditionally normal, we can use the moment generating function to compute the bond price expectation. The Vasicek model yields <strong>exponential affine</strong> bond prices:</p>
+<div style="background: #f9fafb; padding: 1.5rem; border-radius: 4px; border-left: 4px solid var(--accent); margin: 1.5rem 0;">
+<p style="text-align: center; font-size: 1.1rem; margin: 0;">$$ P(t, T) = e^{A(T-t) - B(T-t)r(t)} $$</p>
+</div>
+<p>The functions $A(\tau)$ and $B(\tau)$ solve a system of Riccati differential equations:</p>
+<p style="text-align: center;">$$ A'(\tau) = \kappa\theta B(\tau) - \frac{\sigma^2}{2}B(\tau)^2 \quad ; \quad B'(\tau) = -\kappa B(\tau) + 1 $$</p>
+<p>with initial conditions $A(0)=0$ and $B(0)=0$. These have analytical closed-form solutions.</p>
+</div>
+<div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px;">
+<h3 style="margin-top:0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+<p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> "Affine" is math-speak for "looks like a straight line equation in the exponent".</p>
+<ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+<li style="margin-bottom: 1rem;"><strong>Why it's Brilliant:</strong> Instead of running millions of slow Monte Carlo simulations to find the bond price, we just plug the current short rate $r(t)$ into a simple formula.</li>
+<li style="margin-bottom: 1rem;"><strong>Pre-calculated Factors:</strong> The functions $A$ and $B$ only depend on the time to maturity ($T-t$). They are pre-calculated weights.</li>
+<li style="margin-bottom: 0;"><strong>Example:</strong> The price of a 10-year bond simply depends on today's short rate, shifted and scaled by factors ($A$ and $B$) that are instantly calculated.</li>
+</ul>
+</div>
+</div>
+<!-- Interactive Visualization -->
+<div class="card" style="margin-bottom: 2rem;">
+<h2>Interactive Visualization: Analytical Yield Curves</h2>
+<p style="margin-bottom: 1.5rem;">Use the exact analytical $A(\tau)$ and $B(\tau)$ functions to plot the continuous Bond Price curve $P(0, \tau)$ and the Yield Curve $Y(\tau) = -\frac{1}{\tau} \ln P(0, \tau)$ up to 30 years maturity.</p>
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+<!-- Sliders -->
+<div style="display: flex; flex-direction: column; gap: 1rem; grid-column: span 2;">
+<div style="display: flex; gap: 1rem;">
+<div style="flex: 1;">
+<label for="affInitialSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Current Rate $r(0)$: <span id="affInitialValue">3.0%</span></label>
+<input id="affInitialSlider" max="0.15" min="0" step="0.01" style="width: 100%;" type="range" value="0.03"/>
+</div>
+<div style="flex: 1;">
+<label for="affThetaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Long-Term Mean ($\theta$): <span id="affThetaValue">5.0%</span></label>
+<input id="affThetaSlider" max="0.15" min="0" step="0.01" style="width: 100%;" type="range" value="0.05"/>
+</div>
+</div>
+<div style="display: flex; gap: 1rem;">
+<div style="flex: 1;">
+<label for="affKappaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Mean Reversion ($\kappa$): <span id="affKappaValue">0.50</span></label>
+<input id="affKappaSlider" max="3" min="0.1" step="0.1" style="width: 100%;" type="range" value="0.5"/>
+</div>
+<div style="flex: 1;">
+<label for="affSigmaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Volatility ($\sigma$): <span id="affSigmaValue">0.02</span></label>
+<input id="affSigmaSlider" max="0.1" min="0" step="0.01" style="width: 100%;" type="range" value="0.02"/>
+</div>
+</div>
+</div>
+<!-- 10-Year Stats -->
+<div style="border-left: 2px solid #cbd5e1; padding-left: 1.5rem; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 0.85rem; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem;">10-Year Bond Factors</div>
+<div style="font-size: 0.95rem; color: #334155; font-family: 'Courier New', monospace; margin-bottom: 0.25rem;">
+                                $B(10)$ = <span id="affB10" style="color: #2563eb; font-weight: 600;">1.986</span>
+</div>
+<div style="font-size: 0.95rem; color: #334155; font-family: 'Courier New', monospace; margin-bottom: 0.5rem;">
+                                $A(10)$ = <span id="affA10" style="color: #dc2626; font-weight: 600;">-0.345</span>
+</div>
+</div>
+<!-- 10-Year Price -->
+<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; border-left: 2px solid #cbd5e1;">
+<div style="font-size: 0.85rem; color: #64748b; font-weight: 600; text-transform: uppercase;">10-Y Bond Price</div>
+<div id="affPrice10" style="font-size: 2.5rem; font-weight: 800; color: var(--primary-color); font-family: 'Courier New', Courier, monospace; margin: 0.5rem 0;">$64.12</div>
+</div>
+</div>
+<div style="display: flex; gap: 2rem;">
+<div class="chart-container" style="flex: 1; height: 300px;">
+<canvas id="affinePriceChart"></canvas>
+</div>
+<div class="chart-container" style="flex: 1; height: 300px;">
+<canvas id="affineYieldChart"></canvas>
+</div>
+</div>
+</div>
+<!-- Sample Exercise -->
+<div class="card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
+<h2 style="color: #166534;">Practice Exercise: Calculating Analytical Prices</h2>
+<p style="color: #166534; font-weight: 500;">You are a quant pricing a 5-year zero-coupon bond ($T=5$) under the Vasicek model. The parameters are $\kappa = 0.5$, $\theta = 0.04$, and $\sigma = 0.02$. The current short rate is $r(0) = 0.03$. Calculate the price $P(0, 5)$ of a $100 face value bond.</p>
+<p style="font-size: 0.9rem; color: #166534;"><em>Hint: $B(\tau) = \frac{1 - e^{-\kappa\tau}}{\kappa}$ and $A(\tau) = \left(\theta - \frac{\sigma^2}{2\kappa^2}\right)(B(\tau) - \tau) - \frac{\sigma^2}{4\kappa}B(\tau)^2$</em></p>
+<details style="background: white; padding: 1rem; border-radius: 6px; border: 1px solid #bbf7d0;">
+<summary style="cursor: pointer; font-weight: 600; color: #15803d; list-style: none; display: flex; align-items: center;">
+<span style="margin-right: 0.5rem;">👉</span> Show Step-by-Step Solution
+                        </summary>
+<div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; color: #334155;">
+<ol style="line-height: 1.8;">
+<li><strong>Calculate $B(5)$:</strong>
+<div style="margin-bottom: 0.5rem;">$B(5) = \frac{1 - e^{-0.5 \times 5}}{0.5} = \frac{1 - e^{-2.5}}{0.5} \approx \frac{1 - 0.0821}{0.5} = 1.8358$</div>
+</li>
+<li><strong>Calculate $A(5)$:</strong>
+<div style="margin-bottom: 0.5rem;">First term: $\left(0.04 - \frac{0.0004}{0.5}\right)(1.8358 - 5) = (0.04 - 0.0008)(-3.1642) = (0.0392)(-3.1642) = -0.1240$</div>
+<div style="margin-bottom: 0.5rem;">Second term: $\frac{0.0004}{2} \times 1.8358^2 = 0.0002 \times 3.3702 = 0.00067$</div>
+<div style="margin-bottom: 0.5rem;">$A(5) = -0.1240 - 0.00067 = -0.1247$</div>
+</li>
+<li><strong>Calculate Price $P(0, 5)$:</strong>
+<div style="margin-bottom: 0.5rem;">Exponent: $A(5) - B(5)r(0) = -0.1247 - (1.8358 \times 0.03) = -0.1247 - 0.0551 = -0.1798$</div>
+<div style="margin-bottom: 0.5rem;">Discount Factor: $e^{-0.1798} \approx 0.8354$</div>
+</li>
+</ol>
+<p><strong>Answer:</strong> The price of the 5-year bond is $100 \times 0.8354 =$ <strong>$83.54</strong>.</p>
+</div>
+</details>
+</div>
+</div>
+</div>

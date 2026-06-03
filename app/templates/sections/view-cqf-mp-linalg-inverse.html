@@ -1,0 +1,122 @@
+<div id="view-cqf-mp-linalg-inverse" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(236, 72, 153, 0.1); color: #ec4899; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #ec4899; font-family: var(--font-family-sans);">2.4 The Matrix Inverse</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">The Matrix Inverse</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Identity matrices, 2x2 inverse formulas, cofactors and minors, and adjoint representations.</div>
+    </header>
+
+    <!-- General Definition -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1. Matrix Inverse Definition</h3>
+        <p>The inverse of a square matrix $\mathbf{A}$, denoted as $\mathbf{A}^{-1}$, satisfies:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$\mathbf{A}\mathbf{A}^{-1} = \mathbf{A}^{-1}\mathbf{A} = \mathbf{I}$$</p>
+        <p>where $\mathbf{I}$ is the identity matrix. If the inverse exists, the solution to the linear system $\mathbf{A}\underline{x} = \underline{p}$ is uniquely found via:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$\underline{x} = \mathbf{A}^{-1}\underline{p}$$</p>
+    </div>
+
+    <!-- The 2x2 Case -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">2. Simple 2x2 Matrix Inverse</h3>
+        <p>For a standard $2 \times 2$ matrix, the inverse formula is defined as:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">
+            $$\begin{pmatrix} a & b \\ c & d \end{pmatrix}^{-1} = \frac{1}{ad - bc} \begin{pmatrix} d & -b \\ -c & a \end{pmatrix} \quad \text{provided } ad-bc \neq 0$$
+        </p>
+        <p>The term $ad - bc$ is the determinant. If the determinant is zero, the matrix is **singular** and cannot be inverted.</p>
+    </div>
+
+    <!-- General case: Cofactors & minors -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">3. General N x N Matrix Inverse</h3>
+        <p>For larger $n \times n$ matrices, the inverse is defined using determinants and adjoint configurations:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$\mathbf{A}^{-1} = \frac{1}{|\mathbf{A}|} \text{adj}(\mathbf{A})$$</p>
+        <p>where $|\mathbf{A}|$ is the determinant of $\mathbf{A}$, and $\text{adj}(\mathbf{A})$ is the **adjoint** (transpose of the cofactor matrix):</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$\text{adj}(\mathbf{A}) = \left[ (-1)^{i+j} |M_{ij}| \right]^{\mathrm{T}}$$</p>
+        
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color); margin-top: 1rem;">
+            <strong style="color: var(--accent);">Minor ($M_{ij}$):</strong>
+            <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #6b7280;">The determinant of the sub-matrix remaining after deleting the $i^{\text{th}}$ row and $j^{\text{th}}$ column.</p>
+            
+            <strong style="display: block; margin-top: 1rem; color: #10b981;">Cofactor ($A_{ij}$):</strong>
+            <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #6b7280;">The signed minor value incorporating the grid parity:</p>
+            $$A_{ij} = (-1)^{i+j} |M_{ij}|$$
+
+            <strong style="display: block; margin-top: 1rem; color: var(--warning);">Effect of Row Operations on Determinants:</strong>
+            <ul style="padding-left: 1.2rem; margin-top: 0.35rem;">
+                <li>$[ER_1]$ (Interchanging rows): Changes the sign of the determinant ($|A| \to -|A|$).</li>
+                <li>$[ER_2]$ (Multiplying a row by $k$): Multiplies the determinant by $k$ ($|A| \to k|A|$).</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Interactive 2x2 Matrix Inverse sandbox -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">4. Interactive 2x2 Matrix Inverse Sandbox</h3>
+        <p>Configure the elements of a $2 \times 2$ matrix to dynamically compute its determinant and derived inverse matrix:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls -->
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Matrix elements:</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem;">
+                        <input id="linalgInvA" type="number" value="4" style="padding: 0.35rem;" oninput="runLinAlgInverseSimulation()">
+                        <input id="linalgInvB" type="number" value="2" style="padding: 0.35rem;" oninput="runLinAlgInverseSimulation()">
+                        <input id="linalgInvC" type="number" value="1" style="padding: 0.35rem;" oninput="runLinAlgInverseSimulation()">
+                        <input id="linalgInvD" type="number" value="3" style="padding: 0.35rem;" oninput="runLinAlgInverseSimulation()">
+                    </div>
+
+                    <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border);">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">DETERMINANT</div>
+                        <div id="linalgInvDet" style="font-size: 1.25rem; font-weight: 800; color: var(--accent); margin-top: 0.25rem;">10.00</div>
+                    </div>
+                </div>
+
+                <!-- Live Inverse Matrix Display -->
+                <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); border-left: 4px solid #10b981;">
+                    <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">INVERSE MATRIX A⁻¹</div>
+                    <div id="linalgInvMatrix" style="font-family: monospace; font-size: 1.15rem; font-weight: 700; margin-top: 0.5rem; white-space: pre; line-height: 1.6;">[  0.30, -0.20 ]<br>[ -0.10,  0.40 ]</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.runLinAlgInverseSimulation = function() {
+                const a = parseFloat(document.getElementById('linalgInvA').value) || 0;
+                const b = parseFloat(document.getElementById('linalgInvB').value) || 0;
+                const c = parseFloat(document.getElementById('linalgInvC').value) || 0;
+                const d = parseFloat(document.getElementById('linalgInvD').value) || 0;
+
+                const det = a * d - b * c;
+                document.getElementById('linalgInvDet').innerText = det.toFixed(2);
+
+                const matrixEl = document.getElementById('linalgInvMatrix');
+                if (Math.abs(det) < 0.0001) {
+                    matrixEl.innerHTML = `<span style="color: #ef4444">Singular Matrix (Inverse does not exist)</span>`;
+                } else {
+                    const invA = d / det;
+                    const invB = -b / det;
+                    const invC = -c / det;
+                    const invD = a / det;
+                    matrixEl.innerHTML = `[  ${invA.toFixed(2)}, ${invB.toFixed(2)} ]<br>[ ${invC.toFixed(2)},  ${invD.toFixed(2)} ]`;
+                }
+
+                const parent = document.getElementById('view-cqf-mp-linalg-inverse');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            setTimeout(() => {
+                if (document.getElementById('linalgInvA')) runLinAlgInverseSimulation();
+            }, 100);
+        })();
+    </script>
+</div>

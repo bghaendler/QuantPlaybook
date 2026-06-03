@@ -1,0 +1,213 @@
+<div id="view-cqf-mp-diffeq-second-order-2" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #f59e0b; font-family: var(--font-family-sans);">4. Second Order ODEs P2</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Second Order Ordinary Differential Equations - Constant Coefficients</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Auxiliary equations, discriminants, and the three distinct solution cases (real, repeated, and complex roots).</div>
+    </header>
+
+    <!-- General constant coefficients setup -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1. The Auxiliary Equation Derivation</h3>
+        <p>Consider the second-order homogeneous linear ODE with constant coefficients $a$, $b$, and $c$:</p>
+        <p style="text-align: center; font-size: 1.1rem; font-weight: bold;">$$a y'' + b y' + c y = 0$$</p>
+        
+        <p>Motivated by the first-order solution form, we try a trial solution of exponential form: $y = e^{\lambda x}$. Differentiating once and twice yields:</p>
+        <p style="text-align: center;">$$y' = \lambda e^{\lambda x} \quad \text{and} \quad y'' = \lambda^2 e^{\lambda x}$$</p>
+        <p>Substituting these back into the differential equation gives:</p>
+        <p style="text-align: center;">$$a \lambda^2 e^{\lambda x} + b \lambda e^{\lambda x} + c e^{\lambda x} = 0 \implies e^{\lambda x} \left( a \lambda^2 + b \lambda + c \right) = 0$$</p>
+        <p>Since the exponential function $e^{\lambda x}$ is never zero, we obtain the **Auxiliary (Characteristic) Equation**:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold; color: var(--accent);">$$a \lambda^2 + b \lambda + c = 0$$</p>
+    </div>
+
+    <!-- The Three Root Cases -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">2. The Three Root Cases</h3>
+        <p>The solution of the auxiliary equation via the quadratic formula leads to three distinct cases depending on the sign of the discriminant $b^2 - 4ac$:</p>
+
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">
+            <strong style="color: var(--accent);">Case 1: $b^2 > 4ac$ (Two Distinct Real Roots $\lambda_1, \lambda_2$)</strong>
+            <p style="margin: 0.25rem 0;">The general solution is a linear combination of two distinct exponential curves:</p>
+            <p style="font-weight: bold; font-size: 1.05rem;">$$y = c_1 e^{\lambda_1 x} + c_2 e^{\lambda_2 x}$$</p>
+            <p style="margin: 0.5rem 0; font-size: 0.85rem; color: #6b7280;"><em>Example:</em> $y'' - 3y' - 4y = 0 \implies \lambda^2 - 3\lambda - 4 = 0 \implies \lambda_1 = 4, \lambda_2 = -1$. General solution is: $y = c_1 e^{4x} + c_2 e^{-x}$.</p>
+
+            <strong style="display: block; margin-top: 1rem; color: #10b981;">Case 2: $b^2 = 4ac$ (One Repeated Real Root $\lambda = -b/2a$)</strong>
+            <p style="margin: 0.25rem 0;">A second independent solution is found by multiplying by $x$. The general solution is:</p>
+            <p style="font-weight: bold; font-size: 1.05rem;">$$y = (c_1 + c_2 x) e^{\lambda x}$$</p>
+            <p style="margin: 0.5rem 0; font-size: 0.85rem; color: #6b7280;"><em>Example:</em> $y'' - 8y' + 16y = 0 \implies \lambda^2 - 8\lambda + 16 = 0 \implies \lambda = 4$ (repeated). General solution: $y = e^{4x}(c_1 + c_2 x)$.</p>
+
+            <strong style="display: block; margin-top: 1rem; color: var(--warning);">Case 3: $b^2 < 4ac$ (Complex Conjugate Roots $p \pm iq$)</strong>
+            <p style="margin: 0.25rem 0;">Using Euler's identity ($e^{\pm i\theta} = \cos\theta \pm i\sin\theta$), the general solution is expressed in trigonometric terms:</p>
+            <p style="font-weight: bold; font-size: 1.05rem;">$$y = e^{px} (A \cos qx + B \sin qx)$$</p>
+            <p style="margin: 0.5rem 0; font-size: 0.85rem; color: #6b7280;"><em>Example:</em> $y'' - 3y' + 5.25y = 0 \implies \lambda^2 - 3\lambda + 5.25 = 0 \implies \lambda = 1.5 \pm i\sqrt{3}$. Solution: $y = e^{1.5x}(A \cos\sqrt{3}x + B \sin\sqrt{3}x)$.</p>
+        </div>
+    </div>
+
+    <!-- Live Interactive Coefficients Sandbox -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">3. Live Coefficients Sandbox</h3>
+        <p>Adjust system coefficients $a$, $b$, and $c$ to watch the roots and curves change instantly, transitioning between Overdamped (distinct real), Critically Damped (repeated), and Underdamped (oscillatory complex conjugate) states:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 280px 1fr; gap: 2rem; align-items: start;">
+                <!-- Controls Column -->
+                <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label for="diffeq22SliderA" style="font-weight: 600; font-size: 0.8rem;">Coefficient $a$</label>
+                            <span id="diffeq22ValA" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">a = 1</span>
+                        </div>
+                        <input id="diffeq22SliderA" type="range" min="1" max="5" step="1" value="1" style="width: 100%;" oninput="runDiffeqSecondOrder2Simulation()">
+                    </div>
+
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label for="diffeq22SliderB" style="font-weight: 600; font-size: 0.8rem;">Coefficient $b$</label>
+                            <span id="diffeq22ValB" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">b = 0</span>
+                        </div>
+                        <input id="diffeq22SliderB" type="range" min="-4" max="4" step="0.5" value="0" style="width: 100%;" oninput="runDiffeqSecondOrder2Simulation()">
+                    </div>
+
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label for="diffeq22SliderC" style="font-weight: 600; font-size: 0.8rem;">Coefficient $c$</label>
+                            <span id="diffeq22ValC" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">c = 1</span>
+                        </div>
+                        <input id="diffeq22SliderC" type="range" min="0.1" max="10" step="0.1" value="1" style="width: 100%;" oninput="runDiffeqSecondOrder2Simulation()">
+                    </div>
+
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px; padding: 0.75rem; text-align: center;">
+                        <div style="font-size: 0.75rem; font-weight: 600; color: #6b7280;">DISCRIMINANT</div>
+                        <div id="diffeq22Discriminant" style="font-size: 1.1rem; font-weight: 800; color: var(--accent);">Δ = -4.00</div>
+                        <div id="diffeq22CaseLabel" style="font-size: 0.75rem; font-weight: 600; color: #f59e0b; margin-top: 0.25rem;">Complex Roots (Oscillatory)</div>
+                    </div>
+                </div>
+
+                <!-- Plot Column -->
+                <div style="background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 1rem;">
+                    <canvas id="diffeq22Canvas" width="320" height="200" style="width: 100%; height: 200px; display: block;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.runDiffeqSecondOrder2Simulation = function() {
+                const a = parseFloat(document.getElementById('diffeq22SliderA').value);
+                const b = parseFloat(document.getElementById('diffeq22SliderB').value);
+                const c = parseFloat(document.getElementById('diffeq22SliderC').value);
+
+                document.getElementById('diffeq22ValA').innerText = 'a = ' + a;
+                document.getElementById('diffeq22ValB').innerText = 'b = ' + b;
+                document.getElementById('diffeq22ValC').innerText = 'c = ' + c;
+
+                const disc = b * b - 4 * a * c;
+                document.getElementById('diffeq22Discriminant').innerText = 'Δ = ' + disc.toFixed(2);
+
+                let caseLabel = '';
+                if (disc > 0.001) {
+                    caseLabel = 'Distinct Real Roots';
+                } else if (disc < -0.001) {
+                    caseLabel = 'Complex Roots (Oscillatory)';
+                } else {
+                    caseLabel = 'Repeated Root';
+                }
+                document.getElementById('diffeq22CaseLabel').innerText = caseLabel;
+
+                drawSecondOrder2Graph(a, b, c, disc);
+
+                const parent = document.getElementById('view-cqf-mp-diffeq-second-order-2');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawSecondOrder2Graph(a, b, c, disc) {
+                const canvas = document.getElementById('diffeq22Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const margin = 20;
+                const topMargin = 20;
+                const bottomMargin = 20;
+                const width = canvas.width - 2 * margin;
+                const height = canvas.height - topMargin - bottomMargin;
+
+                const minT = 0;
+                const maxT = 10;
+                const minY = -3.0;
+                const maxY = 3.0;
+
+                function getCX(t) {
+                    return margin + (t / maxT) * width;
+                }
+
+                function getCY(y) {
+                    return canvas.height - bottomMargin - ((y - minY) / (maxY - minY)) * height;
+                }
+
+                // Grid lines
+                ctx.strokeStyle = '#222';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(margin, getCY(0));
+                ctx.lineTo(canvas.width - margin, getCY(0));
+                ctx.stroke();
+
+                // Plot exact solution curve with initial conditions y(0)=1, y'(0)=0
+                const y0 = 1;
+                const yp0 = 0;
+
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                let started = false;
+
+                for (let t = 0; t <= 10; t += 0.05) {
+                    let yVal = 0;
+                    if (disc > 0.001) {
+                        const r1 = (-b + Math.sqrt(disc)) / (2 * a);
+                        const r2 = (-b - Math.sqrt(disc)) / (2 * a);
+                        const A = (yp0 - r2 * y0) / (r1 - r2);
+                        const B = y0 - A;
+                        yVal = A * Math.exp(r1 * t) + B * Math.exp(r2 * t);
+                    } else if (disc < -0.001) {
+                        const alpha = -b / (2 * a);
+                        const beta = Math.sqrt(-disc) / (2 * a);
+                        const A = y0;
+                        const B = (yp0 - alpha * y0) / beta;
+                        yVal = Math.exp(alpha * t) * (A * Math.cos(beta * t) + B * Math.sin(beta * t));
+                    } else {
+                        const r = -b / (2 * a);
+                        const A = y0;
+                        const B = yp0 - r * y0;
+                        yVal = (A + B * t) * Math.exp(r * t);
+                    }
+
+                    const cx = getCX(t);
+                    const cy = getCY(yVal);
+                    if (yVal >= minY && yVal <= maxY) {
+                        if (!started) {
+                            ctx.moveTo(cx, cy);
+                            started = true;
+                        } else {
+                            ctx.lineTo(cx, cy);
+                        }
+                    }
+                }
+                ctx.stroke();
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('diffeq22SliderA')) runDiffeqSecondOrder2Simulation();
+            }, 100);
+        })();
+    </script>
+</div>

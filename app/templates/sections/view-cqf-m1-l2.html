@@ -1,0 +1,628 @@
+<div id="view-cqf-m1-l2" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 01: Building Blocks</span>
+            <span class="badge" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #8b5cf6; font-family: var(--font-family-sans);">Lecture 02</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L2: Binomial Option Pricing Model</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Multi-Period Lattices, Delta Hedging, and American Boundary Conditions</div>
+    </header>
+
+    <!-- Navigation Tabs for L2 Sections -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
+        <button id="tabL2Core" onclick="switchL2Tab('core')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Binomial Models Core</button>
+        <button id="tabL2Exercises" onclick="switchL2Tab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Solutions Sheet</button>
+    </div>
+
+    <!-- Section A: L2 Core Cards -->
+    <div id="secL2Core" style="display: block;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; align-items: stretch;">
+        <!-- Card 1: Framework & Hedging -->
+        <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent);">1. Delta Hedging &amp; Risk Elimination</h3>
+                <p>The binomial model assumes that over a small step $\delta t$, the stock price $S$ can only transition to an upward state $uS$ (with probability $p$) or a downward state $vS$ (with probability $1-p$):</p>
+                <p style="text-align: center;">$$0 < v < 1 < u$$</p>
+                <p>By constructing a hedged portfolio consisting of **one option ($V$)** and a **short position of $\Delta$ shares** of stock, we eliminate all random volatility:</p>
+                <p style="text-align: center;">$$\Pi = V - \Delta S$$</p>
+                <p>Equating portfolio values across both upward ($\Pi^+$) and downward ($\Pi^-$) paths at $t + \delta t$ lets us solve for the risk-free **Delta Hedging Ratio ($\Delta$)**:</p>
+                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
+                    $$\Delta = \frac{V^+ - V^-}{(u - v)S} = \frac{\text{Range of Option Payoffs}}{\text{Range of Stock Prices}}$$
+                </p>
+            </div>
+            <div style="background: var(--metric-bg); padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; border-left: 3px solid var(--accent); margin-top: 1rem; font-family: var(--font-family-sans);">
+                <span>Hedge Principle:</span>
+                <span>Choosing $\Delta$ completely eliminates $dW_t$ shocks!</span>
+            </div>
+        </div>
+
+        <!-- Card 2: Risk-Neutral Pricing -->
+        <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: #8b5cf6;">2. Risk-Neutral Expectations</h3>
+                <p>Because the hedged portfolio's future value is guaranteed, no-arbitrage rules dictate it must earn the risk-free rate: $\Pi_{t+\delta t} = \Pi_t e^{r \delta t}$.</p>
+                <p>Substituting $\Delta$ yields the fundamental **discrete pricing expectation**:</p>
+                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
+                    $$V = e^{-r \delta t} \left( p' V^+ + (1 - p') V^- \right)$$
+                </p>
+                <p>where $p'$ is the **risk-neutral probability** of an upward stock movement:</p>
+                <p style="text-align: center;">$$p' = \frac{e^{r \delta t} - v}{u - v}$$</p>
+                <p style="font-size: 0.9rem; color: #64748b;">Notice that the real-world probability $p$ and stock drift $\mu$ are entirely absent. Option pricing depends solely on the risk-neutral probability $p'$, meaning risk-preferences are irrelevant.</p>
+            </div>
+            <div style="background: var(--metric-bg); padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; border-left: 3px solid #8b5cf6; margin-top: 1rem; font-family: var(--font-family-sans);">
+                <span>Discounting Rate:</span>
+                <span>Expectations are discounted strictly by the risk-free rate $r$.</span>
+            </div>
+        </div>
+
+        <!-- Card 3: Continuous Limit -->
+        <div class="card" style="grid-column: span 2; margin-bottom: 0;">
+            <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: #10b981;">3. Discrete SDE Calibration &amp; Continuous Limit</h3>
+            <p>To calibrate the discrete step multipliers to match a continuous-time lognormal random walk SDE ($dS = \mu S dt + \sigma S dW_t$), we match the mean and variance of stock price changes over a step $\delta t$:</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 0.75rem;">
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-sans); font-size: 0.92rem; font-weight: 700; color: #10b981;">Parameter Calibration Formulas</h4>
+                    <p style="margin: 0.5rem 0;">Step length: $\delta t = T / N$</p>
+                    <p style="margin: 0.5rem 0;">Up multiplier: $u = 1 + \sigma \sqrt{\delta t}$</p>
+                    <p style="margin: 0.5rem 0;">Down multiplier: $v = 1 - \sigma \sqrt{\delta t}$</p>
+                </div>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-sans); font-size: 0.92rem; font-weight: 700; color: #0f766e;">Transition to Black-Scholes PDE</h4>
+                    <p style="font-size: 0.9rem; line-height: 1.5; margin: 0;">Taking the limit as step size $\delta t \to 0$, expanding option value $V(S, t)$ using multi-variable Taylor series, and substituting the delta hedge yields $\Delta = \frac{\partial V}{\partial S}$ and converges the discrete pricing formula directly to the continuous **Black-Scholes Partial Differential Equation**:</p>
+                    <p style="text-align: center; font-size: 0.95rem; font-weight: 700; margin: 0.5rem 0;">
+                        $$\frac{\partial V}{\partial t} + r S \frac{\partial V}{\partial S} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} - r V = 0$$
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Section B: Worked Solutions Sheet -->
+    <div id="secL2Exercises" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Problem A: One-Step Risk-Neutral Probability -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem A: Risk-Neutral Probability Derivation</h3>
+                <p>Prove that under a risk-neutral probability measure $\mathbb{Q}$, the probability of an upward stock price movement in a binomial step is $p = \frac{e^{r\delta t} - d}{u - d}$.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>State the Risk-Neutral Growth Condition:</strong>
+                            In a risk-neutral world, the expected future value of any traded asset must grow at the risk-free interest rate $r$:
+                            $$\mathbb{E}^\mathbb{Q}[S_{t+\delta t} \mid S_t] = S_t e^{r \delta t}$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Formulate Binomial Expectation:</strong>
+                            Under the binomial framework, the stock can transition to $u S_t$ with probability $p$, or $d S_t$ with probability $1-p$:
+                            $$\mathbb{E}^\mathbb{Q}[S_{t+\delta t} \mid S_t] = p (u S_t) + (1 - p) (d S_t)$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Equate and Divide by $S_t$:</strong>
+                            Combining the two equations:
+                            $$S_t e^{r \delta t} = S_t [p u + (1 - p) d]$$
+                            Dividing both sides by the current stock price $S_t$:
+                            $$e^{r \delta t} = p u + d - p d$$
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Isolate Risk-Neutral Probability $p$:</strong>
+                            Group the $p$ terms on one side:
+                            $$e^{r \delta t} - d = p (u - d) \implies p = \frac{e^{r \delta t} - d}{u - d}$$
+                            Since $p$ must satisfy $0 \le p \le 1$, this requires the no-arbitrage condition $d < e^{r\delta t} < u$.
+                        </li>
+                    </ol>
+                </div>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid var(--accent); padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. What is a "risk-neutral" world?</strong> In the real world, investors are scared of risk and demand higher returns to hold risky stocks. In a risk-neutral world, investors don't care about risk. Therefore, every single asset (stocks, bonds, options) grows at the exact same safe bank rate ($r$).</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. Why formulate expectations?</strong> We write the expected future stock price as a simple average of its two possible futures (up or down) weighted by their probabilities.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. Why equate them?</strong> We force the stock's binomial average growth to equal the safe bank growth. Since we know the bank rate ($r$), the up factor ($u$), and the down factor ($d$), probability ($p$) is the only unknown left.</p>
+                        <p style="margin: 0;"><strong>4. Why must $d < e^{r\delta t} < u$?</strong> This is the golden rule of no-arbitrage. If the bank rate was higher than the up multiplier ($e^{r\delta t} > u$), you would borrow money to put in the bank because the stock is guaranteed to underperform. If the stock was always better, everyone would buy the stock and borrow from the bank. Keeping the bank rate in the middle keeps the game fair.</p>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Problem B: Delta Hedging Replicating Portfolio -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem B: Replicating Portfolio Derivation</h3>
+                <p>Prove that an option payoff can be perfectly replicated by a portfolio of $\Delta$ shares of stock and a cash bank position $B$, and derive the formulas for both.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Set up Replicating Portfolio:</strong>
+                            Let a portfolio consist of $\Delta$ shares of stock (price $S$) and $B$ cash in the bank. The starting value of this portfolio is:
+                            $$V_0 = \Delta S + B$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Write Up/Down Replication Equations:</strong>
+                            At $t+\delta t$, the stock is either $uS$ or $dS$. The bank position grows to $B e^{r \delta t}$. For the portfolio to perfectly copy the option payoffs ($V_u$ and $V_d$):
+                            $$\Delta (uS) + B e^{r \delta t} = V_u \quad \text{(Upward Path)}$$
+                            $$\Delta (dS) + B e^{r \delta t} = V_d \quad \text{(Downward Path)}$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Subtract to Solve for $\Delta$:</strong>
+                            Subtract the Downward equation from the Upward equation to eliminate the bank cash term $B$:
+                            $$\Delta uS - \Delta dS = V_u - V_d \implies \Delta S(u - d) = V_u - V_d \implies \Delta = \frac{V_u - V_d}{S(u - d)}$$
+                        </li>
+                        <li style="margin: 0;">
+                            <strong>Substitute $\Delta$ to Solve for $B$:</strong>
+                            Plugging $\Delta$ back into the Upward equation:
+                            $$\left( \frac{V_u - V_d}{S(u - d)} \right) uS + B e^{r \delta t} = V_u \implies u \frac{V_u - V_d}{u - d} + B e^{r \delta t} = V_u$$
+                            $$B e^{r \delta t} = V_u - \frac{u V_u - u V_d}{u - d} = \frac{V_u(u-d) - u V_u + u V_d}{u - d} = \frac{u V_d - d V_u}{u - d}$$
+                            Discounting to time 0:
+                            $$B = e^{-r\delta t} \left( \frac{u V_d - d V_u}{u - d} \right)$$
+                        </li>
+                    </ol>
+                </div>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: #8b5cf6; font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid #8b5cf6; padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. What is a "replicating portfolio"?</strong> If a synthetic combination of a stock and bank deposits mimics an option's payout in every possible state, it must cost the exact same as the option today. Otherwise, you could buy the cheap one, sell the expensive one, and pocket free risk-free profit (arbitrage).</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. Why write up/down equations?</strong> We create two target equations: "If the stock goes up, copy the up option value" and "If the stock goes down, copy the down option value." This is a system of two linear equations with two unknowns ($\Delta$ and $B$).</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. Why subtract them?</strong> Subtracting cancels the bank cash $B$ completely, leaving us with an easy equation to solve for the stock ratio $\Delta$. This is the famous option Delta, representing how many shares of stock you need to buy to hedge.</p>
+                        <p style="margin: 0;"><strong>4. What does the solved cash amount $B$ represent?</strong> $B$ is the amount of money you must borrow (if negative) or lend (if positive) to construct the replica portfolio. It guarantees the cash balances out correctly at expiry.</p>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Problem C: Multi-Step General Formula -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem C: Multi-Step European Pricing Closed-Form</h3>
+                <p>Derive the multi-step binomial formula for a European option over $N$ periods, proving it is represented by a binomial probability distribution.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>State the One-Step Backward Induction:</strong>
+                            We know $V_j = e^{-r\delta t} [p V_{j+1}^u + (1-p) V_{j+1}^d]$.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Iterate to Two Steps:</strong>
+                            Substituting the one-step results into a two-step tree:
+                            $$V_0 = e^{-r\delta t} \left[ p \left( e^{-r\delta t} [p V_{uu} + (1-p) V_{ud}] \right) + (1-p) \left( e^{-r\delta t} [p V_{du} + (1-p) V_{dd}] \right) \right]$$
+                            Simplifying (noting $V_{ud} = V_{du}$ for recombining lattices):
+                            $$V_0 = e^{-2r\delta t} \left[ p^2 V_{uu} + 2p(1-p)V_{ud} + (1-p)^2 V_{dd} \right]$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Generalize to $N$ Steps:</strong>
+                            By mathematical induction, the coefficients are the terms of the binomial expansion $(p + (1-p))^N$. For $N$ steps, the option value at time 0 is:
+                            $$V_0 = e^{-r N \delta t} \sum_{j=0}^N \binom{N}{j} p^j (1-p)^{N-j} V_{N, j}$$
+                            where $V_{N, j}$ is the payoff at terminal node $j$.
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Apply to European Call Option:</strong>
+                            At expiry, $V_{N, j} = \max(S_0 u^j d^{N-j} - K, 0)$, yielding the completed multi-step closed-form formula:
+                            $$V_0 = e^{-r N \delta t} \sum_{j=0}^N \binom{N}{j} p^j (1-p)^{N-j} \max(S_0 u^j d^{N-j} - K, 0)$$
+                        </li>
+                    </ol>
+                </div>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: #10b981; font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid #10b981; padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. Why backward induct?</strong> In option pricing, we only know the payoffs at the very end (expiry). To find the option price today, we must work backward step-by-step, discounting and averaging probabilities at each junction.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. What is a recombining lattice?</strong> A stock that goes up then down reaches the exact same price as a stock that goes down then up ($S_{ud} = S_{du}$). Recombining paths means we don't have to track billions of separate paths, keeping the computation incredibly fast.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. What does $\binom{N}{j}$ represent?</strong> This is the binomial coefficient (combinations). It tells us exactly how many unique paths lead to a specific terminal node. For example, if you toss a coin 3 times, there are 3 different ways to get exactly 2 heads.</p>
+                        <p style="margin: 0;"><strong>4. Why does this look like probability?</strong> The term $p^j (1-p)^{N-j}$ is the probability of choosing a specific path. Multiplying this probability by the path combinations and summing them up is simply taking a giant weighted average of all possible payouts at expiry, then discounting it back to today's dollars.</p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </div>
+
+    <!-- Multi-Period Binomial Tree Simulator Laboratory -->
+    <div id="secL2Lab" style="display: block;">
+    <div class="card" style="margin-bottom: 2rem;">
+        <div style="margin-bottom: 1.5rem;">
+            <h2 style="margin: 0; font-family: var(--font-family-sans); font-weight: 800; font-size: 1.4rem;">4. Multi-Period Binomial Tree Pricing Laboratory</h2>
+            <div style="color: #6b7280; font-size: 0.95rem; margin-top: 0.25rem;">Compare European options to American early exercise boundaries. Drag the sliders to generate the stock tree forward, value options backward down the nodes in real-time, and view optimal early-exercise points highlighted in glowing gold.</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 320px 1fr; gap: 2rem; align-items: start;">
+            <!-- Tree Simulation Sliders Column -->
+            <div style="background: var(--metric-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-family-sans);">
+                <h3 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">Model Inputs</h3>
+                
+                <!-- Option Style Selector -->
+                <div>
+                    <span style="font-weight: 600; display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-color);">Option Style &amp; Payoff</span>
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 0.5rem;">
+                        <select id="treeStyleSelect" onchange="updateCqfBinomialSimulation()" style="width: 100%; padding: 0.4rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; cursor: pointer; font-family: var(--font-family-sans); font-weight: 600;">
+                            <option value="euro_call">European Call</option>
+                            <option value="euro_put">European Put</option>
+                            <option value="amer_call">American Call</option>
+                            <option value="amer_put">American Put</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Slider Stock Price -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="treeStockSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Stock Price ($S_0$)</label>
+                        <span id="treeStockVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">100.00</span>
+                    </div>
+                    <input id="treeStockSlider" type="range" min="40" max="160" step="2" value="100" style="width: 100%; cursor: pointer;" oninput="updateCqfBinomialSimulation()">
+                </div>
+
+                <!-- Slider Strike Price -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="treeStrikeSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Strike Price ($K$)</label>
+                        <span id="treeStrikeVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">100.00</span>
+                    </div>
+                    <input id="treeStrikeSlider" type="range" min="40" max="160" step="2" value="100" style="width: 100%; cursor: pointer;" oninput="updateCqfBinomialSimulation()">
+                </div>
+
+                <!-- Slider Volatility -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="treeVolSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Volatility ($\sigma$)</label>
+                        <span id="treeVolVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">20.0%</span>
+                    </div>
+                    <input id="treeVolSlider" type="range" min="5" max="60" step="1" value="20" style="width: 100%; cursor: pointer;" oninput="updateCqfBinomialSimulation()">
+                </div>
+
+                <!-- Slider Time -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="treeTimeSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Time to Expire ($T$)</label>
+                        <span id="treeTimeVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">0.50 Year</span>
+                    </div>
+                    <input id="treeTimeSlider" type="range" min="0.1" max="2.0" step="0.1" value="0.5" style="width: 100%; pointer; cursor: pointer;" oninput="updateCqfBinomialSimulation()">
+                </div>
+
+                <!-- Slider Rate -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="treeRateSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Interest Rate ($r$)</label>
+                        <span id="treeRateVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">5.0%</span>
+                    </div>
+                    <input id="treeRateSlider" type="range" min="0" max="15" step="0.5" value="5" style="width: 100%; cursor: pointer;" oninput="updateCqfBinomialSimulation()">
+                </div>
+
+                <!-- Slider Steps -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="treeStepsSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Steps ($N$)</label>
+                        <span id="treeStepsVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">3 Steps</span>
+                    </div>
+                    <input id="treeStepsSlider" type="range" min="1" max="5" step="1" value="3" style="width: 100%; cursor: pointer;" oninput="updateCqfBinomialSimulation()">
+                </div>
+            </div>
+
+            <!-- Visual Graph & Output Grid Column -->
+            <div>
+                <!-- Model Calibrations Outputs -->
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; font-family: var(--font-family-sans);">
+                    <!-- Solved Option Price -->
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; text-align: center; border-bottom: 3px solid #10b981;">
+                        <div style="font-size: 0.68rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Option Value ($V_0$)</div>
+                        <div id="outTreePrice" style="font-size: 1.4rem; font-weight: 800; margin-top: 0.2rem; font-family: monospace; color: var(--text-color);">$6.11</div>
+                    </div>
+                    <!-- Discrete Delta -->
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; text-align: center; border-bottom: 3px solid var(--accent);">
+                        <div style="font-size: 0.68rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Hedge Ratio ($\Delta_0$)</div>
+                        <div id="outTreeDelta" style="font-size: 1.4rem; font-weight: 800; margin-top: 0.2rem; font-family: monospace; color: var(--text-color);">0.584</div>
+                    </div>
+                    <!-- Up multiplier -->
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 0.68rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Up multiplier ($u$)</div>
+                        <div id="outTreeMultiplierU" style="font-size: 1.4rem; font-weight: 800; margin-top: 0.2rem; font-family: monospace; color: var(--text-color);">1.082</div>
+                    </div>
+                    <!-- Risk-neutral probability -->
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 0.68rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Prob ($p'$)</div>
+                        <div id="outTreeProb" style="font-size: 1.4rem; font-weight: 800; margin-top: 0.2rem; font-family: monospace; color: var(--text-color);">0.536</div>
+                    </div>
+                </div>
+
+                <!-- Scrollable visual tree board -->
+                <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.5rem; border-radius: 8px; overflow-x: auto; display: flex; justify-content: center; align-items: center; min-height: 380px;">
+                    <canvas id="binomialTreeCanvas" width="600" height="360" style="display: block; max-width: 100%;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Mathematical Explanation -->
+        <details style="margin-top: 1.5rem; color: var(--text-color);">
+            <summary style="cursor: pointer; font-weight: 600; color: var(--accent); font-family: var(--font-family-sans); font-size: 0.95rem; user-select: none;">View American Early Exercise boundary mathematics</summary>
+            <div style="padding: 1.5rem; background: var(--metric-bg); border-radius: 8px; border-left: 4px solid var(--accent); margin-top: 0.75rem; font-size: 0.95rem; line-height: 1.6; font-family: var(--font-family-sans);">
+                <p>The **American option style** allows holder execution at *any* intermediate time node before expiration. This changes the backward induction step:</p>
+                <ol style="padding-left: 1.5rem;">
+                    <li style="margin-bottom: 0.75rem;">
+                        <strong>Calculate continuation value:</strong> At node $(i, j)$ at step $i$, we first solve for the discounted risk-neutral expectation:
+                        $$V_{\text{continuation}} = e^{-r\delta t} \left( p' V_{i+1, j+1} + (1 - p') V_{i+1, j} \right)$$
+                    </li>
+                    <li style="margin-bottom: 0.75rem;">
+                        <strong>Compare with early exercise:</strong> We compute the immediate payoff of executing option today:
+                        $$V_{\text{exercise}} = \max(S_{i, j} - K, 0) \quad \text{(Call)} \quad , \quad V_{\text{exercise}} = \max(K - S_{i, j}, 0) \quad \text{(Put)}$$
+                    </li>
+                    <li style="margin-bottom: 0;">
+                        <strong>Take the maximum:</strong> The final node option price is the maximum of continuation vs exercise:
+                        $$V_{i, j} = \max(V_{\text{continuation}}, V_{\text{exercise}})$$
+                        If $V_{\text{exercise}} > V_{\text{continuation}}$, early exercise is optimal, increasing option value at the root! This typically occurs for **American Put options** when stock price falls deeply, as the immediate payout is worth more than waiting due to positive discounting drag.
+                    </li>
+                </ol>
+            </div>
+        </details>
+    </div>
+    </div>
+
+    <!-- Javascript Simulation Scripts -->
+    <script>
+        window.switchL2Tab = function(tab) {
+            const tabCore = document.getElementById('tabL2Core');
+            const tabEx = document.getElementById('tabL2Exercises');
+            const secCore = document.getElementById('secL2Core');
+            const secLab = document.getElementById('secL2Lab');
+            const secEx = document.getElementById('secL2Exercises');
+
+            if (tab === 'core') {
+                tabCore.style.color = 'var(--accent)';
+                tabCore.style.borderBottomColor = 'var(--accent)';
+                tabEx.style.color = '#6b7280';
+                tabEx.style.borderBottomColor = 'transparent';
+                secCore.style.display = 'block';
+                if (secLab) secLab.style.display = 'block';
+                secEx.style.display = 'none';
+            } else {
+                tabEx.style.color = 'var(--accent)';
+                tabEx.style.borderBottomColor = 'var(--accent)';
+                tabCore.style.color = '#6b7280';
+                tabCore.style.borderBottomColor = 'transparent';
+                secEx.style.display = 'block';
+                secCore.style.display = 'none';
+                if (secLab) secLab.style.display = 'none';
+            }
+        };
+
+        // Main Simulation and canvas tree renderer
+        window.updateCqfBinomialSimulation = function() {
+            // Get inputs
+            const style = document.getElementById('treeStyleSelect').value;
+            const S0 = parseFloat(document.getElementById('treeStockSlider').value);
+            const K = parseFloat(document.getElementById('treeStrikeSlider').value);
+            const sig = parseFloat(document.getElementById('treeVolSlider').value) / 100.0;
+            const T = parseFloat(document.getElementById('treeTimeSlider').value);
+            const r = parseFloat(document.getElementById('treeRateSlider').value) / 100.0;
+            const N = parseInt(document.getElementById('treeStepsSlider').value);
+
+            // Update UI Labels
+            document.getElementById('treeStockVal').innerText = S0.toFixed(2);
+            document.getElementById('treeStrikeVal').innerText = K.toFixed(2);
+            document.getElementById('treeVolVal').innerText = (sig * 100.0).toFixed(1) + '%';
+            document.getElementById('treeTimeVal').innerText = T.toFixed(2) + (T === 1.0 ? ' Year' : ' Years');
+            document.getElementById('treeRateVal').innerText = (r * 100.0).toFixed(1) + '%';
+            document.getElementById('treeStepsVal').innerText = N + (N === 1 ? ' Step' : ' Steps');
+
+            // Calibrate Binomial multipliers matching continuous GBM SDE
+            const dt = T / N;
+            const u = 1.0 + sig * Math.sqrt(dt);
+            const v = 1.0 - sig * Math.sqrt(dt);
+
+            // Continuous compounding risk-neutral probability
+            // Standard: p' = (exp(r*dt) - v) / (u - v)
+            let pPrime = (Math.exp(r * dt) - v) / (u - v);
+            
+            // Boundary safety clip
+            if (pPrime < 0.0) pPrime = 0.0;
+            if (pPrime > 1.0) pPrime = 1.0;
+
+            const isCall = style.includes('call');
+            const isAmerican = style.includes('amer');
+
+            // 1. Generate Stock Prices Tree
+            // stockTree[i][j] where i represents step, j represents number of up moves
+            const stockTree = [];
+            for (let i = 0; i <= N; i++) {
+                stockTree[i] = [];
+                for (let j = 0; j <= i; j++) {
+                    stockTree[i][j] = S0 * Math.pow(u, j) * Math.pow(v, i - j);
+                }
+            }
+
+            // 2. Generate Option Value Tree backward down the lattice
+            const optionTree = [];
+            const earlyExerciseTree = []; // Flags nodes where early exercise is optimal
+
+            for (let i = 0; i <= N; i++) {
+                optionTree[i] = [];
+                earlyExerciseTree[i] = [];
+            }
+
+            // Set final option payoffs at expiry (time T)
+            for (let j = 0; j <= N; j++) {
+                const S = stockTree[N][j];
+                optionTree[N][j] = isCall ? Math.max(0, S - K) : Math.max(0, K - S);
+                earlyExerciseTree[N][j] = false;
+            }
+
+            // Induct backward recursively to step 0
+            const discountFactor = Math.exp(-r * dt);
+            for (let i = N - 1; i >= 0; i--) {
+                for (let j = 0; j <= i; j++) {
+                    const S = stockTree[i][j];
+                    const valCont = discountFactor * (pPrime * optionTree[i+1][j+1] + (1.0 - pPrime) * optionTree[i+1][j]);
+                    
+                    if (isAmerican) {
+                        const valEx = isCall ? Math.max(0, S - K) : Math.max(0, K - S);
+                        if (valEx > valCont && valEx > 0) {
+                            optionTree[i][j] = valEx;
+                            earlyExerciseTree[i][j] = true;
+                        } else {
+                            optionTree[i][j] = valCont;
+                            earlyExerciseTree[i][j] = false;
+                        }
+                    } else {
+                        optionTree[i][j] = valCont;
+                        earlyExerciseTree[i][j] = false;
+                    }
+                }
+            }
+
+            const solvedPrice = optionTree[0][0];
+
+            // 3. Compute Delta at root node
+            // Delta = (V_up - V_down) / ((u - v) * S0)
+            let solvedDelta = 0.0;
+            if (N > 0) {
+                const V_up = optionTree[1][1];
+                const V_down = optionTree[1][0];
+                solvedDelta = (V_up - V_down) / ((u - v) * S0);
+            }
+
+            // Update UI moment stats
+            document.getElementById('outTreePrice').innerText = '$' + solvedPrice.toFixed(2);
+            document.getElementById('outTreeDelta').innerText = solvedDelta.toFixed(3);
+            document.getElementById('outTreeMultiplierU').innerText = u.toFixed(3);
+            document.getElementById('outTreeProb').innerText = pPrime.toFixed(3);
+
+            // Renders SVG/Canvas Tree graphics
+            drawBinomialTreeCanvas(N, stockTree, optionTree, earlyExerciseTree);
+        }
+
+        // Draw dynamic tree lines and node circles on canvas
+        function drawBinomialTreeCanvas(N, stockTree, optionTree, earlyExerciseTree) {
+            const canvas = document.getElementById('binomialTreeCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Handle light/dark themes cleanly
+            const isDark = document.body.classList.contains('dark-theme');
+            
+            // Clear canvas context
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Styling variables
+            const nodeRadius = 22;
+            const paddingLeft = 50;
+            const paddingRight = 50;
+            const paddingTop = 40;
+            const paddingBottom = 40;
+
+            const treeWidth = canvas.width - paddingLeft - paddingRight;
+            const treeHeight = canvas.height - paddingTop - paddingBottom;
+            const stepWidth = N === 0 ? 0 : treeWidth / N;
+
+            // Generate physical node grid locations
+            // coords[i][j] = {x, y}
+            const coords = [];
+            for (let i = 0; i <= N; i++) {
+                coords[i] = [];
+                const x = paddingLeft + i * stepWidth;
+                
+                // Symmetrical vertical placement centers around canvas middle
+                const nodesCount = i + 1;
+                const verticalSpan = (nodesCount - 1) * (nodeRadius * 2.8);
+                const startY = (canvas.height / 2.0) - (verticalSpan / 2.0);
+
+                for (let j = 0; j <= i; j++) {
+                    // In lattice coordinates, j represents up moves, so draw higher nodes at top (larger Y means lower height in canvas coordinate)
+                    // Up moves should represent high prices (drawn at top => lower Y value)
+                    const y = startY + (i - j) * (nodeRadius * 2.8);
+                    coords[i][j] = { x: x, y: y };
+                }
+            }
+
+            // 1. Draw Connecting lattice branch lines first so they sit behind nodes
+            const strokeColor = isDark ? '#444c56' : '#cbd5e1';
+            ctx.strokeStyle = strokeColor;
+            ctx.lineWidth = 2.0;
+
+            for (let i = 0; i < N; i++) {
+                for (let j = 0; j <= i; j++) {
+                    const start = coords[i][j];
+                    const upMove = coords[i+1][j+1];
+                    const downMove = coords[i+1][j];
+
+                    // Draw Up branch
+                    ctx.beginPath();
+                    ctx.moveTo(start.x, start.y);
+                    ctx.lineTo(upMove.x, upMove.y);
+                    ctx.stroke();
+
+                    // Draw Down branch
+                    ctx.beginPath();
+                    ctx.moveTo(start.x, start.y);
+                    ctx.lineTo(downMove.x, downMove.y);
+                    ctx.stroke();
+                }
+            }
+
+            // 2. Draw circular nodes with text information overlays
+            const borderNormal = '#2563eb';
+            const borderExercise = '#ea580c';
+            const fillNormal = isDark ? '#202020' : '#ffffff';
+            const textHeadingColor = isDark ? '#a3a3a3' : '#64748b';
+            const textValueColor = isDark ? '#ffffff' : '#1e293b';
+
+            for (let i = 0; i <= N; i++) {
+                for (let j = 0; j <= i; j++) {
+                    const node = coords[i][j];
+                    const S = stockTree[i][j];
+                    const V = optionTree[i][j];
+                    const isEx = earlyExerciseTree[i][j];
+
+                    // Draw glowing exercise halo if American early exercise is optimal
+                    if (isEx) {
+                        ctx.beginPath();
+                        ctx.arc(node.x, node.y, nodeRadius + 5, 0, 2 * Math.PI);
+                        ctx.strokeStyle = 'rgba(234, 88, 12, 0.4)';
+                        ctx.lineWidth = 4.0;
+                        ctx.stroke();
+                    }
+
+                    // Circle body
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, nodeRadius, 0, 2 * Math.PI);
+                    ctx.fillStyle = fillNormal;
+                    ctx.fill();
+                    
+                    ctx.strokeStyle = isEx ? borderExercise : borderNormal;
+                    ctx.lineWidth = isEx ? 3.0 : 2.0;
+                    ctx.stroke();
+
+                    // Price labels monospace overlay inside circle
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    
+                    // Stock price (S)
+                    ctx.font = 'bold 9px monospace';
+                    ctx.fillStyle = textHeadingColor;
+                    ctx.fillText('S:' + Math.round(S), node.x, node.y - 7);
+
+                    // Option Value (V)
+                    ctx.font = 'bold 10px monospace';
+                    ctx.fillStyle = isEx ? borderExercise : textValueColor;
+                    ctx.fillText('V:' + V.toFixed(1), node.x, node.y + 6);
+
+                    // Draw "Exercise" mini-label
+                    if (isEx) {
+                        ctx.beginPath();
+                        ctx.rect(node.x - 22, node.y + 17, 44, 9);
+                        ctx.fillStyle = borderExercise;
+                        ctx.fill();
+
+                        ctx.font = 'bold 7px sans-serif';
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillText('EXERCISE', node.x, node.y + 21);
+                    }
+                }
+            }
+        }
+
+        // Onload simulation trigger
+        window.runCqfM1L2Simulation = function() {
+            // Delay rendering slightly to allow section display:block layout parsing
+            setTimeout(() => {
+                updateCqfBinomialSimulation();
+            }, 50);
+        }
+    </script>
+</div>

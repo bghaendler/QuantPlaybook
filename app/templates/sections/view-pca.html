@@ -1,0 +1,271 @@
+<div id="view-pca" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">2.4 Principal Component Analysis</h1>
+        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Decomposing yield curve fluctuations into three primary risk factors: Level, Slope, and Curvature.</div>
+    </header>
+
+    <div style="display: flex; flex-direction: column; gap: 2.5rem; max-width: 1400px; margin-bottom: 4rem;">
+        
+        <!-- INTRO AND THEORY CARDS -->
+        <div class="container" style="margin-bottom: 0; gap: 2rem; align-items: stretch; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+            <div class="card" style="margin-bottom: 0; padding: 2rem; border: 1px solid var(--card-border); background: var(--card-bg);">
+                <h2>Dimensionality Reduction of Yield Curves</h2>
+                <p>A yield curve has yields across many maturities, representing a high-dimensional vector. However, yield movements are highly correlated. **Principal Component Analysis (PCA)** decomposes the empirical covariance matrix $Q$ of yield changes using the spectral theorem:</p>
+                <div style="text-align: center; margin: 1rem 0; font-family: monospace; font-weight: 700; color: var(--accent);">
+                    $$ Q = A L A^\top $$
+                </div>
+                <p>where $L$ is the diagonal matrix of eigenvalues $\lambda_i$ (representing the variance explained by each factor) and $A$ contains the eigenvectors (called **loadings** or **factors**). Empirically, the first three components explain over $98.5\%$ of all yield curve movements, allowing us to capture almost all risk using just 3 variables.</p>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; background: #f8fafc; border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; color: #334155; font-family: 'Inter', sans-serif;">The Physical Factors</h3>
+                    <p>The three primary eigenvectors exhibit stable, intuitive physical shapes across historical markets:</p>
+                    <ul>
+                        <li><strong>PC1 (Level / Parallel Shift):</strong> Flat across all maturities. Adjusting this component shifts all yields up or down by a similar amount (explains $\approx 79.68\%$ of variance).</li>
+                        <li><strong>PC2 (Slope / Twist):</strong> Monotonically increasing or decreasing. Adjusting this component rotates the curve, steepening or flattening it ($\approx 14.87\%$).</li>
+                        <li><strong>PC3 (Curvature / Hump):</strong> Convex or bowed shape. Adjusting this component changes the medium-term hump ($\approx 4.13\%$).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXPLAINED VARIANCE SCREEN PLOT -->
+        <div class="card" style="padding: 2.5rem; border: 1px solid var(--card-border); background: var(--card-bg);">
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.02em;">Empirical Explained Variance Ratio</h2>
+            <p style="font-size: 1rem; color: var(--text-color); opacity: 0.75; margin-bottom: 2rem;">
+                Based on historical Swiss Government yields from `SwissGovYields.csv`, the screen plot below illustrates how quickly the eigenvalues decay. Note that just three components explain **98.67%** of the total yield variance!
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center;">
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.25rem;">
+                            <span>PC1: Level (Parallel Shift)</span>
+                            <span style="color: #3b82f6;">79.68%</span>
+                        </div>
+                        <div style="background: #e2e8f0; border-radius: 4px; height: 10px; overflow: hidden;">
+                            <div style="background: #3b82f6; width: 79.68%; height: 100%;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.25rem;">
+                            <span>PC2: Slope (Curve Rotation)</span>
+                            <span style="color: #ef4444;">14.87%</span>
+                        </div>
+                        <div style="background: #e2e8f0; border-radius: 4px; height: 10px; overflow: hidden;">
+                            <div style="background: #ef4444; width: 14.87%; height: 100%;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.25rem;">
+                            <span>PC3: Curvature (Medium-Term Hump)</span>
+                            <span style="color: #7c3aed;">4.13%</span>
+                        </div>
+                        <div style="background: #e2e8f0; border-radius: 4px; height: 10px; overflow: hidden;">
+                            <div style="background: #7c3aed; width: 4.13%; height: 100%;"></div>
+                        </div>
+                    </div>
+                    <div style="border-top: 1px solid var(--card-border); padding-top: 1rem; font-weight: 700; display: flex; justify-content: space-between; font-size: 0.95rem;">
+                        <span>Cumulative Explained Variance (First 3 PCs):</span>
+                        <span style="color: #10b981;">98.67%</span>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom: 0; padding: 1.5rem; border: 1px solid var(--card-border); background: var(--card-bg); height: 280px; position: relative;">
+                    <h4 style="margin: 0 0 1rem 0; font-size: 1.05rem; font-weight: 700; color: var(--text-color); text-align: center;">Factor Loadings (Eigenvectors) Across Maturities</h4>
+                    <div style="height: 220px; position: relative;">
+                        <canvas id="pcaLoadingsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PCA YIELD CURVE RECONSTRUCTOR -->
+        <div class="card" style="padding: 2.5rem; border: 1px solid var(--card-border); background: var(--card-bg);">
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.02em;">Interactive PCA Yield Curve Reconstructor</h2>
+            <p style="font-size: 1rem; color: var(--text-color); opacity: 0.75; margin-bottom: 2rem;">
+                Adjust the principal component score sliders ($y_1, y_2, y_3$) to add or subtract Level, Slope, and Curvature risks from the base Swiss Government yield curve (July 2010). Watch how the reconstructed curve morphs instantly.
+            </p>
+
+            <div style="display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 2.5rem; align-items: center;">
+                <div style="display: flex; flex-direction: column; gap: 1.5rem; background: #f8fafc; padding: 1.75rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <label for="pcaPC1" style="font-weight: 700; font-size: 0.85rem; color: #334155;">PC1: Level (Shift): <span id="pcaPC1Val" style="color: #3b82f6; font-weight: bold;">0.00</span></label>
+                        <input id="pcaPC1" max="1.5" min="-1.5" step="0.05" style="cursor: pointer; width: 100%;" type="range" value="0.0" oninput="runPcaSimulation()"/>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <label for="pcaPC2" style="font-weight: 700; font-size: 0.85rem; color: #334155;">PC2: Slope (Rotation): <span id="pcaPC2Val" style="color: #ef4444; font-weight: bold;">0.00</span></label>
+                        <input id="pcaPC2" max="1.5" min="-1.5" step="0.05" style="cursor: pointer; width: 100%;" type="range" value="0.0" oninput="runPcaSimulation()"/>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        <label for="pcaPC3" style="font-weight: 700; font-size: 0.85rem; color: #334155;">PC3: Curvature (Hump): <span id="pcaPC3Val" style="color: #7c3aed; font-weight: bold;">0.00</span></label>
+                        <input id="pcaPC3" max="1.5" min="-1.5" step="0.05" style="cursor: pointer; width: 100%;" type="range" value="0.0" oninput="runPcaSimulation()"/>
+                    </div>
+                    <div style="margin-top: 1rem; border-top: 1px solid #e2e8f0; padding-top: 1rem; text-align: center;">
+                        <button onclick="resetPcaSliders()" style="background: white; color: #334155; border: 1px solid #cbd5e1; padding: 0.5rem 1.25rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Reset PCA Factors</button>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom: 0; padding: 1.5rem; border: 1px solid var(--card-border); background: var(--card-bg); height: 400px; position: relative;">
+                    <h4 style="margin: 0 0 1rem 0; font-size: 1.05rem; font-weight: 700; color: var(--text-color); text-align: center;">Reconstructed Yield Curve vs. July 2010 Base Curve</h4>
+                    <div style="height: 320px; position: relative;">
+                        <canvas id="pcaCurvesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // Section 2.4: Principal Component Analysis & Morphing
+    // ============================================================
+    let pcaLoadingsChartInstance = null;
+    let pcaCurvesChartInstance = null;
+
+    // Swiss Gov yields PCA constants pre-calculated from CSV
+    const pcaMaturities = ["2Y", "3Y", "4Y", "5Y", "7Y", "10Y", "20Y", "30Y"];
+    
+    // July 2010 yield curve base values (%)
+    const baseYieldsJul2010 = [0.407, 0.522, 0.685, 0.863, 1.180, 1.500, 1.917, 2.057];
+
+    // Eigenvectors (loading factors) columns from A matrix
+    const eigenvectorPC1 = [0.38268873, 0.41563090, 0.41243348, 0.39760151, 0.36566676, 0.32966306, 0.25838060, 0.20847424];
+    const eigenvectorPC2 = [0.39737812, 0.34739055, 0.20592899, 0.06390356, -0.14971138, -0.33060588, -0.51654571, -0.52572503];
+    const eigenvectorPC3 = [-0.52592741, -0.14944759, 0.12846106, 0.29304889, 0.40731708, 0.33311495, -0.21431464, -0.52524503];
+
+    function initPcaLoadingsChart() {
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#64748b';
+
+        const ctxL = document.getElementById('pcaLoadingsChart').getContext('2d');
+        if (pcaLoadingsChartInstance) { pcaLoadingsChartInstance.destroy(); }
+        pcaLoadingsChartInstance = new Chart(ctxL, {
+            type: 'line',
+            data: {
+                labels: pcaMaturities,
+                datasets: [
+                    {
+                        label: 'PC1 (Level)',
+                        data: eigenvectorPC1,
+                        borderColor: '#3b82f6',
+                        borderWidth: 2,
+                        pointRadius: 2,
+                        tension: 0.1,
+                        fill: false
+                    },
+                    {
+                        label: 'PC2 (Slope)',
+                        data: eigenvectorPC2,
+                        borderColor: '#ef4444',
+                        borderWidth: 2,
+                        pointRadius: 2,
+                        tension: 0.1,
+                        fill: false
+                    },
+                    {
+                        label: 'PC3 (Curvature)',
+                        data: eigenvectorPC3,
+                        borderColor: '#7c3aed',
+                        borderWidth: 2,
+                        pointRadius: 2,
+                        tension: 0.1,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'top', labels: { boxWidth: 12, color: tickColor } } },
+                scales: {
+                    x: { grid: { color: gridColor }, ticks: { color: tickColor } },
+                    y: { grid: { color: gridColor }, ticks: { color: tickColor } }
+                }
+            }
+        });
+    }
+
+    function resetPcaSliders() {
+        document.getElementById('pcaPC1').value = "0.0";
+        document.getElementById('pcaPC2').value = "0.0";
+        document.getElementById('pcaPC3').value = "0.0";
+        runPcaSimulation();
+    }
+
+    function runPcaSimulation() {
+        const scorePC1 = parseFloat(document.getElementById('pcaPC1').value);
+        const scorePC2 = parseFloat(document.getElementById('pcaPC2').value);
+        const scorePC3 = parseFloat(document.getElementById('pcaPC3').value);
+
+        // Update slider numeric values
+        document.getElementById('pcaPC1Val').textContent = (scorePC1 >= 0 ? '+' : '') + scorePC1.toFixed(2);
+        document.getElementById('pcaPC2Val').textContent = (scorePC2 >= 0 ? '+' : '') + scorePC2.toFixed(2);
+        document.getElementById('pcaPC3Val').textContent = (scorePC3 >= 0 ? '+' : '') + scorePC3.toFixed(2);
+
+        // Reconstruct the yield curve
+        // x_i = base_i + scorePC1 * eigenvectorPC1_i + scorePC2 * eigenvectorPC2_i + scorePC3 * eigenvectorPC3_i
+        const reconstructedYields = [];
+        for (let i = 0; i < pcaMaturities.length; i++) {
+            const reconstructed = baseYieldsJul2010[i] + 
+                                  scorePC1 * eigenvectorPC1[i] + 
+                                  scorePC2 * eigenvectorPC2[i] + 
+                                  scorePC3 * eigenvectorPC3[i];
+            reconstructedYields.push(reconstructed);
+        }
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#64748b';
+
+        // Render Reconstructed Curves Chart
+        const ctxC = document.getElementById('pcaCurvesChart').getContext('2d');
+        if (pcaCurvesChartInstance) { pcaCurvesChartInstance.destroy(); }
+        pcaCurvesChartInstance = new Chart(ctxC, {
+            type: 'line',
+            data: {
+                labels: pcaMaturities,
+                datasets: [
+                    {
+                        label: 'July 2010 Base Yields (%)',
+                        data: baseYieldsJul2010,
+                        borderColor: '#64748b',
+                        borderDash: [5, 5],
+                        borderWidth: 2,
+                        pointRadius: 3,
+                        fill: false
+                    },
+                    {
+                        label: 'Reconstructed Yields (%)',
+                        data: reconstructedYields,
+                        borderColor: '#22c55e',
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'top', labels: { color: tickColor } } },
+                scales: {
+                    x: { grid: { color: gridColor }, ticks: { color: tickColor } },
+                    y: { grid: { color: gridColor }, ticks: { color: tickColor }, min: -1.0, max: 4.5 }
+                }
+            }
+        });
+    }
+
+    // Attach onload event
+    document.addEventListener('DOMContentLoaded', () => {
+        if (document.getElementById('view-pca')) {
+            initPcaLoadingsChart();
+            runPcaSimulation();
+        }
+    });
+</script>

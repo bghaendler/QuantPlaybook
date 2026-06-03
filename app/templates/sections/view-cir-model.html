@@ -1,0 +1,95 @@
+<div id="view-cir-model" style="display: none;">
+<header>
+<h1>Module 3.2: Short Rate Models</h1>
+<div class="subtitle" style="color: #6b7280;">4. Cox-Ingersoll-Ross (CIR) Model</div>
+</header>
+<div class="container" style="grid-template-columns: 1fr; gap: 3rem; max-width: 1400px;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+<div class="card" style="margin-bottom: 0;">
+<h2>4. Cox-Ingersoll-Ross (CIR) Model</h2>
+<p>To avoid negative interest rates, the CIR model scales the volatility by the square root of the rate:</p>
+<p style="text-align: center;">$$ dr(t) = \kappa(\theta - r(t))dt + \sigma\sqrt{r(t)} dW^*(t) $$</p>
+<p>Assuming the Feller condition $2\kappa\theta \ge \sigma^2$, the rate strictly stays positive. Like Vasicek, the CIR model also yields exponential affine bond prices:</p>
+<p style="text-align: center;">$$ P(t, T) = e^{A(T-t) - B(T-t)r(t)} $$</p>
+<p>The Riccati equations change slightly due to the new volatility structure, but $A(t)$ and $B(t)$ still have explicit closed-form expressions involving hyperbolic functions.</p>
+</div>
+<div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px;">
+<h3 style="margin-top:0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+<p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> An elegant upgrade to the Vasicek model that inherently prevents negative interest rates.</p>
+<ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+<li style="margin-bottom: 1rem;"><strong>Square-Root Volatility:</strong> As the interest rate approaches zero, the noise ($\sigma \sqrt{r(t)}$) also drops to zero. The process "calms down" near the boundary, preventing it from crossing into negative territory.</li>
+<li style="margin-bottom: 0;"><strong>Example:</strong> Imagine a bouncing ball that loses its bounciness as it gets closer to the floor. The mean reversion pulls it up, and the vanishing volatility ensures it can never fall through the floor!</li>
+</ul>
+</div>
+</div>
+<!-- Interactive Visualization -->
+<div class="card" style="margin-bottom: 2rem;">
+<h2>Interactive Visualization: The Feller Condition &amp; Boundary Effects</h2>
+<p style="margin-bottom: 1.5rem;">Adjust the parameters to test the Feller condition. If $2\kappa\theta \ge \sigma^2$, the upward drift is strong enough relative to the volatility that the rate will never hit 0. Notice how the simulated paths visually squeeze and "bounce" when they get close to zero!</p>
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+<!-- Sliders -->
+<div style="display: flex; flex-direction: column; gap: 1rem; grid-column: span 2;">
+<div style="display: flex; gap: 1rem;">
+<div style="flex: 1;">
+<label for="cirInitialSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Initial Rate $r(0)$: <span id="cirInitialValue">1.0%</span></label>
+<input id="cirInitialSlider" max="0.10" min="0.001" step="0.005" style="width: 100%;" type="range" value="0.01"/>
+</div>
+<div style="flex: 1;">
+<label for="cirThetaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Long-Term Mean ($\theta$): <span id="cirThetaValue">4.0%</span></label>
+<input id="cirThetaSlider" max="0.10" min="0.01" step="0.01" style="width: 100%;" type="range" value="0.04"/>
+</div>
+</div>
+<div style="display: flex; gap: 1rem;">
+<div style="flex: 1;">
+<label for="cirKappaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Mean Reversion ($\kappa$): <span id="cirKappaValue">0.50</span></label>
+<input id="cirKappaSlider" max="2" min="0.1" step="0.1" style="width: 100%;" type="range" value="0.5"/>
+</div>
+<div style="flex: 1;">
+<label for="cirSigmaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Volatility ($\sigma$): <span id="cirSigmaValue">0.15</span></label>
+<input id="cirSigmaSlider" max="0.4" min="0.01" step="0.01" style="width: 100%;" type="range" value="0.15"/>
+</div>
+</div>
+</div>
+<!-- Math Details -->
+<div style="border-left: 2px solid #cbd5e1; padding-left: 1.5rem; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 0.85rem; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem;">Feller Condition Check</div>
+<div style="font-size: 0.95rem; color: #334155; font-family: 'Courier New', monospace; margin-bottom: 0.25rem;">
+                                $2\kappa\theta$ = <span id="cirDrift" style="font-weight: 600;">0.0400</span>
+</div>
+<div style="font-size: 0.95rem; color: #334155; font-family: 'Courier New', monospace; margin-bottom: 0.5rem;">
+                                $\sigma^2$ = <span id="cirVol2" style="font-weight: 600;">0.0225</span>
+</div>
+</div>
+<!-- Status Output -->
+<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+<div id="cirStatusBox" style="background: #dcfce7; color: #166534; padding: 0.75rem 1rem; border-radius: 6px; font-weight: 700; font-size: 0.9rem; border: 1px solid #86efac; width: 100%; margin-bottom: 0.75rem;">
+                                FELLER CONDITION MET<br/><span style="font-size: 0.75rem; font-weight: 500;">Rate Strictly &gt; 0</span>
+</div>
+<button id="resimulateCirBtn" style="background: var(--primary-color); color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%;">Run 5 New Paths</button>
+</div>
+</div>
+<div class="chart-container" style="height: 400px;">
+<canvas id="cirChart"></canvas>
+</div>
+</div>
+<!-- Sample Exercise -->
+<div class="card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
+<h2 style="color: #166534;">Practice Exercise: The CIR Limiting Distribution</h2>
+<p style="color: #166534; font-weight: 500;">The limiting distribution of the CIR model is a Gamma distribution. Compare the limiting variances of the Vasicek and CIR models using the parameters $\kappa = 0.5$, $\theta = 0.04$, and $\sigma = 0.15$.</p>
+<details style="background: white; padding: 1rem; border-radius: 6px; border: 1px solid #bbf7d0;">
+<summary style="cursor: pointer; font-weight: 600; color: #15803d; list-style: none; display: flex; align-items: center;">
+<span style="margin-right: 0.5rem;">👉</span> Show Step-by-Step Solution
+                        </summary>
+<div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; color: #334155;">
+<ol style="line-height: 1.8;">
+<li><strong>Vasicek Variance Formula:</strong> $Var(r(\infty)) = \frac{\sigma^2}{2\kappa}$</li>
+<li>Vasicek Variance = $\frac{0.15^2}{2 \times 0.5} = \frac{0.0225}{1} = 0.0225$</li>
+<li><strong>CIR Variance Formula:</strong> $Var(r(\infty)) = \frac{\sigma^2 \theta}{2\kappa}$</li>
+<li>CIR Variance = $\frac{0.15^2 \times 0.04}{2 \times 0.5} = 0.0225 \times 0.04 = 0.0009$</li>
+</ol>
+<p><strong>Conclusion:</strong> The CIR variance ($0.0009$) is vastly smaller than the Vasicek variance ($0.0225$) for the same parameters! Because the CIR model scales noise by $\sqrt{r(t)}$, and the long-term rate $\theta$ is small ($0.04$), the effective volatility dampens significantly over time, creating a much tighter distribution.</p>
+</div>
+</details>
+</div>
+</div>
+</div>

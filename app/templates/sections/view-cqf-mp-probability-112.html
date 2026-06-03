@@ -1,0 +1,150 @@
+<div id="view-cqf-mp-probability-112" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">1.12 Covariance &amp; Correlation</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.12 Covariance &amp; Correlation</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Joint dependencies, correlation boundaries, and dimensionless Pearson coefficients.</div>
+    </header>
+
+    <!-- Core Theory Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.12.1 Covariance &amp; Pearson Coefficents</h3>
+        <p>Covariance measures the joint linear statistical dependence between two random variables $X$ and $Y$:</p>
+        <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+            $$\text{Cov}(X,Y) = \mathbb{E}[(X - \mathbb{E}[X])(Y - \mathbb{E}[Y])] = \mathbb{E}[XY] - \mathbb{E}[X]\mathbb{E}[Y]$$
+        </p>
+        <p>To eliminate units and obtain a standardized, dimensionless measure of association, we define the **Pearson Correlation Coefficient** $\rho_{XY}$:</p>
+        <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+            $$\rho_{XY} = \frac{\text{Cov}(X,Y)}{\sigma_X \sigma_Y} \quad \text{where} \quad -1 \le \rho_{XY} \le 1$$
+        </p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li>$\rho_{XY} = 1$: Perfect positive linear correlation.</li>
+            <li>$\rho_{XY} = -1$: Perfect negative linear correlation.</li>
+            <li>$\rho_{XY} = 0$: Linearly uncorrelated.</li>
+        </ul>
+    </div>
+
+    <!-- Interactive Scatter Plot Lab -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.12.2 Interactive Bivariate Scatter &amp; Correlation Laboratory</h3>
+        <p>Adjust the target correlation coefficient $\rho$ to observe scatter clustering dynamically:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls -->
+                <div>
+                    <div>
+                        <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Target Correlation $\rho$: <span id="prob12RhoVal" style="color: var(--accent);">0.70</span></label>
+                        <input id="prob12Rho" type="range" min="-1" max="1" step="0.1" value="0.7" oninput="runProb12Scatter()" style="width: 100%; cursor: pointer; margin-bottom: 1rem;">
+                    </div>
+                    <div style="font-size: 0.85rem; line-height: 1.6; color: var(--text-color); background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid var(--accent);">
+                        <div id="prob12ScatterInfo">Generating scatter point cloud...</div>
+                    </div>
+                </div>
+
+                <!-- Canvas Visualizer -->
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
+                    <canvas id="prob112Canvas" width="300" height="180" style="width: 100%; height: 180px; background: #000; border-radius: 6px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.runProb12Scatter = function() {
+                const rho = parseFloat(document.getElementById('prob12Rho').value);
+                document.getElementById('prob12RhoVal').innerText = rho.toFixed(2);
+
+                const elInfo = document.getElementById('prob12ScatterInfo');
+
+                if (Math.abs(rho) > 0.9) {
+                    elInfo.innerHTML = `<strong>Linear Trend:</strong> High correlation! Assets co-move tightly. Very low tracking error or hedging mismatch risk.`;
+                } else if (Math.abs(rho) < 0.2) {
+                    elInfo.innerHTML = `<strong>Linear Trend:</strong> Weak correlation. Asset trends are mostly independent. Excellent diversification candidate.`;
+                } else {
+                    elInfo.innerHTML = `<strong>Linear Trend:</strong> Moderate correlation. Typical equity pairs or interest-rate maturity dependencies.`;
+                }
+
+                drawScatterGraph(rho);
+
+                const parent = document.getElementById('view-cqf-mp-probability-112');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawScatterGraph(rho) {
+                const canvas = document.getElementById('prob112Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Grid
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= canvas.width; i += 30) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, canvas.height);
+                    ctx.stroke();
+                }
+
+                // Box boundaries
+                const cx = canvas.width / 2;
+                const cy = canvas.height / 2;
+
+                // Axes
+                ctx.strokeStyle = '#52525b';
+                ctx.lineWidth = 1.0;
+                ctx.beginPath();
+                ctx.moveTo(10, cy);
+                ctx.lineTo(canvas.width - 10, cy);
+                ctx.moveTo(cx, 10);
+                ctx.lineTo(cx, canvas.height - 10);
+                ctx.stroke();
+
+                // Seed pseudo-random points to keep the scatter shape consistent for the same rho
+                let seed = 42;
+                function random() {
+                    const x = Math.sin(seed++) * 10000;
+                    return x - Math.floor(x);
+                }
+
+                ctx.fillStyle = '#ec4899';
+                const count = 60;
+                for (let i = 0; i < count; i++) {
+                    // Generate two independent standard normal variables using Box-Muller
+                    const u1 = random() || 0.0001;
+                    const u2 = random() || 0.0001;
+                    const z1 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+                    const z2 = Math.sqrt(-2.0 * Math.log(u1)) * Math.sin(2.0 * Math.PI * u2);
+
+                    // Correlate them using Cholesky Decomposition: Y = rho * Z1 + sqrt(1 - rho^2) * Z2
+                    const x = z1;
+                    const y = rho * z1 + Math.sqrt(1 - rho * rho) * z2;
+
+                    // Plot within boundaries
+                    const px = cx + x * 25;
+                    const py = cy - y * 25;
+
+                    if (px > 5 && px < canvas.width - 5 && py > 5 && py < canvas.height - 5) {
+                        ctx.beginPath();
+                        ctx.arc(px, py, 3.5, 0, 2 * Math.PI);
+                        ctx.fill();
+                    }
+                }
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('prob12Rho')) runProb12Scatter();
+            }, 100);
+        })();
+    </script>
+</div>

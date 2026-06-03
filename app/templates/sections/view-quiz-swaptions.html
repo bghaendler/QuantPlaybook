@@ -1,0 +1,305 @@
+<div id="view-quiz-swaptions" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">Quiz: Swaptions</h1>
+        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Coursework assignment covering swaption payoffs, cap-swaption pricing relationships, and payer-receiver swaption parity.</div>
+    </header>
+    
+    <div class="container" style="max-width: 900px; grid-template-columns: 1fr; gap: 2.5rem; margin-bottom: 4rem;">
+        <p style="font-size: 1.1rem; color: var(--text-color); line-height: 1.7; opacity: 0.85;">
+            Test your understanding with these exam-style problems. Select your options, enter numeric answers, and click <strong>Submit</strong> to get instant feedback. Use the <strong>Show Mathematical Solution & Derivation</strong> card at the bottom of each question to review the analytical proof.
+        </p>
+
+        <!-- QUESTION 1: Multiple Select (Checkboxes) -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 1</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Select All That Apply</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                1. Which of the following statements are true?
+            </p>
+
+            <!-- Checkbox Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1.75rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="checkbox" name="q1_opts" value="opt1" style="margin-top: 0.3rem; accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">A receiver swaption is in-the-money if $K < R_{swap}$.</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="checkbox" name="q1_opts" value="opt2" style="margin-top: 0.3rem; accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">The value of a payer swap equals minus the value of a receiver swap.</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="checkbox" name="q1_opts" value="opt3" style="margin-top: 0.3rem; accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">The value of a payer swaption equals minus the value of a receiver swaption.</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="checkbox" name="q1_opts" value="opt4" style="margin-top: 0.3rem; accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">The value of a payer swaption equals the value of a receiver swaption plus the value of the swap underlying the payer swaption.</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="checkbox" name="q1_opts" value="opt5" style="margin-top: 0.3rem; accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">The values of an at-the-money payer swaption and an at-the-money receiver swaption are equal.</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeSWQuizQ1()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q1-sw-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Step-by-Step Breakdown of All Statements:</strong></p>
+                    <ul style="padding-left: 1.5rem; margin-bottom: 1.5rem;">
+                        <li style="margin-bottom: 0.75rem;">
+                            <strong>Statement 1 (False):</strong> A receiver swaption gives the holder the right to <em>receive</em> a fixed rate $K$. If the strike $K$ is less than the prevailing forward swap rate $R_{swap}$, this option is <strong>out-of-the-money (OTM)</strong>, because you would be receiving a rate below the current market swap rate.
+                        </li>
+                        <li style="margin-bottom: 0.75rem;">
+                            <strong>Statement 2 (True):</strong> A payer swap paying fixed rate $K$ and receiving floating has value $V_p(t) = N A(t)(R_{swap}(t) - K)$. A receiver swap receiving fixed rate $K$ and paying floating has value $V_r(t) = N A(t)(K - R_{swap}(t))$. Thus, $V_p(t) = -V_r(t)$ holds exactly.
+                        </li>
+                        <li style="margin-bottom: 0.75rem;">
+                            <strong>Statement 3 (False):</strong> Option prices are non-negative ($Swpt_p(t) \ge 0, Swpt_r(t) \ge 0$). They cannot be negatives of one another except in the trivial degenerate case where both prices are zero.
+                        </li>
+                        <li style="margin-bottom: 0.75rem;">
+                            <strong>Statement 4 (True):</strong> This is the famous <strong>Payer-Receiver Swaption Parity</strong>:
+                            $$ Swpt_p(t) - Swpt_r(t) = V_{swap}(t) \implies Swpt_p(t) = Swpt_r(t) + V_{swap}(t) $$
+                            where $V_{swap}(t)$ is the value of the forward-starting payer swap (the swap underlying the payer swaption).
+                        </li>
+                        <li style="margin-bottom: 0.75rem;">
+                            <strong>Statement 5 (True):</strong> An at-the-money (ATM) swaption has strike equal to the forward swap rate ($K = R_{swap}(t)$). Under this condition, the value of the underlying swap is exactly zero: $V_{swap}(t) = 0$. By Payer-Receiver Parity, we get:
+                            $$ Swpt_p(t) - Swpt_r(t) = 0 \implies Swpt_p(t) = Swpt_r(t) $$
+                        </li>
+                    </ul>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Options: Statements 2, 4, and 5.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 2: True / False (Radio buttons) -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 2</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">True / False</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1rem;">
+                2. Consider a cap with reset/settlement dates $0 < T_0 < T_1 < \dots < T_n$, with $T_i - T_{i-1} \equiv \delta$, and a swaption with expiry date $T_0$ and underlying swap with the same tenor structure as the cap and notional $N = 1$. Suppose that both the cap and the swaption have identical strike rate.
+            </p>
+            <p style="font-size: 1.1rem; font-style: italic; font-weight: 600; color: var(--accent); margin-bottom: 1.5rem; background: var(--nav-hover); padding: 0.75rem 1rem; border-left: 4px solid var(--accent);">
+                Is the following statement true or false?<br>
+                "The price of the payer swaption is smaller than or equal to the price of the cap."
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.75rem;">
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="q2_opt" value="true" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1.05rem; color: var(--text-color); font-weight: 600;">True</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="q2_opt" value="false" style="accent-color: var(--accent); width: 1.1rem; height: 1.1rem;" />
+                    <span style="font-size: 1.05rem; color: var(--text-color); font-weight: 600;">False</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeSWQuizQ2()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q2-sw-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Mathematical Proof &amp; Bounds:</strong></p>
+                    <p>Let's look at the payoffs at the swaption expiry $T_0$. The payoff of the payer swaption is:</p>
+                    <p style="text-align: center;">$$ \text{Payoff}_{swaption}(T_0) = \left( \sum_{i=1}^n P(T_0, T_i) \delta (F(T_0, T_{i-1}, T_i) - K) \right)^+ $$</p>
+                    <p>Using the mathematical subadditivity of the positive part function ($(\sum x_i)^+ \le \sum x_i^+$), we have:</p>
+                    <p style="text-align: center;">
+                        $$ \left( \sum_{i=1}^n P(T_0, T_i) \delta (F(T_0, T_{i-1}, T_i) - K) \right)^+ \le \sum_{i=1}^n \left( P(T_0, T_i) \delta (F(T_0, T_{i-1}, T_i) - K) \right)^+ $$
+                        $$ = \sum_{i=1}^n P(T_0, T_i) \delta (F(T_0, T_{i-1}, T_i) - K)^+ $$
+                    </p>
+                    <p>Now, let's consider the value of the caplet $i$ at $T_0$. Caplet $i$ expires at $T_{i-1} \ge T_0$, and pays $\delta (F(T_{i-1}, T_{i-1}, T_i) - K)^+$ at $T_i$. Under the $T_i$-forward measure, its value at $T_0$ is:</p>
+                    <p style="text-align: center;">$$ \text{Value}_{caplet, i}(T_0) = \mathbb{E}^{T_i} \left[ \delta P(T_0, T_i) (F(T_{i-1}, T_{i-1}, T_i) - K)^+ \mid \mathcal{F}_{T_0} \right] $$</p>
+                    <p>Since the forward rate $F(t, T_{i-1}, T_i)$ is a martingale under the $T_i$-forward measure and option payoffs are convex, by Jensen's Inequality we have:</p>
+                    <p style="text-align: center;">$$ \mathbb{E}^{T_i} \left[ (F(T_{i-1}, T_{i-1}, T_i) - K)^+ \mid \mathcal{F}_{T_0} \right] \ge (F(T_0, T_{i-1}, T_i) - K)^+ $$</p>
+                    <p>Summing this over all periods $i=1,\dots,n$, we obtain:</p>
+                    <p style="text-align: center;">
+                        $$ \text{Value}_{cap}(T_0) = \sum_{i=1}^n \text{Value}_{caplet, i}(T_0) \ge \sum_{i=1}^n P(T_0, T_i) \delta (F(T_0, T_{i-1}, T_i) - K)^+ $$
+                        $$ \ge \text{Payoff}_{swaption}(T_0) $$
+                    </p>
+                    <p>Taking the expectation today (discounted back to $t=0$), we prove that:</p>
+                    <p style="text-align: center; font-weight: 700; color: var(--accent);">$$ \text{Price}_{swaption}(0) \le \text{Price}_{cap}(0) $$</p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: True.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 3: Fill in the Blank / Numeric input -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 3</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Answer</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1rem;">
+                3. Consider a swap with notional $N = 1$, a cap, and a floor with identical reset/settlement dates. Consider furthermore a payer and receiver swaption with expiry date on the first reset date of the swap. Assume that the strike rates of the cap, floor and the two swaptions are equal.
+            </p>
+            <p style="font-size: 1.1rem; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                In the market you observe that the **cap and the floor are both priced at $2.00\%$** and the **payer swaption is priced at $1.50\%$**. What is the price of the **receiver swaption**?
+            </p>
+            
+            <!-- Input box -->
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.75rem; max-width: 350px;">
+                <input type="text" id="q3_input" placeholder="e.g. 1.50" style="flex: 1; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); font-size: 1.1rem; font-weight: 700; font-family: monospace;" />
+                <span style="font-size: 1.1rem; font-weight: 700; color: var(--text-color);">%</span>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeSWQuizQ3()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q3-sw-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Theoretical Derivation &amp; Solution:</strong></p>
+                    <p>This problem is solved by linking **Cap-Floor Parity** and **Payer-Receiver Swaption Parity** through the underlying forward-starting swap.</p>
+                    <p>1. **Cap-Floor Parity:** The difference between a cap and floor with identical strikes and dates equals the value of the underlying payer swap:</p>
+                    <p style="text-align: center;">$$ Cp(0) - Fl(0) = V_{swap}(0) $$</p>
+                    <p>Substituting the observed market prices ($Cp(0) = 2.00\%$ and $Fl(0) = 2.00\%$):</p>
+                    <p style="text-align: center;">$$ V_{swap}(0) = 2.00\% - 2.00\% = 0.00\% $$</p>
+                    <p>This means the forward-starting swap is exactly **at-the-money (ATM)**, having a present value of zero.</p>
+                    <p>2. **Payer-Receiver Swaption Parity:** Similarly, the difference between a payer swaption and a receiver swaption written on the same underlying swap with the same strike equals the value of that swap:</p>
+                    <p style="text-align: center;">$$ Swpt_p(0) - Swpt_r(0) = V_{swap}(0) $$</p>
+                    <p>Since we proved $V_{swap}(0) = 0.00\%$ from Cap-Floor Parity, we substitute this in:</p>
+                    <p style="text-align: center;">
+                        $$ Swpt_p(0) - Swpt_r(0) = 0.00\% $$
+                        $$ Swpt_r(0) = Swpt_p(0) $$
+                    </p>
+                    <p>Since the payer swaption is priced at **$1.50\%$**, the receiver swaption must also be priced at exactly **$1.50\%$**.</p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: 1.50% (or 1.5).</p>
+                </div>
+            </details>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function gradeSWQuizQ1() {
+        const checkboxes = document.querySelectorAll('input[name="q1_opts"]');
+        const feedback = document.getElementById('q1-sw-feedback');
+        
+        let selectedValues = [];
+        checkboxes.forEach(cb => {
+            if (cb.checked) selectedValues.push(cb.value);
+        });
+
+        if (selectedValues.length === 0) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Please select at least one option before submitting!';
+            return;
+        }
+
+        // Correct statements: Statement 2 (opt2), Statement 4 (opt4), and Statement 5 (opt5)
+        const isCorrect = selectedValues.includes('opt2') && 
+                          selectedValues.includes('opt4') && 
+                          selectedValues.includes('opt5') && 
+                          !selectedValues.includes('opt1') && 
+                          !selectedValues.includes('opt3');
+
+        feedback.style.display = 'block';
+        if (isCorrect) {
+            feedback.style.background = '#dcfce7';
+            feedback.style.color = '#166534';
+            feedback.innerHTML = '<strong>✓ Correct!</strong> Statements 2, 4, and 5 are indeed true. Statement 2 represents basic swap leg negation, Statement 4 is the standard Payer-Receiver Swaption Parity, and Statement 5 holds because at-the-money swap values are zero, making payer and receiver option values identical.';
+        } else {
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = '<strong>✗ Incorrect.</strong> Some of your selected statements are false or correct ones are missing. Remember: option prices cannot be negative (Statement 3 is false), and receiving a strike rate lower than the market rate is OTM for a receiver swaption (Statement 1 is false). Try again!';
+        }
+    }
+
+    // Trigger MathJax typeset when feedback is displayed
+    function triggerMathJaxInFeedback(el) {
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') {
+            MathJax.typesetPromise([el]);
+        }
+    }
+
+    function gradeSWQuizQ2() {
+        const selected = document.querySelector('input[name="q2_opt"]:checked');
+        const feedback = document.getElementById('q2-sw-feedback');
+        if (!selected) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Please select an option before submitting!';
+            return;
+        }
+
+        feedback.style.display = 'block';
+        if (selected.value === 'true') {
+            feedback.style.background = '#dcfce7';
+            feedback.style.color = '#166534';
+            feedback.innerHTML = '<strong>✓ Correct!</strong> The statement is indeed True. By the mathematical subadditivity of the positive part function ($(\\sum x_i)^+ \\le \\sum x_i^+$) combined with Jensen\'s Inequality for options with longer maturities, the price of the payer swaption is always smaller than or equal to the price of the cap.';
+        } else {
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = '<strong>✗ Incorrect.</strong> Think about subadditivity. The swaption payoff at expiry is a single positive part of a sum: $(\\sum x_i)^+$, whereas a cap is a sum of individual positive parts: \\sum x_i^+. Since $(\\sum x_i)^+ \\le \\sum x_i^+$, option subadditivity ensures the swaption is cheaper or equal. Thus, the statement is True!';
+        }
+        triggerMathJaxInFeedback(feedback);
+    }
+
+    function gradeSWQuizQ3() {
+        const valStr = document.getElementById('q3_input').value.trim();
+        const feedback = document.getElementById('q3-sw-feedback');
+        
+        if (!valStr) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Please enter a numeric answer before submitting!';
+            return;
+        }
+
+        const numVal = parseFloat(valStr.replace('%', ''));
+        if (isNaN(numVal)) {
+            feedback.style.display = 'block';
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerText = 'Invalid input. Please enter a valid number!';
+            return;
+        }
+
+        feedback.style.display = 'block';
+        // Correct answer is 1.50
+        if (Math.abs(numVal - 1.50) < 0.01) {
+            feedback.style.background = '#dcfce7';
+            feedback.style.color = '#166534';
+            feedback.innerHTML = '<strong>✓ Correct!</strong> The receiver swaption price is exactly <strong>1.50%</strong>. Since Cap = Floor = 2.00%, Cap-Floor Parity implies $V_{swap}(0) = 0$. By Payer-Receiver Swaption Parity, $Swpt_p - Swpt_r = V_{swap}(0) = 0$, meaning the receiver swaption price equals the payer swaption price of 1.50%!';
+        } else {
+            feedback.style.background = '#fee2e2';
+            feedback.style.color = '#991b1b';
+            feedback.innerHTML = `<strong>✗ Incorrect.</strong> Your answer of ${numVal.toFixed(2)}% is not correct. Hint: Use Cap-Floor Parity ($Cp - Fl = V_{swap}$) to find the underlying swap value, and then substitute this into Payer-Receiver Swaption Parity ($Swpt_p - Swpt_r = V_{swap}$). Try again!`;
+        }
+        triggerMathJaxInFeedback(feedback);
+    }
+</script>

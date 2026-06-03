@@ -1,0 +1,1092 @@
+<div id="view-caps-floors" style="display: none;">
+    <header>
+        <h1>Module 4: Interest Rate Derivatives</h1>
+        <div class="subtitle" style="color: #6b7280;">2. Caps and Floors</div>
+    </header>
+
+    <div style="display: flex; flex-direction: column; gap: 3rem; max-width: 1400px; margin-bottom: 4rem;">
+
+        <!-- Intro: Two-column overview -->
+        <div class="container" style="margin-bottom: 0; gap: 2rem; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; flex: 1.2;">
+                <h2>Caps and Floors</h2>
+                <p>If an institution has issued a floating rate note (FRN) and has to pay floating rates, it will want to protect itself against too high rates. In this case, it would buy a <strong>cap</strong>. On the other hand, if an investor invested in a floating rate note and receives floating rates, they will want to protect themselves against too low rates. In this case, they would buy a <strong>floor</strong>.</p>
+                <p>Caps and floors are structured as strips of call-like and put-like options on interest rates, respectively. Just as calls and puts are related, caps and floors are linked through a <strong>cap-floor parity</strong> relation, which connects their values to a corresponding swap contract.</p>
+                <p>We will price caps and floors using the forward measures developed in the previous sections, specifically utilizing the famous <strong>Black's</strong> and <strong>Bachelier's</strong> pricing formulas.</p>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; flex: 0.8; background: #eff6ff; border-left: 4px solid var(--accent);">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: 'Inter', sans-serif;">Key Highlights</h3>
+                <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #1e3a8a; padding-left: 1.2rem;">
+                    <li style="margin-bottom: 0.5rem;"><strong>Caplet &amp; Floorlet:</strong> Single period interest rate options.</li>
+                    <li style="margin-bottom: 0.5rem;"><strong>Cap &amp; Floor:</strong> Strips of caplets and floorlets over multiple reset dates.</li>
+                    <li style="margin-bottom: 0.5rem;"><strong>ATM relation:</strong> Under ATM strike rate, a cap's price equals the floor's price.</li>
+                    <li><strong>Market standard:</strong> Quoting caps/floors in terms of implied Black or Normal volatility parameters.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Caplets and Floorlets Definition -->
+        <div class="card" style="margin-bottom: 0;">
+            <h2>Caplet Structure and Bond Put Parity</h2>
+            <p>A <strong>caplet</strong> with reset date $T_0$ and settlement date $T_1 = T_0 + \delta$ pays the holder at time $T_1$ the positive difference between the simple spot rate $L(T_0, T_1)$ and the strike rate $\kappa$. Specifically, the cash flow at time $T_1$ is:</p>
+            <p style="text-align: center; font-size: 1.15rem;">$$ \text{Cash Flow at } T_1 = \delta \bigl(L(T_0, T_1) - \kappa\bigr)^+ $$</p>
+            <p>where $\delta = T_1 - T_0$ is the accrual factor (e.g., $0.25$ for 3 months, $0.5$ for 6 months). The caplet protects the holder against rising interest rates.</p>
+
+            <div style="background: var(--nav-hover); padding: 1.5rem; border-radius: 8px; margin-top: 1.5rem; border: 1px solid var(--card-border);">
+                <h4 style="margin-top: 0; color: var(--text-color); font-weight: 700;">Mathematical Relation to Bond Put Options</h4>
+                <p>The payoff of the caplet at $T_1$ is fully known at reset date $T_0$. We can discount the payoff back to $T_0$ by multiplying by the bond price $P(T_0, T_1)$:</p>
+                <p style="text-align: center; font-size: 1.1rem;">
+                    $$ \text{Value at } T_0 = P(T_0, T_1) \delta \bigl(L(T_0, T_1) - \kappa\bigr)^+ $$
+                </p>
+                <p>Recall that simple spot rate and bond price satisfy $1 + \delta L(T_0, T_1) = \frac{1}{P(T_0, T_1)}$. Rearranging terms allows us to write:</p>
+                <p style="text-align: center; font-size: 1.15rem; color: var(--accent);">
+                    $$ P(T_0, T_1) \delta \bigl(L(T_0, T_1) - \kappa\bigr)^+ = (1 + \delta\kappa) \left( \frac{1}{1 + \delta\kappa} - P(T_0, T_1) \right)^+ $$
+                </p>
+                <p>This is exactly equivalent to $(1 + \delta\kappa)$ times the payoff of a <strong>put option</strong> on the $T_1$-bond with maturity $T_0$ and strike price $K_{bond} = \frac{1}{1 + \delta\kappa}$.</p>
+                <p>By absence of arbitrage, the spot price at time $t \le T_0$ of the caplet is:</p>
+                <p style="text-align: center; font-size: 1.2rem; font-weight: 700;">
+                    $$ Cpl(t, T_0, T_1) = (1 + \delta\kappa) \times P_{put}\left(t, T_0, T_1; \frac{1}{1 + \delta\kappa}\right) $$
+                </p>
+            </div>
+        </div>
+
+        <!-- Cap-Floor Parity & Swap Relation -->
+        <div class="container" style="margin-bottom: 0; gap: 2rem; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; flex: 1;">
+                <h2>Cap-Floor Swap Parity</h2>
+                <p>A <strong>cap</strong> is a strip of caplets with reset/settlement dates $T_0 < T_1 < \dots < T_n$. At maturity $T_n$, the total cap price is the sum of its individual caplets:</p>
+                <p style="text-align: center;">$$ Cp(t) = \sum_{i=1}^n Cpl(t, T_{i-1}, T_i) $$</p>
+                <p>A <strong>floor</strong> is a strip of floorlets protecting against low interest rates. Its $i$-th floorlet pays $\delta (\kappa - L(T_{i-1}, T_i))^+$ at $T_i$. Its total price is:</p>
+                <p style="text-align: center;">$$ Fl(t) = \sum_{i=1}^n Fll(t, T_{i-1}, T_i) $$</p>
+                <p>By taking the difference of payoffs, we get $\delta(L - \kappa)^+ - \delta(\kappa - L)^+ = \delta(L - \kappa)$. Summing up these discounted payoffs proves the <strong>Cap-Floor Parity Relation</strong>:</p>
+                <p style="text-align: center; font-size: 1.2rem; font-weight: 700; color: var(--accent);">
+                    $$ Cp(t) - Fl(t) = V_p(t) $$
+                </p>
+                <p>where $V_p(t)$ is the value of a <strong>payer swap</strong> with fixed rate $\kappa$, notional 1, and the same tenor structure $T_0 < \dots < T_n$ as the cap and floor.</p>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; flex: 1;">
+                <h2>Swap Moneyness Definitions</h2>
+                <p>The swap rate that renders the payer swap value $V_p(t) = 0$ is called the <strong>forward swap rate</strong> $R_{swap}(t)$:</p>
+                <p style="text-align: center;">$$ R_{swap}(t) = \frac{P(t, T_0) - P(t, T_n)}{\sum_{i=1}^n \delta P(t, T_i)} $$</p>
+                
+                <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.9rem;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--card-border); text-align: left;">
+                            <th style="padding: 0.5rem;">State</th>
+                            <th style="padding: 0.5rem;">Condition</th>
+                            <th style="padding: 0.5rem;">Cap ($\kappa$)</th>
+                            <th style="padding: 0.5rem;">Floor ($\kappa$)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.5rem; font-weight: 600; color: #b45309;">At-the-Money (ATM)</td>
+                            <td style="padding: 0.5rem;">$\kappa = R_{swap}(t)$</td>
+                            <td style="padding: 0.5rem; color: #b45309;">$Cp(t) = Fl(t)$</td>
+                            <td style="padding: 0.5rem; color: #b45309;">$Fl(t) = Cp(t)$</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.5rem; font-weight: 600; color: #16a34a;">In-the-Money (ITM)</td>
+                            <td style="padding: 0.5rem;">Cap: $\kappa < R_{swap}$ <br> Floor: $\kappa > R_{swap}$</td>
+                            <td style="padding: 0.5rem; color: #16a34a;">Lower strike (Valuable)</td>
+                            <td style="padding: 0.5rem; color: #16a34a;">Higher strike (Valuable)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.5rem; font-weight: 600; color: #dc2626;">Out-of-the-Money (OTM)</td>
+                            <td style="padding: 0.5rem;">Cap: $\kappa > R_{swap}$ <br> Floor: $\kappa < R_{swap}$</td>
+                            <td style="padding: 0.5rem; color: #dc2626;">Higher strike</td>
+                            <td style="padding: 0.5rem; color: #dc2626;">Lower strike</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pricing Models Side-by-Side -->
+        <div class="container" style="margin-bottom: 0; gap: 2rem; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; flex: 1;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                    <span style="background: #dbeafe; color: #2563eb; font-weight: 800; padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.8rem; text-transform: uppercase;">Log-Normal</span>
+                    <h2 style="margin: 0;">Black's Pricing Formula</h2>
+                </div>
+                <p>Black's formula assumes that the forward simple spot rate $F(t, T_{i-1}, T_i)$ is <strong>log-normally distributed</strong> under the $T_i$-forward measure $\mathbb{Q}^{T_i}$:</p>
+                <p style="text-align: center;">$$ dF(t, T_{i-1}, T_i) = F(t, T_{i-1}, T_i)\,\sigma_B\,dW^{T_i}(t) $$</p>
+                <p>Under this log-normality assumption, the $i$-th caplet and floorlet prices are:</p>
+                <div style="background: var(--nav-hover); padding: 1rem; border-radius: 6px; border: 1px solid var(--card-border); margin: 1rem 0;">
+                    <p style="margin: 0.5rem 0; font-size: 0.95rem;"><strong>Caplet Price:</strong></p>
+                    <p style="text-align: center; font-size: 1.05rem; font-weight: 600;">$$ Cpl_i = \delta P(t, T_i) \left( F_i \Phi(d_1) - \kappa \Phi(d_2) \right) $$</p>
+                    <p style="margin: 0.5rem 0; font-size: 0.95rem;"><strong>Floorlet Price:</strong></p>
+                    <p style="text-align: center; font-size: 1.05rem; font-weight: 600;">$$ Fll_i = \delta P(t, T_i) \left( \kappa \Phi(-d_2) - F_i \Phi(-d_1) \right) $$</p>
+                </div>
+                <p>where $\Phi(\cdot)$ is the standard normal CDF, $\tau = T_{i-1}-t$, and:</p>
+                <p style="text-align: center;">$$ d_{1,2} = \frac{\log(F_i/\kappa) \pm \frac{1}{2}\sigma_B^2\tau}{\sigma_B\sqrt{\tau}} $$</p>
+                <p style="font-size: 0.85rem; color: #6b7280; margin-top: 1rem;">$\sigma_B$ is the <strong>relative volatility</strong> (Black volatility) which is identical for all caplets belonging to the same cap.</p>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; flex: 1;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                    <span style="background: #fee2e2; color: #dc2626; font-weight: 800; padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.8rem; text-transform: uppercase;">Gaussian</span>
+                    <h2 style="margin: 0;">Bachelier's Pricing Formula</h2>
+                </div>
+                <p>Bachelier's formula assumes that the forward simple spot rate $F(t, T_{i-1}, T_i)$ is <strong>normally distributed</strong> (Gaussian) under the $T_i$-forward measure $\mathbb{Q}^{T_i}$:</p>
+                <p style="text-align: center;">$$ dF(t, T_{i-1}, T_i) = \sigma_N\,dW^{T_i}(t) $$</p>
+                <p>Under this normality assumption, the $i$-th caplet and floorlet prices are:</p>
+                <div style="background: var(--nav-hover); padding: 1rem; border-radius: 6px; border: 1px solid var(--card-border); margin: 1rem 0;">
+                    <p style="margin: 0.5rem 0; font-size: 0.95rem;"><strong>Caplet Price:</strong></p>
+                    <p style="text-align: center; font-size: 1.05rem; font-weight: 600;">$$ Cpl_i = \delta P(t, T_i)\,\sigma_N\sqrt{\tau} \left( D \Phi(D) + \phi(D) \right) $$</p>
+                    <p style="margin: 0.5rem 0; font-size: 0.95rem;"><strong>Floorlet Price:</strong></p>
+                    <p style="text-align: center; font-size: 1.05rem; font-weight: 600;">$$ Fll_i = \delta P(t, T_i)\,\sigma_N\sqrt{\tau} \left( -D \Phi(-D) + \phi(D) \right) $$</p>
+                </div>
+                <p>where $\phi(\cdot)$ is the standard normal PDF, $\tau = T_{i-1}-t$, and:</p>
+                <p style="text-align: center;">$$ D = \frac{F_i - \kappa}{\sigma_N\sqrt{\tau}} $$</p>
+                <p style="font-size: 0.85rem; color: #6b7280; margin-top: 1rem;">$\sigma_N$ is the <strong>normal volatility</strong> (absolute volatility or basis point volatility). It is typically roughly 100 times smaller than $\sigma_B$.</p>
+            </div>
+        </div>
+
+        <!-- Interactive Pricing Calculator -->
+        <div class="card" style="margin-bottom: 0;">
+            <h2>Interactive Implied Volatility &amp; Caplet Pricing Calculator</h2>
+            <p style="margin-bottom: 2rem;">Adjust the market inputs using the sliders to see how the pricing and parameters of Black's and Bachelier's models dynamically respond in real-time.</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
+                <!-- Inputs Section -->
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <h3 style="margin-top: 0; color: var(--text-color); border-bottom: 2px solid var(--card-border); padding-bottom: 0.5rem;">Market &amp; Accrual Inputs</h3>
+                    
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <label style="font-weight: 600; font-size: 0.95rem;">Forward Simple Rate ($F_i$):</label>
+                            <span id="calc_fwd_val" style="color: var(--accent); font-weight: 700; font-family: monospace;">3.50%</span>
+                        </div>
+                        <input type="range" id="cf_calc_fwd" min="0.5" max="10.0" step="0.05" value="3.5" style="width: 100%; accent-color: var(--accent);" oninput="updatePricingCalculator()">
+                    </div>
+
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <label style="font-weight: 600; font-size: 0.95rem;">Strike Rate ($\kappa$):</label>
+                            <span id="calc_strike_val" style="color: var(--accent); font-weight: 700; font-family: monospace;">3.00%</span>
+                        </div>
+                        <input type="range" id="cf_calc_strike" min="0.5" max="10.0" step="0.05" value="3.0" style="width: 100%; accent-color: var(--accent);" oninput="updatePricingCalculator()">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 600; font-size: 0.95rem;">Time to reset ($\tau$):</label>
+                                <span id="calc_tau_val" style="color: var(--accent); font-weight: 700; font-family: monospace;">1.00 yr</span>
+                            </div>
+                            <input type="range" id="cf_calc_tau" min="0.1" max="10.0" step="0.1" value="1.0" style="width: 100%; accent-color: var(--accent);" oninput="updatePricingCalculator()">
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 600; font-size: 0.95rem;">Period Length ($\delta$):</label>
+                                <span id="calc_delta_val" style="color: var(--accent); font-weight: 700; font-family: monospace;">0.50 yr</span>
+                            </div>
+                            <input type="range" id="cf_calc_delta" min="0.1" max="2.0" step="0.05" value="0.5" style="width: 100%; accent-color: var(--accent);" oninput="updatePricingCalculator()">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 600; font-size: 0.95rem;">Discount Factor ($P(t, T_i)$):</label>
+                                <span id="calc_df_val" style="color: var(--accent); font-weight: 700; font-family: monospace;">0.9500</span>
+                            </div>
+                            <input type="range" id="cf_calc_df" min="0.5" max="1.0" step="0.01" value="0.95" style="width: 100%; accent-color: var(--accent);" oninput="updatePricingCalculator()">
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 1rem; color: var(--text-color); border-bottom: 2px solid var(--card-border); padding-bottom: 0.5rem;">Volatility Inputs</h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 600; font-size: 0.95rem;">Black Vol ($\sigma_B$):</label>
+                                <span id="calc_vol_black_val" style="color: #2563eb; font-weight: 700; font-family: monospace;">25.00%</span>
+                            </div>
+                            <input type="range" id="cf_calc_vol_black" min="5" max="120" step="1" value="25" style="width: 100%; accent-color: #2563eb;" oninput="updatePricingCalculator()">
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 600; font-size: 0.95rem;">Normal Vol ($\sigma_N$):</label>
+                                <span id="calc_vol_normal_val" style="color: #dc2626; font-weight: 700; font-family: monospace;">85.00 bps</span>
+                            </div>
+                            <input type="range" id="cf_calc_vol_normal" min="10" max="300" step="5" value="85" style="width: 100%; accent-color: #dc2626;" oninput="updatePricingCalculator()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Outputs Section -->
+                <div style="display: flex; flex-direction: column; gap: 2rem; justify-content: center;">
+                    <!-- Black Card -->
+                    <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='none'">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight: 800; color: #1e40af; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.05em;">Black's Pricing Model</span>
+                            <span id="black_atm_badge" style="font-size: 0.75rem; background: #dbeafe; color: #1e40af; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 700;">ITM</span>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; border-bottom: 1px dashed #bfdbfe; padding-bottom: 1rem;">
+                            <div>
+                                <span style="font-size: 0.85rem; color: #60a5fa; font-weight: 500;">Caplet Price</span>
+                                <div id="black_caplet_price" style="font-size: 1.5rem; font-weight: 800; color: #1e3a8a; font-family: monospace;">0.00762</div>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.85rem; color: #60a5fa; font-weight: 500;">Floorlet Price</span>
+                                <div id="black_floorlet_price" style="font-size: 1.5rem; font-weight: 800; color: #1e3a8a; font-family: monospace;">0.00524</div>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; font-size: 0.85rem; color: #1e40af;">
+                            <div>$d_1$: <strong id="black_d1_val" style="font-family: monospace;">0.4356</strong></div>
+                            <div>$d_2$: <strong id="black_d2_val" style="font-family: monospace;">0.1856</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- Bachelier Card -->
+                    <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='none'">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight: 800; color: #991b1b; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.05em;">Bachelier's Pricing Model</span>
+                            <span id="bach_atm_badge" style="font-size: 0.75rem; background: #fee2e2; color: #991b1b; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 700;">ITM</span>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; border-bottom: 1px dashed #fecaca; padding-bottom: 1rem;">
+                            <div>
+                                <span style="font-size: 0.85rem; color: #f87171; font-weight: 500;">Caplet Price</span>
+                                <div id="bach_caplet_price" style="font-size: 1.5rem; font-weight: 800; color: #7f1d1d; font-family: monospace;">0.00789</div>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.85rem; color: #f87171; font-weight: 500;">Floorlet Price</span>
+                                <div id="bach_floorlet_price" style="font-size: 1.5rem; font-weight: 800; color: #7f1d1d; font-family: monospace;">0.00551</div>
+                            </div>
+                        </div>
+
+                        <div style="font-size: 0.85rem; color: #991b1b;">
+                            <div>Parameter $D$: <strong id="bach_d_val" style="font-family: monospace;">0.5882</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historical Curves & Data -->
+        <div class="card" style="margin-bottom: 0;">
+            <h2>Historical ATM Cap Quotes &amp; Volatility Curves (30 August 2013)</h2>
+            <p>Market practice is to quote caps and floors in terms of their implied Black or Normal volatilities. The following data shows at-the-money (ATM) Eurozone cap quotes from August 2013. The plot on the right displays the dual volatility curves as functions of the maturity of the underlying cap.</p>
+            <p style="font-size: 0.9rem; color: #6b7280; font-family: 'Inter', sans-serif;"><em>Notice that the Normal implied volatilities are roughly 100 times smaller than the Black implied volatilities (basis points vs. percentage points).</em></p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 2.5rem; margin-top: 2rem; align-items: center;">
+                <!-- Data Table -->
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; border: 1px solid var(--card-border); border-radius: 8px;">
+                        <thead>
+                            <tr style="background: var(--nav-hover); border-bottom: 2px solid var(--card-border); text-align: right;">
+                                <th style="padding: 0.5rem; text-align: center;">Maturity (yrs)</th>
+                                <th style="padding: 0.5rem;">Cap ATM Price (%)</th>
+                                <th style="padding: 0.5rem; color: #2563eb;">Black ATM Vol (%)</th>
+                                <th style="padding: 0.5rem; color: #dc2626;">Normal ATM Vol (bps)</th>
+                            </tr>
+                        </thead>
+                        <tbody style="text-align: right;">
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.4rem; text-align: center; font-weight: 600;">1</td>
+                                <td style="padding: 0.4rem; font-family: monospace;">0.08%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #2563eb; font-weight: 600;">93.81%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #dc2626; font-weight: 600;">33.23</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.4rem; text-align: center; font-weight: 600;">2</td>
+                                <td style="padding: 0.4rem; font-family: monospace;">0.35%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #2563eb; font-weight: 600;">90.31%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #dc2626; font-weight: 600;">46.94</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.4rem; text-align: center; font-weight: 600;">3</td>
+                                <td style="padding: 0.4rem; font-family: monospace;">0.84%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #2563eb; font-weight: 600;">65.94%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #dc2626; font-weight: 600;">60.15</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.4rem; text-align: center; font-weight: 600;">4</td>
+                                <td style="padding: 0.4rem; font-family: monospace;">1.61%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #2563eb; font-weight: 600;">58.65%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #dc2626; font-weight: 600;">70.25</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.4rem; text-align: center; font-weight: 600;">5</td>
+                                <td style="padding: 0.4rem; font-family: monospace;">2.54%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #2563eb; font-weight: 600;">53.14%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #dc2626; font-weight: 600;">77.76</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.4rem; text-align: center; font-weight: 600;">6</td>
+                                <td style="padding: 0.4rem; font-family: monospace;">3.60%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #2563eb; font-weight: 600;">49.12%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #dc2626; font-weight: 600;">83.54</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.4rem; text-align: center; font-weight: 600;">7</td>
+                                <td style="padding: 0.4rem; font-family: monospace;">4.60%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #2563eb; font-weight: 600;">45.59%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #dc2626; font-weight: 600;">85.60</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.4rem; text-align: center; font-weight: 600;">8</td>
+                                <td style="padding: 0.4rem; font-family: monospace;">5.62%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #2563eb; font-weight: 600;">42.17%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #dc2626; font-weight: 600;">86.46</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.4rem; text-align: center; font-weight: 600;">9</td>
+                                <td style="padding: 0.4rem; font-family: monospace;">6.65%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #2563eb; font-weight: 600;">39.59%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #dc2626; font-weight: 600;">86.94</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.4rem; text-align: center; font-weight: 600;">10</td>
+                                <td style="padding: 0.4rem; font-family: monospace;">7.67%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #2563eb; font-weight: 600;">37.04%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #dc2626; font-weight: 600;">86.52</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.4rem; text-align: center; font-weight: 600;">15</td>
+                                <td style="padding: 0.4rem; font-family: monospace;">12.38%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #2563eb; font-weight: 600;">30.86%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #dc2626; font-weight: 600;">84.08</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.4rem; text-align: center; font-weight: 600;">20</td>
+                                <td style="padding: 0.4rem; font-family: monospace;">16.15%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #2563eb; font-weight: 600;">28.70%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #dc2626; font-weight: 600;">79.81</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.4rem; text-align: center; font-weight: 600;">30</td>
+                                <td style="padding: 0.4rem; font-family: monospace;">22.35%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #2563eb; font-weight: 600;">27.39%</td>
+                                <td style="padding: 0.4rem; font-family: monospace; color: #dc2626; font-weight: 600;">73.01</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Plot -->
+                <div style="background: var(--nav-hover); border-radius: 12px; border: 1px solid var(--card-border); padding: 1.5rem; min-height: 400px; display: flex; align-items: center; justify-content: center; position: relative;">
+                    <canvas id="capsFloorsChart" style="width: 100%; height: 350px;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Builder and Multi-Period Pricer Section -->
+        <div class="card" style="margin-bottom: 0;">
+            <h2>Interactive Cap/Floor Product Builder &amp; Multi-Period Cash Flow Pricer</h2>
+            <p style="margin-bottom: 2rem;">Build a custom Interest Rate Cap or Floor contract. Define the contract's term and frequency, construct a yield curve by adjusting the slope and level, and select the strike and volatility parameters. Observe the dynamically calculated cash flows, period-by-period payoffs, and the exact verification of Cap-Floor Swap Parity.</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-bottom: 2.5rem;">
+                <!-- Builder Controls (Left Column) -->
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <h3 style="margin-top: 0; color: var(--text-color); border-bottom: 2px solid var(--card-border); padding-bottom: 0.5rem;">Product &amp; Schedule Configuration</h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 600; font-size: 0.95rem;">Number of Periods ($N$):</label>
+                                <span id="pb_periods_val" style="color: var(--accent); font-weight: 700; font-family: monospace;">8</span>
+                            </div>
+                            <input type="range" id="cf_pb_periods" min="1" max="20" step="1" value="8" style="width: 100%; accent-color: var(--accent);" oninput="updateProductPricer()">
+                        </div>
+                        <div>
+                            <label style="font-weight: 600; font-size: 0.95rem; display: block; margin-bottom: 0.5rem;">Payment Frequency ($\delta$):</label>
+                            <select id="cf_pb_delta" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600; outline: none;" onchange="updateProductPricer()">
+                                <option value="0.25">Quarterly (3M, &delta; = 0.25Y)</option>
+                                <option value="0.50" selected>Semi-Annual (6M, &delta; = 0.50Y)</option>
+                                <option value="1.00">Annual (12M, &delta; = 1.00Y)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 0.5rem; background: var(--nav-hover); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); font-size: 0.9rem;">
+                        <span style="font-weight: 600; color: var(--text-color);">Total Product Maturity:</span>
+                        <span id="pb_total_maturity" style="font-family: monospace; font-weight: 700; color: var(--accent);">4.00 years</span>
+                    </div>
+
+                    <h3 style="margin-top: 1rem; color: var(--text-color); border-bottom: 2px solid var(--card-border); padding-bottom: 0.5rem;">Dynamic Yield Curve Builder</h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem;">
+                        <div>
+                            <label style="font-weight: 600; font-size: 0.95rem; display: block; margin-bottom: 0.5rem;">Yield Curve Shape:</label>
+                            <select id="cf_pb_curve_shape" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600; outline: none;" onchange="updateProductPricer()">
+                                <option value="flat">Flat Curve (Constant rates)</option>
+                                <option value="normal" selected>Normal Sloping (Upward logarithm)</option>
+                                <option value="inverted">Inverted Curve (Downward logarithm)</option>
+                                <option value="humped">Humped Curve (Rises then falls)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 600; font-size: 0.95rem;">Base Rate Level ($a$):</label>
+                                <span id="pb_base_rate_val" style="color: var(--accent); font-weight: 700; font-family: monospace;">2.50%</span>
+                            </div>
+                            <input type="range" id="cf_pb_base_rate" min="0.5" max="8.0" step="0.1" value="2.5" style="width: 100%; accent-color: var(--accent);" oninput="updateProductPricer()">
+                        </div>
+                    </div>
+
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <label style="font-weight: 600; font-size: 0.95rem;">Curve Slope / Intensity ($b$):</label>
+                            <span id="pb_slope_val" style="color: var(--accent); font-weight: 700; font-family: monospace;">0.80%</span>
+                        </div>
+                        <input type="range" id="cf_pb_slope" min="-2.0" max="3.0" step="0.05" value="0.8" style="width: 100%; accent-color: var(--accent);" oninput="updateProductPricer()">
+                    </div>
+
+                    <h3 style="margin-top: 1rem; color: var(--text-color); border-bottom: 2px solid var(--card-border); padding-bottom: 0.5rem;">Derivative Strike &amp; Volatility</h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 600; font-size: 0.95rem;">Strike Rate ($\kappa$):</label>
+                                <span id="pb_strike_val" style="color: var(--accent); font-weight: 700; font-family: monospace;">3.00%</span>
+                            </div>
+                            <input type="range" id="cf_pb_strike" min="0.5" max="8.0" step="0.05" value="3.0" style="width: 100%; accent-color: var(--accent);" oninput="updateProductPricer()">
+                        </div>
+                        <div>
+                            <label style="font-weight: 600; font-size: 0.95rem; display: block; margin-bottom: 0.5rem;">Model Choice:</label>
+                            <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+                                <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.95rem;">
+                                    <input type="radio" name="pb_model_choice" value="black" checked style="accent-color: #2563eb;" onchange="updateProductPricer()">
+                                    Black (Log-Normal)
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.95rem;">
+                                    <input type="radio" name="pb_model_choice" value="bachelier" style="accent-color: #dc2626;" onchange="updateProductPricer()">
+                                    Bachelier (Gaussian)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 600; font-size: 0.95rem;">Black Volatility ($\sigma_B$):</label>
+                                <span id="pb_vol_black_val" style="color: #2563eb; font-weight: 700; font-family: monospace;">25.00%</span>
+                            </div>
+                            <input type="range" id="cf_pb_vol_black" min="5" max="120" step="1" value="25" style="width: 100%; accent-color: #2563eb;" oninput="updateProductPricer()">
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 600; font-size: 0.95rem;">Normal Volatility ($\sigma_N$):</label>
+                                <span id="pb_vol_normal_val" style="color: #dc2626; font-weight: 700; font-family: monospace;">80.00 bps</span>
+                            </div>
+                            <input type="range" id="cf_pb_vol_normal" min="10" max="300" step="5" value="80" style="width: 100%; accent-color: #dc2626;" oninput="updateProductPricer()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Outputs Panel (Right Column) -->
+                <div style="display: flex; flex-direction: column; gap: 2rem;">
+                    <h3 style="margin-top: 0; color: var(--text-color); border-bottom: 2px solid var(--card-border); padding-bottom: 0.5rem;">Dynamic Valuation Summary</h3>
+                    
+                    <!-- Side by Side Pricing Metrics Cards -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <!-- Cap Premium Card -->
+                        <div style="background: rgba(37, 99, 235, 0.05); border: 1px solid rgba(37, 99, 235, 0.2); border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                            <span style="font-weight: 700; color: #2563eb; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em;">Total Cap Price</span>
+                            <div id="pb_total_cap_price" style="font-size: 1.75rem; font-weight: 800; color: var(--text-color); font-family: monospace;">0.000000</div>
+                            <span style="font-size: 0.8rem; color: #6b7280;">(Strip of <span class="pb-period-count-label">8</span> Caplets)</span>
+                        </div>
+                        
+                        <!-- Floor Premium Card -->
+                        <div style="background: rgba(220, 38, 38, 0.05); border: 1px solid rgba(220, 38, 38, 0.2); border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                            <span style="font-weight: 700; color: #dc2626; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em;">Total Floor Price</span>
+                            <div id="pb_total_floor_price" style="font-size: 1.75rem; font-weight: 800; color: var(--text-color); font-family: monospace;">0.000000</div>
+                            <span style="font-size: 0.8rem; color: #6b7280;">(Strip of <span class="pb-period-count-label">8</span> Floorlets)</span>
+                        </div>
+                    </div>
+
+                    <!-- Parity & Swap Stats Card -->
+                    <div style="background: var(--nav-hover); border: 1px solid var(--card-border); border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+                        <h4 style="margin: 0; color: var(--text-color); font-weight: 700; font-size: 1rem;">Cap-Floor Parity Verification</h4>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; border-bottom: 1px dashed var(--card-border); padding-bottom: 1rem; font-size: 0.95rem;">
+                            <div>
+                                <span style="font-size: 0.8rem; color: #6b7280; display: block; margin-bottom: 0.2rem;">Forward Swap Rate ($R_{swap}$)</span>
+                                <strong id="pb_fwd_swap_rate" style="font-family: monospace; font-size: 1.1rem; color: var(--text-color);">0.00%</strong>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.8rem; color: #6b7280; display: block; margin-bottom: 0.2rem;">Payer Swap Value ($V_{swap}$)</span>
+                                <strong id="pb_payer_swap_val" style="font-family: monospace; font-size: 1.1rem; color: var(--text-color);">0.000000</strong>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.9rem; line-height: 1.5;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Cap Price minus Floor Price ($Cp - Fl$):</span>
+                                <strong id="pb_cp_minus_fl" style="font-family: monospace;">0.000000</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.3rem;">
+                                <span>Parity Status:</span>
+                                <span id="pb_parity_status" style="font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; display: inline-block;">Matches Exactly</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Small Live Graph Wrapper -->
+                    <div style="background: var(--nav-hover); border-radius: 12px; border: 1px solid var(--card-border); padding: 1rem; min-height: 220px; display: flex; align-items: center; justify-content: center; position: relative;">
+                        <canvas id="pbCashFlowChart" style="width: 100%; height: 200px;"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Cash Flow Schedule Table -->
+            <div style="width: 100%; overflow-x: auto; margin-top: 2rem;">
+                <h3 style="margin-top: 0; color: var(--text-color); border-bottom: 2px solid var(--card-border); padding-bottom: 0.5rem; margin-bottom: 1rem;">Detailed Cash Flow &amp; Pricing Schedule</h3>
+                
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; border: 1px solid var(--card-border); border-radius: 8px;">
+                    <thead>
+                        <tr style="background: var(--nav-hover); border-bottom: 2px solid var(--card-border); text-align: right;">
+                            <th style="padding: 0.6rem; text-align: center; width: 6%;">Period</th>
+                            <th style="padding: 0.6rem; text-align: center; width: 10%;">Reset Date ($T_{i-1}$)</th>
+                            <th style="padding: 0.6rem; text-align: center; width: 10%;">Payment Date ($T_i$)</th>
+                            <th style="padding: 0.6rem; width: 12%;">Forward Rate ($F_i$)</th>
+                            <th style="padding: 0.6rem; width: 12%;">Discount Factor ($P(0,T_i)$)</th>
+                            <th style="padding: 0.6rem; text-align: center; width: 12%;">Moneyness State</th>
+                            <th style="padding: 0.6rem; width: 13%; color: #2563eb;">Caplet Value ($Cpl_i$)</th>
+                            <th style="padding: 0.6rem; width: 13%; color: #dc2626;">Floorlet Value ($Fll_i$)</th>
+                            <th style="padding: 0.6rem; width: 12%;">Expected Payoff</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pb_schedule_table_body" style="text-align: right;">
+                        <!-- JS injected rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Standard normal probability distribution functions
+    function cf_normalPDF(x) {
+        return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
+    }
+
+    function cf_normalCDF(x) {
+        const t = 1 / (1 + 0.2316419 * Math.abs(x));
+        const d = 0.3989422804;
+        const p = d * Math.exp(-0.5 * x * x) * t * (0.319381530 + t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429))));
+        return x >= 0 ? 1 - p : p;
+    }
+
+    // Real-time interactive Pricing Calculator
+    function updatePricingCalculator() {
+        // Retrieve slider inputs
+        const f = parseFloat(document.getElementById('cf_calc_fwd').value) / 100.0;
+        const k = parseFloat(document.getElementById('cf_calc_strike').value) / 100.0;
+        const tau = parseFloat(document.getElementById('cf_calc_tau').value);
+        const delta = parseFloat(document.getElementById('cf_calc_delta').value);
+        const df = parseFloat(document.getElementById('cf_calc_df').value);
+        
+        const volB = parseFloat(document.getElementById('cf_calc_vol_black').value) / 100.0;
+        const volN = parseFloat(document.getElementById('cf_calc_vol_normal').value) / 10000.0; // basis points to raw rate decimal
+
+        // Update slider value text labels
+        document.getElementById('calc_fwd_val').innerText = (f * 100.0).toFixed(2) + '%';
+        document.getElementById('calc_strike_val').innerText = (k * 100.0).toFixed(2) + '%';
+        document.getElementById('calc_tau_val').innerText = tau.toFixed(2) + ' yr';
+        document.getElementById('calc_delta_val').innerText = delta.toFixed(2) + ' yr';
+        document.getElementById('calc_df_val').innerText = df.toFixed(4);
+        document.getElementById('calc_vol_black_val').innerText = (volB * 100.0).toFixed(2) + '%';
+        document.getElementById('calc_vol_normal_val').innerText = (volN * 10000.0).toFixed(2) + ' bps';
+
+        // Money-ness labels
+        const badgeText = f > k ? 'ITM' : (Math.abs(f - k) < 1e-7 ? 'ATM' : 'OTM');
+        const blackBadge = document.getElementById('black_atm_badge');
+        const bachBadge = document.getElementById('bach_atm_badge');
+        
+        blackBadge.innerText = badgeText;
+        bachBadge.innerText = badgeText;
+        
+        // Colors
+        if (badgeText === 'ITM') {
+            blackBadge.style.background = '#dbeafe'; blackBadge.style.color = '#1e40af';
+            bachBadge.style.background = '#fee2e2'; bachBadge.style.color = '#991b1b';
+        } else if (badgeText === 'ATM') {
+            blackBadge.style.background = '#fef3c7'; blackBadge.style.color = '#d97706';
+            bachBadge.style.background = '#fef3c7'; bachBadge.style.color = '#d97706';
+        } else {
+            blackBadge.style.background = '#f3f4f6'; blackBadge.style.color = '#4b5563';
+            bachBadge.style.background = '#f3f4f6'; bachBadge.style.color = '#4b5563';
+        }
+
+        // --- BLACK'S MODEL PRICING ---
+        const sqrtTau = Math.sqrt(tau);
+        const d1 = (Math.log(f / k) + 0.5 * volB * volB * tau) / (volB * sqrtTau);
+        const d2 = d1 - volB * sqrtTau;
+
+        const blackCaplet = delta * df * (f * cf_normalCDF(d1) - k * cf_normalCDF(d2));
+        const blackFloorlet = delta * df * (k * cf_normalCDF(-d2) - f * cf_normalCDF(-d1));
+
+        document.getElementById('black_caplet_price').innerText = blackCaplet.toFixed(6);
+        document.getElementById('black_floorlet_price').innerText = blackFloorlet.toFixed(6);
+        document.getElementById('black_d1_val').innerText = d1.toFixed(4);
+        document.getElementById('black_d2_val').innerText = d2.toFixed(4);
+
+        // --- BACHELIER'S MODEL PRICING ---
+        const D = (f - k) / (volN * sqrtTau);
+        
+        const bachCaplet = delta * df * volN * sqrtTau * (D * cf_normalCDF(D) + cf_normalPDF(D));
+        const bachFloorlet = delta * df * volN * sqrtTau * (-D * cf_normalCDF(-D) + cf_normalPDF(D));
+
+        document.getElementById('bach_caplet_price').innerText = bachCaplet.toFixed(6);
+        document.getElementById('bach_floorlet_price').innerText = bachFloorlet.toFixed(6);
+        document.getElementById('bach_d_val').innerText = D.toFixed(4);
+    }
+
+    // Dynamic Chart.js setup for historical curves
+    let capsFloorsChartInstance = null;
+    let pbChartInstance = null;
+
+    // Real-time interactive Product Builder & Multi-Period Pricer
+    function updateProductPricer() {
+        const N = parseInt(document.getElementById('cf_pb_periods').value);
+        const delta = parseFloat(document.getElementById('cf_pb_delta').value);
+        const shape = document.getElementById('cf_pb_curve_shape').value;
+        const a = parseFloat(document.getElementById('cf_pb_base_rate').value) / 100.0;
+        const b = parseFloat(document.getElementById('cf_pb_slope').value) / 100.0;
+        const k = parseFloat(document.getElementById('cf_pb_strike').value) / 100.0;
+        
+        let model = 'black';
+        const modelRadios = document.getElementsByName('pb_model_choice');
+        for (const radio of modelRadios) {
+            if (radio.checked) {
+                model = radio.value;
+                break;
+            }
+        }
+        
+        const volB = parseFloat(document.getElementById('cf_pb_vol_black').value) / 100.0;
+        const volN = parseFloat(document.getElementById('cf_pb_vol_normal').value) / 10000.0;
+
+        // Display Inputs
+        document.getElementById('pb_periods_val').innerText = N;
+        document.getElementById('pb_total_maturity').innerText = (N * delta).toFixed(2) + ' years';
+        document.getElementById('pb_base_rate_val').innerText = (a * 100.0).toFixed(2) + '%';
+        document.getElementById('pb_slope_val').innerText = (b * 100.0).toFixed(2) + '%';
+        document.getElementById('pb_strike_val').innerText = (k * 100.0).toFixed(2) + '%';
+        document.getElementById('pb_vol_black_val').innerText = (volB * 100.0).toFixed(2) + '%';
+        document.getElementById('pb_vol_normal_val').innerText = (volN * 10000.0).toFixed(2) + ' bps';
+
+        const periodLabels = document.querySelectorAll('.pb-period-count-label');
+        for (const label of periodLabels) {
+            label.innerText = N;
+        }
+
+        let scheduleHtml = '';
+        let totalCap = 0;
+        let totalFloor = 0;
+        let annuity = 0;
+        
+        let p_prev = 1.0;
+        let discountFactors = [];
+        let forwardRates = [];
+        let capletPrices = [];
+        let floorletPrices = [];
+        let undiscountedPayoffs = [];
+        
+        let chartLabels = [];
+        let chartFwds = [];
+        let chartCaplets = [];
+        let chartFloorlets = [];
+
+        for (let i = 1; i <= N; i++) {
+            let t_prev = (i - 1) * delta;
+            let t_curr = i * delta;
+            
+            let fi = 0.0;
+            if (shape === 'flat') {
+                fi = a;
+            } else if (shape === 'normal') {
+                fi = a + b * Math.log(i);
+            } else if (shape === 'inverted') {
+                fi = a - b * Math.log(i);
+            } else if (shape === 'humped') {
+                fi = a + b * Math.exp(-Math.pow(i - 3, 2) / 8.0);
+            }
+            fi = Math.max(0.0001, fi);
+            forwardRates.push(fi);
+            
+            let pi = p_prev / (1.0 + delta * fi);
+            discountFactors.push(pi);
+            p_prev = pi;
+            
+            annuity += delta * pi;
+            
+            let cpl = 0.0;
+            let fll = 0.0;
+            let tau = t_prev;
+            
+            if (tau < 1e-7) {
+                cpl = delta * pi * Math.max(0.0, fi - k);
+                fll = delta * pi * Math.max(0.0, k - fi);
+            } else {
+                const sqrtTau = Math.sqrt(tau);
+                if (model === 'black') {
+                    const d1 = (Math.log(fi / k) + 0.5 * volB * volB * tau) / (volB * sqrtTau);
+                    const d2 = d1 - volB * sqrtTau;
+                    cpl = delta * pi * (fi * cf_normalCDF(d1) - k * cf_normalCDF(d2));
+                    fll = delta * pi * (k * cf_normalCDF(-d2) - fi * cf_normalCDF(-d1));
+                } else {
+                    const D = (fi - k) / (volN * sqrtTau);
+                    cpl = delta * pi * volN * sqrtTau * (D * cf_normalCDF(D) + cf_normalPDF(D));
+                    fll = delta * pi * volN * sqrtTau * (-D * cf_normalCDF(-D) + cf_normalPDF(D));
+                }
+            }
+            
+            totalCap += cpl;
+            totalFloor += fll;
+            capletPrices.push(cpl);
+            floorletPrices.push(fll);
+            
+            let payoff = 0.0;
+            let moneyness = 'ATM';
+            if (fi > k + 1e-7) {
+                payoff = delta * (fi - k);
+                moneyness = '<span style="color: #16a34a; font-weight: 700;">ITM (Cap)</span>';
+            } else if (fi < k - 1e-7) {
+                payoff = delta * (k - fi);
+                moneyness = '<span style="color: #dc2626; font-weight: 700;">ITM (Floor)</span>';
+            } else {
+                moneyness = '<span style="color: #b45309; font-weight: 700;">ATM</span>';
+            }
+            undiscountedPayoffs.push(payoff);
+            
+            chartLabels.push('P' + i + ' (' + t_curr.toFixed(2) + 'Y)');
+            chartFwds.push((fi * 100.0).toFixed(2));
+            chartCaplets.push(cpl);
+            chartFloorlets.push(fll);
+
+            scheduleHtml += `
+                <tr style="border-bottom: 1px solid var(--card-border);">
+                    <td style="padding: 0.5rem; text-align: center; font-weight: 600;">${i}</td>
+                    <td style="padding: 0.5rem; text-align: center; font-family: monospace;">${t_prev.toFixed(2)}Y</td>
+                    <td style="padding: 0.5rem; text-align: center; font-family: monospace;">${t_curr.toFixed(2)}Y</td>
+                    <td style="padding: 0.5rem; font-family: monospace;">${(fi * 100.0).toFixed(2)}%</td>
+                    <td style="padding: 0.5rem; font-family: monospace;">${pi.toFixed(4)}</td>
+                    <td style="padding: 0.5rem; text-align: center;">${moneyness}</td>
+                    <td style="padding: 0.5rem; font-family: monospace; color: #2563eb; font-weight: 600;">${cpl.toFixed(6)}</td>
+                    <td style="padding: 0.5rem; font-family: monospace; color: #dc2626; font-weight: 600;">${fll.toFixed(6)}</td>
+                    <td style="padding: 0.5rem; font-family: monospace;">${payoff.toFixed(4)}</td>
+                </tr>
+            `;
+        }
+
+        const p_last = discountFactors[discountFactors.length - 1];
+        const r_swap = (1.0 - p_last) / annuity;
+        const v_swap = (r_swap - k) * annuity;
+        
+        document.getElementById('pb_total_cap_price').innerText = totalCap.toFixed(6);
+        document.getElementById('pb_total_floor_price').innerText = totalFloor.toFixed(6);
+        document.getElementById('pb_fwd_swap_rate').innerText = (r_swap * 100.0).toFixed(2) + '%';
+        document.getElementById('pb_payer_swap_val').innerText = v_swap.toFixed(6);
+        
+        const capMinusFloor = totalCap - totalFloor;
+        document.getElementById('pb_cp_minus_fl').innerText = capMinusFloor.toFixed(6);
+        
+        const parityDiff = Math.abs(capMinusFloor - v_swap);
+        const parityBadge = document.getElementById('pb_parity_status');
+        if (parityDiff < 1e-9) {
+            parityBadge.innerText = 'Matches Exactly (Error < 1e-9)';
+            parityBadge.style.background = '#d1fae5';
+            parityBadge.style.color = '#065f46';
+        } else {
+            parityBadge.innerText = 'Discrepancy: ' + parityDiff.toExponential(2);
+            parityBadge.style.background = '#fee2e2';
+            parityBadge.style.color = '#991b1b';
+        }
+
+        scheduleHtml += `
+            <tr style="background: var(--nav-hover); font-weight: 700; border-top: 2px solid var(--card-border);">
+                <td style="padding: 0.6rem; text-align: center;">Sum</td>
+                <td style="padding: 0.6rem; text-align: center;">-</td>
+                <td style="padding: 0.6rem; text-align: center;">-</td>
+                <td style="padding: 0.6rem;">-</td>
+                <td style="padding: 0.6rem; font-family: monospace;">A = ${annuity.toFixed(4)}</td>
+                <td style="padding: 0.6rem; text-align: center; color: var(--accent);">R_swap = ${(r_swap * 100.0).toFixed(2)}%</td>
+                <td style="padding: 0.6rem; font-family: monospace; color: #2563eb; font-size: 0.9rem;">${totalCap.toFixed(6)}</td>
+                <td style="padding: 0.6rem; font-family: monospace; color: #dc2626; font-size: 0.9rem;">${totalFloor.toFixed(6)}</td>
+                <td style="padding: 0.6rem;">-</td>
+            </tr>
+        `;
+        
+        document.getElementById('pb_schedule_table_body').innerHTML = scheduleHtml;
+
+        updateProductBuilderChart(chartLabels, chartFwds, chartCaplets, chartFloorlets, k);
+    }
+
+    function updateProductBuilderChart(labels, fwds, caplets, floorlets, strike) {
+        const canvas = document.getElementById('pbCashFlowChart');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.07)' : 'rgba(0, 0, 0, 0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+        const legendColor = isDark ? '#cbd5e1' : '#374151';
+
+        const strikeLineData = Array(labels.length).fill((strike * 100.0).toFixed(2));
+
+        if (pbChartInstance) {
+            pbChartInstance.data.labels = labels;
+            pbChartInstance.data.datasets[0].data = fwds;
+            pbChartInstance.data.datasets[1].data = strikeLineData;
+            pbChartInstance.data.datasets[2].data = caplets;
+            pbChartInstance.data.datasets[3].data = floorlets;
+            pbChartInstance.options.scales.x.grid.color = gridColor;
+            pbChartInstance.options.scales.x.ticks.color = tickColor;
+            pbChartInstance.options.scales.yRates.grid.color = gridColor;
+            pbChartInstance.options.scales.yRates.ticks.color = tickColor;
+            pbChartInstance.options.scales.yVols.ticks.color = tickColor;
+            pbChartInstance.options.plugins.legend.labels.color = legendColor;
+            pbChartInstance.update('none');
+        } else {
+            pbChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Forward Rate (%)',
+                            type: 'line',
+                            data: fwds,
+                            borderColor: '#8b5cf6',
+                            borderWidth: 2,
+                            pointRadius: 3,
+                            yAxisID: 'yRates',
+                            zIndex: 10,
+                            tension: 0.2
+                        },
+                        {
+                            label: 'Strike Rate (%)',
+                            type: 'line',
+                            data: strikeLineData,
+                            borderColor: '#f59e0b',
+                            borderWidth: 1.5,
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            yAxisID: 'yRates',
+                            zIndex: 9
+                        },
+                        {
+                            label: 'Caplet Price',
+                            data: caplets,
+                            backgroundColor: 'rgba(37, 99, 235, 0.65)',
+                            borderColor: '#2563eb',
+                            borderWidth: 1,
+                            yAxisID: 'yVols',
+                            stack: 'options'
+                        },
+                        {
+                            label: 'Floorlet Price',
+                            data: floorlets,
+                            backgroundColor: 'rgba(220, 38, 38, 0.65)',
+                            borderColor: '#dc2626',
+                            borderWidth: 1,
+                            yAxisID: 'yVols',
+                            stack: 'options'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: legendColor,
+                                font: { family: "'Inter', sans-serif", size: 10, weight: '600' },
+                                boxWidth: 12
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) label += ': ';
+                                    if (context.parsed.y !== null) {
+                                        if (context.datasetIndex < 2) {
+                                            label += parseFloat(context.parsed.y).toFixed(2) + '%';
+                                        } else {
+                                            label += parseFloat(context.parsed.y).toFixed(6);
+                                        }
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: gridColor },
+                            ticks: { color: tickColor, font: { size: 9 } }
+                        },
+                        yRates: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            grid: { color: gridColor },
+                            ticks: { color: tickColor, font: { size: 9 } },
+                            title: {
+                                display: true,
+                                text: 'Rates (%)',
+                                color: tickColor,
+                                font: { family: "'Inter', sans-serif", size: 10, weight: '600' }
+                            }
+                        },
+                        yVols: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            grid: { drawOnChartArea: false },
+                            ticks: { color: tickColor, font: { size: 9 } },
+                            title: {
+                                display: true,
+                                text: 'Premium',
+                                color: tickColor,
+                                font: { family: "'Inter', sans-serif", size: 10, weight: '600' }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    function initCapsFloorsCharts() {
+        // Run interactive calculators
+        updatePricingCalculator();
+        updateProductPricer();
+
+        const canvas = document.getElementById('capsFloorsChart');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (capsFloorsChartInstance) {
+            return;
+        }
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.07)' : 'rgba(0, 0, 0, 0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+        const legendColor = isDark ? '#cbd5e1' : '#374151';
+
+        const maturities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30];
+        const blackVols = [93.81, 90.31, 65.94, 58.65, 53.14, 49.12, 45.59, 42.17, 39.59, 37.04, 30.86, 28.70, 27.39];
+        const normalVols = [33.23, 46.94, 60.15, 70.25, 77.76, 83.54, 85.60, 86.46, 86.94, 86.52, 84.08, 79.81, 73.01];
+
+        capsFloorsChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: maturities.map(m => m + 'Y'),
+                datasets: [
+                    {
+                        label: 'Black ATM Volatility (%)',
+                        data: blackVols,
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.05)',
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        yAxisID: 'yBlack',
+                        tension: 0.35
+                    },
+                    {
+                        label: 'Normal ATM Volatility (bps)',
+                        data: normalVols,
+                        borderColor: '#dc2626',
+                        backgroundColor: 'rgba(220, 38, 38, 0.05)',
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        yAxisID: 'yNormal',
+                        tension: 0.35
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: legendColor,
+                            font: { family: "'Inter', sans-serif", weight: '600' }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y.toFixed(2) + (context.datasetIndex === 0 ? '%' : ' bps');
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: gridColor },
+                        ticks: { color: tickColor },
+                        title: {
+                            display: true,
+                            text: 'Maturity (Years)',
+                            color: tickColor,
+                            font: { family: "'Inter', sans-serif", weight: '600' }
+                        }
+                    },
+                    yBlack: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        grid: { color: gridColor },
+                        ticks: { color: '#2563eb' },
+                        title: {
+                            display: true,
+                            text: 'Black Volatility (%)',
+                            color: '#2563eb',
+                            font: { family: "'Inter', sans-serif", weight: '600' }
+                        }
+                    },
+                    yNormal: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        grid: { drawOnChartArea: false },
+                        ticks: { color: '#dc2626' },
+                        title: {
+                            display: true,
+                            text: 'Normal Volatility (bps)',
+                            color: '#dc2626',
+                            font: { family: "'Inter', sans-serif", weight: '600' }
+                        }
+                    }
+                }
+            }
+        });
+    }
+</script>

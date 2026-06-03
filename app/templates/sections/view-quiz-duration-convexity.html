@@ -1,0 +1,388 @@
+<div id="view-quiz-duration-convexity" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">Quiz: Duration &amp; Convexity</h1>
+        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Practice Assignment covering Macaulay duration of ZCBs, relative price sensitivity approximations, duration matching, and convexity immunization linear systems.</div>
+    </header>
+
+    <div class="container" style="max-width: 900px; grid-template-columns: 1fr; gap: 2rem;">
+        <p style="margin-bottom: 2rem; font-size: 1.15rem; color: var(--text-color); opacity: 0.8; line-height: 1.7;">
+            Test your understanding of duration, convexity, and immunization strategies with these practice problems. Input or select your options, then click <strong>Submit Answer</strong> to get instant feedback. Expand the <strong>Show Mathematical Solution &amp; Derivation</strong> card at the bottom of each question to review the full step-by-step analytical proof.
+        </p>
+
+        <!-- QUESTION 1 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 1 (ZCB Macaulay Duration)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                In continuous time, what is the Macaulay duration of a zero-coupon bond with maturity $T$? (Assume today is $t = 0$ as in the simplified notation of the slides).
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qdc1_option" value="A" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">A. $1 / y(0, T)$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qdc1_option" value="B" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">B. $T e^{-y(0, T) T}$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qdc1_option" value="C" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">C. $T$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qdc1_option" value="D" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">D. $T (1 + y(0, T))$</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQdc1()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qdc1-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Derivation:</strong></p>
+                    <p>The price of a zero-coupon bond paying $1$ at maturity $T$ under yield $y$ is:</p>
+                    <div style="margin: 0.5rem 0; text-align: center;">
+                        $$ p(s) = e^{-(y + s)T} $$
+                    </div>
+                    <p>At $s = 0$, $p(0) = e^{-y T}$. We find the relative first-order sensitivity (duration) $D$ by differentiating with respect to the parallel shift $s$:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ \frac{\partial p(s)}{\partial s} = -T e^{-(y + s)T} $$
+                        $$ \frac{\partial p(s)}{\partial s} \Big|_{s=0} = -T e^{-y T} $$
+                    </div>
+                    <p>Plugging this derivative into the duration definition:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ D = -\frac{1}{p(0)} \frac{\partial p(s)}{\partial s} \Big|_{s=0} = -\frac{1}{e^{-y T}} \bigl( -T e^{-y T} \bigr) = \mathbf{T} $$
+                    </div>
+                    <p style="margin-bottom: 0;">Thus, the Macaulay duration of a ZCB is exactly equal to its maturity $T$.</p>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Option: C. T</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 2 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 2 (Relative Price Sensitivity)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Input</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                Revisit Example 1 from the slides: a 10-year 6% coupon bond under a flat 3% yield curve has a price of $125.14$ and a duration $D = 8.06$. If the yield curve shifts parallelly upwards by $+100$ basis points ($\Delta y = +1.00\% = 0.01$), what is the first-order estimated percentage change in the bond's price? Express your answer in percentage points (e.g. -8.06 for -8.06%) and round to two decimal places.
+            </p>
+
+            <!-- Numeric Input Field -->
+            <div style="margin-bottom: 1.5rem;">
+                <input type="text" id="qdc2_input" placeholder="e.g. -5.50" style="padding: 0.75rem 1rem; font-size: 1.1rem; font-family: monospace; font-weight: bold; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; width: 100%; max-width: 250px;" />
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQdc2()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qdc2-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Explanation:</strong></p>
+                    <p>The first-order Taylor approximation for relative price changes under parallel yield shift $\Delta y$ is:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ \frac{\Delta p}{p} \approx -D \Delta y $$
+                    </div>
+                    <p>Given $D = 8.06$ and yield shift $\Delta y = +0.01$ (upward $+100$ basis points):</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ \frac{\Delta p}{p} \approx -8.06 \times 0.01 = -0.0806 \text{ (or } \mathbf{-8.06\%}\text{)} $$
+                    </div>
+                    <p style="margin-bottom: 0;">So the relative bond price decline is estimated to be exactly **-8.06%**.</p>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answer: -8.06</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 3 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 3 (Duration Immunization Matching)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Input</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                You hold a long position in one unit of the 10-year 6% bond ($\Pi(0) = 125.14$, $D_{\Pi} = 8.06$). You wish to immunize this position against small parallel yield shifts using a 5-year 3% coupon bond ($H(0) = 99.79$, $D_H = 4.72$). Calculate the quantity $q$ of the 5-year bond you must hold. Round your answer to two decimal places.
+            </p>
+
+            <!-- Numeric Input Field -->
+            <div style="margin-bottom: 1.5rem;">
+                <input type="text" id="qdc3_input" placeholder="e.g. -2.50" style="padding: 0.75rem 1rem; font-size: 1.1rem; font-family: monospace; font-weight: bold; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; width: 100%; max-width: 250px;" />
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQdc3()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qdc3-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Derivation:</strong></p>
+                    <p>To immunize the portfolio against small parallel shifts of the yield curve, the net first-order price sensitivity must be zero. Let the hedge portfolio value be $V(s) = \Pi(s) + q H(s)$. Differentiating with respect to parallel shift $s$ at $s = 0$ gives:</p>
+                    <div style="margin: 0.5rem 0; text-align: center;">
+                        $$ \frac{\partial V(s)}{\partial s} \Big|_{s=0} = \frac{\partial \Pi(s)}{\partial s} \Big|_{s=0} + q \frac{\partial H(s)}{\partial s} \Big|_{s=0} = 0 $$
+                    </div>
+                    <p>Recall the definition of duration: $\frac{\partial p}{\partial s}\big|_{0} = -D \times p(0)$. Substituting this in yields:</p>
+                    <div style="margin: 0.5rem 0; text-align: center;">
+                        $$ -D_{\Pi} \Pi(0) - q D_H H(0) = 0 $$
+                    </div>
+                    <p>Solving for the hedge quantity $q$:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ q = -\frac{D_{\Pi} \Pi(0)}{D_H H(0)} $$
+                    </div>
+                    <p>Substituting the given bond specs:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ q = -\frac{8.06 \times 125.14}{4.72 \times 99.79} = -\frac{1008.6284}{471.0088} \approx \mathbf{-2.14} $$
+                    </div>
+                    <p style="margin-bottom: 0;">So you must short exactly **2.14** units of the 5-year bond to immunize the position.</p>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answer: -2.14</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 4 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 4 (Second-Order Approximation)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Input</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                Consider a bond with price $p = 100$, duration $D = 6.76$, and convexity $C = 85.329$. If the yield curve shifts parallelly upwards by $+2.00\%$ ($\Delta y = 0.02$), estimate the percentage change in the bond's price using the second-order (duration and convexity) Taylor approximation. Express your answer in percentage points (e.g. -11.81 for -11.81%) and round to two decimal places.
+            </p>
+
+            <!-- Numeric Input Field -->
+            <div style="margin-bottom: 1.5rem;">
+                <input type="text" id="qdc4_input" placeholder="e.g. -11.50" style="padding: 0.75rem 1rem; font-size: 1.1rem; font-family: monospace; font-weight: bold; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; width: 100%; max-width: 250px;" />
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQdc4()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qdc4-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Derivation:</strong></p>
+                    <p>The second-order Taylor series approximation for relative price changes under parallel yield shift $\Delta y$ is:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ \frac{\Delta p}{p} \approx -D \Delta y + \frac{1}{2} C (\Delta y)^2 $$
+                    </div>
+                    <p>Substitute $D = 6.76$, $C = 85.329$, and $\Delta y = 0.02$ into the formula:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ \frac{\Delta p}{p} \approx -6.76 \times 0.02 + 0.5 \times 85.329 \times (0.02)^2 $$
+                        $$ \frac{\Delta p}{p} \approx -0.1352 + 42.6645 \times 0.0004 $$
+                        $$ \frac{\Delta p}{p} \approx -0.1352 + 0.0170658 = -0.1181342 \text{ (or } \mathbf{-11.81\%}\text{)} $$
+                    </div>
+                    <p style="margin-bottom: 0;">So the estimated price change is exactly **-11.81%**.</p>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answer: -11.81</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 5 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 5 (Convexity Hedging System)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                Revisit the convexity hedging slide. You have a portfolio $\Pi$ to be hedged with price $32,863.5$, duration $6.76$, and convexity $85.329$. You have two hedging instruments:
+                <br/>• $H_1$: price $97.962$, duration $8.813$, convexity $99.081$.
+                <br/>• $H_2$: price $108.039$, duration $2.704$, convexity $10.168$.
+                <br/>Which of the following is the correct linear system of equations to solve for the hedging units $(q_1, q_2)$?
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qdc5_option" value="A" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">
+                        A. 
+                        $$-q_1 D_{H_1} H_1(0) - q_2 D_{H_2} H_2(0) = D_{\Pi} \Pi(0)$$
+                        $$q_1 C_{H_1} H_1(0) + q_2 C_{H_2} H_2(0) = -C_{\Pi} \Pi(0)$$
+                    </span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qdc5_option" value="B" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">
+                        B. 
+                        $$q_1 D_{H_1} H_1(0) + q_2 D_{H_2} H_2(0) = D_{\Pi} \Pi(0)$$
+                        $$q_1 C_{H_1} H_1(0) + q_2 C_{H_2} H_2(0) = C_{\Pi} \Pi(0)$$
+                    </span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qdc5_option" value="C" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">
+                        C. 
+                        $$-q_1 D_{H_1} H_1(0) - q_2 D_{H_2} H_2(0) = -D_{\Pi} \Pi(0)$$
+                        $$q_1 C_{H_1} H_1(0) + q_2 C_{H_2} H_2(0) = C_{\Pi} \Pi(0)$$
+                    </span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQdc5()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qdc5-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Explanation:</strong></p>
+                    <p>Let the immunized portfolio value be $V(s) = \Pi(s) + q_1 H_1(s) + q_2 H_2(s)$. To immunize against both first and second-order parallel shifts, we require:</p>
+                    <div style="margin: 0.5rem 0; text-align: center;">
+                        $$ \frac{\partial V(s)}{\partial s} \Big|_{s=0} = 0 \quad \text{and} \quad \frac{\partial^2 V(s)}{\partial s^2} \Big|_{s=0} = 0 $$
+                    </div>
+                    <p>Recall the definitions of duration $D$ and convexity $C$ for any asset $A$:</p>
+                    <div style="margin: 0.5rem 0; text-align: center;">
+                        $$ \frac{\partial A}{\partial s} \Big|_0 = -D_A A(0) \quad \text{and} \quad \frac{\partial^2 A}{\partial s^2} \Big|_0 = C_A A(0) $$
+                    </div>
+                    <p>Substituting these into the portfolio sensitivity requirements gives:</p>
+                    <ol style="margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <li>
+                            <strong>First-Order Sensitivity (Duration):</strong>
+                            $$ -D_{\Pi}\Pi(0) - q_1 D_{H_1}H_1(0) - q_2 D_{H_2}H_2(0) = 0 $$
+                            $$ \implies -q_1 D_{H_1}H_1(0) - q_2 D_{H_2}H_2(0) = D_{\Pi}\Pi(0) $$
+                        </li>
+                        <li>
+                            <strong>Second-Order Sensitivity (Convexity):</strong>
+                            $$ C_{\Pi}\Pi(0) + q_1 C_{H_1}H_1(0) + q_2 C_{H_2}H_2(0) = 0 $$
+                            $$ \implies q_1 C_{H_1}H_1(0) + q_2 C_{H_2}H_2(0) = -C_{\Pi}\Pi(0) $$
+                        </li>
+                    </ol>
+                    <p>This is exactly the system shown in Option A.</p>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Option: A</p>
+                </div>
+            </details>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // Duration & Convexity Quiz Grading Logic
+    // ============================================================
+    function _showQdcFeedback(elId, isCorrect, htmlContent) {
+        const feedback = document.getElementById(elId);
+        feedback.innerHTML = htmlContent;
+        feedback.style.display = 'block';
+        if (isCorrect) {
+            feedback.style.background = '#f0fdf4';
+            feedback.style.border = '1px solid #bbf7d0';
+            feedback.style.color = '#15803d';
+        } else {
+            feedback.style.background = '#fef2f2';
+            feedback.style.border = '1px solid #fecaca';
+            feedback.style.color = '#b91c1c';
+        }
+        if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+            MathJax.typesetPromise([feedback]);
+        }
+    }
+
+    function checkQdc1() {
+        const selected = document.querySelector('input[name="qdc1_option"]:checked');
+        if (!selected) {
+            _showQdcFeedback('qdc1-feedback', false, '<strong>⚠️ Please select an option first.</strong>');
+            return;
+        }
+        if (selected.value === 'C') {
+            _showQdcFeedback('qdc1-feedback', true, '<strong>✓ Correct!</strong> The Macaulay duration of a zero-coupon bond is exactly equal to its maturity $T$.');
+        } else {
+            _showQdcFeedback('qdc1-feedback', false, '<strong>❌ Incorrect.</strong> Recall that a ZCB has only one cash flow at maturity $T$. The weighted average of payment dates collapses to the single maturity $T$.');
+        }
+    }
+
+    function checkQdc2() {
+        const val = document.getElementById('qdc2_input').value.trim();
+        if (!val) {
+            _showQdcFeedback('qdc2-feedback', false, '<strong>⚠️ Please enter your answer first.</strong>');
+            return;
+        }
+        const numericVal = parseFloat(val);
+        if (Math.abs(numericVal - -8.06) < 0.015) {
+            _showQdcFeedback('qdc2-feedback', true, '<strong>✓ Correct!</strong> The estimated change is exactly <strong>-8.06%</strong>.');
+        } else {
+            _showQdcFeedback('qdc2-feedback', false, '<strong>❌ Incorrect.</strong> Check your sign or calculations. The first-order relative change is $\\frac{\\Delta p}{p} \\approx -D \\Delta y = -8.06 \\times 0.01 = -0.0806$ (or $-8.06\%$).');
+        }
+    }
+
+    function checkQdc3() {
+        const val = document.getElementById('qdc3_input').value.trim();
+        if (!val) {
+            _showQdcFeedback('qdc3-feedback', false, '<strong>⚠️ Please enter your answer first.</strong>');
+            return;
+        }
+        const numericVal = parseFloat(val);
+        if (Math.abs(numericVal - -2.14) < 0.015) {
+            _showQdcFeedback('qdc3-feedback', true, '<strong>✓ Correct!</strong> You must short exactly <strong>-2.14</strong> units of the 5-year bond.');
+        } else {
+            _showQdcFeedback('qdc3-feedback', false, '<strong>❌ Incorrect.</strong> Check your formula: $q = -\\frac{D_{\\Pi} \\Pi(0)}{D_H H(0)} = -\\frac{8.06 \\times 125.14}{4.72 \\times 99.79} \\approx -2.14$.');
+        }
+    }
+
+    function checkQdc4() {
+        const val = document.getElementById('qdc4_input').value.trim();
+        if (!val) {
+            _showQdcFeedback('qdc4-feedback', false, '<strong>⚠️ Please enter your answer first.</strong>');
+            return;
+        }
+        const numericVal = parseFloat(val);
+        if (Math.abs(numericVal - -11.81) < 0.015) {
+            _showQdcFeedback('qdc4-feedback', true, '<strong>✓ Correct!</strong> The estimated change is exactly <strong>-11.81%</strong>.');
+        } else {
+            _showQdcFeedback('qdc4-feedback', false, '<strong>❌ Incorrect.</strong> The duration-only contribution is $-6.76 \\times 0.02 = -13.52\\%$. The convexity contribution is $+0.5 \\times 85.329 \\times 0.02^2 = +1.71\\%$. Adding them yields $-13.52\\% + 1.71\\% \\approx -11.81\\%$.');
+        }
+    }
+
+    function checkQdc5() {
+        const selected = document.querySelector('input[name="qdc5_option"]:checked');
+        if (!selected) {
+            _showQdcFeedback('qdc5-feedback', false, '<strong>⚠️ Please select an option first.</strong>');
+            return;
+        }
+        if (selected.value === 'A') {
+            _showQdcFeedback('qdc5-feedback', true, '<strong>✓ Correct!</strong> This is the correct system matching first and second order sensitivities.');
+        } else {
+            _showQdcFeedback('qdc5-feedback', false, '<strong>❌ Incorrect.</strong> The first-order (duration) sensitivity is matched by setting derivatives equal, giving negative signs on $q_i D_{Hi} H_i$. The second-order (convexity) sensitivity has positive signs for the convexity terms.');
+        }
+    }
+</script>

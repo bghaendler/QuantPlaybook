@@ -1,0 +1,43 @@
+<div id="view-cqf-mp-calculus-integrals" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9; font-family: var(--font-family-sans);">Calculus: Integrals &amp; Complex</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">4. Integrals &amp; Complex Analysis</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Definite integrals, substitution pitfalls, complex numbers conjugates, and Euler's series expansion proofs.</div>
+    </header>
+
+    <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
+        <!-- Card 1.10: Definite Integrals & substitution Pitfalls -->
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1.10 Definite Integrals &amp; Substitution Pitfalls</h3>
+            <p>The definite integral $\int_a^b f(x)dx$ represents the signed area under $f(x)$ between boundaries. Since the variable of integration is a "dummy" variable:</p>
+            <p style="text-align: center; font-weight: 700;">$$\int_a^b f(x)dx = \int_a^b f(y)dy$$</p>
+            <p><strong>Substitution Rule for Definite Integrals:</strong> Must transform boundary limits. When letting $z = g(x) \implies dz = g'(x)dx$:</p>
+            <p style="text-align: center; font-size: 0.95rem; font-weight: 700; margin: 0.4rem 0;">
+                $$\int_a^b f(g(x))g'(x)dx = \int_{g(a)}^{g(b)} f(z)dz$$
+            </p>
+            <p style="font-size: 0.88rem; color: #b45309; font-weight: 600;">
+                &lambda; CRITICAL WARNING: Substitutions like $z = x^2$ fail on intervals containing $x=0$ (e.g. $[-1,1]$) because $dz/dx = 2x = 0$ at the origin, breaking invertibility and changing signs! Always verify $dz/dx \ne 0$ across the integration range.
+            </p>
+        </div>
+
+        <!-- Card 1.11: Complex Conjugates & Euler Integral Proofs -->
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1.11 Complex Algebra &amp; Euler Integral Proofs</h3>
+            <p>For any complex number $z = x + iy \in \mathbb{C}$, its complex conjugate is $\bar{z} = x - iy$, representing a reflection in the real axis. Key algebraic identities:</p>
+            <div style="background: var(--metric-bg); padding: 0.6rem; border-radius: 6px; font-size: 0.85rem; font-family: monospace; margin-bottom: 0.75rem; line-height: 1.4;">
+                Re z = (z + z̄)/2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Im z = (z - z̄)/(2i)<br>
+                z z̄ = |z|&sup2; = x&sup2; + y&sup2; &nbsp;&nbsp;&nbsp; |z₁ z₂| = |z₁||z₂|
+            </div>
+            <p><strong>Euler's Series Expansion Proof:</strong> Substituting $x = i\theta$ in the Maclaurin series of $e^x$ and grouping real/imaginary parts proves Euler's formula:</p>
+            <p style="text-align: center; font-size: 0.92rem; font-weight: 700; margin: 0.4rem 0;">
+                $$e^{i\theta} = \sum_{n=0}^{\infty} \frac{(i\theta)^n}{n!} = \sum_{even} \frac{(-1)^k \theta^{2k}}{(2k)!} + i\sum_{odd} \frac{(-1)^k \theta^{2k+1}}{(2k+1)!} = \cos\theta + i\sin\theta$$
+            </p>
+            <p style="font-size: 0.88rem; line-height: 1.4;">
+                <strong>Application to Integrals:</strong> We can solve complex trigonometric integrals like $\int e^x \sin x \, dx$ cleanly by taking the imaginary component: $\int e^x \text{Im}[e^{ix}]dx = \text{Im}\left[\frac{e^{(1+i)x}}{1+i}\right] = \frac{1}{2}e^x(\sin x - \cos x)$.
+            </p>
+        </div>
+    </div>
+</div>

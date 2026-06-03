@@ -1,0 +1,137 @@
+<div id="view-cqf-mp-linalg-systems" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(236, 72, 153, 0.1); color: #ec4899; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #ec4899; font-family: var(--font-family-sans);">2.3 Solving Linear Systems</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Solving Linear Systems</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Augmented matrices, Gaussian elimination, elementary row operations, and classification of linear system solutions.</div>
+    </header>
+
+    <!-- Augmented Matrix Setup -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1. Augmented Matrix Notation</h3>
+        <p>A system of $n$ linear equations in $n$ unknowns can be compactly represented and solved using an **augmented matrix**, grouping the coefficient matrix $\mathbf{A}$ and the constant vector $\underline{b}$:</p>
+        <p style="text-align: center;">
+            $$\begin{pmatrix} 
+            a_{11} & a_{12} & \dots & a_{1n} & \big| & b_1 \\ 
+            a_{21} & a_{22} & \dots & a_{2n} & \big| & b_2 \\ 
+            \vdots & \vdots & \ddots & \vdots & \big| & \vdots \\ 
+            a_{n1} & a_{n2} & \dots & a_{nn} & \big| & b_n 
+            \end{pmatrix}$$
+        </p>
+    </div>
+
+    <!-- Row Operations and Echelon forms -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">2. Elementary Row Operations</h3>
+        <p>To solve the system, we apply **elementary row operations** to reduce the augmented matrix into **echelon form** (where the number of leading zeros increases row-by-row). These row operations are guaranteed not to alter the solution of the linear system:</p>
+
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">
+            <strong style="color: var(--accent);">[ER₁] Row Interchange:</strong>
+            <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #6b7280;">Interchange the $i^{\text{th}}$ and $j^{\text{th}}$ rows:</p>
+            $$R_i \leftrightarrow R_j$$
+
+            <strong style="display: block; margin-top: 1rem; color: #10b981;">[ER₂] Scalar Multiplication:</strong>
+            <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #6b7280;">Multiply the $i^{\text{th}}$ row by a non-zero constant $k$:</p>
+            $$R_i \to k R_i \quad (k \ne 0)$$
+
+            <strong style="display: block; margin-top: 1rem; color: var(--warning);">[ER₃] Row Addition:</strong>
+            <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #6b7280;">Replace the $i^{\text{th}}$ row by itself plus $k$ times the $j^{\text{th}}$ row:</p>
+            $$R_i \to R_i + k R_j$$
+        </div>
+    </div>
+
+    <!-- Solution Classification -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">3. Classification of Linear Systems</h3>
+        <p>Let $E$ be the number of non-zero rows in echelon form (equations) and $n$ the number of unknowns:</p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li><strong>Inconsistent (No Solution):</strong> Occurs when the equations contradict each other, resulting in an echelon line containing zeros on the left but a non-zero constant on the right (e.g. $0 = -3$).</li>
+            <li><strong>Consistent:</strong>
+                <ul style="padding-left: 1.2rem; margin-top: 0.35rem;">
+                    <li><strong>Unique Solution:</strong> Occurs when $E = n$ (exactly one unique coordinate intersection).</li>
+                    <li><strong>Infinite Solutions:</strong> Occurs when $E < n$, introducing $n - E$ **free variables** (degree of freedom).</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Interactive Gaussian Elimination solver -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">4. Interactive Gaussian Elimination Solver</h3>
+        <p>Input equations $ax + by = p$ and $cx + dy = q$ to solve them using Gaussian elimination row operations in real-time:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls -->
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Equation 1 coefficients ($ax + by = p$):</label>
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                        <input id="linalgSysA" type="number" value="2" style="width: 33%; padding: 0.35rem;" oninput="runLinAlgSystemsSimulation()">
+                        <input id="linalgSysB" type="number" value="3" style="width: 33%; padding: 0.35rem;" oninput="runLinAlgSystemsSimulation()">
+                        <input id="linalgSysP" type="number" value="8" style="width: 33%; padding: 0.35rem;" oninput="runLinAlgSystemsSimulation()">
+                    </div>
+
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Equation 2 coefficients ($cx + dy = q$):</label>
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                        <input id="linalgSysC" type="number" value="4" style="width: 33%; padding: 0.35rem;" oninput="runLinAlgSystemsSimulation()">
+                        <input id="linalgSysD" type="number" value="-1" style="width: 33%; padding: 0.35rem;" oninput="runLinAlgSystemsSimulation()">
+                        <input id="linalgSysQ" type="number" value="9" style="width: 33%; padding: 0.35rem;" oninput="runLinAlgSystemsSimulation()">
+                    </div>
+                </div>
+
+                <!-- Live Results -->
+                <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); border-left: 4px solid #10b981;">
+                    <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">SOLVER STATUS &amp; COORDINATES</div>
+                    <div id="linalgSysStatus" style="font-size: 1.1rem; font-weight: 700; color: #10b981; margin-top: 0.5rem;">Unique solution found:<br>x = 2.50, y = 1.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.runLinAlgSystemsSimulation = function() {
+                const a = parseFloat(document.getElementById('linalgSysA').value) || 0;
+                const b = parseFloat(document.getElementById('linalgSysB').value) || 0;
+                const p = parseFloat(document.getElementById('linalgSysP').value) || 0;
+
+                const c = parseFloat(document.getElementById('linalgSysC').value) || 0;
+                const d = parseFloat(document.getElementById('linalgSysD').value) || 0;
+                const q = parseFloat(document.getElementById('linalgSysQ').value) || 0;
+
+                const det = a * d - b * c;
+                const statusEl = document.getElementById('linalgSysStatus');
+
+                if (Math.abs(det) < 0.0001) {
+                    // Check inconsistency or infinite
+                    // Scaled constants check
+                    const scaleFactor = (a !== 0) ? c / a : (b !== 0 ? d / b : 0);
+                    const consistent = Math.abs(q - p * scaleFactor) < 0.0001;
+                    if (consistent) {
+                        statusEl.innerHTML = `<span style="color: var(--warning)">Infinite solutions (Dependent system)</span>`;
+                    } else {
+                        statusEl.innerHTML = `<span style="color: #ef4444">Inconsistent (No solution)</span>`;
+                    }
+                } else {
+                    const x = (p * d - b * q) / det;
+                    const y = (a * q - p * c) / det;
+                    statusEl.innerHTML = `Unique solution found:<br><strong style="font-size: 1.25rem;">x = ${x.toFixed(2)}, y = ${y.toFixed(2)}</strong>`;
+                }
+
+                const parent = document.getElementById('view-cqf-mp-linalg-systems');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            setTimeout(() => {
+                if (document.getElementById('linalgSysA')) runLinAlgSystemsSimulation();
+            }, 100);
+        })();
+    </script>
+</div>

@@ -1,0 +1,215 @@
+<div id="view-cqf-fp-deriv-options-apps" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <span class="badge" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #4f46e5;">Finance Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9;">Derivatives</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.5rem; font-weight: 800; border-bottom: none; padding-bottom: 0; background: linear-gradient(135deg, var(--text-color), #4f46e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Options: Applications</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1.05rem;">Strategic Leverage in Speculative Call Portfolios and Downside Put Option Insurance</div>
+    </header>
+
+    <!-- Case Study A: Speculation with Leverage -->
+    <div class="card" style="margin-bottom: 2rem;">
+        <h3 style="margin-top: 0; color: #4f46e5; font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
+            <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+            Case Study 1: Speculating via Leveraged Amazon Calls
+        </h3>
+        <p>An investor is highly bullish on Amazon (AMZN), currently trading at <strong>$198.00 / share</strong>. Instead of allocating $198.00 upfront to buy one share, they purchase a 90-day <strong>$200 Strike Call Option</strong> for an upfront premium of only <strong>$7.00</strong> (yielding immense leverage).</p>
+        
+        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 2rem; margin-top: 1.5rem; align-items: start;">
+            <!-- Interactive Leverage Calculator -->
+            <div>
+                <h4 style="margin: 0 0 0.75rem 0; font-size: 0.95rem; color: var(--accent);">Interactive Options Leverage &amp; Return Sandbox</h4>
+                <p style="font-size: 0.85rem; margin-bottom: 1.25rem;">Suppose that 30 business days later, AMZN surges by 18.18% to <strong>$234.00</strong>. Drag the slider to adjust the new call option premium and compare our percentage profit against direct stock purchases:</p>
+                
+                <div style="margin-bottom: 1.25rem;">
+                    <label style="font-weight:600; font-size:0.85rem; display:block; margin-bottom:0.5rem;">New Call Option Premium ($):</label>
+                    <input id="specCallPrem" type="range" min="7" max="50" step="1" value="34" oninput="calcSpecCall()" style="width: 100%;">
+                    <span id="specCallPremVal" style="font-size: 0.95rem; font-weight: 800; color: var(--accent);">$34.00</span>
+                </div>
+
+                <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-size: 0.88rem;">
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--card-border); padding-bottom: 0.4rem;">
+                        <span>Direct Stock Investment Return (Buy at $198 ➔ Sell at $234):</span>
+                        <strong style="color: #10b981;">+18.18%</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                        <span>Option Speculator Return (Buy at $7 ➔ Sell at current premium):</span>
+                        <strong id="specOptionReturn" style="color: #10b981;">+385.71%</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Case Lifecycle notes -->
+            <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-size: 0.85rem; line-height: 1.5;">
+                <h4 style="margin-top: 0; color: var(--accent);">Why Buying Call Options Provides Structural Leverage:</h4>
+                <p style="margin-top: 0;">By paying the <strong>$7.00</strong> premium, the speculator caps their absolute maximum downside to exactly $7.00. However, because they participate in the identical dollar-for-dollar upside above the $200 strike, their rate of return is exponentially magnified:</p>
+                <div style="font-family: monospace; font-size: 0.82rem; background: var(--card-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid var(--accent);">
+                    Return = (Premium_sold - Premium_paid) / Premium_paid<br>
+                    (34.00 - 7.00) / 7.00 = 3.857 ➔ 385.71% Profit!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Case Study B: Hedging with Put Insurance -->
+    <div class="card" style="margin-bottom: 2rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
+            <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            Case Study 2: Hedging Wheat Crops via Put Option Insurance
+        </h3>
+        <p>A farming corporation sows a wheat crop at a cost of <strong>1,100 cents / bushel</strong>. While futures protect against downside by locking in a selling rate, they also eliminate any upside. To enjoy upside market performance while establishing a safe floor, the farmer buys a 6-month ATM <strong>1,100 Strike Put Option</strong> for a premium of <strong>46.75 cents</strong>.</p>
+        
+        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 2rem; align-items: center;">
+            <!-- Interactive August Harvest Spot Pricing Sandbox -->
+            <div>
+                <h4 style="margin: 0 0 0.75rem 0; font-size: 0.95rem; color: #10b981;">Interactive Harvest Pricing Sandbox</h4>
+                <p style="font-size: 0.85rem; margin-bottom: 1.25rem;">Adjust the spot wheat price at harvest to compare the asymmetrical hedging performance of a Put Option vs. a standard Futures Contract:</p>
+                
+                <div style="margin-bottom: 1.25rem;">
+                    <label style="font-weight:600; font-size:0.85rem; display:block; margin-bottom:0.5rem;">August Spot Price ($S_T$):</label>
+                    <input id="hedgePutSpot" type="range" min="800" max="1500" step="50" value="950" oninput="calcPutHedge()" style="width: 100%;">
+                    <span id="hedgePutSpotVal" style="font-size: 0.95rem; font-weight: 800; color: var(--accent);">950 ¢</span>
+                </div>
+
+                <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; font-size: 0.85rem;">
+                    <div style="display:flex; justify-content:space-between; padding: 0.4rem 0; border-bottom:1px solid var(--card-border);">
+                        <span>Physical Crop Sales (Spot):</span>
+                        <span id="hedgePutSpotSale" style="font-weight: 700;">950 ¢</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; padding: 0.4rem 0; border-bottom:1px solid var(--card-border);">
+                        <span>1,100 Put Option Payoff:</span>
+                        <span id="hedgePutPayoff" style="font-weight: 700; color: #10b981;">+150 ¢</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; padding: 0.4rem 0 0 0; font-size: 0.9rem;">
+                        <strong>Hedged Crop Net Profit:</strong>
+                        <strong id="hedgePutNet" style="color: #ef4444;">-46.75 ¢ (Floor Met)</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visualization of Put vs Futures -->
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px;">
+                <h4 style="margin: 0 0 1rem 0; font-size: 0.85rem; font-weight: 700; color: #10b981; text-transform: uppercase;">Put Option vs. Futures Hedge Payoffs</h4>
+                <div style="position: relative; height: 160px; width: 100%;">
+                    <canvas id="optHedgeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function calcSpecCall() {
+    const paid = 7.00;
+    const sold = parseFloat(document.getElementById('specCallPrem').value);
+    
+    document.getElementById('specCallPremVal').innerText = '$' + sold.toFixed(2);
+    
+    const ret = ((sold - paid) / paid) * 100;
+    document.getElementById('specOptionReturn').innerText = '+' + ret.toFixed(2) + '%';
+}
+
+function calcPutHedge() {
+    const cost = 1100;
+    const strike = 1100;
+    const prem = 46.75;
+    const spot = parseInt(document.getElementById('hedgePutSpot').value);
+    
+    document.getElementById('hedgePutSpotVal').innerText = spot.toLocaleString() + ' ¢';
+    document.getElementById('hedgePutSpotSale').innerText = spot.toLocaleString() + ' ¢';
+    
+    const payoff = Math.max(strike - spot, 0);
+    const netProfit = spot + payoff - cost - prem;
+    
+    document.getElementById('hedgePutPayoff').innerText = (payoff > 0 ? '+' : '') + payoff.toLocaleString() + ' ¢';
+    document.getElementById('hedgePutPayoff').style.color = payoff > 0 ? '#10b981' : '#6b7280';
+    
+    const netEl = document.getElementById('hedgePutNet');
+    if (netProfit >= 0) {
+        netEl.innerText = '+' + netProfit.toFixed(2) + ' ¢';
+        netEl.style.color = '#10b981';
+    } else {
+        netEl.innerText = netProfit.toFixed(2) + ' ¢';
+        netEl.style.color = '#ef4444';
+    }
+}
+
+// Chart.js configuration comparing Put Option Hedge vs. Short Futures Hedge
+let optHedgeChartInstance = null;
+function drawOptHedgeChart() {
+    const ctx = document.getElementById('optHedgeChart').getContext('2d');
+    if (optHedgeChartInstance) {
+        optHedgeChartInstance.destroy();
+    }
+    
+    const isDark = document.body.classList.contains('dark-theme');
+    const gridColor = isDark ? '#2c2c2c' : '#edece9';
+    const textColor = isDark ? '#e3e3e3' : '#37352f';
+    
+    const spotRange = [800, 950, 1100, 1200, 1350, 1500];
+    // Put option profit: Spot + Max(1100-Spot, 0) - 1100 - 46.75
+    const putHedgeProfit = spotRange.map(s => Math.max(1100 - s, 0) + s - 1100 - 46.75);
+    // Futures hedge profit: locked at 1100. Profit = 1100 - 1100 = 0 (Futures lock at zero crop basis here)
+    const futuresHedgeProfit = spotRange.map(() => 0);
+    
+    optHedgeChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: spotRange.map(s => s + '¢'),
+            datasets: [
+                {
+                    label: 'Put Option Hedge (Upside + Floor)',
+                    data: putHedgeProfit,
+                    borderColor: '#10b981',
+                    borderWidth: 3,
+                    fill: false,
+                    pointRadius: 2
+                },
+                {
+                    label: 'Futures Hedge (No Upside)',
+                    data: futuresHedgeProfit,
+                    borderColor: '#ef4444',
+                    borderWidth: 1.5,
+                    borderDash: [4, 4],
+                    fill: false,
+                    pointRadius: 0
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: { color: textColor, font: { size: 8, family: 'var(--font-family-sans)' } }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: gridColor },
+                    ticks: { color: textColor, font: { size: 7 } }
+                },
+                y: {
+                    grid: { color: gridColor },
+                    ticks: { color: textColor, font: { size: 7 } }
+                }
+            }
+        }
+    });
+}
+
+// Initialise page views
+setTimeout(() => {
+    calcSpecCall();
+    calcPutHedge();
+    drawOptHedgeChart();
+}, 500);
+
+const optHedgeObserver = new MutationObserver(() => {
+    if (document.getElementById('view-cqf-fp-deriv-options-apps').style.display === 'block') {
+        drawOptHedgeChart();
+    }
+});
+optHedgeObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+</script>

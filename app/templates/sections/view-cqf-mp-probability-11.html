@@ -1,0 +1,142 @@
+<div id="view-cqf-mp-probability-11" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">1.1 Preliminaries &amp; Scale</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.1 Preliminaries &amp; Probability Scale</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Definitions of experiments, event subsets, sample spaces, and likelihood boundaries.</div>
+    </header>
+
+    <!-- Core Theory Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.1.1 Probability Definitions &amp; Boundaries</h3>
+        <p>Before computing complex pricing odds, we define the structural foundations of random systems:</p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li><strong>Experiment:</strong> A repeatable process (e.g. coin toss, portfolio shock) that gives rise to a set of outcomes.</li>
+            <li><strong>Event ($E$):</strong> A collection (or subset) of one or more outcomes.</li>
+            <li><strong>Sample Space ($\Omega$):</strong> The exhaustive set of all possible outcomes of an experiment.</li>
+        </ul>
+        <p>The probability scale is strictly bounded by absolute certainty (1) and absolute impossibility (0):</p>
+        <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.6rem 0;">
+            $$0 \le P(E) \le 1$$
+        </p>
+        <p><strong>The Complementary Event ($E'$):</strong> An event either occurs or it does not. The probability of the complement (not $E$) is defined as:</p>
+        <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+            $$P(E') = 1 - P(E)$$
+        </p>
+    </div>
+
+    <!-- Interactive Laboratory -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.1.2 Interactive Probability Scale &amp; Dice Roll Sandbox</h3>
+        <p>Select different event filters for rolling a standard six-sided die ($\Omega = \{1,2,3,4,5,6\}$) to visualize complementary divisions:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls -->
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Select Event Filter:</label>
+                    <select id="prob11Filter" onchange="runProb11Filter()" style="padding: 0.35rem 0.5rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600; outline: none; cursor: pointer; width: 100%; margin-bottom: 1rem;">
+                        <option value="even">Even numbers: {2, 4, 6}</option>
+                        <option value="odd">Odd numbers: {1, 3, 5}</option>
+                        <option value="prime">Prime numbers: {2, 3, 5}</option>
+                        <option value="multiple3">Multiples of 3: {3, 6}</option>
+                    </select>
+
+                    <div style="font-size: 0.85rem; line-height: 1.6; color: var(--text-color); background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid #10b981;">
+                        <div id="prob11OutputFormula"><strong>Event Probability $P(E)$:</strong> 3/6 = 0.5000</div>
+                        <div id="prob11OutputComplement" style="margin-top: 0.25rem;"><strong>Complementary $P(E')$:</strong> 3/6 = 0.5000</div>
+                    </div>
+                </div>
+
+                <!-- Custom Scale Canvas -->
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
+                    <canvas id="prob11Canvas" width="300" height="150" style="width: 100%; height: 150px; background: #000; border-radius: 6px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.runProb11Filter = function() {
+                const filter = document.getElementById('prob11Filter').value;
+                const elFormula = document.getElementById('prob11OutputFormula');
+                const elComplement = document.getElementById('prob11OutputComplement');
+
+                let outcomes = [];
+                if (filter === 'even') outcomes = [2, 4, 6];
+                else if (filter === 'odd') outcomes = [1, 3, 5];
+                else if (filter === 'prime') outcomes = [2, 3, 5];
+                else if (filter === 'multiple3') outcomes = [3, 6];
+
+                const pE = outcomes.length / 6;
+                const pComp = 1 - pE;
+
+                elFormula.innerHTML = `<strong>Event Probability $P(E)$:</strong> ${outcomes.length}/6 = ${pE.toFixed(4)}`;
+                elComplement.innerHTML = `<strong>Complementary $P(E')$:</strong> ${(6-outcomes.length)}/6 = ${pComp.toFixed(4)}`;
+
+                drawScaleGraph(pE);
+
+                const parent = document.getElementById('view-cqf-mp-probability-11');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawScaleGraph(pE) {
+                const canvas = document.getElementById('prob11Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Horizontal probability line
+                const startX = 30;
+                const endX = canvas.width - 30;
+                const y = canvas.height / 2 + 10;
+
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 6;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(startX, y);
+                ctx.lineTo(endX, y);
+                ctx.stroke();
+
+                // Shaded active part (Green)
+                const activeEndX = startX + pE * (endX - startX);
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 6;
+                ctx.beginPath();
+                ctx.moveTo(startX, y);
+                ctx.lineTo(activeEndX, y);
+                ctx.stroke();
+
+                // Draw slider knobs
+                ctx.fillStyle = '#10b981';
+                ctx.beginPath();
+                ctx.arc(activeEndX, y, 9, 0, 2 * Math.PI);
+                ctx.fill();
+
+                // Labels
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '10px sans-serif';
+                ctx.fillText('0 (Impossible)', startX - 10, y - 18);
+                ctx.fillText('1 (Certain)', endX - 45, y - 18);
+
+                ctx.fillStyle = '#10b981';
+                ctx.font = 'bold 12px sans-serif';
+                ctx.fillText(`P(E) = ${(pE*100).toFixed(0)}%`, Math.max(startX, activeEndX - 25), y + 25);
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('prob11Filter')) runProb11Filter();
+            }, 100);
+        })();
+    </script>
+</div>

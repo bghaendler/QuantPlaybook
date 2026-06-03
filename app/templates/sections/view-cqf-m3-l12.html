@@ -1,0 +1,579 @@
+<div id="view-cqf-m3-l12" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 03: Equities &amp; Currencies</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 12</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L12: Further Monte Carlo Methods</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">The Connection to Statistics, Low-Discrepancy (Sobol'), Wiener/Poisson Bridges, and Numerical SDE Integration Schemes</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM3L12Stats" onclick="switchM3L12Tab('stats')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. Statistics &amp; Feynman-Kac</button>
+        <button id="tabM3L12Discrepancy" onclick="switchM3L12Tab('discrepancy')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Low-Discrepancy (Sobol')</button>
+        <button id="tabM3L12Bridges" onclick="switchM3L12Tab('bridges')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Wiener &amp; Poisson Bridges</button>
+        <button id="tabM3L12Sde" onclick="switchM3L12Tab('sde')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. SDE Integration Schemes</button>
+        <button id="tabM3L12Exercises" onclick="switchM3L12Tab('exercises')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Solved Case Studies</button>
+        <button id="tabM3L12Sandbox" onclick="switchM3L12Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Interactive MC Labs</button>
+    </div>
+
+    <!-- TAB 1: Statistics & Feynman-Kac -->
+    <div id="secM3L12Stats" style="display: block;">
+        <div class="container" style="grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; margin-bottom: 2rem; display: grid; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Monte Carlo as a Numerical Integrator</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        Dr. Peter Jäckel challenges a common quantitative finance misconception: <strong>Monte Carlo simulation is not inherently about stochastic processes.</strong> It is simply a general numerical integration toolkit designed to evaluate expectations of a payoff function $f(\mathbf{x})$ over a probability density function $\psi(\mathbf{x})$:
+                        $$\int_{\mathcal{D}} f(\mathbf{x}) \psi(\mathbf{x}) \, \mathrm{d}\mathbf{x} = \mathrm{E}_{\psi}[f(\mathbf{x})]$$
+                    </p>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        Calling a mathematical value an expectation does not demand Monte Carlo. For example, the standard European option value is an expectation computed entirely analytically using the **Black-Scholes-Merton** formula.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Feynman-Kac Connection</h3>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                        The **Feynman-Kac Theorem** establishes a literal equivalence between the solutions of partial differential equations and expectations under a corresponding stochastic process. 
+                        Given a PDE with terminal condition $V(T, \mathbf{X}) = f(\mathbf{X})$:
+                        $$\frac{\partial V}{\partial t} + \sum_{i=1}^n b_i \frac{\partial V}{\partial X_i} + \frac{1}{2} \sum_{i,j=1}^n c_{ij} \frac{\partial^2 V}{\partial X_i \partial X_j} - rV = 0$$
+                        The solution is identical to the risk-neutral discounted expectation:
+                        $$V(t, \mathbf{X}) = \mathrm{E} \left[ f(\mathbf{X}_T) e^{-r(T-t)} \right]$$
+                        Whether to solve this via **finite difference schemes (PDE methods)** or **Monte Carlo path simulations** is purely an implementation choice. Both evaluate identical mathematical boundaries.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Low-Discrepancy (Sobol') -->
+    <div id="secM3L12Discrepancy" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Paradigm Shift: Quasi-Random vs. Low-Discrepancy Sequences</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    For production pricing in global financial institutions, pseudo-random numbers are obsolete. Instead, serious practitioners utilize **Low-Discrepancy Sequences (LDS)**. 
+                    - **Pseudo-Random Sequences:** Focus on emulating true randomness where each draw is statistically independent. This independence naturally causes clusters (overlapping points) and large empty gaps.
+                    - **Low-Discrepancy Sequences:** Are fully deterministic, taking into account all previously generated coordinates to actively fill "holes" and cover the sample space with maximum uniformity.
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); margin-bottom:1.25rem; font-size:0.85rem; line-height:1.6;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Quantum Leap in Convergence Speed</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        The rate of convergence of standard pseudo-random Monte Carlo is governed by the Central Limit Theorem at $O(1/\sqrt{N})$. In contrast, Low-Discrepancy Monte Carlo achieves a convergence rate close to $O(1/N)$.
+                        $$\text{Required Iterations } (N) \text{ for same accuracy:} \quad N_{\text{PR}} = N_{\text{LDS}}^2$$
+                        If a Sobol' simulation achieves acceptable accuracy in 1,000 steps ($1$ second), a pseudo-random generator requires **1,000,000 steps ($16$ minutes)**. This offers massive operational and hardware cost savings on high-performance grids.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Wiener & Poisson Bridges -->
+    <div id="secM3L12Bridges" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; margin-bottom: 2rem; display: grid; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Wiener Path Construction: Incremental vs. Brownian Bridge</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        To construct a discretized path of a standard Wiener process $W(t_i)$:
+                        - **Incremental Method:** Evolve sequentially step-by-step: $W(t_{i+1}) = W(t_i) + \sqrt{\Delta t} Z_i$. This is highly sequential and places all the variance allocation onto the final step.
+                        - **Brownian Bridge Method:** Shapes the path hierarchically. The first draw sets the path endpoint $W(T) = \sqrt{T} Z_1$. Subsequent draws bisect the path at midpoints, computing the conditional Gaussian mean and variance:
+                        $$\mathrm{E}[W(t_j)] = \left(\frac{t_k - t_j}{t_k - t_i}\right)W(t_i) + \left(\frac{t_j - t_i}{t_k - t_i}\right)W(t_k)$$
+                        $$\mathrm{V}[W(t_j)] = \frac{(t_j - t_i)(t_k - t_j)}{t_k - t_i}$$
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Poisson Path Construction</h3>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                        A standard Poisson process has discrete jumps. 
+                        - Evolving it via fine Bernoulli time-steps is highly inefficient and statistically flawed.
+                        - Instead, we draw independent exponential times between events: $\tau_i \sim -\frac{\ln(1-u_i)}{\lambda}$.
+                        - For maximum efficiency under low-discrepancy sequences, Jäckel advocates the **Poisson Bridge**: first draw the total number of events $n$ over $(0, T)$ from a Poisson distribution, then distribute event times uniformly (via Beta distributions) to build the jump path hierarchically.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: SDE Integration Schemes -->
+    <div id="secM3L12Sde" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Numerical SDE Solvers Comparison</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    When pricing exotic derivatives under general diffusion processes, we must numerically integrate the SDE:
+                    $$\mathrm{d}X_t = a(t, X_t)\mathrm{d}t + b(t, X_t)\mathrm{d}W_t$$
+                </p>
+
+                <div style="overflow-x: auto; border: 1px solid var(--card-border); border-radius: 8px; margin-bottom: 1rem;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem; font-family: var(--font-family-sans); background: var(--card-bg);">
+                        <thead>
+                            <tr style="background: var(--metric-bg); border-bottom: 2px solid var(--card-border); text-align: left;">
+                                <th style="padding: 0.6rem; color: var(--accent); font-weight: 700;">Scheme</th>
+                                <th style="padding: 0.6rem; color: var(--accent); font-weight: 700;">Mathematical Recurrence</th>
+                                <th style="padding: 0.6rem; color: var(--accent); font-weight: 700;">Weak / Strong Order</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.6rem; font-weight: bold;">Euler-Maruyama</td>
+                                <td style="padding: 0.6rem;">$$Y_{n+1} = Y_n + a_n \Delta t + b_n \Delta W$$</td>
+                                <td style="padding: 0.6rem;">Weak: $1.0$, Strong: $0.5$</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.6rem; font-weight: bold;">Milstein</td>
+                                <td style="padding: 0.6rem;">$$Y_{n+1} = Y_n + a_n \Delta t + b_n \Delta W + \frac{1}{2} b_n b'_n \left[\Delta W^2 - \Delta t\right]$$</td>
+                                <td style="padding: 0.6rem;">Weak: $1.0$, Strong: $1.0$</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.6rem; font-weight: bold;">Predictor-Corrector</td>
+                                <td style="padding: 0.6rem;">$$\bar{Y}_{n+1} = Y_n + a_n \Delta t + b_n \Delta W \\ Y_{n+1} = Y_n + \frac{1}{2}(a_n + \bar{a}_{n+1})\Delta t + b_n \Delta W$$</td>
+                                <td style="padding: 0.6rem;">High stability in drift-heavy regimes</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: Solved Case Studies -->
+    <div id="secM3L12Exercises" style="display: none; max-height: 600px; overflow-y: auto; padding-right: 0.5rem;">
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Case Study 1: The Trap of Moment-Matching for Dirac Mixtures</h3>
+            <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563;">
+                <strong>Problem:</strong> Explain how moment-matching (e.g. log-normal approximation) on mixed payoff distributions (containing Dirac delta spikes) can fail catastrophically. Use a Call payoff applied to a normal variable as an example.
+            </p>
+            <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color:#374151;">
+                <strong>Analysis:</strong><br>
+                For a standard Normal variable $x \sim \mathcal{N}(0, 1)$, a call payoff $\max(x, 0)$ creates a distribution that is a **mixture of a Dirac delta spike at zero (with probability 0.5) and the positive half of the Gaussian PDF**:
+                $$\psi(y) = \frac{1}{2}\delta(y) + \frac{1}{\sqrt{2\pi}} e^{-y^2/2} h(y)$$
+                If a quant attempts to match the first two moments of this mixed distribution to fit a pure log-normal distribution, the resulting analytic pricing will be severely distorted. This represents a notorious pitfall in pricing Asian options and basket options.
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Case Study 2: The Fallacy of Seed Validation</h3>
+            <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563;">
+                <strong>Problem:</strong> Why is Jäckel strongly opposed to rerunning a Monte Carlo simulation with a different seed to validate its correctness or assess its convergence error?
+            </p>
+            <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color:#374151;">
+                <strong>Analysis:</strong><br>
+                1. **TAMPERING AND SEQUENTIAL OVERLAP:** In pseudo-random generators, sequential runs using different seeds from the same linear congruential pipeline often overlap in high dimensions. This makes them statistically dependent, invalidating standard error convergence bounds.<br>
+                2. **MASKING COMPROMISED GENERATORS:** If the generator is flawed, changing the seed will not reveal the issue; it merely generates another biased sample, risking a false positive validation. The correct path is to change the **generator class** (e.g. from LCG to Mersenne Twister or Sobol').
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Interactive MC Labs -->
+    <div id="secM3L12Sandbox" style="display: none;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            
+            <!-- LAB A: Low-Discrepancy (Sobol') vs. Pseudo-Random -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab A: Space-Filling Coverage (LDS vs. PRNG)</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Generator Type:</label>
+                        <select id="selectM3L12Generator" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L12DiscrepancyLab()">
+                            <option value="pseudo" selected>Pseudo-Random (Mersenne Twister)</option>
+                            <option value="sobol">Low-Discrepancy (Sobol' Proxy)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Number of Points (N):</label>
+                        <input id="numM3L12Points" type="number" value="150" min="10" max="600" step="10" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L12DiscrepancyLab()">
+                    </div>
+                </div>
+                <div style="height: 180px; position: relative; margin-bottom: 0.5rem; display:flex; align-items:center; justify-content:center; background:#0f172a; border-radius:6px;">
+                    <canvas id="m3l12SpaceCanvas" width="300" height="180" style="width:100%; height:100%; max-height:180px;"></canvas>
+                </div>
+                <div id="outM3L12Discrepancy" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Simulating coordinates...
+                </div>
+            </div>
+
+            <!-- LAB B: Wiener Path Construction -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab B: Wiener Path Construction</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Construction Method:</label>
+                        <select id="selectM3L12PathMode" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L12PathLab()">
+                            <option value="incremental" selected>Incremental (Cholesky)</option>
+                            <option value="bridge">Brownian Bridge (Hierarchical)</option>
+                        </select>
+                    </div>
+                    <div style="display:flex; align-items:flex-end;">
+                        <button class="btn" style="width:100%; background:var(--accent); color:#ffffff; font-weight:700; border:none; padding:0.35rem 0.5rem; border-radius:4px; cursor:pointer; font-size:0.75rem;" onclick="runM3L12PathLab()">Generate New Path</button>
+                    </div>
+                </div>
+                <div style="height: 180px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m3l12PathChart"></canvas>
+                </div>
+                <div id="outM3L12Path" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Simulating Brownian motion paths...
+                </div>
+            </div>
+
+            <!-- LAB C: SDE Convergence Sandbox -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem; grid-column: span 2;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab C: SDE Convergence Sandbox (Euler vs. Milstein vs. Predictor-Corrector)</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Drift (r):</label>
+                        <input id="numM3L12Drift" type="number" value="0.05" step="0.01" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L12SdeLab()">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Volatility ($\sigma$):</label>
+                        <input id="numM3L12Vol" type="number" value="0.30" step="0.05" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L12SdeLab()">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Integration Steps (N):</label>
+                        <select id="selectM3L12Steps" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L12SdeLab()">
+                            <option value="10">10 (Coarse step size)</option>
+                            <option value="30" selected>30 (Medium step size)</option>
+                            <option value="100">100 (Fine step size)</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="height: 200px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m3l12SdeChart"></canvas>
+                </div>
+                <div id="outM3L12Sde" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Running SDE schemes...
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching logic for CQF M3 L12
+    window.switchM3L12Tab = function(tab) {
+        const tabs = ['stats', 'discrepancy', 'bridges', 'sde', 'exercises', 'sandbox'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM3L12' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM3L12' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) {
+                sec.style.display = (t === tab ? 'block' : 'none');
+                if (t === tab && !sec.dataset.typeset) {
+                    if (typeof window.safeTypeset === 'function') {
+                        window.safeTypeset([sec]);
+                        sec.dataset.typeset = 'true';
+                    }
+                }
+            }
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        if (tab === 'sandbox') {
+            setTimeout(initM3L12Labs, 100);
+        }
+    };
+
+    let m3l12PathChartInstance = null;
+    let m3l12SdeChartInstance = null;
+
+    window.initM3L12Labs = function() {
+        runM3L12DiscrepancyLab();
+        runM3L12PathLab();
+        runM3L12SdeLab();
+    };
+
+    // Halton low-discrepancy sequence in 2D
+    function getM3L12HaltonPoint(index) {
+        function halton(idx, base) {
+            let result = 0;
+            let f = 1 / base;
+            let i = idx;
+            while (i > 0) {
+                result += f * (i % base);
+                i = Math.floor(i / base);
+                f = f / base;
+            }
+            return result;
+        }
+        return [halton(index, 2), halton(index, 3)];
+    }
+
+    window.runM3L12DiscrepancyLab = function() {
+        const genType = document.getElementById('selectM3L12Generator').value;
+        const N = parseInt(document.getElementById('numM3L12Points').value);
+        const canvas = document.getElementById('m3l12SpaceCanvas');
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+        ctx.clearRect(0, 0, W, H);
+
+        // Draw background grid lines to show filling
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 0.5;
+        for (let i = 1; i < 5; i++) {
+            ctx.beginPath();
+            ctx.moveTo(W * i / 5, 0);
+            ctx.lineTo(W * i / 5, H);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(0, H * i / 5);
+            ctx.lineTo(W, H * i / 5);
+            ctx.stroke();
+        }
+
+        ctx.fillStyle = '#10b981';
+        for (let i = 1; i <= N; i++) {
+            let x = 0;
+            let y = 0;
+            if (genType === 'pseudo') {
+                x = Math.random();
+                y = Math.random();
+            } else {
+                const pt = getM3L12HaltonPoint(i);
+                x = pt[0];
+                y = pt[1];
+            }
+            ctx.beginPath();
+            ctx.arc(x * W, y * H, 2.5, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+
+        const outEl = document.getElementById('outM3L12Discrepancy');
+        if (genType === 'pseudo') {
+            outEl.innerHTML = `Generator: <strong>Pseudo-Random</strong>. Note the clear **overlapping clusters** and **large empty holes** (discrepancy breakdown) which slow down pricing convergence.`;
+        } else {
+            outEl.innerHTML = `Generator: <strong>Low-Discrepancy (Sobol' Proxy)</strong>. Notice how the points **perfectly fill gaps** in the space without clustering, ensuring optimal $O(1/N)$ convergence speed.`;
+        }
+    };
+
+    window.runM3L12PathLab = function() {
+        const mode = document.getElementById('selectM3L12PathMode').value;
+        const steps = 33; // 2^5 + 1
+        let path = new Array(steps).fill(0);
+        
+        // Generate uncorrelated standard normal variates
+        let z = [];
+        for (let i = 0; i < steps; i++) {
+            // Box-Muller transform
+            let u1 = Math.random() || 0.0001;
+            let u2 = Math.random() || 0.0001;
+            z.push(Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2));
+        }
+
+        if (mode === 'incremental') {
+            // W(t_i) sequential evolution
+            const dt = 1.0 / (steps - 1);
+            for (let i = 1; i < steps; i++) {
+                path[i] = path[i - 1] + Math.sqrt(dt) * z[i];
+            }
+        } else {
+            // Brownian Bridge hierarchical construction
+            // End point
+            path[steps - 1] = z[0]; // W(T) = \sqrt{T}*z_0
+            
+            function buildBridge(leftIdx, rightIdx) {
+                if (rightIdx - leftIdx <= 1) return;
+                const midIdx = Math.floor((leftIdx + rightIdx) / 2);
+                
+                const t_left = leftIdx / (steps - 1);
+                const t_right = rightIdx / (steps - 1);
+                const t_mid = midIdx / (steps - 1);
+                
+                const mean = ((t_right - t_mid) * path[leftIdx] + (t_mid - t_left) * path[rightIdx]) / (t_right - t_left);
+                const variance = (t_mid - t_left) * (t_right - t_mid) / (t_right - t_left);
+                
+                path[midIdx] = mean + Math.sqrt(variance) * z[midIdx];
+                
+                buildBridge(leftIdx, midIdx);
+                buildBridge(midIdx, rightIdx);
+            }
+            buildBridge(0, steps - 1);
+        }
+
+        const outEl = document.getElementById('outM3L12Path');
+        outEl.innerHTML = `Mode: <strong>${mode === 'incremental' ? 'Sequential Incremental' : 'Hierarchical Brownian Bridge'}</strong>.<br>
+        Brownian Bridge captures **90%+ of path variability** in the first few hierarchical divisions, making it highly compatible with low-discrepancy sequences where early dimensions carry most of the mapping weight.`;
+
+        const ctx = document.getElementById('m3l12PathChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        let labels = Array.from({length: steps}, (_, i) => (i / (steps - 1)).toFixed(2));
+
+        if (m3l12PathChartInstance) m3l12PathChartInstance.destroy();
+
+        m3l12PathChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Simulated Wiener Path W(t)',
+                    data: path,
+                    borderColor: 'var(--accent)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+
+    window.runM3L12SdeLab = function() {
+        const r = parseFloat(document.getElementById('numM3L12Drift').value);
+        const sig = parseFloat(document.getElementById('numM3L12Vol').value);
+        const steps = parseInt(document.getElementById('selectM3L12Steps').value);
+
+        const S0 = 100.0;
+        const T = 1.0;
+        const dt = T / steps;
+
+        // Common brownian increments for all schemes to ensure pathwise consistency
+        let dw = [];
+        let totalW = 0;
+        for (let i = 0; i < steps; i++) {
+            let u1 = Math.random() || 0.0001;
+            let u2 = Math.random() || 0.0001;
+            let z = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+            let increment = Math.sqrt(dt) * z;
+            dw.push(increment);
+            totalW += increment;
+        }
+
+        // Analytical solution
+        let analyticalPath = [S0];
+        let runningW = 0;
+        for (let i = 1; i <= steps; i++) {
+            runningW += dw[i-1];
+            const t = i * dt;
+            analyticalPath.push(S0 * Math.exp((r - 0.5 * sig * sig) * t + sig * runningW));
+        }
+
+        // Euler-Maruyama scheme
+        let eulerPath = [S0];
+        for (let i = 0; i < steps; i++) {
+            const S = eulerPath[i];
+            eulerPath.push(S + r * S * dt + sig * S * dw[i]);
+        }
+
+        // Milstein scheme
+        let milsteinPath = [S0];
+        for (let i = 0; i < steps; i++) {
+            const S = milsteinPath[i];
+            const term = eulerPath[i+1] || (S + r * S * dt + sig * S * dw[i]); // approximation helper
+            milsteinPath.push(S + r * S * dt + sig * S * dw[i] + 0.5 * sig * sig * S * (dw[i]*dw[i] - dt));
+        }
+
+        // Predictor-Corrector scheme
+        let pcPath = [S0];
+        for (let i = 0; i < steps; i++) {
+            const S = pcPath[i];
+            const predictor = S + r * S * dt + sig * S * dw[i];
+            pcPath.push(S + 0.5 * (r * S + r * predictor) * dt + sig * S * dw[i]);
+        }
+
+        const terminalAnalytic = analyticalPath[steps];
+        const eulerError = Math.abs(eulerPath[steps] - terminalAnalytic);
+        const milsteinError = Math.abs(milsteinPath[steps] - terminalAnalytic);
+        const pcError = Math.abs(pcPath[steps] - terminalAnalytic);
+
+        const outEl = document.getElementById('outM3L12Sde');
+        outEl.innerHTML = `Terminal Price: Analytic = <strong>${terminalAnalytic.toFixed(2)}</strong>.
+        Pathwise Pricing Errors: Euler = <strong style="color:#ef4444;">${eulerError.toFixed(4)}</strong>,
+        Milstein = <strong style="color:#3b82f6;">${milsteinError.toFixed(4)}</strong>,
+        Predictor-Corrector = <strong style="color:#10b981;">${pcError.toFixed(4)}</strong>.`;
+
+        const ctx = document.getElementById('m3l12SdeChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        let labels = Array.from({length: steps + 1}, (_, i) => (i * dt).toFixed(2));
+
+        if (m3l12SdeChartInstance) m3l12SdeChartInstance.destroy();
+
+        m3l12SdeChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Analytical Path',
+                        data: analyticalPath,
+                        borderColor: '#a855f7',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Euler-Maruyama',
+                        data: eulerPath,
+                        borderColor: '#ef4444',
+                        borderWidth: 1.5,
+                        borderDash: [3, 3],
+                        fill: false,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Milstein (Strong Order 1.0)',
+                        data: milsteinPath,
+                        borderColor: '#3b82f6',
+                        borderWidth: 1.5,
+                        fill: false,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Predictor-Corrector',
+                        data: pcPath,
+                        borderColor: '#10b981',
+                        borderWidth: 1.5,
+                        fill: false,
+                        tension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, labels: { font: { size: 8 }, color: tickColor } } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+</script>

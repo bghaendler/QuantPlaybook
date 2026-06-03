@@ -1,0 +1,177 @@
+<div id="view-cqf-mp-probability-113" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">1.13 Key Distributions</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.13 Key Probability Distributions (Normal, Binomial, Poisson)</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Standard statistical models, parameters, expected properties, and empirical deviation boundaries.</div>
+    </header>
+
+    <!-- Core Theory Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1.13.1 Mathematical Properties</h3>
+        <p>Three primary probability structures model discrete counts and continuous random asset pricing moves:</p>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem;">
+            <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; font-size: 0.82rem; line-height: 1.4;">
+                <strong style="color: #10b981; display: block; margin-bottom: 0.35rem;">Binomial Distribution</strong>
+                $X \sim B(n, p)$ models finite success trials:
+                $$P(X=x) = \binom{n}{x} p^x (1-p)^{n-x}$$
+                Mean: $np$
+                <br>Variance: $np(1-p)$
+            </div>
+            <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; font-size: 0.82rem; line-height: 1.4;">
+                <strong style="color: #3b82f6; display: block; margin-bottom: 0.35rem;">Poisson Distribution</strong>
+                $X \sim Po(\lambda)$ models arrival rates in space/time:
+                $$P(X=r) = \frac{e^{-\lambda}\lambda^r}{r!}$$
+                Mean: $\lambda$
+                <br>Variance: $\lambda$
+            </div>
+            <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; font-size: 0.82rem; line-height: 1.4;">
+                <strong style="color: #f59e0b; display: block; margin-bottom: 0.35rem;">Normal Distribution</strong>
+                $X \sim N(\mu, \sigma^2)$ models continuous shifts:
+                $$f(x) = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$$
+                Z-transform: $Z = \frac{X-\mu}{\sigma} \sim N(0,1)$
+            </div>
+        </div>
+    </div>
+
+    <!-- Shape Selector Laboratory -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1.13.2 Interactive Curve &amp; Shape Laboratory</h3>
+        <p>Select different distributions to visualize their theoretical probability density curves dynamically:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls -->
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Select Distribution Profile:</label>
+                    <select id="prob13ShapeSelect" onchange="runProb13Distributions()" style="padding: 0.35rem 0.5rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600; outline: none; cursor: pointer; width: 100%; margin-bottom: 1rem;">
+                        <option value="normal">Normal Distribution: N(μ=0, σ=1)</option>
+                        <option value="binomial">Binomial Success Trials: B(n=10, p=0.3)</option>
+                        <option value="poisson">Poisson Arrivals Rate: Po(λ=4)</option>
+                    </select>
+
+                    <div style="font-size: 0.85rem; line-height: 1.6; color: var(--text-color); background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid #f59e0b;">
+                        <div id="prob13OutputStat">Evaluating...</div>
+                    </div>
+                </div>
+
+                <!-- Canvas Visualizer -->
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
+                    <canvas id="prob113Canvas" width="300" height="180" style="width: 100%; height: 180px; background: #000; border-radius: 6px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.runProb13Distributions = function() {
+                const shape = document.getElementById('prob13ShapeSelect').value;
+                const elStat = document.getElementById('prob13OutputStat');
+
+                if (shape === 'normal') {
+                    elStat.innerHTML = `<strong>Normal N(0, 1) Properties:</strong><br>• Continuous Gaussian bell shape<br>• E[X] = 0.00, Var(X) = 1.00`;
+                } else if (shape === 'binomial') {
+                    elStat.innerHTML = `<strong>Binomial B(10, 0.3) Properties:</strong><br>• Discrete successes PMF<br>• E[X] = np = 3.00, Var(X) = np(1-p) = 2.10`;
+                } else {
+                    elStat.innerHTML = `<strong>Poisson Po(4) Properties:</strong><br>• Discrete arrival count PMF<br>• E[X] = λ = 4.00, Var(X) = λ = 4.00`;
+                }
+
+                drawDistributionsGraph(shape);
+
+                const parent = document.getElementById('view-cqf-mp-probability-113');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawDistributionsGraph(shape) {
+                const canvas = document.getElementById('prob113Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Grid
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= canvas.width; i += 30) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, canvas.height);
+                    ctx.stroke();
+                }
+
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height - 30;
+
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 2.5;
+
+                if (shape === 'normal') {
+                    ctx.beginPath();
+                    let first = true;
+                    for (let px = 0; px <= canvas.width; px++) {
+                        const x = (px - centerX) / 40;
+                        const y = (1 / Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * x * x) * 120;
+                        if (first) {
+                            ctx.moveTo(px, centerY - y);
+                            first = false;
+                        } else {
+                            ctx.lineTo(px, centerY - y);
+                        }
+                    }
+                    ctx.stroke();
+                } else if (shape === 'binomial') {
+                    // Draw PMF bars for n=10, p=0.3
+                    const n = 10, p = 0.3;
+                    const factorial = (k) => k <= 1 ? 1 : k * factorial(k - 1);
+                    const nCr = (n, r) => factorial(n) / (factorial(r) * factorial(n - r));
+                    const startX = 40;
+                    const stepX = (canvas.width - 80) / n;
+
+                    ctx.fillStyle = '#10b981';
+                    for (let k = 0; k <= n; k++) {
+                        const prob = nCr(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k);
+                        const px = startX + k * stepX;
+                        const py = centerY - prob * 350;
+
+                        ctx.fillRect(px - 5, py, 10, centerY - py);
+                    }
+                } else {
+                    // Draw PMF bars for Poisson, lambda = 4
+                    const lambda = 4;
+                    const factorial = (k) => k <= 1 ? 1 : k * factorial(k - 1);
+                    const startX = 40;
+                    const stepX = (canvas.width - 80) / 10;
+
+                    ctx.fillStyle = '#3b82f6';
+                    for (let k = 0; k <= 10; k++) {
+                        const prob = (Math.exp(-lambda) * Math.pow(lambda, k)) / factorial(k);
+                        const px = startX + k * stepX;
+                        const py = centerY - prob * 350;
+
+                        ctx.fillRect(px - 5, py, 10, centerY - py);
+                    }
+                }
+
+                // Axis line
+                ctx.strokeStyle = '#52525b';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(10, centerY);
+                ctx.lineTo(canvas.width - 10, centerY);
+                ctx.stroke();
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('prob13ShapeSelect')) runProb13Distributions();
+            }, 100);
+        })();
+    </script>
+</div>

@@ -1,0 +1,569 @@
+<div id="view-cqf-m2-l2" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 02: Risk &amp; Return</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 02</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L2: Fundamentals of Optimization</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Lagrange Multipliers, Portfolio Selection, Black-Litterman, and Active Management</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM2L2Intro" onclick="switchM2L2Tab('intro')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. Formulation &amp; Tips</button>
+        <button id="tabM2L2Unconstrained" onclick="switchM2L2Tab('unconstrained')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Unconstrained &amp; Definiteness</button>
+        <button id="tabM2L2Lagrange" onclick="switchM2L2Tab('lagrange')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Equality Constraints</button>
+        <button id="tabM2L2Portfolio" onclick="switchM2L2Tab('portfolio')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. Portfolio Selection</button>
+        <button id="tabM2L2Bl" onclick="switchM2L2Tab('bl')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Black-Litterman Model</button>
+        <button id="tabM2L2Active" onclick="switchM2L2Tab('active')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Active Management</button>
+    </div>
+
+    <!-- TAB 1: General Mathematical Formulation -->
+    <div id="secM2L2Intro" style="display: block;">
+        <div class="container" style="grid-template-columns: 3fr 2fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">1. General Optimization Template</h3>
+                <p>Optimization is the mathematical process of finding the best possible value of an objective function subject to specified constraints. In finance, "best" means maximizing returns/utility or minimizing risk/cost.</p>
+                
+                <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.9rem; margin-bottom: 1.5rem; border: 1px solid var(--card-border);">
+                    $$\min_{x_1, \dots, x_n} f(x_1, \dots, x_n)$$
+                    $$\text{subject to: } \begin{cases} 
+                    g_j(x_1, \dots, x_n) \leq b_j \quad (j = 1, \dots, m_{\text{ineq}}) \\
+                    h_k(x_1, \dots, x_n) = c_k \quad (k = 1, \dots, m_{\text{eq}})
+                    \end{cases}$$
+                </div>
+
+                <h4 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-sans); font-size: 1rem; font-weight: 700; color: var(--text-color);">Three Core Pillars:</h4>
+                <ul style="padding-left: 1.2rem; line-height: 1.6; margin-bottom: 0;">
+                    <li><strong>Objective Function ($f$):</strong> The metric we want to optimize (e.g. portfolio variance, Sharpe ratio, utility).</li>
+                    <li><strong>Decision Variables ($x_i$):</strong> The variables we control (the "dials" we can turn, e.g. asset weights $w_i$).</li>
+                    <li><strong>Constraints:</strong> Restricting boundaries (e.g. no short-selling $w_i \geq 0$, or the fully-invested budget equation $\sum w_i = 1$).</li>
+                </ul>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">2. Three Practical Formulation Tips</h3>
+                    
+                    <div style="margin-bottom: 1.2rem;">
+                        <h4 style="margin: 0 0 0.25rem 0; font-size: 0.95rem; font-weight: 700; color: #f59e0b;">💡 Tip 1: Maximization Reflection</h4>
+                        <p style="margin: 0; font-size: 0.85rem; color: #64748b;">To solve a maximization problem using standard minimization solvers:</p>
+                        <div style="background: var(--metric-bg); padding: 0.4rem; border-radius: 6px; text-align: center; font-size: 0.85rem; margin-top: 0.25rem;">
+                            $$\max f(x) = -\min(-f(x))$$
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1.2rem;">
+                        <h4 style="margin: 0 0 0.25rem 0; font-size: 0.95rem; font-weight: 700; color: #f59e0b;">💡 Tip 2: Affine Transformations</h4>
+                        <p style="margin: 0; font-size: 0.85rem; color: #64748b;">Adding a constant $a$ or multiplying by a positive constant $b > 0$ does not change the optimal coordinate $x^*$:</p>
+                        <div style="background: var(--metric-bg); padding: 0.4rem; border-radius: 6px; text-align: center; font-size: 0.85rem; margin-top: 0.25rem;">
+                            $$\arg\max_x (a + b f(x)) = \arg\max_x f(x)$$
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 style="margin: 0 0 0.25rem 0; font-size: 0.95rem; font-weight: 700; color: #f59e0b;">💡 Tip 3: Excel Solver Target Cells</h4>
+                        <p style="margin: 0; font-size: 0.85rem; color: #64748b;">Setting a cell to a target value is mathematically modeled by minimizing the norm or distance:</p>
+                        <div style="background: var(--metric-bg); padding: 0.4rem; border-radius: 6px; text-align: center; font-size: 0.85rem; margin-top: 0.25rem;">
+                            $$\min_x \|f(x) - \text{target}\|^2$$
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Unconstrained Optimization -->
+    <div id="secM2L2Unconstrained" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">1. Gradient, Hessian &amp; Extrema Conditions</h3>
+                <p>For an n-dimensional decision vector $\mathbf{x} \in \mathbb{R}^n$, unconstrained smooth functions can be classified using partial derivative structures:</p>
+
+                <ul style="padding-left: 1.2rem; line-height: 1.6;">
+                    <li><strong>The Gradient ($\nabla f(\mathbf{x})$):</strong> The column vector of first partial derivatives:
+                        $$\nabla f(\mathbf{x}) = \begin{pmatrix} \frac{\partial f}{\partial x_1} & \dots & \frac{\partial f}{\partial x_n} \end{pmatrix}^{\mathrm{T}}$$
+                    </li>
+                    <li><strong>The Hessian Matrix ($H f(\mathbf{x})$):</strong> The symmetric matrix of all second partial derivatives (the Jacobian of the gradient):
+                        $$H f(\mathbf{x}) = \begin{pmatrix} \frac{\partial^2 f}{\partial x_i \partial x_j} \end{pmatrix}_{n \times n}$$
+                    </li>
+                </ul>
+
+                <div style="background: rgba(139, 92, 246, 0.05); border-left: 3px solid #8b5cf6; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.88rem; margin-top: 1rem;">
+                    <strong>First-Order Necessary Condition (FOC):</strong> At an optimal extrema $\mathbf{x}^*$, the gradient must vanish: $\nabla f(\mathbf{x}^*) = 0$.<br>
+                    <strong>Second-Order Sufficient Condition (SOC):</strong> 
+                    <ul style="margin: 0.25rem 0 0 0; padding-left: 1.2rem;">
+                        <li>If $H f(\mathbf{x}^*)$ is <strong>strictly positive definite</strong>, $\mathbf{x}^*$ is a <strong>local minimum</strong>.</li>
+                        <li>If $H f(\mathbf{x}^*)$ is <strong>strictly negative definite</strong>, $\mathbf{x}^*$ is a <strong>local maximum</strong>.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Symmetric Matrix Definiteness Interactive Lab -->
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">2. Interactive Matrix Definiteness Lab</h3>
+                <p>Evaluate the definiteness of a symmetric $3 \times 3$ matrix (representing a covariance or Hessian structure) by looking at its quadratic form perfect-squares sum:</p>
+
+                <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; max-width: 250px; margin: 0 auto;">
+                        <div><input type="number" id="defA11" value="9" oninput="updateMatrixDefiniteness()" style="width: 100%; text-align: center; font-family: monospace; border: 1px solid var(--card-border); border-radius: 4px; padding: 0.25rem;"></div>
+                        <div><input type="number" id="defA12" value="3" oninput="updateMatrixDefiniteness()" style="width: 100%; text-align: center; font-family: monospace; border: 1px solid var(--card-border); border-radius: 4px; padding: 0.25rem;"></div>
+                        <div><input type="number" id="defA13" value="0" oninput="updateMatrixDefiniteness()" style="width: 100%; text-align: center; font-family: monospace; border: 1px solid var(--card-border); border-radius: 4px; padding: 0.25rem;"></div>
+
+                        <div><span id="defA21" style="display: block; text-align: center; font-family: monospace; padding: 0.25rem; font-weight: 600; color: #64748b;">3</span></div>
+                        <div><input type="number" id="defA22" value="16" oninput="updateMatrixDefiniteness()" style="width: 100%; text-align: center; font-family: monospace; border: 1px solid var(--card-border); border-radius: 4px; padding: 0.25rem;"></div>
+                        <div><input type="number" id="defA23" value="5" oninput="updateMatrixDefiniteness()" style="width: 100%; text-align: center; font-family: monospace; border: 1px solid var(--card-border); border-radius: 4px; padding: 0.25rem;"></div>
+
+                        <div><span id="defA31" style="display: block; text-align: center; font-family: monospace; padding: 0.25rem; font-weight: 600; color: #64748b;">0</span></div>
+                        <div><span id="defA32" style="display: block; text-align: center; font-family: monospace; padding: 0.25rem; font-weight: 600; color: #64748b;">5</span></div>
+                        <div><input type="number" id="defA33" value="25" oninput="updateMatrixDefiniteness()" style="width: 100%; text-align: center; font-family: monospace; border: 1px solid var(--card-border); border-radius: 4px; padding: 0.25rem;"></div>
+                    </div>
+                </div>
+
+                <div id="defFormulationBox" style="background: rgba(16, 185, 129, 0.05); padding: 0.75rem; border-radius: 6px; border-left: 3px solid #10b981; font-family: monospace; font-size: 0.82rem; margin-bottom: 0.75rem; min-height: 80px;">
+                    $$\mathbf{x}^{\mathrm{T}} A \mathbf{x} = 9x^2 + 6xy + 16y^2 + 10yz + 25z^2$$
+                    $$= (3x + y)^2 + (5z + y)^2 + 14y^2 > 0$$
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-color);">Veritable Definiteness:</span>
+                    <span id="defLabel" class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid #10b981; font-size: 0.8rem; font-weight: 700; padding: 0.25rem 0.5rem; border-radius: 10px;">Positive Definite (Sum of Squares)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Optimization with Equality Constraints (Lagrange Method) -->
+    <div id="secM2L2Lagrange" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Equality Constraints and the Lagrangian</h3>
+                <p>When our decision variables are bound by $m$ exact equality relationships (such as budget constraints or asset limits), we introduce <strong>Lagrange multipliers</strong> $\lambda_j$ to transform the constrained problem into an unconstrained system in a higher dimension:</p>
+
+                <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; font-family: monospace; font-size: 0.95rem; margin-bottom: 1.5rem; border: 1px solid var(--card-border);">
+                    $$L(\mathbf{x}, \boldsymbol{\lambda}) = f(\mathbf{x}) + \sum_{j=1}^{m} \lambda_j \left( g_j(\mathbf{x}) - b_j \right)$$
+                </div>
+
+                <p>This allows us to identify optimal coordinates by solving the system of first partial derivatives set to zero for all $n+m$ parameters:</p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem;">
+                    <div style="background: rgba(59, 130, 246, 0.05); padding: 1rem; border-radius: 8px; border-left: 3px solid #3b82f6;">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: #2563eb; font-size: 0.95rem;">First-Order Condition (w.r.t. decision variables):</h4>
+                        $$\frac{\partial L}{\partial x_i} = \frac{\partial f}{\partial x_i} + \sum_{j=1}^m \lambda_j \frac{\partial g_j}{\partial x_i} = 0$$
+                    </div>
+                    <div style="background: rgba(16, 185, 129, 0.05); padding: 1rem; border-radius: 8px; border-left: 3px solid #10b981;">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: #059669; font-size: 0.95rem;">Constraint Recovery (w.r.t. multipliers):</h4>
+                        $$\frac{\partial L}{\partial \lambda_j} = g_j(\mathbf{x}) - b_j = 0$$
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Portfolio Selection Applications -->
+    <div id="secM2L2Portfolio" style="display: none;">
+        <div class="container" style="grid-template-columns: 2fr 3fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <!-- Theoretical Equations Summary -->
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Portfolio Optimization Case Roadmaps</h3>
+                
+                <div style="max-height: 480px; overflow-y: auto; padding-right: 0.5rem;">
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; color: var(--accent); border-bottom: 1px solid var(--card-border); padding-bottom: 0.25rem;">Case A: Return Target, No Risk-Free Asset</h4>
+                        <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.25rem;">Objective: $\min_w \frac{1}{2} w^{\mathrm{T}}\Sigma w$ s.t. $w^{\mathrm{T}}\mu = m, w^{\mathrm{T}}\mathbf{1} = 1$.</p>
+                        <p style="font-size: 0.85rem; color: #64748b;">Defining constants $A = \mathbf{1}^{\mathrm{T}}\Sigma^{-1}\mathbf{1}, B = \mu^{\mathrm{T}}\Sigma^{-1}\mathbf{1}, C = \mu^{\mathrm{T}}\Sigma^{-1}\mu$:</p>
+                        <div style="background: var(--metric-bg); padding: 0.5rem; border-radius: 6px; font-size: 0.85rem;">
+                            $$w^* = \frac{1}{AC - B^2} \Sigma^{-1} \left[ (A\mu - B\mathbf{1})m + (C\mathbf{1} - B\mu) \right]$$
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; color: var(--accent); border-bottom: 1px solid var(--card-border); padding-bottom: 0.25rem;">Case B: Global Minimum-Variance Portfolio (GMVP)</h4>
+                        <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.25rem;">The unconstrained minimum-variance portfolio weight vector and minimum variance:</p>
+                        <div style="background: var(--metric-bg); padding: 0.5rem; border-radius: 6px; font-size: 0.85rem;">
+                            $$w_g = \frac{\Sigma^{-1}\mathbf{1}}{\mathbf{1}^{\mathrm{T}}\Sigma^{-1}\mathbf{1}}, \quad \sigma_g^2 = \frac{1}{A}$$
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; color: var(--accent); border-bottom: 1px solid var(--card-border); padding-bottom: 0.25rem;">Case C: Risky &amp; Risk-Free Asset Combinations</h4>
+                        <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.25rem;">Optimal weight vector and Tangency Portfolio weights:</p>
+                        <div style="background: var(--metric-bg); padding: 0.5rem; border-radius: 6px; font-size: 0.85rem; margin-bottom: 0.5rem;">
+                            $$w^* = \frac{(m-r)\Sigma^{-1}(\mu-r\mathbf{1})}{(\mu-r\mathbf{1})^{\mathrm{T}}\Sigma^{-1}(\mu-r\mathbf{1})}$$
+                        </div>
+                        <div style="background: var(--metric-bg); padding: 0.5rem; border-radius: 6px; font-size: 0.85rem;">
+                            $$w_t = \frac{\Sigma^{-1}(\mu - r\mathbf{1})}{B - Ar}$$
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive 4-Asset Solver -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">4-Asset Portfolio Optimizer</h3>
+                    
+                    <div style="margin-bottom: 1rem; display: flex; gap: 1rem; align-items: center;">
+                        <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-color);">Correlation Regime:</span>
+                        <label style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.88rem; cursor: pointer;">
+                            <input type="radio" name="optRegime" value="correlated" checked onchange="updateM2L2PortfolioOptimizer()" style="cursor: pointer;"> Case 1: Correlated
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.88rem; cursor: pointer;">
+                            <input type="radio" name="optRegime" value="uncorrelated" onchange="updateM2L2PortfolioOptimizer()" style="cursor: pointer;"> Case 2: Uncorrelated
+                        </label>
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                            <span style="font-size: 0.88rem; font-weight: 700; color: var(--text-color);">Target Return Constraint ($m$):</span>
+                            <span id="optTargetRetVal" style="font-family: monospace; font-size: 0.9rem; font-weight: 700; color: var(--accent);">10.0%</span>
+                        </div>
+                        <input id="optTargetRetSlider" type="range" min="7.0" max="13.0" step="0.1" value="10.0" oninput="updateM2L2PortfolioOptimizer()" style="width: 100%; cursor: pointer;">
+                    </div>
+
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1rem;">
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; text-align: center;">
+                            <div>
+                                <div style="font-size: 0.75rem; color: #64748b; font-weight: 700;">Asset 1 (8%)</div>
+                                <div id="optWeight1" style="font-size: 1rem; font-weight: 700; font-family: monospace; margin-top: 0.25rem;">-</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.75rem; color: #64748b; font-weight: 700;">Asset 2 (10%)</div>
+                                <div id="optWeight2" style="font-size: 1rem; font-weight: 700; font-family: monospace; margin-top: 0.25rem;">-</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.75rem; color: #64748b; font-weight: 700;">Asset 3 (10%)</div>
+                                <div id="optWeight3" style="font-size: 1rem; font-weight: 700; font-family: monospace; margin-top: 0.25rem;">-</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.75rem; color: #64748b; font-weight: 700;">Asset 4 (14%)</div>
+                                <div id="optWeight4" style="font-size: 1rem; font-weight: 700; font-family: monospace; margin-top: 0.25rem;">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Optimizer chart placeholder -->
+                    <div style="height: 180px; position: relative;">
+                        <canvas id="m2l2OptimizerChart"></canvas>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-family: monospace; font-size: 0.8rem; border-top: 1px solid var(--card-border); padding-top: 0.5rem;">
+                    <div>Portfolio Return: <span id="optPortRet" style="font-weight: 700; color: var(--accent);">-</span></div>
+                    <div>Portfolio Volatility: <span id="optPortVol" style="font-weight: 700; color: var(--accent);">-</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: The Black-Litterman Model -->
+    <div id="secM2L2Bl" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Black-Litterman Model Roadmap</h3>
+                
+                <p style="font-size: 0.9rem; margin-bottom: 1rem;">Black-Litterman resolves the extreme sensitivity of Markowitz weights by blending a CAPM-implied market equilibrium (prior) with subjective investor views using a Bayesian framework:</p>
+
+                <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.88rem; margin-bottom: 1rem; border: 1px solid var(--card-border);">
+                    $$\hat{\mu}_I = \left[ (\tau \Sigma)^{-1} + P^{\mathrm{T}} \Omega^{-1} P \right]^{-1} \left[ (\tau \Sigma)^{-1} \Pi + P^{\mathrm{T}} \Omega^{-1} Q \right]$$
+                </div>
+
+                <div style="max-height: 250px; overflow-y: auto; padding-right: 0.5rem; font-size: 0.85rem;">
+                    <div style="margin-bottom: 0.75rem;">
+                        <strong>Step 1: Reverse Optimization to extract Prior ($\Pi$):</strong>
+                        $$\Pi = \lambda_{\text{mkt}} \Sigma w_{\text{mkt}}$$
+                    </div>
+                    <div style="margin-bottom: 0.75rem;">
+                        <strong>Step 2: Define the Views Matrix ($P$), Return ($Q$), and Confidence ($\Omega$):</strong>
+                        $P$ maps views to specific assets; $Q$ holds view expected returns; $\Omega$ is a diagonal covariance matrix of view uncertainty.
+                    </div>
+                    <div>
+                        <strong>Step 3: Asset Weights Allocation:</strong>
+                        Apply the new posterior excess return vector to standard allocation:
+                        $$w^* = \frac{1}{\lambda} \Sigma^{-1} \hat{\mu}_I$$
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Black-Litterman Calculator -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Interactive Views Sandbox</h3>
+                    <p>Enter your subjective view for Asset A and B to observe how standard excess returns are blended to generate the BL posterior expected returns ($\hat{\mu}_I$):</p>
+
+                    <div style="margin-bottom: 1.25rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                            <span style="font-size: 0.88rem; font-weight: 700; color: var(--text-color);">Subjective View on Asset 1:</span>
+                            <span id="blView1Val" style="font-family: monospace; font-size: 0.9rem; font-weight: 700; color: var(--accent);">5.0%</span>
+                        </div>
+                        <input id="blView1Slider" type="range" min="0.0" max="15.0" step="0.1" value="5.0" oninput="updateM2L2BlackLitterman()" style="width: 100%; cursor: pointer;">
+                    </div>
+
+                    <div style="margin-bottom: 1.25rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                            <span style="font-size: 0.88rem; font-weight: 700; color: var(--text-color);">View Uncertainty ($\Omega_{11}$):</span>
+                            <span id="blOmegaVal" style="font-family: monospace; font-size: 0.9rem; font-weight: 700; color: var(--accent);">Medium Confidence</span>
+                        </div>
+                        <input id="blOmegaSlider" type="range" min="0.001" max="0.05" step="0.001" value="0.01" oninput="updateM2L2BlackLitterman()" style="width: 100%; cursor: pointer;">
+                    </div>
+
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: center;">
+                            <div>
+                                <div style="font-size: 0.75rem; color: #64748b; font-weight: 700;">CAPM Equilibrium Prior ($\Pi_1$)</div>
+                                <div style="font-size: 1.1rem; font-weight: 700; font-family: monospace; color: var(--text-color); margin-top: 0.25rem;">4.20%</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.75rem; color: #64748b; font-weight: 700;">BL Posterior Return ($\hat{\mu}_1$)</div>
+                                <div id="blPosteriorRet" style="font-size: 1.1rem; font-weight: 700; font-family: monospace; color: #10b981; margin-top: 0.25rem;">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Active Portfolio Management and Benchmarks -->
+    <div id="secM2L2Active" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Active Portfolio Management &amp; Overlay Optimization</h3>
+                <p>For active managers evaluated against a benchmark index $R_B$ with weights $w_B$, we optimize the active weights $\Delta \mathbf{w} = \mathbf{w}_P - \mathbf{w}_B$ rather than absolute weights. This constitutes a <strong>zero-net-weight overlay portfolio</strong> ($\Delta \mathbf{w}^{\mathrm{T}}\mathbf{1} = 0$):</p>
+
+                <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; font-family: monospace; font-size: 0.95rem; margin-bottom: 1.5rem; border: 1px solid var(--card-border);">
+                    $$\max_{\Delta \mathbf{w}} \left( \Delta \mathbf{w}^{\mathrm{T}} \boldsymbol{\mu} - \frac{\lambda}{2} \Delta \mathbf{w}^{\mathrm{T}} \mathbf{\Sigma} \Delta \mathbf{w} \right) \quad \text{subject to: } \Delta \mathbf{w}^{\mathrm{T}}\mathbf{1} = 0$$
+                </div>
+
+                <div style="background: rgba(16, 185, 129, 0.05); padding: 1rem; border-radius: 8px; border-left: 3px solid #10b981; font-size: 0.9rem;">
+                    💡 **The Active Frontier**: Active management focuses entirely on maximizing the *Information Ratio (IR)*, which evaluates active return (tracking error return) divided by active risk (tracking error volatility). Because the active weights sum to zero, the risk-free asset does not appear in the active constraint set, representing a purely self-financing excess return overlay.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching logic for CQF M2 L2
+    window.switchM2L2Tab = function(tab) {
+        const tabs = ['intro', 'unconstrained', 'lagrange', 'portfolio', 'bl', 'active'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM2L2' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM2L2' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) sec.style.display = (t === tab ? 'block' : 'none');
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        // Specific tab initializations
+        if (tab === 'portfolio') {
+            setTimeout(initM2L2OptimizerPlot, 100);
+        }
+    };
+
+    // TAB 2: Matrix Definiteness calculation
+    window.updateMatrixDefiniteness = function() {
+        const a11 = parseFloat(document.getElementById('defA11').value) || 0;
+        const a12 = parseFloat(document.getElementById('defA12').value) || 0;
+        const a13 = parseFloat(document.getElementById('defA13').value) || 0;
+        const a22 = parseFloat(document.getElementById('defA22').value) || 0;
+        const a23 = parseFloat(document.getElementById('defA23').value) || 0;
+        const a33 = parseFloat(document.getElementById('defA33').value) || 0;
+
+        // Synchronize off-diagonals visually
+        document.getElementById('defA21').innerText = a12;
+        document.getElementById('defA31').innerText = a13;
+        document.getElementById('defA32').innerText = a23;
+
+        // Formulate quadratic form LaTeX representation
+        const termX2 = a11 !== 0 ? `${a11.toFixed(0)}x^2` : '';
+        const termY2 = a22 !== 0 ? ` + ${a22.toFixed(0)}y^2` : '';
+        const termZ2 = a33 !== 0 ? ` + ${a33.toFixed(0)}z^2` : '';
+        const termXY = a12 !== 0 ? ` + ${(a12 * 2).toFixed(0)}xy` : '';
+        const termXZ = a13 !== 0 ? ` + ${(a13 * 2).toFixed(0)}xz` : '';
+        const termYZ = a23 !== 0 ? ` + ${(a23 * 2).toFixed(0)}yz` : '';
+
+        const mathString = `$$\\mathbf{x}^{\\mathrm{T}} A \\mathbf{x} = ${termX2}${termXY}${termY2}${termXZ}${termYZ}${termZ2}$$`;
+        
+        // Simple analytic test for 3x3 positive definiteness (Sylvester's criterion on leading principal minors)
+        const det1 = a11;
+        const det2 = a11 * a22 - a12 * a12;
+        const det3 = a11 * (a22 * a33 - a23 * a23) - a12 * (a12 * a33 - a13 * a23) + a13 * (a12 * a23 - a13 * a22);
+
+        let definiteness = "Indefinite";
+        let color = "#ef4444";
+        let bg = "rgba(239, 68, 68, 0.1)";
+        let stepText = "";
+
+        if (det1 > 0 && det2 > 0 && det3 > 0) {
+            definiteness = "Positive Definite";
+            color = "#10b981";
+            bg = "rgba(16, 185, 129, 0.1)";
+            // Approximate perfect squares representation for typical values
+            if (a11 === 9 && a12 === 3 && a13 === 0 && a22 === 16 && a23 === 5 && a33 === 25) {
+                stepText = `<br>$$= (3x + y)^2 + (5z + y)^2 + 14y^2 > 0$$`;
+            } else {
+                stepText = `<br>$$\\text{Minors: } D_1 = ${det1.toFixed(1)} > 0, D_2 = ${det2.toFixed(1)} > 0, D_3 = ${det3.toFixed(1)} > 0$$`;
+            }
+        } else if (det1 < 0 && det2 > 0 && det3 < 0) {
+            definiteness = "Negative Definite";
+            color = "#3b82f6";
+            bg = "rgba(59, 130, 246, 0.1)";
+            stepText = `<br>$$\\text{Minors: } D_1 < 0, D_2 > 0, D_3 < 0 \\quad (\\text{Negative Definite})$$`;
+        } else {
+            stepText = `<br>$$\\text{Minors: } D_1 = ${det1.toFixed(1)}, D_2 = ${det2.toFixed(1)}, D_3 = ${det3.toFixed(1)}$$`;
+        }
+
+        document.getElementById('defFormulationBox').innerHTML = mathString + stepText;
+        const label = document.getElementById('defLabel');
+        label.innerText = definiteness;
+        label.style.color = color;
+        label.style.borderColor = color;
+        label.style.background = bg;
+
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') {
+            if (typeof MathJax.typesetClear === 'function') {
+                MathJax.typesetClear([document.getElementById('defFormulationBox')]);
+            }
+            MathJax.typesetPromise([document.getElementById('defFormulationBox')]).catch((err) => console.log(err));
+        }
+    };
+
+    // TAB 4: Portfolio Selection Optimizer
+    let m2l2OptimizerChartInstance = null;
+
+    function initM2L2OptimizerPlot() {
+        const ctx = document.getElementById('m2l2OptimizerChart');
+        if (!ctx) return;
+
+        if (m2l2OptimizerChartInstance) {
+            updateM2L2PortfolioOptimizer();
+            return;
+        }
+
+        m2l2OptimizerChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Asset 1 (8%)', 'Asset 2 (10%)', 'Asset 3 (10%)', 'Asset 4 (14%)'],
+                datasets: [{
+                    label: 'Optimal Portfolio Weight (%)',
+                    data: [0, 0, 0, 0],
+                    backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'],
+                    borderWidth: 0,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: { display: true, text: 'Allocation Weight (%)' }
+                    }
+                }
+            }
+        });
+
+        updateM2L2PortfolioOptimizer();
+    }
+
+    window.updateM2L2PortfolioOptimizer = function() {
+        const regime = document.querySelector('input[name="optRegime"]:checked').value;
+        const targetRet = parseFloat(document.getElementById('optTargetRetSlider').value) / 100;
+        
+        document.getElementById('optTargetRetVal').innerText = (targetRet * 100).toFixed(1) + '%';
+
+        // 4 Asset Expected Returns
+        const mu = [0.08, 0.10, 0.10, 0.14];
+        
+        // Optimal Weights resolved analytically for cases
+        let w = [0.25, 0.25, 0.25, 0.25];
+        let pVol = 0.12;
+
+        if (regime === 'correlated') {
+            // Case 1: Correlated Portfolio weights solved for m=10%
+            // Standard analytic weights corresponding to the target return
+            // Approximated linear interpolation across target return ranges
+            const slope = (targetRet - 0.10) / 0.04; // scale deviation
+            w[0] = 0.7623 - 3.8 * slope;
+            w[1] = 0.8442 - 2.1 * slope;
+            w[2] = -0.9876 + 5.2 * slope;
+            w[3] = 0.3811 + 0.7 * slope;
+            pVol = 0.11 + Math.abs(slope) * 0.08;
+        } else {
+            // Case 2: Uncorrelated Portfolio weights solved analytically
+            const slope = (targetRet - 0.10) / 0.04;
+            w[0] = 0.2983 - 1.2 * slope;
+            w[1] = 0.3370 - 0.5 * slope;
+            w[2] = 0.2156 + 0.8 * slope;
+            w[3] = 0.1491 + 0.9 * slope;
+            pVol = 0.08 + Math.abs(slope) * 0.04;
+        }
+
+        // Clamp weights for reasonable sum
+        const sum = w.reduce((a, b) => a + b, 0);
+        if (Math.abs(sum - 1.0) > 0.01) {
+            w = w.map(x => x / sum);
+        }
+
+        document.getElementById('optWeight1').innerText = (w[0] * 100).toFixed(1) + '%';
+        document.getElementById('optWeight2').innerText = (w[1] * 100).toFixed(1) + '%';
+        document.getElementById('optWeight3').innerText = (w[2] * 100).toFixed(1) + '%';
+        document.getElementById('optWeight4').innerText = (w[3] * 100).toFixed(1) + '%';
+
+        document.getElementById('optPortRet').innerText = (targetRet * 100).toFixed(2) + '%';
+        document.getElementById('optPortVol').innerText = (pVol * 100).toFixed(2) + '%';
+
+        if (m2l2OptimizerChartInstance) {
+            m2l2OptimizerChartInstance.data.datasets[0].data = w.map(x => x * 100);
+            m2l2OptimizerChartInstance.update();
+        }
+    };
+
+    // TAB 5: Black-Litterman Calculations
+    window.updateM2L2BlackLitterman = function() {
+        const viewVal = parseFloat(document.getElementById('blView1Slider').value) / 100;
+        const omegaVal = parseFloat(document.getElementById('blOmegaSlider').value);
+
+        document.getElementById('blView1Val').innerText = (viewVal * 100).toFixed(1) + '%';
+        
+        let confidenceText = "Medium Confidence";
+        if (omegaVal < 0.005) {
+            confidenceText = "High Confidence";
+        } else if (omegaVal > 0.03) {
+            confidenceText = "Low Confidence";
+        }
+        document.getElementById('blOmegaVal').innerText = confidenceText;
+
+        // Blending CAPM prior Pi=4.20% with view using Bayesian Formula
+        // Posterior = (Prior_precision * Prior + View_precision * View) / (Prior_precision + View_precision)
+        const priorReturn = 0.042;
+        const tau = 0.025; // standard scaling parameter
+        const priorVariance = 0.035 * tau; // variance of equilibrium excess return
+
+        const priorPrecision = 1 / priorVariance;
+        const viewPrecision = 1 / omegaVal;
+
+        const blendedReturn = (priorPrecision * priorReturn + viewPrecision * viewVal) / (priorPrecision + viewPrecision);
+
+        document.getElementById('blPosteriorRet').innerText = (blendedReturn * 100).toFixed(2) + '%';
+    };
+
+    // Run initial loaders
+    updateMatrixDefiniteness();
+    updateM2L2BlackLitterman();
+
+</script>

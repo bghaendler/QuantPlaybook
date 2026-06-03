@@ -1,0 +1,374 @@
+<div id="view-cqf-mp-calculus-17" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9; font-family: var(--font-family-sans);">1.7 Derivatives &amp; Standard Results</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.7 Derivatives &amp; Standard Calculus Results</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Fundamental derivative limits, rigorous rules, standard results tables, and implicit differentiation.</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
+        <button id="tabCalc17Theory" onclick="switchCalc17Tab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Theory</button>
+        <button id="tabCalc17Exercises" onclick="switchCalc17Tab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Solutions</button>
+    </div>
+
+    <!-- Tab: Core Theory -->
+    <div id="secCalc17Theory" style="display: block;">
+        <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700;">1.7.1 Definitions &amp; Linearity</h3>
+            <p>The derivative of $f(x)$ at $x$ represents its local slope and is defined via the fundamental limit:</p>
+            <p style="text-align: center; font-size: 0.95rem; margin: 0.5rem 0;">
+                $$f'(x) = \frac{df}{dx} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}$$
+            </p>
+            <p>Common standard results used as structural building blocks in quantitative analysis are:</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; background: var(--metric-bg); padding: 1rem; border-radius: 8px; font-size: 0.88rem; font-family: monospace; margin: 0.75rem 0; line-height: 1.5;">
+                <div>
+                    <strong>Algebraic &amp; Exponential:</strong><br>
+                    • d/dx(xⁿ) = n xⁿ⁻¹<br>
+                    • d/dx(eᵃˣ) = a eᵃˣ<br>
+                    • d/dx(ln x) = 1/x
+                </div>
+                <div>
+                    <strong>Trigonometric:</strong><br>
+                    • d/dx(sin x) = cos x<br>
+                    • d/dx(cos x) = -sin x<br>
+                    • d/dx(tan x) = sec² x
+                </div>
+            </div>
+            <p><strong>Linearity of Derivatives:</strong> Derivatives behave as linear operators. If $\alpha$ and $\beta$ are real constants:</p>
+            <p style="text-align: center; font-weight: 700; margin: 0.5rem 0;">
+                $$\frac{d}{dx}\left[\alpha f(x) + \beta g(x)\right] = \alpha f'(x) + \beta g'(x)$$
+            </p>
+            <p><strong>Bivariate Implicit Differentiation:</strong> When a function $y(x)$ is defined implicitly by an algebraic constraint $F(x, y) = 0$, we differentiate each term with respect to $x$ (applying the chain rule to $y$ terms) to solve for $y' = \frac{dy}{dx}$ without requiring explicit factorization.</p>
+        </div>
+
+        <!-- Interactive Panel -->
+        <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700;">1.7.2 Interactive Derivative &amp; Implicit Rate Laboratory</h3>
+            <p>Calculate precise rates of change dynamically and observe the local tangent slope in real-time:</p>
+
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start;">
+                    <!-- Left Inputs/Outputs -->
+                    <div>
+                        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
+                            <div>
+                                <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Select Mode:</label>
+                                <select id="calc17ModeSelect" onchange="calculateInteractiveDerivative()" style="padding: 0.35rem 0.5rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600; outline: none; cursor: pointer;">
+                                    <option value="polynomial">Polynomial: d/dx(xⁿ)</option>
+                                    <option value="implicit">Implicit: y' for 4y⁴ - 2y²x² - yx² + x² + 3 = 0</option>
+                                </select>
+                            </div>
+                            <div id="calc17InputsImplicit" style="display: none; gap: 0.75rem;">
+                                <div>
+                                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Input $x$:</label>
+                                    <input id="calc17InputX" type="number" value="1.0" step="0.1" oninput="calculateInteractiveDerivative()" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
+                                </div>
+                                <div>
+                                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Input $y$:</label>
+                                    <input id="calc17InputY" type="number" value="1.0" step="0.1" oninput="calculateInteractiveDerivative()" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
+                                </div>
+                            </div>
+                            <div id="calc17InputsPoly" style="display: flex; gap: 0.75rem;">
+                                <div>
+                                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Exponent $n$:</label>
+                                    <input id="calc17InputN" type="number" value="3" min="-5" max="5" step="1" oninput="calculateInteractiveDerivative()" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
+                                </div>
+                                <div>
+                                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">At point $x$:</label>
+                                    <input id="calc17InputPolyX" type="number" value="1.2" min="-3" max="3" step="0.1" oninput="calculateInteractiveDerivative()" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
+                                </div>
+                            </div>
+                        </div>
+                        <div style="font-size: 0.88rem; line-height: 1.6; color: var(--text-color); background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid var(--accent); margin-bottom: 0.5rem;">
+                            <div id="calc17OutputFormula"><strong>Formula:</strong> $\frac{d}{dx}(x^n) = n x^{n-1}$</div>
+                            <div id="calc17OutputResult" style="margin-top: 0.25rem;"><strong>Result:</strong> $y' = 4.3200$</div>
+                        </div>
+                        <p style="font-size: 0.78rem; color: #6b7280; margin: 0.25rem 0 0 0;">
+                            * The violet dashed line illustrates the local linear tangent slope. Drag or type inputs to reposition.
+                        </p>
+                    </div>
+
+                    <!-- Right Graph Canvas -->
+                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
+                        <canvas id="calc17Canvas" width="400" height="280" style="width: 100%; height: 280px; background: #000; border-radius: 6px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab: Worked Solutions Sheet -->
+    <div id="secCalc17Exercises" style="display: none;">
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="card" style="padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Exercise 1: Bivariate Implicit Derivation</h3>
+                <p>Find the equation of the tangent slope $y'$ for the Folium of Descartes: $x^3 + y^3 - 3xy = 0$ at the point $(3/2, 3/2)$.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6;">
+                    <strong>Step-by-Step Mathematical Solution:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Differentiate term-by-term with respect to $x$:</strong>
+                            $$\frac{d}{dx}(x^3) + \frac{d}{dx}(y^3) - \frac{d}{dx}(3xy) = 0$$
+                            $$3x^2 + 3y^2 y' - 3(y + x y') = 0$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Factor out and solve for $y'$:</strong>
+                            $$3x^2 + 3y^2 y' - 3y - 3x y' = 0 \implies (3y^2 - 3x)y' = 3y - 3x^2$$
+                            $$y' = \frac{y - x^2}{y^2 - x}$$
+                        </li>
+                        <li style="margin: 0;">
+                            <strong>Evaluate at $(3/2, 3/2)$:</strong>
+                            $$y' = \frac{3/2 - 9/4}{9/4 - 3/2} = \frac{-3/4}{3/4} = -1$$
+                            The local tangent slope is strictly diagonal and negative.
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.switchCalc17Tab = function(tab) {
+                const tabTheo = document.getElementById('tabCalc17Theory');
+                const tabExer = document.getElementById('tabCalc17Exercises');
+                const secTheo = document.getElementById('secCalc17Theory');
+                const secExer = document.getElementById('secCalc17Exercises');
+
+                if (tab === 'theory') {
+                    tabTheo.style.color = 'var(--accent)';
+                    tabTheo.style.borderBottomColor = 'var(--accent)';
+                    tabExer.style.color = '#6b7280';
+                    tabExer.style.borderBottomColor = 'transparent';
+                    secTheo.style.display = 'block';
+                    secExer.style.display = 'none';
+                    setTimeout(drawDerivativeGraph, 20);
+                } else {
+                    tabExer.style.color = 'var(--accent)';
+                    tabExer.style.borderBottomColor = 'var(--accent)';
+                    tabTheo.style.color = '#6b7280';
+                    tabTheo.style.borderBottomColor = 'transparent';
+                    secExer.style.display = 'block';
+                    secTheo.style.display = 'none';
+                }
+            };
+
+            window.calculateInteractiveDerivative = function() {
+                const mode = document.getElementById('calc17ModeSelect').value;
+                const elFormula = document.getElementById('calc17OutputFormula');
+                const elResult = document.getElementById('calc17OutputResult');
+
+                const viewImplicit = document.getElementById('calc17InputsImplicit');
+                const viewPoly = document.getElementById('calc17InputsPoly');
+
+                if (mode === 'implicit') {
+                    viewImplicit.style.display = 'flex';
+                    viewPoly.style.display = 'none';
+
+                    const x = parseFloat(document.getElementById('calc17InputX').value);
+                    const y = parseFloat(document.getElementById('calc17InputY').value);
+
+                    if (isNaN(x) || isNaN(y)) {
+                        elResult.innerHTML = "<strong>Result:</strong> Please input valid numbers!";
+                        return;
+                    }
+
+                    // Implicit equation: 4y^4 - 2y^2x^2 - yx^2 + x^2 + 3 = 0
+                    // y' = (4y^2 x + 2x y - 2x) / (16y^3 - 4y x^2 - x^2)
+                    const num = 4 * y * y * x + 2 * x * y - 2 * x;
+                    const den = 16 * Math.pow(y, 3) - 4 * y * x * x - x * x;
+
+                    elFormula.innerHTML = `<strong>Formula:</strong> $y' = \\frac{4y^2x + 2xy - 2x}{16y^3 - 4yx^2 - x^2}$`;
+                    if (Math.abs(den) < 1e-9) {
+                        elResult.innerHTML = `<strong>Result:</strong> Singularity (Denominator is zero)`;
+                    } else {
+                        const dy_dx = num / den;
+                        elResult.innerHTML = `<strong>Result:</strong> At $(x, y) = (${x.toFixed(2)}, ${y.toFixed(2)})$, $y' = ${dy_dx.toFixed(4)}$`;
+                    }
+                } else {
+                    viewImplicit.style.display = 'none';
+                    viewPoly.style.display = 'flex';
+
+                    const n = parseFloat(document.getElementById('calc17InputN').value);
+                    const x = parseFloat(document.getElementById('calc17InputPolyX').value);
+
+                    if (isNaN(n) || isNaN(x)) {
+                        elResult.innerHTML = "<strong>Result:</strong> Please input valid numbers!";
+                        return;
+                    }
+
+                    elFormula.innerHTML = `<strong>Formula:</strong> $\\frac{d}{dx}(x^n) = n x^{n-1}$`;
+                    if (x === 0 && n < 1) {
+                        elResult.innerHTML = `<strong>Result:</strong> Undefined for non-positive exponents at origin.`;
+                    } else {
+                        const res = n * Math.pow(x, n - 1);
+                        elResult.innerHTML = `<strong>Result:</strong> Derivative value at $x = ${x.toFixed(2)}$: $${res.toFixed(4)}$`;
+                    }
+                }
+
+                drawDerivativeGraph();
+
+                const parent = document.getElementById('view-cqf-mp-calculus-17');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            window.drawDerivativeGraph = function() {
+                const canvas = document.getElementById('calc17Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const mode = document.getElementById('calc17ModeSelect').value;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Grid lines & axes
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= canvas.width; i += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, canvas.height);
+                    ctx.stroke();
+                }
+                for (let i = 0; i <= canvas.height; i += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(canvas.width, i);
+                    ctx.stroke();
+                }
+
+                // Coordinates Mapping
+                const xMin = -3.0, xMax = 3.0;
+                const yMin = -4.0, yMax = 4.0;
+
+                const toCanvasX = (x) => ((x - xMin) / (xMax - xMin)) * canvas.width;
+                const toCanvasY = (y) => canvas.height - ((y - yMin) / (yMax - yMin)) * canvas.height;
+
+                // Draw X and Y Axes
+                ctx.strokeStyle = '#52525b';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(0, toCanvasY(0));
+                ctx.lineTo(canvas.width, toCanvasY(0));
+                ctx.moveTo(toCanvasX(0), 0);
+                ctx.lineTo(toCanvasX(0), canvas.height);
+                ctx.stroke();
+
+                if (mode === 'polynomial') {
+                    const n = parseFloat(document.getElementById('calc17InputN').value);
+                    const xVal = parseFloat(document.getElementById('calc17InputPolyX').value);
+
+                    if (isNaN(n) || isNaN(xVal)) return;
+
+                    // Plot y = x^n
+                    ctx.strokeStyle = '#0ea5e9'; // Cyan
+                    ctx.lineWidth = 2.5;
+                    ctx.beginPath();
+                    let first = true;
+                    for (let px = 0; px <= canvas.width; px++) {
+                        const x = xMin + (px / canvas.width) * (xMax - xMin);
+                        let y = Math.pow(x, n);
+                        // Prevent complex/NaN issues for negative x with rational exponents
+                        if (x < 0 && Math.abs(n - Math.round(n)) > 1e-9) {
+                            continue; 
+                        }
+                        if (!isFinite(y) || isNaN(y)) continue;
+                        
+                        if (first) {
+                            ctx.moveTo(px, toCanvasY(y));
+                            first = false;
+                        } else {
+                            ctx.lineTo(px, toCanvasY(y));
+                        }
+                    }
+                    ctx.stroke();
+
+                    // Calculate local tangent
+                    const yVal = Math.pow(xVal, n);
+                    const slope = n * Math.pow(xVal, n - 1);
+
+                    if (isFinite(yVal) && !isNaN(yVal) && isFinite(slope) && !isNaN(slope)) {
+                        // Highlight active point
+                        ctx.fillStyle = '#0ea5e9';
+                        ctx.beginPath();
+                        ctx.arc(toCanvasX(xVal), toCanvasY(yVal), 6, 0, 2 * Math.PI);
+                        ctx.fill();
+
+                        // Draw Tangent line (Dashed violet)
+                        ctx.strokeStyle = '#8b5cf6';
+                        ctx.lineWidth = 1.5;
+                        ctx.setLineDash([4, 4]);
+                        ctx.beginPath();
+                        const tX1 = xMin;
+                        const tY1 = yVal + slope * (tX1 - xVal);
+                        const tX2 = xMax;
+                        const tY2 = yVal + slope * (tX2 - xVal);
+                        ctx.moveTo(toCanvasX(tX1), toCanvasY(tY1));
+                        ctx.lineTo(toCanvasX(tX2), toCanvasY(tY2));
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+                } else {
+                    const xVal = parseFloat(document.getElementById('calc17InputX').value);
+                    const yVal = parseFloat(document.getElementById('calc17InputY').value);
+
+                    if (isNaN(xVal) || isNaN(yVal)) return;
+
+                    // Plot implicit curve: 4y^4 - 2y^2x^2 - yx^2 + x^2 + 3 = 0
+                    // Using a fast contour checker
+                    ctx.fillStyle = 'rgba(14, 165, 233, 0.4)';
+                    const sampleSize = 2; // pixel block size
+                    for (let py = 0; py < canvas.height; py += sampleSize) {
+                        const y = yMin + ((canvas.height - py) / canvas.height) * (yMax - yMin);
+                        for (let px = 0; px < canvas.width; px += sampleSize) {
+                            const x = xMin + (px / canvas.width) * (xMax - xMin);
+                            const val = 4 * Math.pow(y, 4) - 2 * y * y * x * x - y * x * x + x * x + 3;
+                            if (Math.abs(val) < 2.0) { // check if near zero
+                                ctx.fillRect(px, py, sampleSize, sampleSize);
+                            }
+                        }
+                    }
+
+                    // Draw tangent at user input (xVal, yVal)
+                    const num = 4 * yVal * yVal * xVal + 2 * xVal * yVal - 2 * xVal;
+                    const den = 16 * Math.pow(yVal, 3) - 4 * yVal * xVal * xVal - xVal * xVal;
+
+                    if (Math.abs(den) > 1e-9) {
+                        const slope = num / den;
+
+                        // Highlight input point
+                        ctx.fillStyle = '#8b5cf6';
+                        ctx.beginPath();
+                        ctx.arc(toCanvasX(xVal), toCanvasY(yVal), 6, 0, 2 * Math.PI);
+                        ctx.fill();
+
+                        // Draw Tangent line (Dashed violet)
+                        ctx.strokeStyle = '#8b5cf6';
+                        ctx.lineWidth = 1.5;
+                        ctx.setLineDash([4, 4]);
+                        ctx.beginPath();
+                        const tX1 = xMin;
+                        const tY1 = yVal + slope * (tX1 - xVal);
+                        const tX2 = xMax;
+                        const tY2 = yVal + slope * (tX2 - xVal);
+                        ctx.moveTo(toCanvasX(tX1), toCanvasY(tY1));
+                        ctx.lineTo(toCanvasX(tX2), toCanvasY(tY2));
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+                }
+            };
+
+            setTimeout(() => {
+                if (document.getElementById('calc17ModeSelect')) calculateInteractiveDerivative();
+            }, 100);
+        })();
+    </script>
+</div>

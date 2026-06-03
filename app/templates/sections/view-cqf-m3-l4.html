@@ -1,0 +1,561 @@
+<div id="view-cqf-m3-l4" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 03: Equities &amp; Currencies</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 04</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L4: Introduction to Numerical Methods — Master Study Guide</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">A comprehensive exploration of Monte Carlo Simulations, Finite Difference Grid Methods, and Von Neumann Stability Limits</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM3L4MonteCarlo" onclick="switchM3L4Tab('monteCarlo')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. Monte Carlo Simulation</button>
+        <button id="tabM3L4Fdm" onclick="switchM3L4Tab('fdm')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Finite Difference Methods</button>
+        <button id="tabM3L4Stability" onclick="switchM3L4Tab('stability')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Von Neumann Stability</button>
+        <button id="tabM3L4Guide" onclick="switchM3L4Tab('guide')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. Master Study Guide</button>
+        <button id="tabM3L4Sandbox" onclick="switchM3L4Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Numerical Pricing Sandbox</button>
+    </div>
+
+    <!-- TAB 1: Monte Carlo Simulation -->
+    <div id="secM3L4MonteCarlo" style="display: block;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Monte Carlo Simulation Foundations</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        Under the risk-neutral measure, options are priced by taking the discounted expectation of the terminal payoff. Instead of solving partial differential equations, **Monte Carlo Simulation** simulates millions of potential random asset paths to evaluate this expectation directly. The stock price evolves under the risk-neutral drift $r$ (the risk-neutral spot rate model).
+                    </p>
+
+                    <h4 style="font-family: var(--font-family-sans); font-size: 1.05rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">The Five-Step Monte Carlo Recipe</h4>
+                    <ol style="padding-left: 1.2rem; line-height: 1.6; font-size: 0.85rem; color: #4b5563; margin-bottom: 1rem;">
+                        <li>Simulate a risk-neutral random asset path starting from today's spot $S_0$ over the horizon $T$.</li>
+                        <li>Calculate the option's payoff at expiry (e.g. $\max(S_T - E, 0)$ for a European Call).</li>
+                        <li>Repeat this process for a massive number of realizations $M$ (hundreds of thousands or millions).</li>
+                        <li>Calculate the average payoff across all simulated paths.</li>
+                        <li>Take the present value of this average to obtain the option price: $V_0 = e^{-rT} \frac{1}{M}\sum_{m=1}^M \text{Payoff}_m$.</li>
+                    </ol>
+
+                    <h4 style="font-family: var(--font-family-sans); font-size: 1.05rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Stochastic Discretization Schemes</h4>
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.5rem;">
+                        - **Euler-Maruyama Scheme**: An extension of Euler's ODE method to stochastic calculus, providing accuracy order $\mathcal{O}(\sqrt{\Delta t})$:
+                        $$S_{t+\Delta t} = S_t \left( 1 + r \Delta t + \sigma \phi \sqrt{\Delta t} \right), \quad \phi \sim \mathcal{N}(0, 1)$$
+                        - **Milstein Scheme**: Includes a second-order correction term for high accuracy ($\mathcal{O}(\Delta t)$):
+                        $$S_{t+\Delta t} = S_t \left( 1 + r \Delta t + \sigma \phi \sqrt{\Delta t} + \frac{1}{2}\sigma^2 (\phi^2 - 1)\Delta t \right)$$
+                        - **Exact Discretization (GBM)**: Derived via log-SDE integration (exact when $\mu, \sigma$ are constant):
+                        $$S_T = S_0 \exp\left( \left(r - \frac{1}{2}\sigma^2\right)T + \sigma \phi \sqrt{T} \right)$$
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Error Analysis &amp; Industry Preferences</h3>
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563; margin-bottom: 1rem;">
+                        By the **Central Limit Theorem**, the pricing error decays according to:
+                        $$\text{Error} \propto \frac{\sigma}{\sqrt{M}}$$
+                        where $M$ is the number of simulations. Solvers determine the required number of paths by establishing a maximum acceptable error tolerance.
+                    </p>
+
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1rem; font-size: 0.82rem; line-height: 1.5;">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.9rem;">Advantages vs. Disadvantages</h4>
+                        <strong>Advantages</strong>:
+                        <ul style="margin: 0.25rem 0 0.5rem 0; padding-left: 1.2rem;">
+                            <li>Highly flexible (changing payoff doesn't rewrite engine).</li>
+                            <li>Natural extension to path-dependent exotic options.</li>
+                            <li>Handles multi-factor correlated asset portfolios.</li>
+                        </ul>
+                        <strong>Disadvantages</strong>:
+                        <ul style="margin: 0.25rem 0 0 0; padding-left: 1.2rem;">
+                            <li>Computational cost of random number generation.</li>
+                            <li>Slow convergence rate ($\mathcal{O}(M^{-0.5})$).</li>
+                            <li>Greeks require multiple full simulation runs.</li>
+                            <li>Difficult to incorporate early exercise (American options).</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: rgba(139, 92, 246, 0.05); border-left: 3px solid #8b5cf6; padding: 0.85rem 1rem; border-radius: 6px; font-size: 0.8rem; line-height: 1.5;">
+                        📊 <strong>The Lawrence Survey Stats</strong>:
+                        <br>
+                        A survey found that **60%** of industry trading desks prefer Monte Carlo, **30%** prefer Finite Difference Methods, and **10%** use binomial trees or transform methods (e.g. Fourier transforms).
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Finite Difference Methods -->
+    <div id="secM3L4Fdm" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Finite Difference Grid Discretization</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1.25rem;">
+                    The Finite Difference Method (FDM) solves the continuous Black-Scholes PDE deterministically by mapping derivatives onto a 2D uniform grid of time step $\delta t$ and asset step $\delta S$. Since we march backward in time, we define time to expiry as $\tau = T - t$, introducing a sign change in the time derivative ($\partial V / \partial t \to -\partial V / \partial t$).
+                </p>
+
+                <div style="display:grid; grid-template-columns: 1.1fr 0.9fr; gap:1.5rem; font-size:0.85rem; line-height:1.6; color:#4b5563; align-items:center; margin-bottom: 1.5rem;">
+                    <div>
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent);">Black-Scholes discrete difference equation:</h4>
+                        <p style="margin-bottom: 0.75rem;">
+                            Let the PDE be written as $\frac{\partial V}{\partial \tau} = a(S)\frac{\partial^2 V}{\partial S^2} + b(S)\frac{\partial V}{\partial S} + c V$.
+                            Substituting forward difference in time and central differences in space:
+                            $$V_i^{k+1} = \alpha_i V_{i-1}^k + \beta_i V_i^k + \gamma_i V_{i+1}^k$$
+                            where the coefficients depend on the grid boundaries, volatility, and rates:
+                            $$\alpha_i = \frac{1}{2} \left( \sigma^2 i^2 - i(r - d) \right) \delta t$$
+                            $$\beta_i = 1 - \left( r + \sigma^2 i^2 \right) \delta t$$
+                            $$\gamma_i = \frac{1}{2} \left( \sigma^2 i^2 + i(r - d) \right) \delta t$$
+                        </p>
+                    </div>
+
+                    <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Boundary Conditions</h4>
+                        <p style="font-size: 0.8rem; margin: 0; line-height: 1.5;">
+                            - **Lower Boundary ($S=0$ / $i=0$)**:
+                              Diffusion and drift terms vanish, reducing the PDE to exponential decay:
+                              $$V_0^{k+1} = (1 - r \delta t) V_0^k$$
+                            - **Upper Boundary ($S \to S^*$ / $i=I$)**:
+                              At high spot values, the option value is linear, indicating vanishing gamma ($\frac{\partial^2 V}{\partial S^2} \to 0$):
+                              $$V_I^{k} = 2V_{I-1}^k - V_{I-2}^k$$
+                        </p>
+                    </div>
+                </div>
+
+                <div style="font-size:0.85rem; line-height:1.6; color:#4b5563; border-top:1px solid var(--card-border); padding-top:1rem;">
+                    <h4 style="margin-top:0; font-weight:700; color:var(--accent);">Advantages &amp; Disadvantages of Explicit FDM</h4>
+                    <p style="margin-bottom: 0.5rem;">
+                        <strong>Advantages</strong>: Straightforward to code with obvious instability indicators. Handles variable coefficients and dividends beautifully without requiring closed-form solutions. Ideal for American-style early exercise (since we simply take the maximum of the continuation value and intrinsic value at each grid node: $V_i^{k+1} = \max(V_{\text{continuation}}, V_{\text{intrinsic}})$).
+                        <br>
+                        <strong>Disadvantages</strong>: Suffer from strict **conditional stability constraints** (time step $\delta t$ cannot be chosen independently of spatial grid size $\delta S$). Impractical beyond 3 spatial dimensions (curse of dimensionality).
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Von Neumann Stability -->
+    <div id="secM3L4Stability" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Von Neumann (Fourier) Stability Proof</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1.25rem;">
+                    Explicit finite-difference schemes can exhibit explosive numerical oscillations if the steps are chosen incorrectly. We analyze the propagation of error waves $E_n^m = \bar{a}^m e^{i n \omega}$ through the linear discrete difference equation:
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-family:var(--font-family-sans); margin-bottom:1.5rem;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Mathematical Proof Steps</h4>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color:#4b5563; margin-bottom: 0.75rem;">
+                        Substitute the oscillatory disturbance $E_n^m = \bar{a}^m e^{i n \omega}$ into the marching error scheme:
+                        $$\bar{a}^{m+1} e^{i n \omega} = \alpha_n \bar{a}^m e^{i(n-1)\omega} + \beta_n \bar{a}^m e^{i n \omega} + \gamma_n \bar{a}^m e^{i(n+1)\omega}$$
+                        Dividing both sides by $\bar{a}^m e^{i n \omega}$ and isolating the second-order diffusion term (letting $r = D = 0$):
+                        $$\bar{a} = \frac{1}{2} n^2 \sigma^2 \delta t e^{-i\omega} + (1 - n^2 \sigma^2 \delta t) + \frac{1}{2} n^2 \sigma^2 \delta t e^{i\omega}$$
+                        Using Euler's identity $e^{i\omega} + e^{-i\omega} = 2 \cos \omega$:
+                        $$\bar{a} = n^2 \sigma^2 \delta t \cos \omega + 1 - n^2 \sigma^2 \delta t = 1 - n^2 \sigma^2 \delta t (1 - \cos \omega)$$
+                        Using the trigonometric half-angle identity $1 - \cos \omega = 2 \sin^2 \frac{\omega}{2}$:
+                        $$\bar{a} = 1 - 2 n^2 \sigma^2 \delta t \sin^2 \frac{\omega}{2}$$
+                        For error waves to decay (stability), the amplitude factor must satisfy:
+                        $$|\bar{a}| \le 1 \implies -1 \le 1 - 2 n^2 \sigma^2 \delta t \sin^2 \frac{\omega}{2} \le 1 \implies \delta t \le \frac{1}{n^2 \sigma^2 \sin^2 \frac{\omega}{2}}$$
+                    </p>
+                </div>
+
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin: 0;">
+                    Taking the worst-case boundary where the spot price is at its maximum grid limit ($n = N$) and the oscillation wave frequency peaks ($\sin^2 \frac{\omega}{2} = 1$):
+                    $$\delta t \le \frac{1}{\sigma^2 N^2}$$
+                    Since $N = S^*/\delta S$, this places a direct quadratic constraint: **doubling the spatial resolution requires four times as many time steps ($\delta t \propto N^{-2}$)**.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Master Study Guide -->
+    <div id="secM3L4Guide" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 1.5rem;">Introduction to Numerical Methods Master Study Guide</h3>
+
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <!-- Problem 1 -->
+                    <details style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden;">
+                        <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
+                            Problem 1: 1D Heat Equation Discretization &amp; Stability Proof
+                        </summary>
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                            <strong>Question:</strong><br>
+                            Given the 1D heat equation $\frac{\partial u}{\partial t} = c^2 \frac{\partial^2 u}{\partial x^2}$. Derive the forward marching scheme:
+                            $$u_n^{m+1} = A u_{n-1}^m + B u_n^m + C u_{n+1}^m$$
+                            and prove the stability condition $r \le 1/2$ where $r = c^2 \frac{\delta t}{\delta x^2}$.
+                            <hr style="border:0; border-top:1px solid var(--card-border); margin:1rem 0;">
+                            <strong>Detailed Solution:</strong><br>
+                            Substituting derivative approximations:
+                            $$\frac{u_n^{m+1} - u_n^m}{\delta t} = c^2 \frac{u_{n-1}^m - 2u_n^m + u_{n+1}^m}{\delta x^2} \implies u_n^{m+1} = r u_{n-1}^m + (1-2r)u_n^m + r u_{n+1}^m$$
+                            Comparing coefficients gives:
+                            $$A = r, \quad B = 1-2r, \quad C = r$$
+                            Substituting the error wave $E_n^m = \bar{a}^m e^{i n \omega}$:
+                            $$\bar{a} = r e^{-i\omega} + (1-2r) + r e^{i\omega} = 1 - 2r(1 - \cos \omega) = 1 - 4r \sin^2 \frac{\omega}{2}$$
+                            For stability $|\bar{a}| \le 1$. Under maximum frequency $\sin^2 \frac{\omega}{2} = 1$:
+                            $$-1 \le 1 - 4r \le 1 \implies 4r \le 2 \implies r \le \frac{1}{2} \implies \delta t \le \frac{\delta x^2}{2c^2}$$
+                        </div>
+                    </details>
+
+                    <!-- Problem 2 -->
+                    <details style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden;">
+                        <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
+                            Problem 2: Explicit FDM for the Black-Scholes PDE
+                        </summary>
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                            <strong>Question:</strong><br>
+                            Derive the backward marching difference equation $V_n^{m-1} = a_n V_{n-1}^m + b_n V_n^m + c_n V_{n+1}^m$ for the Black-Scholes PDE:
+                            $$\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} + (r-D)S\frac{\partial V}{\partial S} - r V = 0$$
+                            <hr style="border:0; border-top:1px solid var(--card-border); margin:1rem 0;">
+                            <strong>Detailed Solution:</strong><br>
+                            Substituting FDM finite difference derivatives:
+                            $$\frac{V_n^m - V_n^{m-1}}{\delta t} + \frac{1}{2}\sigma^2 (n\delta S)^2 \left( \frac{V_{n-1}^m - 2V_n^m + V_{n+1}^m}{\delta S^2} \right) + (r-D)(n\delta S)\left( \frac{V_{n+1}^m - V_{n-1}^m}{2\delta S} \right) - r V_n^m = 0$$
+                            Canceling step size $\delta S$, multiplying by $\delta t$, and isolating $V_n^{m-1}$:
+                            $$V_n^{m-1} = V_{n-1}^m \left[ \frac{1}{2}\sigma^2 n^2 \delta t - \frac{1}{2}(r-D)n\delta t \right] + V_n^m \left[ 1 - (\sigma^2 n^2 + r)\delta t \right] + V_{n+1}^m \left[ \frac{1}{2}\sigma^2 n^2 \delta t + \frac{1}{2}(r-D)n\delta t \right]$$
+                            This defines the coefficients:
+                            $$a_n = \frac{1}{2}\left( \sigma^2 n^2 - n(r-D) \right)\delta t$$
+                            $$b_n = 1 - \left( \sigma^2 n^2 + r \right)\delta t$$
+                            $$c_n = \frac{1}{2}\left( \sigma^2 n^2 + n(r-D) \right)\delta t$$
+                        </div>
+                    </details>
+
+                    <!-- Problem 3 -->
+                    <details style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden;">
+                        <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
+                            Problem 3: Monte Carlo Pricing of a Binary Call Option
+                        </summary>
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                            <strong>Question:</strong><br>
+                            Outline a Monte Carlo simulation method to price a European Binary Call option.
+                            <hr style="border:0; border-top:1px solid var(--card-border); margin:1rem 0;">
+                            <strong>Detailed Solution:</strong><br>
+                            <p><strong>1. Path Simulation</strong>: Under the risk-neutral measure, the spot price at maturity $T$ is simulated using the exact GBM solution in one giant step:
+                            $$S_m(T) = S_0 \exp\left( \left( r - \frac{1}{2}\sigma^2 \right)T + \sigma \sqrt{T} \phi_m \right), \quad \phi_m \sim \mathcal{N}(0, 1)$$
+                            where $\phi_m$ is drawn using normal distributions.</p>
+                            <p><strong>2. Payoff Evaluation</strong>: The payoff of a binary call option is defined by a Heaviside indicator function:
+                            $$\text{Payoff}(S_m(T)) = \mathcal{H}(S_m(T) - E) = \begin{cases} 1 & \text{if } S_m(T) > E \\ 0 & \text{otherwise} \end{cases}$$
+                            </p>
+                            <p><strong>3. Present Value Expectation</strong>: Discount and average over $M$ paths:
+                            $$\text{Binary Option Value} = e^{-rT} \frac{1}{M} \sum_{m=1}^M \mathcal{H}(S_m(T) - E)$$
+                            </p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: Numerical Pricing Sandbox -->
+    <div id="secM3L4Sandbox" style="display: none;">
+        <div class="container" style="grid-template-columns: 320px 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <!-- Inputs Panel -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem; font-family: var(--font-family-sans); font-size: 0.85rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom:1rem;">Inputs</h3>
+                
+                <div style="display:flex; flex-direction:column; gap:1.1rem;">
+                    <!-- Stock Price -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Stock Price ($S_0$):</span>
+                            <span id="valM3L4Stock" style="color:var(--accent);">100</span>
+                        </div>
+                        <input id="slideM3L4Stock" type="range" min="40" max="160" step="5" value="100" style="width:100%; cursor:pointer;" oninput="updateM3L4Sandbox()">
+                    </div>
+
+                    <!-- Strike Price -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Strike Price ($E$):</span>
+                            <span id="valM3L4Strike" style="color:var(--accent);">100</span>
+                        </div>
+                        <input id="slideM3L4Strike" type="range" min="40" max="160" step="5" value="100" style="width:100%; cursor:pointer;" oninput="updateM3L4Sandbox()">
+                    </div>
+
+                    <!-- Volatility -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Volatility ($\sigma$):</span>
+                            <span id="valM3L4Vol" style="color:var(--accent);">20%</span>
+                        </div>
+                        <input id="slideM3L4Vol" type="range" min="5" max="80" step="5" value="20" style="width:100%; cursor:pointer;" oninput="updateM3L4Sandbox()">
+                    </div>
+
+                    <!-- Time to Expiry -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Time to Expiry ($T$):</span>
+                            <span id="valM3L4Time" style="color:var(--accent);">1.0 Year</span>
+                        </div>
+                        <input id="slideM3L4Time" type="range" min="0.25" max="2.0" step="0.25" value="1.0" style="width:100%; cursor:pointer;" oninput="updateM3L4Sandbox()">
+                    </div>
+
+                    <!-- Rate -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Risk-Free Rate ($r$):</span>
+                            <span id="valM3L4Rate" style="color:var(--accent);">5.0%</span>
+                        </div>
+                        <input id="slideM3L4Rate" type="range" min="0" max="12" step="0.5" value="5" style="width:100%; cursor:pointer;" oninput="updateM3L4Sandbox()">
+                    </div>
+
+                    <!-- Monte Carlo Paths -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>MC Simulations ($M$):</span>
+                            <span id="valM3L4Sims" style="color:var(--accent);">5,000</span>
+                        </div>
+                        <input id="slideM3L4Sims" type="range" min="1000" max="10000" step="1000" value="5000" style="width:100%; cursor:pointer;" oninput="updateM3L4Sandbox()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visualization Canvas -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Real-Time Numerical Solvers</h3>
+                    <div style="height: 180px; position: relative; margin-bottom: 0.5rem;">
+                        <canvas id="m3l4PathChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Pricing Results Grid -->
+                <div style="background: var(--metric-bg); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); display:grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; text-align:center;">
+                    <div>
+                        <div style="font-size: 0.65rem; color:#6b7280; font-weight:700; text-transform:uppercase;">BS Analytical Call:</div>
+                        <div id="outM3L4AnalCall" style="font-size:1.15rem; font-weight:800; color:#10b981;">0.00</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.65rem; color:#6b7280; font-weight:700; text-transform:uppercase;">Monte Carlo (Paths):</div>
+                        <div id="outM3L4McCall" style="font-size:1.15rem; font-weight:800; color:var(--accent);">0.00</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.65rem; color:#6b7280; font-weight:700; text-transform:uppercase;">Explicit FDM Solver:</div>
+                        <div id="outM3L4FdmCall" style="font-size:1.15rem; font-weight:800; color:var(--text-color);">0.00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching logic for CQF M3 L4
+    window.switchM3L4Tab = function(tab) {
+        const tabs = ['monteCarlo', 'fdm', 'stability', 'guide', 'sandbox'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM3L4' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM3L4' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) {
+                sec.style.display = (t === tab ? 'block' : 'none');
+                if (t === tab && !sec.dataset.typeset) {
+                    if (typeof window.safeTypeset === 'function') {
+                        window.safeTypeset([sec]);
+                        sec.dataset.typeset = 'true';
+                    }
+                }
+            }
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        if (tab === 'sandbox') {
+            setTimeout(updateM3L4Sandbox, 100);
+        }
+    };
+
+    let m3l4PathChartInstance = null;
+
+    // Normal Cumulative Distribution Function (normCdf approximation)
+    function m3l4NormCdf(x) {
+        const b1 =  0.319381530;
+        const b2 = -0.356563782;
+        const b3 =  1.781477937;
+        const b4 = -1.821255978;
+        const b5 =  1.330274429;
+        const p  =  0.2316419;
+        const c  =  0.39894228;
+
+        if (x >= 0.0) {
+            let k = 1.0 / (1.0 + p * x);
+            return 1.0 - c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        } else {
+            let k = 1.0 / (1.0 - p * x);
+            return c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        }
+    }
+
+    // Box-Muller random normal variable generator
+    function boxMullerNormal() {
+        let u = 0, v = 0;
+        while(u === 0) u = Math.random(); 
+        while(v === 0) v = Math.random();
+        return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    }
+
+    window.updateM3L4Sandbox = function() {
+        const S0 = parseFloat(document.getElementById('slideM3L4Stock').value);
+        const E = parseFloat(document.getElementById('slideM3L4Strike').value);
+        const vol = parseFloat(document.getElementById('slideM3L4Vol').value) / 100;
+        const T = parseFloat(document.getElementById('slideM3L4Time').value);
+        const r = parseFloat(document.getElementById('slideM3L4Rate').value) / 100;
+        const M = parseInt(document.getElementById('slideM3L4Sims').value);
+
+        // Labels
+        document.getElementById('valM3L4Stock').innerText = S0.toFixed(0);
+        document.getElementById('valM3L4Strike').innerText = E.toFixed(0);
+        document.getElementById('valM3L4Vol').innerText = (vol * 100).toFixed(0) + "%";
+        document.getElementById('valM3L4Time').innerText = T.toFixed(2) + (T === 1 ? " Year" : " Years");
+        document.getElementById('valM3L4Rate').innerText = (r * 100).toFixed(1) + "%";
+        document.getElementById('valM3L4Sims').innerText = M.toLocaleString();
+
+        // 1. Analytical BS Call Pricing
+        const d1 = (Math.log(S0 / E) + (r + 0.5 * vol * vol) * T) / (vol * Math.sqrt(T));
+        const d2 = d1 - vol * Math.sqrt(T);
+        const bsPrice = S0 * m3l4NormCdf(d1) - E * Math.exp(-r * T) * m3l4NormCdf(d2);
+        document.getElementById('outM3L4AnalCall').innerText = "$" + bsPrice.toFixed(2);
+
+        // 2. Monte Carlo Solver
+        let sumPayoffs = 0;
+        let plotPaths = [];
+        const numPlotPaths = 5;
+        const steps = 10;
+        const dt = T / steps;
+
+        for (let i = 0; i < M; i++) {
+            let path = [S0];
+            let S = S0;
+            for (let step = 1; step <= steps; step++) {
+                const z = boxMullerNormal();
+                S = S * Math.exp((r - 0.5 * vol * vol) * dt + vol * Math.sqrt(dt) * z);
+                if (i < numPlotPaths) path.push(S);
+            }
+            if (i < numPlotPaths) plotPaths.push(path);
+            sumPayoffs += Math.max(S - E, 0);
+        }
+        const mcPrice = Math.exp(-r * T) * (sumPayoffs / M);
+        document.getElementById('outM3L4McCall').innerText = "$" + mcPrice.toFixed(2);
+
+        // 3. Explicit FDM Solver (Backward Marching)
+        // Set FDM Grid Sizes
+        const N = 40; // Spatial steps
+        const S_max = 200;
+        const dS = S_max / N;
+        
+        // Von Neumann stability check for choosing time step size dynamically
+        const stableDt = 0.9 / (vol * vol * N * N); // stable dt limit
+        let M_steps = Math.ceil(T / stableDt);
+        if (M_steps < 30) M_steps = 30; // Min steps
+        const df_t = T / M_steps;
+
+        // Initialize grid values
+        let grid = [];
+        for (let i = 0; i <= N; i++) {
+            grid[i] = Math.max(i * dS - E, 0); // Terminal payoffs
+        }
+
+        // Backward propagation
+        for (let k = 1; k <= M_steps; k++) {
+            let nextGrid = [];
+            
+            // Boundary Condition at S = 0
+            nextGrid[0] = (1 - r * df_t) * grid[0];
+
+            for (let i = 1; i < N; i++) {
+                const alpha = 0.5 * (vol * vol * i * i - i * r) * df_t;
+                const beta = 1 - (vol * vol * i * i + r) * df_t;
+                const gamma = 0.5 * (vol * vol * i * i + i * r) * df_t;
+                nextGrid[i] = alpha * grid[i-1] + beta * grid[i] + gamma * grid[i+1];
+            }
+
+            // Boundary Condition at infinity (vanishing gamma)
+            nextGrid[N] = 2 * nextGrid[N-1] - nextGrid[N-2];
+
+            grid = nextGrid;
+        }
+
+        // Interpolate the exact price for spot S0
+        const S0_index = S0 / dS;
+        const lowIndex = Math.floor(S0_index);
+        const highIndex = Math.ceil(S0_index);
+        let fdmPrice = grid[lowIndex];
+        if (lowIndex !== highIndex) {
+            // linear interpolation
+            fdmPrice = grid[lowIndex] + (S0_index - lowIndex) * (grid[highIndex] - grid[lowIndex]);
+        }
+        document.getElementById('outM3L4FdmCall').innerText = "$" + fdmPrice.toFixed(2);
+
+        // Update the Chart.js visualizer
+        renderM3L4PathPlot(plotPaths, steps, T, E);
+    };
+
+    function renderM3L4PathPlot(paths, steps, T, E) {
+        const ctx = document.getElementById('m3l4PathChart');
+        if (!ctx) return;
+
+        const timeLabels = [];
+        const dt = T / steps;
+        for (let i = 0; i <= steps; i++) {
+            timeLabels.push((i * dt).toFixed(2));
+        }
+
+        const datasets = paths.map((path, idx) => ({
+            label: `Path ${idx + 1}`,
+            data: path,
+            borderColor: idx === 0 ? 'var(--accent)' : `hsl(${180 + idx * 35}, 70%, 50%)`,
+            borderWidth: 1.5,
+            fill: false,
+            pointRadius: 0
+        }));
+
+        // Add Strike Price Line
+        datasets.push({
+            label: 'Strike Price',
+            data: Array(steps + 1).fill(E),
+            borderColor: '#ef4444',
+            borderWidth: 1.5,
+            borderDash: [5, 5],
+            fill: false,
+            pointRadius: 0
+        });
+
+        if (m3l4PathChartInstance) {
+            m3l4PathChartInstance.data.labels = timeLabels;
+            m3l4PathChartInstance.data.datasets = datasets;
+            m3l4PathChartInstance.update();
+            return;
+        }
+
+        m3l4PathChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Time Horizon (Years)', font: { size: 9, weight: 'bold' } },
+                        ticks: { font: { size: 8 } }
+                    },
+                    y: {
+                        title: { display: true, text: 'Asset Price ($)', font: { size: 9, weight: 'bold' } },
+                        ticks: { font: { size: 8 } }
+                    }
+                }
+            }
+        });
+    }
+</script>

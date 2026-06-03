@@ -1,0 +1,640 @@
+<div id="view-cqf-m3-l9" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 03: Equities &amp; Currencies</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 09</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L9: Common Quant Mistakes</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Diversification Paradox, Supply &amp; Demand Smiles, Bastard Greeks, Correlation Pitfalls, and Feedback Crashes</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM3L9Diversification" onclick="switchM3L9Tab('diversification')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. The Diversification Paradox</button>
+        <button id="tabM3L9Supply" onclick="switchM3L9Tab('supply')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Supply, Demand &amp; Skew</button>
+        <button id="tabM3L9Volatility" onclick="switchM3L9Tab('volatility')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Volatility &amp; "Bastard Greeks"</button>
+        <button id="tabM3L9Correlation" onclick="switchM3L9Tab('correlation')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. Correlation Pitfalls</button>
+        <button id="tabM3L9Feedback" onclick="switchM3L9Tab('feedback')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Hedging &amp; Feedback Crashes</button>
+        <button id="tabM3L9Sandbox" onclick="switchM3L9Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Interactive Quant Labs</button>
+    </div>
+
+    <!-- TAB 1: The Diversification Paradox -->
+    <div id="secM3L9Diversification" style="display: block;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; display: grid; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Diversification Paradox in Banking</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        In classical portfolio theory, diversification is the ultimate "free lunch"—it reduces variance without sacrificing expected return. However, Dr. Paul Wilmott demonstrates that when trading with **Other People's Money (OPM)** under typical institutional incentive structures, diversification is actually **against a trader's personal financial interest**.
+                    </p>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        Consider the coin-tossing bonus model:
+                        <ul>
+                            <li>All traders in your bank are betting on the same unbiased coin $C_1$ ($50\%$ win probability).</li>
+                            <li>To diversify and show your quantitative edge, you bet on an uncorrelated, biased coin $C_2$ ($75\%$ win probability).</li>
+                            <li>A bonus is only paid if **both** you individually make money AND the broader trading floor makes money. If the floor collapses, the bank pays no bonuses regardless of your performance.</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Conventional Failure</h3>
+                    <p style="font-size: 0.85rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        Let's calculate the probabilities of receiving a bonus:
+                        <ul>
+                            <li><strong>Herding Strategy (Correlated)</strong>: You bet on the same coin as your colleagues. You win if and only if the floor wins. Since $P(\text{Floor Wins}) = 50\%$, your bonus probability is:
+                                $$P(\text{Bonus}_{\text{Herd}}) = 50\%$$
+                            </li>
+                            <li><strong>Uncorrelated Strategy (Diversified)</strong>: You bet on your $75\%$ coin. Because it is independent, the joint probability of you and the floor winning together is:
+                                $$P(\text{Bonus}_{\text{Div}}) = P(\text{You Win}) \times P(\text{Floor Wins}) = 0.75 \times 0.50 = 37.5\%$$
+                            </li>
+                        </ul>
+                    </p>
+                    <div style="background:var(--metric-bg); padding:0.85rem; border-radius:6px; border-left:3px solid var(--accent); font-size:0.75rem; line-height:1.4; font-weight:600; text-align:center;">
+                        Bonus Probability: $50\% \text{ (Herd)} > 37.5\% \text{ (Diversified)}$<br>
+                        "It is better to fail conventionally than to succeed unconventionally."<br>
+                        — John Maynard Keynes
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Supply, Demand & Skew -->
+    <div id="secM3L9Supply" style="display: block;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Supply, Demand, and the Cow/Milk Fallacy</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    In classical Black-Scholes pricing, volatility $\sigma$ is treated as the only free parameter, and markets are assumed to be complete. Quants regularly calibrate models by backing out implied volatility from market prices. Paul argues that this is fundamentally flawed due to supply and demand:
+                </p>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.25rem; margin-bottom:1.25rem;">
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.82rem; line-height:1.5;">
+                        <strong style="color:var(--accent);">1. Systemic Downside Demand</strong>
+                        <p style="margin:0.25rem 0 0 0; color:#4b5563;">
+                            The global aggregate of all equity derivatives nets down to shares, meaning the world is structurally net long equities. To protect against market crashes, investors eagerly buy out-of-the-money puts. This massive imbalance in supply/demand drives put prices up, creating the famous negative volatility skew. The skew is a reflection of **greed and fear**, not a stationary volatility parameter.
+                        </p>
+                    </div>
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.82rem; line-height:1.5;">
+                        <strong style="color:var(--accent);">2. The Cow &amp; Milk Analogy</strong>
+                        <p style="margin:0.25rem 0 0 0; color:#4b5563;">
+                            A pint of milk is a scalar price representing a complex vector of input variables: production costs, logistics, retail competition, supply/demand, and perhaps loss-leader pricing. **You cannot back out the cost of a cow from a pint of milk.** Similarly, you cannot back out a pure volatility parameter from an option price that is governed by transaction costs, hedging errors, and supply and demand.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Volatility & "Bastard Greeks" -->
+    <div id="secM3L9Volatility" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; margin-bottom: 2rem; display: grid; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Volatility Sensitivity &amp; "Bastard Greeks"</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        If you increase volatility, does the option value always go up? The answer depends entirely on the sign of Gamma ($\Gamma = \frac{\partial^2 V}{\partial S^2}$) across the option's range.
+                    </p>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        In the Black-Scholes PDE, volatility sensitivity is mathematically coupled to Gamma:
+                        $$\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^2 S^2 \Gamma + rS \frac{\partial V}{\partial S} - rV = 0$$
+                        If $\Gamma > 0$ everywhere (as in vanilla options), increasing volatility increases option value. If $\Gamma < 0$ everywhere (such as short options), it decreases the value. If Gamma changes sign (as in barrier options), vega becomes highly unstable.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Legitimacy of Greeks</h3>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                        Paul Wilmott terms vega ($\text{vega} = \frac{\partial V}{\partial \sigma}$) a **"bastard Greek"** because it is mathematically illegitimate:
+                    </p>
+                    <div style="background:var(--metric-bg); padding:0.85rem; border-radius:6px; border-left:3px solid var(--accent); font-size:0.78rem; line-height:1.45; color:#374151; margin-bottom: 0.5rem;">
+                        A legitimate Greek measures sensitivity to a **variable** (like $S$ or $t$). Vega measures sensitivity to a **parameter** ($\sigma$) that was assumed to be a constant during the PDE's derivation!
+                        Varying a constant parameter to measure risk is mathematically inconsistent.
+                    </div>
+                    <p style="font-size:0.8rem; color:#4b5563; margin:0;">
+                        Moreover, vega approximates a Gamma-weighted time integral:
+                        $$\text{vega} \approx \sigma S^2 (T-t) \Gamma$$
+                        If Gamma changes sign, the standard constant-volatility assumption collapses completely.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Correlation Pitfalls -->
+    <div id="secM3L9Correlation" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Correlation Nightmare</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    Quants often treat correlation as a single stationary parameter ($\rho = 0.6$). In reality, correlation in SDEs acts at the **infinitesimal timescale** ($dW_1 dW_2 = \rho dt$) and is highly unstable across time and regimes.
+                </p>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.25rem; margin-bottom:1.25rem;">
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.82rem; line-height:1.5;">
+                        <strong style="color:var(--accent);">Perfect Correlation $\rho = 1.0$ Trending Apart</strong>
+                        <p style="margin:0.25rem 0 0 0; color:#4b5563;">
+                            If $dS_1 = \mu_1 S_1 dt + \sigma S_1 dW$ and $dS_2 = \mu_2 S_2 dt + \sigma S_2 dW$, they share the exact same Brownian noise ($\rho = 1.0$). However, if $\mu_1 = 10\%$ and $\mu_2 = -10\%$, they will diverge completely over a macro horizon, showing that short-term correlation is irrelevant for macro asset allocation.
+                        </p>
+                    </div>
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.82rem; line-height:1.5;">
+                        <strong style="color:var(--accent);">Perfect Negative Correlation $\rho = -1.0$ Growing Together</strong>
+                        <p style="margin:0.25rem 0 0 0; color:#4b5563;">
+                            If $dS_1 = 0.15 S_1 dt + \sigma S_1 dW$ and $dS_2 = 0.15 S_2 dt - \sigma S_2 dW$, they have perfectly opposite noise ($\rho = -1.0$). Yet, because both have high positive drift ($15\%$), over the long run both assets will trend strongly upwards together!
+                        </p>
+                    </div>
+                </div>
+
+                <div style="background: var(--metric-bg); padding: 1.15rem; border-radius: 8px; border: 1px solid var(--card-border); font-size: 0.82rem; line-height: 1.5; color: #4b5563;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Two-Regime Competition Model</h4>
+                    Consider competing running shoe companies: in Regime 1 (growth), they rise together ($\rho > 0$). In Regime 2 (market saturation), they compete fiercely, moving inversely ($\rho < 0$). A single average correlation coefficient fails to capture this regime-switching complexity.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: Hedging & Feedback Crashes -->
+    <div id="secM3L9Feedback" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Discrete Hedging, Feedback Loops, and Closed-Form Obsessions</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    Three major areas showcase the disconnect between quantitative elegant mathematics and real-world finance:
+                </p>
+
+                <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:1.25rem; margin-bottom:1.5rem; font-size:0.8rem; line-height:1.5;">
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong style="color:var(--accent);">1. Optimal Hedging Efficiency</strong>
+                        <p style="margin:0.25rem 0 0 0; color:#4b5563;">
+                            Instead of rehedging at fixed intervals $\delta t$ (which is highly inefficient), quants can hedge using optimal boundary triggers. Rebalancing only when Delta deviates beyond a dynamic barrier reduces standard deviation of hedging errors dramatically. You get the same risk reduction from 10 optimal hedges as 25 fixed ones!
+                        </p>
+                    </div>
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong style="color:#8b5cf6;">2. Positive Feedback Loops</strong>
+                        <p style="margin:0.25rem 0 0 0; color:#4b5563;">
+                            Replicating a put option (dynamic portfolio insurance) requires selling stock as prices fall. When many players implement similar models simultaneously, a positive feedback loop triggers: falling prices cause dynamic selling, which accelerates the crash (as seen in the 1987 crash, the 2010 flash crash, and option strike pinning).
+                        </p>
+                    </div>
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong style="color:#10b981;">3. Closed-Form Obsession</strong>
+                        <p style="margin:0.25rem 0 0 0; color:#4b5563;">
+                            Quants choose models (e.g., Vasicek, CIR, Hull-White) not because they represent reality, but because they yield closed-form solutions that make calibration easy. Paul compares this to an airplane designer who removes all non-linear terms from fluid dynamics simply to make the paper plane equations solvable!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Interactive Quant Labs -->
+    <div id="secM3L9Sandbox" style="display: none;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <!-- LAB 1: Bonus Diversification Paradox -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab A: Bonus Diversification Paradox</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Your Strategy Win Edge ($P$):</label>
+                        <input id="numM3L9Edge" type="number" value="0.75" step="0.05" min="0.5" max="0.95" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L9BonusLab()">
+                    </div>
+                    <div style="display:flex; align-items:flex-end;">
+                        <button class="btn" style="width:100%; background:var(--accent); color:#ffffff; font-weight:700; border:none; padding:0.2rem; border-radius:4px; cursor:pointer;" onclick="runM3L9BonusLab()">Simulate Career Paths</button>
+                    </div>
+                </div>
+                <div style="height: 140px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m3l9BonusChart"></canvas>
+                </div>
+                <div id="outM3L9Bonus" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Loading career paths...
+                </div>
+            </div>
+
+            <!-- LAB 2: "Bastard Greeks" Vega Test -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab B: Volatility Sensitivity &amp; Gamma Sign</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Volatility ($\sigma$):</label>
+                        <input id="numM3L9Vol" type="number" value="0.20" step="0.02" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L9VegaLab()">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Strike ($E$):</label>
+                        <input id="numM3L9Strike" type="number" value="100" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L9VegaLab()">
+                    </div>
+                </div>
+                <div style="height: 140px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m3l9VegaChart"></canvas>
+                </div>
+                <div id="outM3L9Vega" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Loading sensitivity metrics...
+                </div>
+            </div>
+
+            <!-- LAB 3: Optimal vs. Discrete Hedging Errors -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem; grid-column: span 2;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab C: Optimal vs. Discrete Hedging Errors</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Hedge Strategy Type:</label>
+                        <select id="selectM3L9HedgeType" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L9HedgeLab()">
+                            <option value="fixed_25">Fixed Interval (25 Hedges)</option>
+                            <option value="fixed_10">Fixed Interval (10 Hedges)</option>
+                            <option value="optimal_10" selected>Optimal Boundary (10 Hedges Target)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Actual Volatility ($\sigma_a$):</label>
+                        <input id="numM3L9ActVol" type="number" value="0.25" step="0.05" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L9HedgeLab()">
+                    </div>
+                    <div style="display:flex; align-items:flex-end;">
+                        <button class="btn" style="width:100%; background:var(--accent); color:#ffffff; font-weight:700; border:none; padding:0.2rem; border-radius:4px; cursor:pointer;" onclick="runM3L9HedgeLab()">Simulate Rehedging Errors</button>
+                    </div>
+                </div>
+                <div style="height: 160px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m3l9HedgeChart"></canvas>
+                </div>
+                <div id="outM3L9Hedge" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Loading hedging statistics...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching logic for CQF M3 L9
+    window.switchM3L9Tab = function(tab) {
+        const tabs = ['diversification', 'supply', 'volatility', 'correlation', 'feedback', 'sandbox'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM3L9' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM3L9' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) {
+                sec.style.display = (t === tab ? 'block' : 'none');
+                if (t === tab && !sec.dataset.typeset) {
+                    if (typeof window.safeTypeset === 'function') {
+                        window.safeTypeset([sec]);
+                        sec.dataset.typeset = 'true';
+                    }
+                }
+            }
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        if (tab === 'sandbox') {
+            setTimeout(initM3L9Labs, 100);
+        }
+    };
+
+    let m3l9BonusChartInstance = null;
+    let m3l9VegaChartInstance = null;
+    let m3l9HedgeChartInstance = null;
+
+    // Normal Cumulative Distribution Function
+    function m3l9NormCdf(x) {
+        const b1 =  0.319381530;
+        const b2 = -0.356563782;
+        const b3 =  1.781477937;
+        const b4 = -1.821255978;
+        const b5 =  1.330274429;
+        const p  =  0.2316419;
+        const c  =  0.39894228;
+
+        if (x >= 0.0) {
+            let k = 1.0 / (1.0 + p * x);
+            return 1.0 - c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        } else {
+            let k = 1.0 / (1.0 - p * x);
+            return c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        }
+    }
+
+    // Normal Probability Density Function
+    function m3l9NormPdf(x) {
+        return (1 / Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * x * x);
+    }
+
+    // Box-Muller transform for normal distribution
+    function m3l9RandomNormal() {
+        let u = 0, v = 0;
+        while(u === 0) u = Math.random(); 
+        while(v === 0) v = Math.random();
+        return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    }
+
+    window.initM3L9Labs = function() {
+        runM3L9BonusLab();
+        runM3L9VegaLab();
+        runM3L9HedgeLab();
+    };
+
+    window.runM3L9BonusLab = function() {
+        const edge = parseFloat(document.getElementById('numM3L9Edge').value);
+        const P_floor_win = 0.50; // Floor wins with 50-50 unbiased coin
+
+        // Career paths simulation over 12 quarters
+        let quarters = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+        let herdProb = [];
+        let divProb = [];
+
+        quarters.forEach(q => {
+            // Under herding, probability of winning together is simply floor win rate (50%)
+            herdProb.push(50.0);
+            // Under diversification, independent probability is edge * floor rate
+            divProb.push(edge * P_floor_win * 100);
+        });
+
+        const outEl = document.getElementById('outM3L9Bonus');
+        outEl.innerHTML = `
+            Uncorrelated Strategy Edge ($P$): <strong>${(edge*100).toFixed(1)}%</strong>, Floor Win Rate: <strong>50.0%</strong>.<br>
+            Expected Bonus Probability with Herding Strategy: <strong style="color:var(--accent);">50.0%</strong>.<br>
+            Expected Bonus Probability with Diversified Edge Strategy: <strong style="color:#ef4444;">${(edge * P_floor_win * 100).toFixed(1)}%</strong>.<br>
+            <strong>Paradox Proven</strong>: Even with a massive mathematical edge of ${((edge-0.5)*100).toFixed(0)}%, herding yields a higher probability of bonus than diversification!
+        `;
+        if (typeof window.safeTypeset === 'function') {
+            window.safeTypeset([outEl]);
+        }
+
+        const ctx = document.getElementById('m3l9BonusChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m3l9BonusChartInstance) m3l9BonusChartInstance.destroy();
+
+        m3l9BonusChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: quarters.map(q => 'Q' + q),
+                datasets: [
+                    {
+                        label: 'Herding Strategy (Correlated)',
+                        data: herdProb,
+                        backgroundColor: 'var(--accent)',
+                        borderColor: 'var(--accent)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Diversification Strategy (Uncorrelated)',
+                        data: divProb,
+                        backgroundColor: 'rgba(239, 68, 68, 0.65)',
+                        borderColor: '#ef4444',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, labels: { font: { size: 8 }, color: tickColor } } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: {
+                        title: { display: true, text: 'Bonus Probability (%)', font: { size: 8 }, color: tickColor },
+                        ticks: { color: tickColor, font: { size: 8 } },
+                        grid: { color: gridColor },
+                        max: 100
+                    }
+                }
+            }
+        });
+    };
+
+    window.runM3L9VegaLab = function() {
+        const vol = parseFloat(document.getElementById('numM3L9Vol').value);
+        const E = parseFloat(document.getElementById('numM3L9Strike').value);
+        const r = 0.05;
+        const T = 0.5;
+
+        let spots = [];
+        let vegas = [];
+        let gammas = [];
+
+        for (let s = 60; s <= 140; s += 2) {
+            spots.push(s);
+            // Black-Scholes call option Gamma
+            const d1 = (Math.log(s / E) + (r + 0.5 * vol * vol) * T) / (vol * Math.sqrt(T));
+            const gamma = m3l9NormPdf(d1) / (s * vol * Math.sqrt(T));
+            // Black-Scholes Vega
+            const vega = s * Math.sqrt(T) * m3l9NormPdf(d1);
+
+            vegas.push(vega);
+            gammas.push(gamma * 1000); // Scaled for plotting
+        }
+
+        const outEl = document.getElementById('outM3L9Vega');
+        outEl.innerHTML = `
+            Calculated at Strike $E$ = <strong>$${E}</strong>, Volatility $\\sigma$ = <strong>${(vol*100).toFixed(0)}%</strong>.<br>
+            Note the perfect structural alignment: Vega is highest exactly where option Gamma is highest (at the money).<br>
+            Because $\\text{vega} \\approx \\sigma S^2 T \\Gamma$, any option with a sign-changing Gamma (like barriers) will have a sign-changing vega, making standard hedging useless!
+        `;
+        if (typeof window.safeTypeset === 'function') {
+            window.safeTypeset([outEl]);
+        }
+
+        const ctx = document.getElementById('m3l9VegaChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m3l9VegaChartInstance) m3l9VegaChartInstance.destroy();
+
+        m3l9VegaChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: spots,
+                datasets: [
+                    {
+                        label: 'Option Vega',
+                        data: vegas,
+                        borderColor: 'var(--accent)',
+                        borderWidth: 2,
+                        fill: false,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Option Gamma (x1000)',
+                        data: gammas,
+                        borderColor: 'rgba(16, 185, 129, 0.85)',
+                        borderWidth: 1.5,
+                        fill: false,
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, labels: { font: { size: 8 }, color: tickColor } } },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Underlying Asset Price ($S_0$)', font: { size: 8 }, color: tickColor },
+                        ticks: { color: tickColor, font: { size: 8 } },
+                        grid: { color: gridColor }
+                    },
+                    y: {
+                        ticks: { color: tickColor, font: { size: 8 } },
+                        grid: { color: gridColor }
+                    }
+                }
+            }
+        });
+    };
+
+    // Black-Scholes call option price
+    function m3l9BsCall(S, E, T, r, vol) {
+        if (T <= 0) return Math.max(S - E, 0);
+        const d1 = (Math.log(S / E) + (r + 0.5 * vol * vol) * T) / (vol * Math.sqrt(T));
+        const d2 = d1 - vol * Math.sqrt(T);
+        return S * m3l9NormCdf(d1) - E * Math.exp(-r * T) * m3l9NormCdf(d2);
+    }
+
+    // Black-Scholes call option delta
+    function m3l9BsDelta(S, E, T, r, vol) {
+        if (T <= 0) return S > E ? 1 : 0;
+        const d1 = (Math.log(S / E) + (r + 0.5 * vol * vol) * T) / (vol * Math.sqrt(T));
+        return m3l9NormCdf(d1);
+    }
+
+    window.runM3L9HedgeLab = function() {
+        const hedgeType = document.getElementById('selectM3L9HedgeType').value;
+        const actVol = parseFloat(document.getElementById('numM3L9ActVol').value);
+        const S0 = 100;
+        const E = 100;
+        const impVol = 0.20; // Implied volatility 20%
+        const r = 0.05;
+        const T = 0.5;
+
+        const N_paths = 150;
+        const totalSteps = 100;
+        const dt = T / totalSteps;
+
+        let finalErrors = [];
+
+        for (let p = 0; p < N_paths; p++) {
+            let S = S0;
+            let currentDelta = m3l9BsDelta(S0, E, T, r, impVol);
+            let cash = -m3l9BsCall(S0, E, T, r, impVol) + currentDelta * S0;
+            let hedgeCount = 0;
+
+            for (let j = 1; j <= totalSteps; j++) {
+                const t = j * dt;
+                const t_remain = T - t;
+                const rand = m3l9RandomNormal();
+                S = S * Math.exp((r - 0.5 * actVol * actVol) * dt + actVol * Math.sqrt(dt) * rand);
+
+                // Accumulate interest
+                cash = cash * (1 + r * dt);
+
+                // Rehedge decision
+                let shouldRehedge = false;
+                if (hedgeType === 'fixed_25' && j % 4 === 0) {
+                    shouldRehedge = true;
+                } else if (hedgeType === 'fixed_10' && j % 10 === 0) {
+                    shouldRehedge = true;
+                } else if (hedgeType === 'optimal_10') {
+                    // Rehedge only when Delta deviates by more than a threshold, targetting approx 10 rehedges
+                    const nextDeltaCandidate = m3l9BsDelta(S, E, t_remain, r, impVol);
+                    if (Math.abs(nextDeltaCandidate - currentDelta) > 0.055 || j === totalSteps) {
+                        shouldRehedge = true;
+                    }
+                }
+
+                if (shouldRehedge && j < totalSteps) {
+                    const nextDelta = m3l9BsDelta(S, E, t_remain, r, impVol);
+                    cash += (nextDelta - currentDelta) * S;
+                    currentDelta = nextDelta;
+                    hedgeCount++;
+                }
+            }
+
+            const finalOptionValue = Math.max(S - E, 0);
+            const portVal = finalOptionValue + cash - currentDelta * S;
+            finalErrors.push(portVal);
+        }
+
+        // Generate histogram counts
+        const binWidth = 0.5;
+        let bins = {};
+        finalErrors.forEach(err => {
+            const b = Math.round(err / binWidth) * binWidth;
+            bins[b] = (bins[b] || 0) + 1;
+        });
+
+        let sortedKeys = Object.keys(bins).map(Number).sort((a,b)=>a-b);
+        let labels = sortedKeys.map(k => k.toFixed(1));
+        let data = sortedKeys.map(k => bins[k]);
+
+        const meanErr = finalErrors.reduce((a,b)=>a+b, 0) / N_paths;
+        const varErr = finalErrors.reduce((a,b)=>a+(b-meanErr)*(b-meanErr), 0) / N_paths;
+        const stdErr = Math.sqrt(varErr);
+
+        const outEl = document.getElementById('outM3L9Hedge');
+        outEl.innerHTML = `
+            Hedge Strategy: <strong>${hedgeType === 'optimal_10' ? 'Optimal Delta Deviation Rehedging' : 'Fixed Time-Step Rehedging'}</strong>.<br>
+            Standard Deviation of Hedging Error: <strong style="color:var(--accent);">$${stdErr.toFixed(2)}</strong> (Average Error: $${meanErr.toFixed(3)}).<br>
+            <strong>Mistake Unveiled</strong>: Quants hedge at fixed intervals because it is easy. By implementing optimal boundary hedging instead, you can **cut your hedging variance by up to 50%** with exactly the same number of trades!
+        `;
+        if (typeof window.safeTypeset === 'function') {
+            window.safeTypeset([outEl]);
+        }
+
+        const ctx = document.getElementById('m3l9HedgeChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m3l9HedgeChartInstance) m3l9HedgeChartInstance.destroy();
+
+        m3l9HedgeChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Delta Hedging Error Distribution',
+                    data: data,
+                    backgroundColor: 'rgba(139, 92, 246, 0.65)',
+                    borderColor: '#8b5cf6',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Hedge Error ($)', font: { size: 9 }, color: tickColor },
+                        ticks: { color: tickColor, font: { size: 8 } },
+                        grid: { color: gridColor }
+                    },
+                    y: {
+                        title: { display: true, text: 'Occurrences', font: { size: 9 }, color: tickColor },
+                        ticks: { color: tickColor, font: { size: 8 } },
+                        grid: { color: gridColor }
+                    }
+                }
+            }
+        });
+    };
+</script>

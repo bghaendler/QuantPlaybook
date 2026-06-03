@@ -1,0 +1,141 @@
+<div id="view-cqf-mp-probability-12" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">1.2 Probability Diagrams</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.2 Probability Diagrams &amp; Venn addition Rules</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Two-way tables, tree branches, set junctions, and the general Addition rule.</div>
+    </header>
+
+    <!-- Core Theory Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">1.2.1 Diagrammatic Foundations &amp; addition Rule</h3>
+        <p>Three principal diagram types map complex experimental outcomes:</p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li><strong>Two-Way sample grids:</strong> Represents bivariate outcomes (e.g. rolling two separate dice totals).</li>
+            <li><strong>Tree Diagrams:</strong> Illustrates sequential trial splits with branch multiplications.</li>
+            <li><strong>Venn Diagrams:</strong> Represents intersection and union sets.</li>
+        </ul>
+        <p>For any two intersecting events $A$ and $B$, the **Addition Rule** states:</p>
+        <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+            $$P(A \cup B) = P(A) + P(B) - P(A \cap B)$$
+        </p>
+    </div>
+
+    <!-- Venn Overlap Laboratory -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">1.2.2 Interactive Venn Area &amp; overlap Laboratory</h3>
+        <p>Adjust individual boundaries to observe joint intersection and union overlaps dynamically:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start;">
+                <!-- Sliders -->
+                <div>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">P(A):</label>
+                            <input id="vennInputA" type="range" min="0.1" max="0.9" step="0.05" value="0.6" oninput="drawVennDiagram()" style="width: 100px;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">P(B):</label>
+                            <input id="vennInputB" type="range" min="0.1" max="0.9" step="0.05" value="0.5" oninput="drawVennDiagram()" style="width: 100px;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">P(A ∩ B):</label>
+                            <input id="vennInputIntersection" type="range" min="0" max="0.5" step="0.05" value="0.25" oninput="drawVennDiagram()" style="width: 100px;">
+                        </div>
+                    </div>
+                    <div style="font-size: 0.85rem; line-height: 1.5; background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid #8b5cf6;">
+                        <div id="vennOutputUnion">P(A ∪ B) = P(A) + P(B) - P(A ∩ B) = 0.85</div>
+                        <div id="vennOutputOnlyA" style="margin-top: 0.25rem;">Only A = P(A) - P(A ∩ B) = 0.35</div>
+                    </div>
+                </div>
+
+                <!-- Live Circle Canvas -->
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
+                    <canvas id="vennCanvas" width="300" height="180" style="width: 100%; height: 180px; background: #000; border-radius: 6px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.drawVennDiagram = function() {
+                const canvas = document.getElementById('vennCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+
+                const pA = parseFloat(document.getElementById('vennInputA').value);
+                const pB = parseFloat(document.getElementById('vennInputB').value);
+                let pIntersection = parseFloat(document.getElementById('vennInputIntersection').value);
+
+                // Caps intersection at min(pA, pB)
+                const maxIntersection = Math.min(pA, pB);
+                if (pIntersection > maxIntersection) {
+                    pIntersection = maxIntersection;
+                    document.getElementById('vennInputIntersection').value = pIntersection;
+                }
+
+                const pUnion = pA + pB - pIntersection;
+                const pOnlyA = pA - pIntersection;
+
+                document.getElementById('vennOutputUnion').innerHTML = `P(A ∪ B) = P(A) + P(B) - P(A ∩ B) = ${pUnion.toFixed(2)}`;
+                document.getElementById('vennOutputOnlyA').innerHTML = `Only A = P(A) - P(A ∩ B) = ${pOnlyA.toFixed(2)}`;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Circle coordinates
+                const rA = Math.sqrt(pA) * 60;
+                const rB = Math.sqrt(pB) * 60;
+
+                let overlapD = rA + rB;
+                if (pIntersection > 0.01) {
+                    overlapD = (rA + rB) * (1 - (pIntersection / maxIntersection) * 0.45);
+                }
+
+                const cAx = canvas.width / 2 - overlapD / 4;
+                const cAy = canvas.height / 2;
+                const cBx = cAx + overlapD / 2;
+                const cBy = cAy;
+
+                // Set A (Blue fill)
+                ctx.fillStyle = 'rgba(59, 130, 246, 0.4)';
+                ctx.beginPath();
+                ctx.arc(cAx, cAy, rA, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.strokeStyle = '#3b82f6';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Set B (Purple fill)
+                ctx.fillStyle = 'rgba(139, 92, 246, 0.4)';
+                ctx.beginPath();
+                ctx.arc(cBx, cBy, rB, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.strokeStyle = '#8b5cf6';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Text labels
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 11px sans-serif';
+                ctx.fillText('Event A', cAx - 20, cAy - rA - 5);
+                ctx.fillText('Event B', cBx - 20, cBy - rB - 5);
+
+                const parent = document.getElementById('view-cqf-mp-probability-12');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            setTimeout(() => {
+                if (document.getElementById('vennInputA')) drawVennDiagram();
+            }, 100);
+        })();
+    </script>
+</div>

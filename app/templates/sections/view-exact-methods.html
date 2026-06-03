@@ -1,0 +1,409 @@
+<div id="view-exact-methods" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">2.2 Exact Methods &amp; Underdetermined Systems</h1>
+        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Solving for the smoothest exact-matching discount curve in underdetermined systems using the Pseudoinverse of Weighted Increments.</div>
+    </header>
+
+    <div style="display: flex; flex-direction: column; gap: 2.5rem; max-width: 1400px; margin-bottom: 4rem;">
+        
+        <!-- INTRO AND THEORY CARDS -->
+        <div class="container" style="margin-bottom: 0; gap: 2rem; align-items: stretch; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+            <div class="card" style="margin-bottom: 0; padding: 2rem; border: 1px solid var(--card-border); background: var(--card-bg);">
+                <h2>The Underdetermined Cash Flow System</h2>
+                <p>When pricing fixed-income securities, we observe $n$ market instruments (e.g., $n = 9$ Gilt bonds) but must resolve the discount factors for all unique cash flow dates $t_j$ ($N = 104$ dates). This results in an **underdetermined linear system**:</p>
+                <div style="text-align: center; margin: 1rem 0; font-family: monospace; font-weight: 700; color: var(--accent);">
+                    $$ C d = p \quad (n \ll N) $$
+                </div>
+                <p>Since there are infinite curves that satisfy this matching equation, we need a mathematical regularization criteria to pick the "best" or "smoothest" curve. This is achieved by minimizing the Euclidean norm of weighted increments.</p>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; background: #f8fafc; border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; color: #334155; font-family: 'Inter', sans-serif;">Weighted Increments Minimization</h3>
+                    <p>We transform the system by looking at the first differences of the discount factors scaled by the time intervals $\delta_j = T_j - T_{j-1}$:</p>
+                    <div style="background: rgba(124, 58, 237, 0.04); padding: 1rem; border-radius: 6px; border-left: 4px solid #7c3aed; margin: 0.75rem 0;">
+                        $$ \Delta_j = \frac{P(0, T_j) - P(0, T_{j-1})}{\sqrt{\delta_j}} $$
+                    </div>
+                    <p>The pseudoinverse solution $\Delta^* = A^\top (AA^\top)^{-1} (p - C \mathbf{1})$ minimizes the sum of squared increments, which acts as a proxy for the continuous smoothness integral $\int |P'(T)|^2 dT$.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- UK GILT SOLVER ENGINE -->
+        <div class="card" style="padding: 2.5rem; border: 1px solid var(--card-border); background: var(--card-bg);">
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.02em;">Interactive Gilt Curve Bootstrap &amp; Regularization</h2>
+            <p style="font-size: 1rem; color: var(--text-color); opacity: 0.75; margin-bottom: 2rem;">
+                Explore the underdetermined solver on the official EPFL UK Gilt portfolio quotes (Spot Date: 4 September 1996, 104 unique cash flow dates). Adjust the regularization weight matrix to see how it resolves the forward curve's sawtooth pattern.
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label for="exactWeightSelect" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Weighting Regularization Matrix ($W$)</label>
+                    <select id="exactWeightSelect" style="padding: 0.5rem; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-weight: 600; color: #334155; outline: none; cursor: pointer;">
+                        <option value="sqrt_delta" selected>Weighted Increments: W_jj = 1 / sqrt(Δt_j) (Standard Smoothness)</option>
+                        <option value="delta">Time-Weighted: W_jj = 1 / Δt_j</option>
+                        <option value="identity">Identity: W_jj = 1 (Unweighted Euclidean Norm)</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; flex-direction: column; justify-content: center; background: rgba(37, 99, 235, 0.03); border: 1px solid rgba(37, 99, 235, 0.1); border-radius: 8px; padding: 0.75rem 1.25rem;">
+                    <div style="font-size: 0.8rem; color: #1e3a8a; font-weight: 700; text-transform: uppercase;">Bootstrapped Portfolio Valuation</div>
+                    <div style="font-size: 1.15rem; color: #111827; font-family: monospace; font-weight: 700; margin-top: 0.25rem;">
+                        Portfolio Value (EPFL Q5): <span id="exactPortfolioVal" style="color: var(--accent);">219.47</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plots Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch;">
+                <div class="card" style="margin-bottom: 0; padding: 1.5rem; border: 1px solid var(--card-border); background: var(--card-bg); height: 400px; position: relative;">
+                    <h4 style="margin: 0 0 1rem 0; font-size: 1.05rem; font-weight: 700; color: var(--text-color); text-align: center;">Discount Curve $P(t_0, T)$ (104 Cash Flow Dates)</h4>
+                    <div style="height: 320px; position: relative;">
+                        <canvas id="exactDiscountChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom: 0; padding: 1.5rem; border: 1px solid var(--card-border); background: var(--card-bg); height: 400px; position: relative;">
+                    <h4 style="margin: 0 0 1rem 0; font-size: 1.05rem; font-weight: 700; color: var(--text-color); text-align: center;">Instantaneous Forward Curve $f(t_0, T)$</h4>
+                    <div style="height: 320px; position: relative;">
+                        <canvas id="exactForwardChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: rgba(239, 68, 68, 0.03); border: 1px solid rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; border-radius: 8px; padding: 1.25rem; margin-top: 2rem; font-size: 0.95rem; line-height: 1.6;">
+                <strong style="color: #b91c1c;">The Gilt Sawtooth Phenomenon:</strong>
+                Notice the extreme "sawtooth" oscillations on the resolved forward curve. Because exact methods enforce strict pricing equality across sparse maturities, the forward rates must undergo violent adjustments at coupon boundaries to exactly balance the constraints. This makes the curve highly unstable for pricing and risk-managing off-market contracts, highlighting the need for <strong>Smoothing Spline methods</strong>.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // Section 2.2: Exact Gilt solver with Weighted Increments
+    // ============================================================
+    let exactDiscountChartInstance = null;
+    let exactForwardChartInstance = null;
+
+    // All 104 unique cash flow dates from EPFL spreadsheet (dates sorted)
+    const giltCFDatesStr = [
+        "1996-09-26", "1996-10-13", "1996-11-06", "1996-11-15", "1996-12-07",
+        "1997-01-19", "1997-02-27", "1997-03-03", "1997-03-08", "1997-03-26",
+        "1997-04-13", "1997-05-06", "1997-06-07", "1997-07-19", "1997-08-27",
+        "1997-09-03", "1997-09-08", "1997-09-26", "1997-10-13", "1997-11-06",
+        "1997-12-07", "1998-01-19", "1998-02-27", "1998-03-03", "1998-03-08",
+        "1998-03-26", "1998-04-13", "1998-05-06", "1998-06-07", "1998-08-27",
+        "1998-09-03", "1998-09-08", "1998-09-26", "1998-10-13", "1998-11-06",
+        "1998-12-07", "1999-02-27", "1999-03-03", "1999-03-08", "1999-03-26",
+        "1999-04-13", "1999-05-06", "1999-06-07", "1999-08-27", "1999-09-03",
+        "1999-09-08", "1999-10-13", "1999-11-06", "1999-12-07", "2000-02-27",
+        "2000-03-03", "2000-03-08", "2000-04-13", "2000-05-06", "2000-06-07",
+        "2000-08-27", "2000-09-08", "2000-10-13", "2000-11-06", "2000-12-07",
+        "2001-02-27", "2001-03-08", "2001-04-13", "2001-05-06", "2001-06-07",
+        "2001-08-27", "2001-09-08", "2001-10-13", "2001-11-06", "2001-12-07",
+        "2002-02-27", "2002-03-08", "2002-04-13", "2002-06-07", "2002-08-27",
+        "2002-09-08", "2002-10-13", "2002-12-07", "2003-03-08", "2003-04-13",
+        "2003-06-07", "2003-09-08", "2003-10-13", "2003-12-07", "2003-03-08",
+        "2004-03-08", "2004-04-13", "2004-06-07", "2004-09-08", "2004-10-13",
+        "2004-12-07", "2005-03-08", "2005-04-13", "2005-06-07", "2005-09-08",
+        "2005-10-13", "2005-12-07", "2006-03-08", "2006-04-13", "2006-09-08",
+        "2006-10-13", "2007-04-13", "2007-10-13", "2008-04-13", "2008-10-13"
+    ];
+
+    const giltBonds = {
+        'Bond 1': { coupon: 10.00, next_coupon: "1996-11-15", maturity: "1996-11-15", price: 103.82 },
+        'Bond 2': { coupon: 9.75, next_coupon: "1997-01-19", maturity: "1998-01-19", price: 106.04 },
+        'Bond 3': { coupon: 12.25, next_coupon: "1996-09-26", maturity: "1999-03-26", price: 118.44 },
+        'Bond 4': { coupon: 9.00, next_coupon: "1997-03-03", maturity: "2000-03-03", price: 106.28 },
+        'Bond 5': { coupon: 7.00, next_coupon: "1996-11-06", maturity: "2001-11-06", price: 101.15 },
+        'Bond 6': { coupon: 9.75, next_coupon: "1997-02-27", maturity: "2002-08-27", price: 111.06 },
+        'Bond 7': { coupon: 8.50, next_coupon: "1996-12-07", maturity: "2005-12-07", price: 106.24 },
+        'Bond 8': { coupon: 7.75, next_coupon: "1997-03-08", maturity: "2006-09-08", price: 98.49 },
+        'Bond 9': { coupon: 9.00, next_coupon: "1996-10-13", maturity: "2008-10-13", price: 110.87 }
+    };
+
+    // Spot Date: 4 September 1996
+    const spotDateExact = new Date("1996-09-04");
+
+    // Helper functions for 30/360 daycount
+    function days30360Exact(d1, d2) {
+        let y1 = d1.getFullYear(), m1 = d1.getMonth() + 1, day1 = d1.getDate();
+        let y2 = d2.getFullYear(), m2 = d2.getMonth() + 1, day2 = d2.getDate();
+        if (day1 === 31) day1 = 30;
+        if (day2 === 31 && day1 >= 30) day2 = 30;
+        return 360 * (y2 - y1) + 30 * (m2 - m1) + (day2 - day1);
+    }
+
+    // Helper for matrix inversion
+    function invertMatrix(M) {
+        const n = M.length;
+        const A = M.map(row => [...row]); // Deep copy
+        const I = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => i === j ? 1.0 : 0.0));
+        
+        for (let i = 0; i < n; i++) {
+            let pivot = A[i][i];
+            if (Math.abs(pivot) < 1e-12) {
+                // Find non-zero pivot row
+                let swapRow = -1;
+                for (let k = i + 1; k < n; k++) {
+                    if (Math.abs(A[k][i]) > 1e-12) { swapRow = k; break; }
+                }
+                if (swapRow === -1) return null; // Singular matrix
+                // Swap rows
+                [A[i], A[swapRow]] = [A[swapRow], A[i]];
+                [I[i], I[swapRow]] = [I[swapRow], I[i]];
+                pivot = A[i][i];
+            }
+            // Scale row
+            for (let j = 0; j < n; j++) {
+                A[i][j] /= pivot;
+                I[i][j] /= pivot;
+            }
+            // Eliminate columns
+            for (let k = 0; k < n; k++) {
+                if (k !== i) {
+                    const factor = A[k][i];
+                    for (let j = 0; j < n; j++) {
+                        A[k][j] -= factor * A[i][j];
+                        I[k][j] -= factor * I[i][j];
+                    }
+                }
+            }
+        }
+        return I;
+    }
+
+    function runExactMethodsSimulation() {
+        const weightType = document.getElementById('exactWeightSelect').value;
+        const cfDates = giltCFDatesStr.map(d => new Date(d));
+        const N = cfDates.length;
+
+        // Build cash flow matrix C (9 bonds x 104 cash flow dates)
+        const bondNames = Object.keys(giltBonds).sort();
+        const C = Array.from({ length: 9 }, () => Array(N).fill(0.0));
+        const p = [];
+
+        bondNames.forEach((name, bIdx) => {
+            const bond = giltBonds[name];
+            p.push(bond.price);
+
+            // Generate bond coupon cash flows
+            const nextC = new Date(bond.next_coupon);
+            const mat = new Date(bond.maturity);
+            const coupon = bond.coupon;
+
+            let curr = new Date(mat);
+            const cDates = [];
+            while (curr >= nextC) {
+                cDates.push(new Date(curr));
+                // Move back 6 months
+                let m = curr.getMonth() - 6;
+                let y = curr.getFullYear();
+                if (m < 0) { m += 12; y -= 1; }
+                curr = new Date(y, m, Math.min(curr.getDate(), 28));
+            }
+            
+            cDates.forEach(cDate => {
+                // Find matching column index in N cash flow dates
+                const timeStr = cDate.toISOString().split('T')[0];
+                const colIdx = giltCFDatesStr.indexOf(timeStr);
+                if (colIdx !== -1) {
+                    let amt = coupon / 2.0;
+                    if (cDate.getTime() === mat.getTime()) {
+                        amt += 100.0;
+                    }
+                    C[bIdx][colIdx] = amt;
+                }
+            });
+        });
+
+        // Year fractions (delta) for intervals
+        const deltas = [];
+        deltas.push(days30360Exact(spotDateExact, cfDates[0]) / 360.0);
+        for (let j = 1; j < N; j++) {
+            deltas.push(days30360Exact(cfDates[j-1], cfDates[j]) / 360.0);
+        }
+
+        // Set up weights matrix W^(-1) diagonal values
+        const W_inv_diag = [];
+        deltas.forEach(d => {
+            if (weightType === 'sqrt_delta') {
+                W_inv_diag.push(Math.sqrt(d));
+            } else if (weightType === 'delta') {
+                W_inv_diag.push(d);
+            } else {
+                W_inv_diag.push(1.0); // Identity
+            }
+        });
+
+        // Compute C_int = C * M^(-1) which is cumulative sums from right to left
+        const C_int = Array.from({ length: 9 }, () => Array(N).fill(0.0));
+        for (let i = 0; i < 9; i++) {
+            let runningSum = 0.0;
+            for (let j = N - 1; j >= 0; j--) {
+                runningSum += C[i][j];
+                C_int[i][j] = runningSum;
+            }
+        }
+
+        // Compute A = C_int * W^(-1), scaling each column j by W_inv_diag[j]
+        const A = Array.from({ length: 9 }, () => Array(N).fill(0.0));
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < N; j++) {
+                A[i][j] = C_int[i][j] * W_inv_diag[j];
+            }
+        }
+
+        // Compute S = A * A^T (dimensions 9 x 9)
+        const S = Array.from({ length: 9 }, () => Array(9).fill(0.0));
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                let sum = 0.0;
+                for (let k = 0; k < N; k++) {
+                    sum += A[i][k] * A[j][k];
+                }
+                S[i][j] = sum;
+            }
+        }
+
+        // Invert S
+        const S_inv = invertMatrix(S);
+        if (!S_inv) {
+            console.error("Singular matrix S!");
+            return;
+        }
+
+        // Right-hand side: b = p - C * M^(-1) * e_1 = p - C * 1
+        const b = [];
+        for (let i = 0; i < 9; i++) {
+            const sumCF = C[i].reduce((sum, val) => sum + val, 0.0);
+            b.push(p[i] - sumCF);
+        }
+
+        // Solve S * x = b => x = S_inv * b
+        const x = Array(9).fill(0.0);
+        for (let i = 0; i < 9; i++) {
+            let sum = 0.0;
+            for (let j = 0; j < 9; j++) {
+                sum += S_inv[i][j] * b[j];
+            }
+            x[i] = sum;
+        }
+
+        // Solve delta_star = A^T * x
+        const delta_star = Array(N).fill(0.0);
+        for (let j = 0; j < N; j++) {
+            let sum = 0.0;
+            for (let i = 0; i < 9; i++) {
+                sum += A[i][j] * x[i];
+            }
+            delta_star[j] = sum;
+        }
+
+        // Solve increments y_star = W^(-1) * delta_star
+        const y_star = Array(N).fill(0.0);
+        for (let j = 0; j < N; j++) {
+            y_star[j] = W_inv_diag[j] * delta_star[j];
+        }
+
+        // Reconstruct discount factors d_star = M^(-1) * (y_star + e_1) = cumulative sum of y_star + 1
+        const d_star = Array(N).fill(0.0);
+        let sumY = 0.0;
+        for (let j = 0; j < N; j++) {
+            sumY += y_star[j];
+            d_star[j] = sumY + 1.0;
+        }
+
+        // Compute Portfolio Value (EPFL Q5 cash flows: 80, 100, 60, 250 on dates: 2002-08-27, 2005-12-07, 2006-09-08, 2008-10-13)
+        const pDates = ["2002-08-27", "2005-12-07", "2006-09-08", "2008-10-13"];
+        const pCFs = [80, 100, 60, 250];
+        let pValue = 0.0;
+        pDates.forEach((pDate, idx) => {
+            const colIdx = giltCFDatesStr.indexOf(pDate);
+            if (colIdx !== -1) {
+                pValue += pCFs[idx] * d_star[colIdx];
+            }
+        });
+        document.getElementById('exactPortfolioVal').textContent = pValue.toFixed(2);
+
+        // Instantaneous forward rates: f_j = -ln(P_j / P_{j-1}) / delta_j
+        const f_rates = [];
+        f_rates.push(-Math.log(d_star[0]) / deltas[0]);
+        for (let j = 1; j < N; j++) {
+            f_rates.push(-Math.log(d_star[j] / d_star[j-1]) / deltas[j]);
+        }
+
+        // Render curves
+        const t_vals = [];
+        let t_accum = 0.0;
+        deltas.forEach(d => {
+            t_accum += d;
+            t_vals.push(t_accum.toFixed(2) + 'Y');
+        });
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#64748b';
+
+        // Render Discount Plot
+        const ctxD = document.getElementById('exactDiscountChart').getContext('2d');
+        if (exactDiscountChartInstance) { exactDiscountChartInstance.destroy(); }
+        exactDiscountChartInstance = new Chart(ctxD, {
+            type: 'line',
+            data: {
+                labels: t_vals,
+                datasets: [{
+                    label: 'Discount Factor P(0, T)',
+                    data: d_star,
+                    borderColor: '#2563eb',
+                    borderWidth: 2,
+                    pointRadius: 1,
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { color: gridColor }, ticks: { color: tickColor, maxTicksLimit: 12 } },
+                    y: { grid: { color: gridColor }, ticks: { color: tickColor } }
+                }
+            }
+        });
+
+        // Render Forward Curve Plot (Sawtooth!)
+        const ctxF = document.getElementById('exactForwardChart').getContext('2d');
+        if (exactForwardChartInstance) { exactForwardChartInstance.destroy(); }
+        exactForwardChartInstance = new Chart(ctxF, {
+            type: 'line',
+            data: {
+                labels: t_vals,
+                datasets: [{
+                    label: 'Instantaneous Forward Rate f(0, T) (%)',
+                    data: f_rates.map(f => f * 100.0),
+                    borderColor: '#ef4444',
+                    borderWidth: 1.5,
+                    pointRadius: 0.5,
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { color: gridColor }, ticks: { color: tickColor, maxTicksLimit: 12 } },
+                    y: { grid: { color: gridColor }, ticks: { color: tickColor } }
+                }
+            }
+        });
+    }
+
+    // Attach listener
+    document.getElementById('exactWeightSelect').onchange = runExactMethodsSimulation;
+</script>

@@ -1,0 +1,671 @@
+<div id="view-cqf-m1-l5" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 01: Building Blocks</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 05</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L5: Applied Stochastic Calculus II</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Itô's Hierarchy, SDE Solutions, and Advanced Stochastic Integration</div>
+    </header>
+
+    <!-- Navigation Tabs for Ito Hierarchy and Exercises -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
+        <button id="tabItoHierarchy" onclick="switchL5Tab('hierarchy')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Itô's Lemma Hierarchy</button>
+        <button id="tabItoExercises" onclick="switchL5Tab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Exercise Problems</button>
+    </div>
+
+    <!-- Section A: Ito Hierarchy Cards -->
+    <div id="secL5Hierarchy" style="display: block;">
+        <div class="container" style="grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 2rem;">
+            <!-- Ito 1 & 2 -->
+            <div class="card" style="margin-bottom: 0;">
+                <h4 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700;">Itô I &amp; II (1D BM)</h4>
+                <p style="font-size: 0.88rem; line-height: 1.5;">Evaluates functions of time and standard Brownian motion $F(t, X_t)$:</p>
+                <p style="font-size: 0.85rem; text-align: center; font-weight: 700;">$$dF = \left(\frac{\partial F}{\partial t} + \frac{1}{2}\frac{\partial^2 F}{\partial X^2}\right)dt + \frac{\partial F}{\partial X} dX$$</p>
+            </div>
+            <!-- Ito 3 & 4 -->
+            <div class="card" style="margin-bottom: 0;">
+                <h4 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">Itô III &amp; IV (GBM Stock)</h4>
+                <p style="font-size: 0.88rem; line-height: 1.5;">Evaluates functions of time and GBM asset price $V(t, S_t)$ where $dS = \mu S dt + \sigma S dX$:</p>
+                <p style="font-size: 0.85rem; text-align: center; font-weight: 700;">$$dV = \left(\frac{\partial V}{\partial t} + \mu S \frac{\partial V}{\partial S} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2}\right)dt + \sigma S \frac{\partial V}{\partial S} dX$$</p>
+            </div>
+            <!-- Ito 5 & 6 -->
+            <div class="card" style="margin-bottom: 0;">
+                <h4 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">Itô V &amp; VI (Multi-Factor)</h4>
+                <p style="font-size: 0.88rem; line-height: 1.5;">Generalizes to general processes and multi-factor contract structures $V(t, S_1, S_2)$ with correlation $\rho$:</p>
+                <p style="font-size: 0.82rem; text-align: center; font-weight: 700;">$$dV = \left(\dots + \rho \sigma_1 \sigma_2 S_1 S_2 \frac{\partial^2 V}{\partial S_1 \partial S_2}\right)dt + \dots$$</p>
+            </div>
+        </div>
+
+        <!-- Exact solutions info block -->
+        <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--accent); margin-bottom: 2rem; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6;">
+            <h3 style="margin-top: 0; font-size: 1.1rem; font-weight: 700; color: var(--accent);">Closed-Form Analytical Solutions</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 0.75rem;">
+                <div>
+                    <h4 style="margin: 0 0 0.25rem 0; font-size: 0.92rem; font-weight: 700;">Geometric Brownian Motion (GBM)</h4>
+                    <p style="margin: 0; font-size: 0.88rem;">Derived using Itô III on $V(S) = \log S$:</p>
+                    <p style="text-align: center; font-weight: 700; margin: 0.5rem 0; font-size: 0.9rem;">$$S_t = S_0 \exp\left( \left(\mu - \frac{1}{2}\sigma^2\right)t + \sigma W_t \right)$$</p>
+                </div>
+                <div>
+                    <h4 style="margin: 0 0 0.25rem 0; font-size: 0.92rem; font-weight: 700;">Vasicek Interest Rate Model</h4>
+                    <p style="margin: 0; font-size: 0.88rem;">Derived via integrating factor $e^{\gamma t}$ on $dr = \gamma(\bar{r}-r)dt + \sigma dW_t$:</p>
+                    <p style="text-align: center; font-weight: 700; margin: 0.5rem 0; font-size: 0.9rem;">$$r_t = \bar{r} + (r_0 - \bar{r})e^{-\gamma t} + \sigma \int_0^t e^{\gamma(s-t)} dW_s$$</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section B: Worked Solutions Sheet -->
+    <div id="secL5Exercises" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Problem A: SDE Zero-Drift Calibration -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem A: Stochastic Differential Equation Calibration</h3>
+                <p>Calibrate a smooth function $g(S)$ of a stochastic process $dS_t = B(S_t, t)dt + A(S_t, t)dW_t$ to have zero drift but active volatility, and derive the governing ODE.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Apply standard Itô's Lemma to $g(S)$:</strong>
+                            Since $g$ is a function of a stochastic process $S_t$, we write:
+                            $$dg(S_t) = \left( B(S_t, t) \frac{dg}{dS} + \frac{1}{2} A^2(S_t, t) \frac{d^2g}{dS^2} \right) dt + A(S_t, t) \frac{dg}{dS} dW_t$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Enforce Zero-Drift Condition:</strong>
+                            For the transformed process $dg(S)$ to have zero deterministic drift, we must force the coefficient of the $dt$ component to zero:
+                            $$B(S_t, t) \frac{dg}{dS} + \frac{1}{2} A^2(S_t, t) \frac{d^2g}{dS^2} = 0$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Reformulate as a Second-Order Linear ODE:</strong>
+                            Letting $g'(S) = \psi(S)$ simplifies the equation into a separable first-order ODE:
+                            $$B(S) \psi(S) + \frac{1}{2} A^2(S) \psi'(S) = 0 \implies \frac{\psi'(S)}{\psi(S)} = -\frac{2B(S)}{A^2(S)}$$
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Integrate to find the Calibration Function $g(S)$:</strong>
+                            $$\ln \psi(S) = -2\int \frac{B(S)}{A^2(S)} dS \implies \psi(S) = C_1 \exp\left( -2\int \frac{B(S)}{A^2(S)} dS \right)$$
+                            Integrating once more yields the final spatial calibration formula:
+                            $$g(S) = C_1 \int \exp\left( -2\int \frac{B(u)}{A^2(u)} du \right) dS + C_2$$
+                        </li>
+                    </ol>
+                </div>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid var(--accent); padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. Why apply Itô's Lemma first?</strong> The asset price moves randomly. If we want to construct a derivative contract or transform the price ($g(S)$), we need to see how this new contract changes. Itô's Lemma is the mathematical tool that splits these changes into a smooth conveyor belt (drift) and a random shaking (volatility).</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. Why force the drift to zero?</strong> We want to design a contract that is a "fair bet" (a martingale). In a fair game, there is no smooth conveyor belt pushing your average returns up or down over time, so we set the drift terms to zero.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. What does the ODE represent?</strong> It is a balance condition. It states that the smooth drift ($B$) of the asset must be perfectly balanced by the curvature of our contract ($g''$) multiplied by the volatility ($A^2$). This is a classic "variance drag" balancing act.</p>
+                        <p style="margin: 0;"><strong>4. Why solve for $g(S)$?</strong> Solving this ODE tells us the exact shape or formula our contract must have to remain driftless. This is extremely useful for risk-management and pricing structured financial contracts.</p>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Problem B: Advanced Stochastic Integration -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem B: Advanced Stochastic Integration</h3>
+                <p>Evaluate the stochastic integral $\int_{0}^{t} W_s (1 - e^{-W_s^2}) dW_s$ in closed analytical form, and verify its statistical convergence numerically.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Define target function $F(W, t)$ to match integrand:</strong>
+                            We seek $F$ such that $\frac{\partial F}{\partial W} = W(1 - e^{-W^2}) = W - W e^{-W^2}$.
+                            Integrating with respect to $W$:
+                            $$F(W, t) = \frac{1}{2}W^2 + \frac{1}{2}e^{-W^2}$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Compute Necessary Derivatives of $F$:</strong>
+                            $$\frac{\partial F}{\partial t} = 0 \quad , \quad \frac{\partial F}{\partial W} = W - W e^{-W^2}$$
+                            $$\frac{\partial^2 F}{\partial W^2} = 1 - \left( e^{-W^2} - 2W^2 e^{-W^2} \right) = 1 - e^{-W^2} + 2W^2 e^{-W^2}$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Apply Stochastic Integral Formula:</strong>
+                            $$\int_{0}^{t} \frac{\partial F}{\partial W} dW_s = F(W_t, t) - F(W_0, 0) - \int_{0}^{t} \left( \frac{\partial F}{\partial s} + \frac{1}{2} \frac{\partial^2 F}{\partial W^2} \right) ds$$
+                            Substituting our derivatives:
+                            $$\int_{0}^{t} W_s(1 - e^{-W_s^2}) dW_s = \left(\frac{1}{2}W_t^2 + \frac{1}{2}e^{-W_t^2}\right) - \left(0 + \frac{1}{2}\right) - \int_{0}^{t} \frac{1}{2}\left(1 - e^{-W_s^2} + 2W_s^2 e^{-W_s^2}\right) ds$$
+                        </li>
+                        <li style="margin: 0;">
+                            <strong>State the final analytical exact closed form:</strong>
+                            $$\int_{0}^{t} W_s(1 - e^{-W_s^2}) dW_s = \frac{1}{2}W_t^2 + \frac{1}{2}e^{-W_t^2} - \frac{1}{2} - \frac{1}{2}\int_{0}^{t} \left(1 - e^{-W_s^2} + 2W_s^2 e^{-W_s^2}\right) ds$$
+                            This is validated numerically in the laboratory dashboard to high precision.
+                        </li>
+                    </ol>
+                </div>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: #8b5cf6; font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid #8b5cf6; padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. Why choose that specific starting function?</strong> In ordinary calculus, the integral of $x(1-e^{-x^2})dx$ is evaluated by parts or substitution to yield $\frac{1}{2}x^2 + \frac{1}{2}e^{-x^2}$. We use this exact antiderivative function to serve as our base blueprint.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. Why calculate the second derivative?</strong> Because stochastic calculus requires the second-order Itô expansion, we must evaluate the concavity (curvature) of our target function. This generates the unique stochastic correction term.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. What does the final integral represent?</strong> The remaining time integral is non-stochastic (meaning it integrates over standard time $ds$, not $dW_s$). It represents the smooth variance drag that accumulates along the specific path the random walker takes.</p>
+                        <p style="margin: 0;"><strong>4. Why verify it numerically?</strong> Advanced integrals are difficult to trust without empirical verification. The SDE laboratory dashboard simulates these paths in real-time and sums up thousands of daily steps, proving that the numerical Riemann sum perfectly converges to our analytical formula.</p>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Problem C: Steady-State Fokker-Planck Relation -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem C: Steady-State Fokker-Planck Relation</h3>
+                <p>Prove that at steady state ($\frac{\partial p_\infty}{\partial t} = 0$), the Fokker-Planck (Forward Kolmogorov) equation integrates to yield the drift parameter relation: $u(r) = \nu^2\beta r^{2\beta-1} + \frac{1}{2}\nu^2 r^{2\beta}\frac{d}{dr}(\log p_\infty)$.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>State the Fokker-Planck Equation:</strong>
+                            For a general SDE $dr_t = u(r)dt + w(r)dW_t$ where $w(r) = \nu r^\beta$, the transition density $p$ satisfies:
+                            $$\frac{\partial p}{\partial t} = -\frac{\partial}{\partial r}\left( u(r) p \right) + \frac{1}{2}\frac{\partial^2}{\partial r^2}\left( w^2(r) p \right)$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Set to Steady State and Integrate:</strong>
+                            At steady state, the temporal derivative is zero ($\frac{\partial p_\infty}{\partial t} = 0$). Integrating both sides once with respect to $r$ (setting boundary constants to zero):
+                            $$-u(r) p_\infty + \frac{1}{2}\frac{d}{dr}\left( w^2(r) p_\infty \right) = 0 \implies u(r) p_\infty = \frac{1}{2}\frac{d}{dr}\left( \nu^2 r^{2\beta} p_\infty \right)$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Expand the derivative via product rule:</strong>
+                            $$u(r) p_\infty = \frac{1}{2}\nu^2 \left( 2\beta r^{2\beta-1} p_\infty + r^{2\beta} \frac{dp_\infty}{dr} \right)$$
+                            Dividing both sides by the probability density $p_\infty$:
+                            $$u(r) = \nu^2 \beta r^{2\beta-1} + \frac{1}{2}\nu^2 r^{2\beta} \frac{1}{p_\infty}\frac{dp_\infty}{dr}$$
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Substitute Logarithmic Derivative:</strong>
+                            Noting that $\frac{1}{p}\frac{dp}{dr} = \frac{d}{dr}(\log p)$ yields the final elegant drift relationship:
+                            $$u(r) = \nu^2 \beta r^{2\beta-1} + \frac{1}{2}\nu^2 r^{2\beta} \frac{d}{dr}(\log p_\infty)$$
+                        </li>
+                    </ol>
+                </div>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: #10b981; font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid #10b981; padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. What does "steady state" mean?</strong> If you leave a random system running for a very long time, it eventually settles into a stable probability distribution. The probability peak stops moving around, meaning time changes are zero ($\frac{\partial p}{\partial t} = 0$).</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. Why integrate once?</strong> The Fokker-Planck equation is a second-order PDE. Integrating it once simplifies it into a first-order equation representing a zero net-flow balance of probability.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. Why use the product rule?</strong> Volatility depends on the rate level ($r^{2\beta}$). As the rate changes, the volatility strength changes. The product rule captures both the change in the rate's probability and the change in volatility strength itself.</p>
+                        <p style="margin: 0;"><strong>4. Why substitute $\log p$?</strong> The ratio of probability slope to absolute probability level ($\frac{1}{p}\frac{dp}{dr}$) is exactly the derivative of the log probability. This mathematical substitution simplifies a messy ratio into a clean, elegant relation that is easy to analyze.</p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </div>
+
+    <!-- SDE Solver Laboratory -->
+    <div class="card" style="margin-bottom: 2rem;">
+        <div style="margin-bottom: 1.5rem;">
+            <h2 style="margin: 0; font-family: var(--font-family-sans); font-weight: 800; font-size: 1.4rem;">4. Advanced SDE Solver &amp; Exercises Laboratory</h2>
+            <div style="color: #6b7280; font-size: 0.95rem; margin-top: 0.25rem;">Compare analytical exact solutions directly against Euler-Maruyama approximations over identical Brownian increments. Or switch to the Exercise B sandbox to verify advanced stochastic integration formulas numerically.</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 300px 1fr; gap: 2rem; align-items: start;">
+            <!-- Controls Column -->
+            <div style="background: var(--metric-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-family-sans);">
+                <h3 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">Laboratory Inputs</h3>
+                
+                <!-- Laboratory Mode Dropdown Selector -->
+                <div>
+                    <span style="font-weight: 600; display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-color);">Laboratory Mode</span>
+                    <select id="l5ModeSelect" onchange="updateCqfM1L5Simulation()" style="width: 100%; padding: 0.4rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; cursor: pointer; font-family: var(--font-family-sans); font-weight: 600;">
+                        <option value="gbm">Exact vs. Euler-Maruyama (GBM)</option>
+                        <option value="vasicek">Exact vs. Euler-Maruyama (Vasicek)</option>
+                        <option value="exerciseB">Advanced Stochastic Integral (Problem B)</option>
+                    </select>
+                </div>
+
+                <!-- Slider 1: Drift or Reversion Speed -->
+                <div id="divL5Param1">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label id="lblL5Param1" for="l5Param1Slider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Drift ($\mu$)</label>
+                        <span id="l5Param1Val" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">5.0%</span>
+                    </div>
+                    <input id="l5Param1Slider" type="range" min="-50" max="250" step="5" value="5" style="width: 100%; cursor: pointer;" oninput="updateCqfM1L5Simulation()">
+                </div>
+
+                <!-- Slider 2: Volatility -->
+                <div id="divL5Vol">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="l5VolSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Volatility ($\sigma$)</label>
+                        <span id="l5VolVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">20.0%</span>
+                    </div>
+                    <input id="l5VolSlider" type="range" min="5" max="80" step="1" value="20" style="width: 100%; cursor: pointer;" oninput="updateCqfM1L5Simulation()">
+                </div>
+
+                <!-- Slider 3: Reversion Target (hidden if GBM) -->
+                <div id="divL5Target" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="l5TargetSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Reversion Target ($\bar{r}$)</label>
+                        <span id="l5TargetVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">6.0%</span>
+                    </div>
+                    <input id="l5TargetSlider" type="range" min="1" max="25" step="0.5" value="6" style="width: 100%; cursor: pointer;" oninput="updateCqfM1L5Simulation()">
+                </div>
+
+                <!-- Slider 4: Time Steps -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="l5StepsSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Steps ($N$)</label>
+                        <span id="l5StepsVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">200 Steps</span>
+                    </div>
+                    <input id="l5StepsSlider" type="range" min="50" max="500" step="10" value="200" style="width: 100%; cursor: pointer;" oninput="updateCqfM1L5Simulation()">
+                </div>
+
+                <div style="border-top: 1px solid var(--card-border); padding-top: 1rem;">
+                    <button onclick="runAdvancedSimulation()" style="width: 100%; background: var(--accent); color: white; border: none; padding: 0.6rem; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: background 0.2s;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                        Regenerate Paths
+                    </button>
+                </div>
+            </div>
+
+            <!-- Visual Charts Grid Column -->
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <!-- Statistics Calibration Header -->
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; font-family: var(--font-family-sans);">
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.6rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Numerical Integral Value</div>
+                        <div id="outL5NumIntegral" style="font-size: 1.1rem; font-weight: 800; margin-top: 0.1rem; font-family: monospace;">2.341</div>
+                    </div>
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.6rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Analytical Exact Value</div>
+                        <div id="outL5ExactIntegral" style="font-size: 1.1rem; font-weight: 800; margin-top: 0.1rem; font-family: monospace;">2.345</div>
+                    </div>
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.6rem; border-radius: 8px; text-align: center; border-bottom: 2px solid var(--accent);">
+                        <div style="font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Accumulated path error</div>
+                        <div id="outL5Error" style="font-size: 1.1rem; font-weight: 800; margin-top: 0.1rem; font-family: monospace; color: var(--accent);">0.004</div>
+                    </div>
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.6rem; border-radius: 8px; text-align: center; border-bottom: 2px solid #10b981;">
+                        <div style="font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Solver Status</div>
+                        <div id="outL5Status" style="font-size: 1.1rem; font-weight: 800; margin-top: 0.1rem; font-family: monospace; color: #10b981;">CONVERGED</div>
+                    </div>
+                </div>
+
+                <!-- Dynamic charts layout -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <!-- Chart A: Primary Path Plot -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; min-height: 280px; position: relative;">
+                        <h4 id="lblChartA" style="margin: 0 0 0.75rem 0; font-family: var(--font-family-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-color); text-transform: uppercase; letter-spacing: 0.05em;">Euler-Maruyama vs Exact path</h4>
+                        <div style="width: 100%; height: 220px;">
+                            <canvas id="l5ChartA"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart B: Secondary Error/Integral Plot -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; min-height: 280px; position: relative;">
+                        <h4 id="lblChartB" style="margin: 0 0 0.75rem 0; font-family: var(--font-family-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-color); text-transform: uppercase; letter-spacing: 0.05em;">Approximation residual error</h4>
+                        <div style="width: 100%; height: 220px;">
+                            <canvas id="l5ChartB"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Javascript PDE and SDE Solver engine -->
+    <script>
+        (function() {
+            let chartAInstance = null;
+            let chartBInstance = null;
+
+            window.switchL5Tab = function(tab) {
+                const tabHier = document.getElementById('tabItoHierarchy');
+                const tabEx = document.getElementById('tabItoExercises');
+                const secHier = document.getElementById('secL5Hierarchy');
+                const secEx = document.getElementById('secL5Exercises');
+
+                if (tab === 'hierarchy') {
+                    tabHier.style.color = 'var(--accent)';
+                    tabHier.style.borderBottomColor = 'var(--accent)';
+                    tabEx.style.color = '#6b7280';
+                    tabEx.style.borderBottomColor = 'transparent';
+                    secHier.style.display = 'block';
+                    secEx.style.display = 'none';
+                } else {
+                    tabEx.style.color = 'var(--accent)';
+                    tabEx.style.borderBottomColor = 'var(--accent)';
+                    tabHier.style.color = '#6b7280';
+                    tabHier.style.borderBottomColor = 'transparent';
+                    secEx.style.display = 'block';
+                    secHier.style.display = 'none';
+                }
+            };
+
+            window.updateCqfM1L5Simulation = function() {
+                const mode = document.getElementById('l5ModeSelect').value;
+                const param1 = parseFloat(document.getElementById('l5Param1Slider').value) / 100.0;
+                const sig = parseFloat(document.getElementById('l5VolSlider').value) / 100.0;
+                const target = parseFloat(document.getElementById('l5TargetSlider').value) / 100.0;
+                const steps = parseInt(document.getElementById('l5StepsSlider').value);
+
+                // Update text UI values
+                document.getElementById('l5VolVal').innerText = (sig * 100.0).toFixed(1) + '%';
+                document.getElementById('l5StepsVal').innerText = steps + ' Steps';
+                document.getElementById('l5TargetVal').innerText = (target * 100.0).toFixed(1) + '%';
+
+                const divVol = document.getElementById('divL5Vol');
+                const divTarget = document.getElementById('divL5Target');
+                const divParam1 = document.getElementById('divL5Param1');
+                const lblParam1 = document.getElementById('lblL5Param1');
+
+                if (mode === 'gbm') {
+                    divVol.style.display = 'block';
+                    divTarget.style.display = 'none';
+                    divParam1.style.display = 'block';
+                    lblParam1.innerText = 'Drift (μ)';
+                    document.getElementById('l5Param1Val').innerText = (param1 * 100.0).toFixed(1) + '%';
+                } else if (mode === 'vasicek') {
+                    divVol.style.display = 'block';
+                    divTarget.style.display = 'block';
+                    divParam1.style.display = 'block';
+                    lblParam1.innerText = 'Reversion Speed (γ)';
+                    const speed = parseFloat(document.getElementById('l5Param1Slider').value) / 100.0;
+                    document.getElementById('l5Param1Val').innerText = speed.toFixed(2);
+                } else if (mode === 'exerciseB') {
+                    divVol.style.display = 'none';
+                    divTarget.style.display = 'none';
+                    divParam1.style.display = 'none';
+                }
+
+                runAdvancedSimulation();
+            };
+
+            window.runAdvancedSimulation = function() {
+                const mode = document.getElementById('l5ModeSelect').value;
+                const param1Val = parseFloat(document.getElementById('l5Param1Slider').value);
+                const sig = parseFloat(document.getElementById('l5VolSlider').value) / 100.0;
+                const target = parseFloat(document.getElementById('l5TargetSlider').value) / 100.0;
+                const steps = parseInt(document.getElementById('l5StepsSlider').value);
+
+                const T = 1.0;
+                const dt = T / steps;
+                const sqrtDt = Math.sqrt(dt);
+
+                const isDark = document.body.classList.contains('dark-theme');
+                const axisColor = isDark ? '#444c56' : '#cbd5e1';
+                const gridColor = isDark ? 'rgba(68, 76, 86, 0.2)' : 'rgba(203, 213, 225, 0.2)';
+                const labelColor = isDark ? '#adbac7' : '#475569';
+
+                // Chart labels updates
+                const lblChartA = document.getElementById('lblChartA');
+                const lblChartB = document.getElementById('lblChartB');
+
+                const timeline = ['0.00'];
+                let tAccum = 0.0;
+
+                if (mode === 'gbm') {
+                    lblChartA.innerText = 'Euler-Maruyama vs Exact path (GBM)';
+                    lblChartB.innerText = 'Approximation residual error';
+
+                    const mu = param1Val / 100.0;
+                    let S0 = 100.0;
+
+                    let S_euler = S0;
+                    let S_exact = S0;
+                    let W = 0.0;
+
+                    const eulerPath = [S_euler];
+                    const exactPath = [S_exact];
+                    const errorPath = [0.0];
+
+                    for (let s = 1; s <= steps; s++) {
+                        const u1 = Math.random() || 0.0001;
+                        const u2 = Math.random() || 0.0001;
+                        const Z = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+                        const dW = sqrtDt * Z;
+
+                        // 1. Euler Approximation
+                        S_euler += mu * S_euler * dt + sig * S_euler * dW;
+
+                        // 2. Exact closed form solution
+                        W += dW;
+                        const time = s * dt;
+                        S_exact = S0 * Math.exp((mu - 0.5 * sig * sig) * time + sig * W);
+
+                        eulerPath.push(S_euler);
+                        exactPath.push(S_exact);
+                        errorPath.push(Math.abs(S_exact - S_euler));
+                        timeline.push(time.toFixed(2));
+                    }
+
+                    const finalError = errorPath[errorPath.length - 1];
+                    document.getElementById('outL5NumIntegral').innerText = '$' + S_euler.toFixed(2);
+                    document.getElementById('outL5ExactIntegral').innerText = '$' + S_exact.toFixed(2);
+                    document.getElementById('outL5Error').innerText = finalError.toFixed(3);
+                    document.getElementById('outL5Status').innerText = finalError < 1.0 ? 'ACCURATE' : 'DIVERGING';
+                    document.getElementById('outL5Status').style.color = finalError < 1.0 ? '#10b981' : '#ea580c';
+
+                    // Draw Charts
+                    drawChartsGBM(timeline, eulerPath, exactPath, errorPath, gridColor, labelColor);
+
+                } else if (mode === 'vasicek') {
+                    lblChartA.innerText = 'Euler-Maruyama vs Exact path (Vasicek)';
+                    lblChartB.innerText = 'Approximation residual error';
+
+                    const gamma = param1Val / 100.0;
+                    let r0 = 0.08;
+
+                    let r_euler = r0;
+                    let r_exact = r0;
+
+                    const eulerPath = [r_euler];
+                    const exactPath = [r_exact];
+                    const errorPath = [0.0];
+
+                    let W = 0.0;
+                    let integralCoeff = 0.0;
+
+                    for (let s = 1; s <= steps; s++) {
+                        const u1 = Math.random() || 0.0001;
+                        const u2 = Math.random() || 0.0001;
+                        const Z = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+                        const dW = sqrtDt * Z;
+
+                        // 1. Euler
+                        r_euler += -gamma * (r_euler - target) * dt + sig * dW;
+
+                        // 2. Exact analytical
+                        W += dW;
+                        const time = s * dt;
+                        // Accumulate exact stochastic integral e^{gamma*(s-t)} dW_s numerically for exact path comparison
+                        integralCoeff += Math.exp(gamma * time) * dW;
+                        r_exact = target + (r0 - target) * Math.exp(-gamma * time) + sig * Math.exp(-gamma * time) * integralCoeff;
+
+                        eulerPath.push(r_euler);
+                        exactPath.push(r_exact);
+                        errorPath.push(Math.abs(r_exact - r_euler));
+                        timeline.push(time.toFixed(2));
+                    }
+
+                    const finalError = errorPath[errorPath.length - 1];
+                    document.getElementById('outL5NumIntegral').innerText = (r_euler * 100.0).toFixed(2) + '%';
+                    document.getElementById('outL5ExactIntegral').innerText = (r_exact * 100.0).toFixed(2) + '%';
+                    document.getElementById('outL5Error').innerText = (finalError * 100.0).toFixed(3) + '%';
+                    document.getElementById('outL5Status').innerText = finalError < 0.01 ? 'ACCURATE' : 'DIVERGING';
+                    document.getElementById('outL5Status').style.color = finalError < 0.01 ? '#10b981' : '#ea580c';
+
+                    drawChartsVasicek(timeline, eulerPath, exactPath, errorPath, gridColor, labelColor);
+
+                } else if (mode === 'exerciseB') {
+                    lblChartA.innerText = 'Empirical Path and Volatility';
+                    lblChartB.innerText = 'Numerical vs. Analytical Itô Integral';
+
+                    // Verify Stochastic Integral: int_0^t W*(1 - e^{-W^2}) dW
+                    let W = 0.0;
+                    const wPath = [0.0];
+                    const numPath = [0.0];
+                    const exactPath = [0.0];
+                    const errorPath = [0.0];
+
+                    let numericalSum = 0.0;
+
+                    for (let s = 1; s <= steps; s++) {
+                        const u1 = Math.random() || 0.0001;
+                        const u2 = Math.random() || 0.0001;
+                        const Z = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+                        const dW = sqrtDt * Z;
+
+                        const integrandVal = W * (1.0 - Math.exp(-W * W));
+                        numericalSum += integrandVal * dW;
+
+                        W += dW;
+                        wPath.push(W);
+
+                        const time = s * dt;
+                        numPath.push(numericalSum);
+
+                        // Analytical solved function
+                        // F = 1/2 * W^2 + 1/2 * e^{-W^2} - 1/2
+                        const F = 0.5 * W * W + 0.5 * Math.exp(-W * W) - 0.5;
+                        exactPath.push(F);
+                        errorPath.push(Math.abs(numericalSum - F));
+                        timeline.push(time.toFixed(2));
+                    }
+
+                    const finalError = errorPath[errorPath.length - 1];
+                    document.getElementById('outL5NumIntegral').innerText = numericalSum.toFixed(3);
+                    document.getElementById('outL5ExactIntegral').innerText = exactPath[exactPath.length - 1].toFixed(3);
+                    document.getElementById('outL5Error').innerText = finalError.toFixed(4);
+                    document.getElementById('outL5Status').innerText = finalError < 0.05 ? 'CONVERGED' : 'DIVERGING';
+                    document.getElementById('outL5Status').style.color = finalError < 0.05 ? '#10b981' : '#ea580c';
+
+                    drawChartsExerciseB(timeline, wPath, numPath, exactPath, gridColor, labelColor);
+                }
+            };
+
+            function drawChartsGBM(timeline, euler, exact, error, gridColor, labelColor) {
+                if (chartAInstance) chartAInstance.destroy();
+                const ctxA = document.getElementById('l5ChartA').getContext('2d');
+                chartAInstance = new Chart(ctxA, {
+                    type: 'line',
+                    data: {
+                        labels: timeline,
+                        datasets: [
+                            { label: 'Discrete Euler-Maruyama', data: euler, borderColor: '#ea580c', borderWidth: 2, pointRadius: 0, fill: false },
+                            { label: 'Analytical Exact Solution', data: exact, borderColor: '#10b981', borderWidth: 2, borderDash: [4, 4], pointRadius: 0, fill: false }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: true, labels: { color: labelColor } } },
+                        scales: {
+                            x: { grid: { color: gridColor }, ticks: { color: labelColor, maxTicksLimit: 10 } },
+                            y: { grid: { color: gridColor }, ticks: { color: labelColor } }
+                        }
+                    }
+                });
+
+                if (chartBInstance) chartBInstance.destroy();
+                const ctxB = document.getElementById('l5ChartB').getContext('2d');
+                chartBInstance = new Chart(ctxB, {
+                    type: 'line',
+                    data: {
+                        labels: timeline,
+                        datasets: [{ label: 'Absolute Path Error', data: error, borderColor: '#ef4444', borderWidth: 1.5, pointRadius: 0, fill: 'origin', backgroundColor: 'rgba(239, 68, 68, 0.1)' }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { color: gridColor }, ticks: { color: labelColor, maxTicksLimit: 10 } },
+                            y: { grid: { color: gridColor }, ticks: { color: labelColor } }
+                        }
+                    }
+                });
+            }
+
+            function drawChartsVasicek(timeline, euler, exact, error, gridColor, labelColor) {
+                // Map to percentages for interest rates
+                const scaleVal = arr => arr.map(v => v * 100.0);
+                if (chartAInstance) chartAInstance.destroy();
+                const ctxA = document.getElementById('l5ChartA').getContext('2d');
+                chartAInstance = new Chart(ctxA, {
+                    type: 'line',
+                    data: {
+                        labels: timeline,
+                        datasets: [
+                            { label: 'Discrete Euler-Maruyama', data: scaleVal(euler), borderColor: '#ea580c', borderWidth: 2, pointRadius: 0, fill: false },
+                            { label: 'Analytical Exact Solution', data: scaleVal(exact), borderColor: '#10b981', borderWidth: 2, borderDash: [4, 4], pointRadius: 0, fill: false }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: true, labels: { color: labelColor } } },
+                        scales: {
+                            x: { grid: { color: gridColor }, ticks: { color: labelColor, maxTicksLimit: 10 } },
+                            y: { grid: { color: gridColor }, ticks: { color: labelColor } }
+                        }
+                    }
+                });
+
+                if (chartBInstance) chartBInstance.destroy();
+                const ctxB = document.getElementById('l5ChartB').getContext('2d');
+                chartBInstance = new Chart(ctxB, {
+                    type: 'line',
+                    data: {
+                        labels: timeline,
+                        datasets: [{ label: 'Absolute Path Error (%)', data: scaleVal(error), borderColor: '#ef4444', borderWidth: 1.5, pointRadius: 0, fill: 'origin', backgroundColor: 'rgba(239, 68, 68, 0.1)' }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { color: gridColor }, ticks: { color: labelColor, maxTicksLimit: 10 } },
+                            y: { grid: { color: gridColor }, ticks: { color: labelColor } }
+                        }
+                    }
+                });
+            }
+
+            function drawChartsExerciseB(timeline, wPath, numPath, exactPath, gridColor, labelColor) {
+                if (chartAInstance) chartAInstance.destroy();
+                const ctxA = document.getElementById('l5ChartA').getContext('2d');
+                chartAInstance = new Chart(ctxA, {
+                    type: 'line',
+                    data: {
+                        labels: timeline,
+                        datasets: [
+                            { label: 'Brownian Path (W_t)', data: wPath, borderColor: '#3b82f6', borderWidth: 2, pointRadius: 0, fill: false }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: true, labels: { color: labelColor } } },
+                        scales: {
+                            x: { grid: { color: gridColor }, ticks: { color: labelColor, maxTicksLimit: 10 } },
+                            y: { grid: { color: gridColor }, ticks: { color: labelColor } }
+                        }
+                    }
+                });
+
+                if (chartBInstance) chartBInstance.destroy();
+                const ctxB = document.getElementById('l5ChartB').getContext('2d');
+                chartBInstance = new Chart(ctxB, {
+                    type: 'line',
+                    data: {
+                        labels: timeline,
+                        datasets: [
+                            { label: 'Numerical Riemann Sum', data: numPath, borderColor: '#8b5cf6', borderWidth: 2, pointRadius: 0, fill: false },
+                            { label: 'Analytical Itô Formula', data: exactPath, borderColor: '#10b981', borderWidth: 2, borderDash: [4, 4], pointRadius: 0, fill: false }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: true, labels: { color: labelColor } } },
+                        scales: {
+                            x: { grid: { color: gridColor }, ticks: { color: labelColor, maxTicksLimit: 10 } },
+                            y: { grid: { color: gridColor }, ticks: { color: labelColor } }
+                        }
+                    }
+                });
+            }
+
+            window.runCqfM1L5Simulation = function() {
+                setTimeout(() => {
+                    updateCqfM1L5Simulation();
+                }, 50);
+            };
+        })();
+    </script>
+</div>

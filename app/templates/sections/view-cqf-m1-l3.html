@@ -1,0 +1,598 @@
+<div id="view-cqf-m1-l3" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 01: Building Blocks</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 03</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L3: PDEs &amp; Transition Density Functions</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Trinomial Random Walks, Kolmogorov Equations, and Similarity Solutions</div>
+    </header>
+
+    <!-- Navigation Tabs for L3 Sections -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
+        <button id="tabL3Core" onclick="switchL3Tab('core')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">PDEs &amp; Densities Core</button>
+        <button id="tabL3Exercises" onclick="switchL3Tab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Solutions Sheet</button>
+    </div>
+
+    <!-- Section A: L3 Core Cards -->
+    <div id="secL3Core" style="display: block;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; align-items: stretch;">
+        <!-- Card 1: Forward Kolmogorov Equation -->
+        <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent);">1. Forward Kolmogorov (Fokker-Planck)</h3>
+                <p>Consider a discrete trinomial random walker at $(y', t')$ transitioning from states one step earlier ($t' - \delta t$) with up/down probabilities $\alpha$ and stationary probability $1-2\alpha$:</p>
+                <p style="text-align: center; font-size: 0.95rem;">$$p(y', t') = \alpha p(y' + \delta y, t' - \delta t) + (1 - 2\alpha)p(y', t' - \delta t) + \alpha p(y' - \delta y, t' - \delta t)$$</p>
+                <p>Expanding up to $O(\delta t)$ and $O(\delta y^2)$ via multi-variable Taylor series and simplifying yields:</p>
+                <p style="text-align: center;">$$\delta t \frac{\partial p}{\partial t'} \approx \alpha \delta y^2 \frac{\partial^2 p}{\partial y'^2}$$</p>
+                <p>Taking the continuous limit as $\delta t, \delta y \to 0$ with the spatial scaling $\delta y \sim O(\delta t^{1/2})$ defines the diffusion coefficient $c^2$ and yields the **Forward Kolmogorov Equation (FKE)**:</p>
+                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
+                    $$\frac{\partial p}{\partial t'} = c^2 \frac{\partial^2 p}{\partial y'^2} \quad \text{where} \quad c^2 = \lim_{\delta t, \delta y \to 0} \frac{\alpha \delta y^2}{\delta t}$$
+                </p>
+            </div>
+            <div style="background: var(--metric-bg); padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; border-left: 3px solid var(--accent); margin-top: 1rem; font-family: var(--font-family-sans);">
+                <span>FKE Focus:</span> Describes probability propagation with respect to the future state $(y', t')$.
+            </div>
+        </div>
+
+        <!-- Card 2: Backward Kolmogorov Equation -->
+        <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: #8b5cf6;">2. Backward Kolmogorov (BKE)</h3>
+                <p>The Backward Kolmogorov Equation treats the future state $(y', t')$ as fixed and describes the transition probability density as a function of the earlier starting state variables $(y, t)$:</p>
+                <p style="text-align: center; font-size: 0.95rem;">$$p(y, t) = \alpha p(y + \delta y, t + \delta t) + (1 - 2\alpha)p(y, t + \delta t) + \alpha p(y - \delta y, t + \delta t)$$</p>
+                <p>Expanding forward from $(y, t)$ yields the continuous-time relation:</p>
+                <p style="text-align: center;">$$\delta t \frac{\partial p}{\partial t} + \alpha \delta y^2 \frac{\partial^2 p}{\partial y^2} \approx 0$$</p>
+                <p>Substituting $c^2$ and taking the limit results in the **Backward Kolmogorov Equation**: </p>
+                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
+                    $$\frac{\partial p}{\partial t} + c^2 \frac{\partial^2 p}{\partial y^2} = 0$$
+                </p>
+                <p style="font-size: 0.9rem; color: #64748b;">Notice the sign change in the time derivative! Because $t < t'$, the backward equation is a backward-parabolic PDE which is well-posed when integrated backward in time.</p>
+            </div>
+            <div style="background: var(--metric-bg); padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; border-left: 3px solid #8b5cf6; margin-top: 1rem; font-family: var(--font-family-sans);">
+                <span>BKE Focus:</span> Describes probability propagation with respect to the initial state $(y, t)$.
+            </div>
+        </div>
+
+        <!-- Card 3: Similarity Reduction & Normalization -->
+        <div class="card" style="grid-column: span 2; margin-bottom: 0;">
+            <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: #10b981;">3. Similarity Solution &amp; Transition Probability Density Function</h3>
+            <p>To solve the forward diffusion equation, we seek a similarity ansatz $p(y', t') = t'^a f(\xi)$ with similarity variable $\xi = y'/t'^b$. Substituting this reduction and requiring time-invariance forces $b = 1/2$. Conserving probability mass $\int_{-\infty}^{\infty} p \, dy' = 1$ forces the scaling exponent $a = -1/2$. This collapses the PDE into a single ODE:</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 0.75rem;">
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-sans); font-size: 0.92rem; font-weight: 700; color: #10b981;">Integrating the Exact ODE</h4>
+                    <p>Writing the left-hand side as an exact product derivative:</p>
+                    <p style="text-align: center; margin: 0.5rem 0;">$$-\frac{1}{2}\frac{d}{d\xi}\left(\xi f(\xi)\right) = c^2 \frac{d^2 f}{d\xi^2}$$</p>
+                    <p>Integrating once and separating variables gives: $\ln f(\xi) = -\frac{\xi^2}{4c^2} + A$. Normalizing the Gaussian integral leads to the transition density function $p(y, t; y', t')$:</p>
+                    <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+                        $$p(y, t; y', t') = \frac{1}{2c\sqrt{\pi(t' - t)}} \exp\left( -\frac{(y' - y)^2}{4c^2(t' - t)} \right)$$
+                    </p>
+                </div>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-sans); font-size: 0.92rem; font-weight: 700; color: #0f766e;">Statistical Moments Interpretation</h4>
+                    <p style="line-height: 1.5; margin: 0;">This similarity solution matches the PDF of a **Normal Distribution**:</p>
+                    <p style="text-align: center; font-weight: 700; margin: 0.5rem 0;">$$y' \sim N\left(y, \, 2c^2(t' - t)\right)$$</p>
+                    <ul style="margin: 0.5rem 0 0 0; padding-left: 1.2rem; font-size: 0.9rem;">
+                        <li><strong>Mean (Expected Position):</strong> $\mathbb{E}[y'] = y$ (the walker remains centered on the starting position).</li>
+                        <li><strong>Variance (Spread):</strong> $\text{Var}(y') = 2c^2(t' - t)$ (the variance scales linearly with time, indicating linear diffusion).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Section B: Worked Solutions Sheet -->
+    <div id="secL3Exercises" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Problem A: FKE Derivation -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem A: Forward Kolmogorov Equation (FKE) Derivation</h3>
+                <p>Derive the continuous 1D Forward Kolmogorov Equation (FKE) starting from a discrete trinomial random walk framework.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>State the Discrete Trinomial Step Relation:</strong>
+                            A walker at position $y'$ at time $t'$ must have been one step earlier ($t' - \delta t$) at $y'+\delta y$ (moving down with probability $\alpha$), $y'-\delta y$ (moving up with probability $\alpha$), or remained at $y'$ (probability $1-2\alpha$):
+                            $$p(y', t') = \alpha p(y' + \delta y, t' - \delta t) + (1 - 2\alpha)p(y', t' - \delta t) + \alpha p(y' - \delta y, t' - \delta t)$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Perform Multi-Variable Taylor Series Expansion:</strong>
+                            Expand the terms on the RHS about $(y', t' - \delta t)$:
+                            $$p(y' \pm \delta y, t' - \delta t) = p(y', t' - \delta t) \pm \delta y \frac{\partial p}{\partial y'} + \frac{1}{2}\delta y^2 \frac{\partial^2 p}{\partial y'^2} + O(\delta y^3)$$
+                            Substitute these back into the step relation:
+                            $$p(y', t') = (1-2\alpha)p + \alpha \left[ 2p + \delta y^2 \frac{\partial^2 p}{\partial y'^2} + O(\delta y^4) \right]$$
+                            $$p(y', t') = p(y', t' - \delta t) + \alpha \delta y^2 \frac{\partial^2 p}{\partial y'^2}$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Expand the Time LHS Term:</strong>
+                            Expand $p(y', t')$ about the earlier time $t' - \delta t$:
+                            $$p(y', t') = p(y', t' - \delta t) + \delta t \frac{\partial p}{\partial t'} + O(\delta t^2)$$
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Equate, Cancel and Take the Continuous Limit:</strong>
+                            Combining expansions:
+                            $$p(y', t' - \delta t) + \delta t \frac{\partial p}{\partial t'} = p(y', t' - \delta t) + \alpha \delta y^2 \frac{\partial^2 p}{\partial y'^2}$$
+                            $$\delta t \frac{\partial p}{\partial t'} = \alpha \delta y^2 \frac{\partial^2 p}{\partial y'^2} \implies \frac{\partial p}{\partial t'} = \left(\frac{\alpha \delta y^2}{\delta t}\right) \frac{\partial^2 p}{\partial y'^2}$$
+                            Taking the limits as $\delta t, \delta y \to 0$ defining the constant diffusion coefficient $c^2 = \frac{\alpha \delta y^2}{\delta t}$ yields the FKE:
+                            $$\frac{\partial p}{\partial t'} = c^2 \frac{\partial^2 p}{\partial y'^2}$$
+                        </li>
+                    </ol>
+                </div>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid var(--accent); padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. Why start with discrete probability?</strong> We model the random walker like a board game. At any tick of the clock, the walker can only jump left, jump right, or stay still. This is an intuitive discrete framework that serves as our mathematical foundation.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. Why use Taylor Series expansions?</strong> A Taylor series is a mathematical magnifying glass. It takes a discrete formula and expresses it as a smooth, continuous equation, breaking down the jumps into directional sensitivities (derivatives).</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. why do the odd terms cancel out?</strong> Because the walker is just as likely to jump left as right (symmetrical walk), the directional up/down speeds ($\delta y \frac{\partial p}{\partial y'}$) cancel each other out, leaving only the stationary drift and the squared volatility spread.</p>
+                        <p style="margin: 0;"><strong>4. Why define $c^2$ as a limit?</strong> For the continuous limit to make sense, as the time steps get infinitely small, the spatial jumps must also shrink. But to keep the random walk active, they must shrink at a specific relative speed: spatial step squared divided by time step must remain constant ($c^2$). This represents the continuous rate of random dispersion.</p>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Problem B: Similarity Solution -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem B: Similarity Variable Reduction</h3>
+                <p>Prove that substituting the similarity variable $\xi = \frac{x}{\sqrt{t}}$ into the Heat Equation $\frac{\partial \theta}{\partial t} = \frac{1}{2} \frac{\partial^2 \theta}{\partial x^2}$ collapses it into a single Ordinary Differential Equation (ODE).</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>State the Ansatz and derivatives:</strong>
+                            Let $\theta(x, t) = t^{-1/2} f(\xi)$ where $\xi = x t^{-1/2}$.
+                            We apply the multivariable chain rule to find partial derivatives of $\theta$ in terms of $f(\xi)$.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Compute Spatial Partial Derivatives:</strong>
+                            $$\frac{\partial \theta}{\partial x} = t^{-1/2} \frac{df}{d\xi} \frac{\partial \xi}{\partial x} = t^{-1/2} f'(\xi) (t^{-1/2}) = t^{-1} f'(\xi)$$
+                            $$\frac{\partial^2 \theta}{\partial x^2} = t^{-1} \frac{d(f')}{d\xi} \frac{\partial \xi}{\partial x} = t^{-1} f''(\xi) (t^{-1/2}) = t^{-3/2} f''(\xi)$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Compute Temporal Partial Derivative:</strong>
+                            Using the product rule on $\theta(x, t) = t^{-1/2} f(\xi)$:
+                            $$\frac{\partial \theta}{\partial t} = -\frac{1}{2} t^{-3/2} f(\xi) + t^{-1/2} f'(\xi) \frac{\partial \xi}{\partial t}$$
+                            Since $\frac{\partial \xi}{\partial t} = x \left( -\frac{1}{2} t^{-3/2} \right) = -\frac{1}{2} \xi t^{-1}$:
+                            $$\frac{\partial \theta}{\partial t} = -\frac{1}{2} t^{-3/2} f(\xi) - \frac{1}{2} \xi t^{-3/2} f'(\xi) = -\frac{1}{2} t^{-3/2} \left[ f(\xi) + \xi f'(\xi) \right]$$
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Substitute into PDE and Collapse:</strong>
+                            Substitute the derivatives into the original Heat Equation $\frac{\partial \theta}{\partial t} = \frac{1}{2}\frac{\partial^2 \theta}{\partial x^2}$:
+                            $$-\frac{1}{2} t^{-3/2} \left[ f(\xi) + \xi f'(\xi) \right] = \frac{1}{2} t^{-3/2} f''(\xi)$$
+                            Divide both sides by $\frac{1}{2} t^{-3/2}$ to eliminate all explicit $t$ variables:
+                            $$- (f(\xi) + \xi f'(\xi)) = f''(\xi) \implies f''(\xi) + \xi f'(\xi) + f(\xi) = 0$$
+                            This is a single variable ODE: $f'' + (\xi f)' = 0$.
+                        </li>
+                    </ol>
+                </div>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: #8b5cf6; font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid #8b5cf6; padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. What is a "similarity variable"?</strong> Partial Differential Equations (PDEs) are extremely hard to solve because they contain multiple changing variables (space and time). A similarity variable is a smart ratio ($\xi = x/\sqrt{t}$) that merges space and time into a single combined variable, turning a hard PDE into a much simpler single-variable ODE.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. Why scale time as $t^{-1/2}$?</strong> As time grows, the random walkers spread out. The probability at any single point must decrease to conserve total probability (which must sum to 1). Scaling the height by $1/\sqrt{t}$ keeps the total area under the probability curve constant.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. What does "collapse" mean?</strong> By substituting our derivatives, we observe a mathematical miracle: the time variable $t$ completely cancels out of the equation. This proves our ratio assumption was correct.</p>
+                        <p style="margin: 0;"><strong>4. Why is the ODE easier to solve?</strong> We can write $f'' + (\xi f)' = 0$ as $\frac{d}{d\xi}(f' + \xi f) = 0$. Integrating this is a simple matter of high-school calculus, giving us the famous Gaussian bell-curve solution directly.</p>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Problem C: Transition PDF Verification -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem C: Transition PDF Verification</h3>
+                <p>Verify that the transition probability density function $p(y, t; y', t') = \frac{1}{\sqrt{2\pi \tau}} e^{-\frac{z^2}{2\tau}}$ (where $\tau = t' - t$ and $z = y' - y$) solves the continuous Forward Kolmogorov Equation.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Set up FKE and variables:</strong>
+                            We want to show $\frac{\partial p}{\partial t'} = \frac{1}{2}\frac{\partial^2 p}{\partial y'^2}$ (setting $c^2 = 1/2$ for standard scaling).
+                            Let $p(y', t') = (2\pi \tau)^{-1/2} e^{-\frac{z^2}{2\tau}}$ where $\tau = t'$ (initial time $t=0$, initial position $y=0$) and $z = y'$.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Compute Time Derivative $\frac{\partial p}{\partial \tau}$:</strong>
+                            Using the product rule:
+                            $$\frac{\partial p}{\partial \tau} = -\frac{1}{2}(2\pi \tau)^{-3/2}(2\pi) e^{-\frac{z^2}{2\tau}} + (2\pi \tau)^{-1/2} \left( \frac{z^2}{2\tau^2} \right) e^{-\frac{z^2}{2\tau}}$$
+                            $$\frac{\partial p}{\partial \tau} = \left( -\frac{1}{2\tau} + \frac{z^2}{2\tau^2} \right) p = \frac{1}{2\tau}\left( \frac{z^2}{\tau} - 1 \right) p$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Compute First Spatial Derivative $\frac{\partial p}{\partial z}$:</strong>
+                            $$\frac{\partial p}{\partial z} = -\frac{z}{\tau} p$$
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Compute Second Spatial Derivative $\frac{\partial^2 p}{\partial z^2}$:</strong>
+                            Using the product rule on $\frac{\partial p}{\partial z}$:
+                            $$\frac{\partial^2 p}{\partial z^2} = -\frac{1}{\tau} p - \frac{z}{\tau} \frac{\partial p}{\partial z} = -\frac{1}{\tau} p - \frac{z}{\tau} \left( -\frac{z}{\tau} p \right) = \left( -\frac{1}{\tau} + \frac{z^2}{\tau^2} \right) p = \frac{1}{\tau}\left( \frac{z^2}{\tau} - 1 \right) p$$
+                            Comparing results:
+                            $$\frac{\partial p}{\partial \tau} = \frac{1}{2} \left[ \frac{1}{\tau}\left( \frac{z^2}{\tau} - 1 \right) p \right] = \frac{1}{2}\frac{\partial^2 p}{\partial z^2}$$
+                            This confirms the transition PDF is a valid solution!
+                        </li>
+                    </ol>
+                </div>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: #10b981; font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid #10b981; padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. What does verification accomplish?</strong> It proves that our solved Gaussian bell-curve equation is correct. If you plug it into both sides of the heat-spreading PDE, both sides must evaluate to the exact same formula.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. What does the time derivative represent?</strong> It measures how fast the peak of the bell curve drops and flattens out as time ticks forward.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. What does the second spatial derivative represent?</strong> It measures the curvature (concavity) of the bell curve. A sharp curve means high probability difference, driving fast spreading; a flat curve means spreading has slowed down.</p>
+                        <p style="margin: 0;"><strong>4. Why does the math match?</strong> The rates match perfectly, showing that the physical rate of heat spreading (or probability dispersion) is exactly balanced by the curvature of the Gaussian density. This gives us confidence in our statistical models.</p>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transition Density Laboratory -->
+    <div id="secL3Lab" style="display: block;">
+    <div class="card" style="margin-bottom: 2rem;">
+        <div style="margin-bottom: 1.5rem;">
+            <h2 style="margin: 0; font-family: var(--font-family-sans); font-weight: 800; font-size: 1.4rem;">4. Trinomial Random Walk &amp; Diffusion Laboratory</h2>
+            <div style="color: #6b7280; font-size: 0.95rem; margin-top: 0.25rem;">Compare analytical transition PDFs to empirical simulations of trinomial random walkers. Configure parameters, watch live walkers trace out trinomial paths, and observe the empirical endpoint distribution converge to the analytical Gaussian bell curve.</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 300px 1fr; gap: 2rem; align-items: start;">
+            <!-- Sliders Column -->
+            <div style="background: var(--metric-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-family-sans);">
+                <h3 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">Laboratory Inputs</h3>
+                
+                <!-- Initial Position Slider -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="pdeY0Slider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Initial Position ($y_0$)</label>
+                        <span id="pdeY0Val" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">0.0</span>
+                    </div>
+                    <input id="pdeY0Slider" type="range" min="-3.0" max="3.0" step="0.2" value="0.0" style="width: 100%; cursor: pointer;" oninput="updateCqfM1L3Simulation()">
+                </div>
+
+                <!-- Future Time Slider -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="pdeTimeSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Time Horizon ($t'$)</label>
+                        <span id="pdeTimeVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">1.0 Year</span>
+                    </div>
+                    <input id="pdeTimeSlider" type="range" min="0.2" max="3.0" step="0.1" value="1.0" style="width: 100%; cursor: pointer;" oninput="updateCqfM1L3Simulation()">
+                </div>
+
+                <!-- Diffusion Constant Slider -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label for="pdeCSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Diffusion Constant ($c$)</label>
+                        <span id="pdeCVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">1.0</span>
+                    </div>
+                    <input id="pdeCSlider" type="range" min="0.3" max="2.0" step="0.1" value="1.0" style="width: 100%; cursor: pointer;" oninput="updateCqfM1L3Simulation()">
+                </div>
+
+                <div style="border-top: 1px solid var(--card-border); padding-top: 1rem;">
+                    <button onclick="runTrinomialWalkSimulation()" style="width: 100%; background: var(--accent); color: white; border: none; padding: 0.6rem; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: background 0.2s;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                        Simulate 500 Walkers
+                    </button>
+                </div>
+            </div>
+
+            <!-- Plots Grid -->
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <!-- Model Calibrations Outputs -->
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; font-family: var(--font-family-sans);">
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.6rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Theoretical Mean</div>
+                        <div id="outPdeTheoMean" style="font-size: 1.1rem; font-weight: 800; margin-top: 0.1rem; font-family: monospace;">0.00</div>
+                    </div>
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.6rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Theoretical Vol</div>
+                        <div id="outPdeTheoVol" style="font-size: 1.1rem; font-weight: 800; margin-top: 0.1rem; font-family: monospace;">1.414</div>
+                    </div>
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.6rem; border-radius: 8px; text-align: center; border-bottom: 2px solid var(--accent);">
+                        <div style="font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Simulated Mean</div>
+                        <div id="outPdeSimMean" style="font-size: 1.1rem; font-weight: 800; margin-top: 0.1rem; font-family: monospace; color: var(--accent);">0.00</div>
+                    </div>
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.6rem; border-radius: 8px; text-align: center; border-bottom: 2px solid var(--accent);">
+                        <div style="font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Simulated Vol</div>
+                        <div id="outPdeSimVol" style="font-size: 1.1rem; font-weight: 800; margin-top: 0.1rem; font-family: monospace; color: var(--accent);">1.414</div>
+                    </div>
+                </div>
+
+                <!-- Dynamic charts layout -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <!-- Chart A: PDF Curve & Endpoint Histogram -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; min-height: 280px; position: relative;">
+                        <h4 style="margin: 0 0 0.75rem 0; font-family: var(--font-family-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-color); text-transform: uppercase; letter-spacing: 0.05em;">Theoretical PDF vs empirical endpoint hist</h4>
+                        <div style="width: 100%; height: 220px;">
+                            <canvas id="pdePdfChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Chart B: Paths Sandbox -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; min-height: 280px; position: relative;">
+                        <h4 style="margin: 0 0 0.75rem 0; font-family: var(--font-family-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-color); text-transform: uppercase; letter-spacing: 0.05em;">Discrete Trinomial Walk Paths</h4>
+                        <div style="width: 100%; height: 220px;">
+                            <canvas id="pdePathsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Javascript PDE and Trinomial Walk Simulation engine -->
+    <script>
+        (function() {
+            window.switchL3Tab = function(tab) {
+                const tabCore = document.getElementById('tabL3Core');
+                const tabEx = document.getElementById('tabL3Exercises');
+                const secCore = document.getElementById('secL3Core');
+                const secLab = document.getElementById('secL3Lab');
+                const secEx = document.getElementById('secL3Exercises');
+
+                if (tab === 'core') {
+                    tabCore.style.color = 'var(--accent)';
+                    tabCore.style.borderBottomColor = 'var(--accent)';
+                    tabEx.style.color = '#6b7280';
+                    tabEx.style.borderBottomColor = 'transparent';
+                    secCore.style.display = 'block';
+                    if (secLab) secLab.style.display = 'block';
+                    secEx.style.display = 'none';
+                } else {
+                    tabEx.style.color = 'var(--accent)';
+                    tabEx.style.borderBottomColor = 'var(--accent)';
+                    tabCore.style.color = '#6b7280';
+                    tabCore.style.borderBottomColor = 'transparent';
+                    secEx.style.display = 'block';
+                    secCore.style.display = 'none';
+                    if (secLab) secLab.style.display = 'none';
+                }
+            };
+
+            let pdfChartInstance = null;
+            let pathsChartInstance = null;
+            let simulatedEndpoints = [];
+
+            // Standard Normal Density helper
+            function gaussianPdf(x, mean, std) {
+                if (std <= 0) return 0;
+                return (1.0 / (std * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean) / std, 2));
+            }
+
+            window.updateCqfM1L3Simulation = function() {
+                const y0 = parseFloat(document.getElementById('pdeY0Slider').value);
+                const T = parseFloat(document.getElementById('pdeTimeSlider').value);
+                const c = parseFloat(document.getElementById('pdeCSlider').value);
+
+                // Update text UI values
+                document.getElementById('pdeY0Val').innerText = y0.toFixed(1);
+                document.getElementById('pdeTimeVal').innerText = T.toFixed(1) + (T === 1.0 ? ' Year' : ' Years');
+                document.getElementById('pdeCVal').innerText = c.toFixed(1);
+
+                // Calculate theoretical statistics
+                // SDE variance = 2 * c^2 * t'
+                const theoMean = y0;
+                const theoVol = c * Math.sqrt(2 * T);
+
+                document.getElementById('outPdeTheoMean').innerText = theoMean.toFixed(2);
+                document.getElementById('outPdeTheoVol').innerText = theoVol.toFixed(3);
+
+                // Re-draw continuous PDF and sync empirical endpoints
+                drawPdeCharts(theoMean, theoVol, y0, T, c);
+            };
+
+            // Run 500 discrete trinomial walkers to illustrate continuous convergence
+            window.runTrinomialWalkSimulation = function() {
+                const y0 = parseFloat(document.getElementById('pdeY0Slider').value);
+                const T = parseFloat(document.getElementById('pdeTimeSlider').value);
+                const c = parseFloat(document.getElementById('pdeCSlider').value);
+
+                const numWalkers = 500;
+                const numSteps = 50;
+                const dt = T / numSteps;
+                // Calibrate trinomial probability alpha
+                const alpha = 0.3; // probability of moving up or down
+                const dy = c * Math.sqrt(dt / alpha); // step size to match diffusion c
+
+                simulatedEndpoints = [];
+                const pathsToShow = [];
+                const numPathsToVisual = 15;
+
+                for (let w = 0; w < numWalkers; w++) {
+                    let y = y0;
+                    const path = [y];
+                    for (let s = 1; s <= numSteps; s++) {
+                        const rand = Math.random();
+                        if (rand < alpha) {
+                            y += dy; // up step
+                        } else if (rand < 2 * alpha) {
+                            y -= dy; // down step
+                        }
+                        // otherwise stationary
+                        path.push(y);
+                    }
+                    simulatedEndpoints.push(y);
+                    if (w < numPathsToVisual) {
+                        pathsToShow.push(path);
+                    }
+                }
+
+                // Compute empirical moments
+                const sum = simulatedEndpoints.reduce((a, b) => a + b, 0);
+                const empiricalMean = sum / numWalkers;
+                const sqDiffSum = simulatedEndpoints.reduce((a, b) => a + Math.pow(b - empiricalMean, 2), 0);
+                const empiricalVol = Math.sqrt(sqDiffSum / (numWalkers - 1));
+
+                document.getElementById('outPdeSimMean').innerText = empiricalMean.toFixed(2);
+                document.getElementById('outPdeSimVol').innerText = empiricalVol.toFixed(3);
+
+                // Update paths chart
+                const timeline = Array.from({length: numSteps + 1}, (_, i) => (i * dt).toFixed(2));
+                const datasets = pathsToShow.map((path, idx) => ({
+                    label: `Walker ${idx + 1}`,
+                    data: path,
+                    borderColor: `hsla(${(idx * 23) % 360}, 70%, 60%, 0.6)`,
+                    borderWidth: 1.5,
+                    pointRadius: 0,
+                    fill: false
+                }));
+
+                const isDark = document.body.classList.contains('dark-theme');
+                const axisColor = isDark ? '#444c56' : '#cbd5e1';
+                const gridColor = isDark ? 'rgba(68, 76, 86, 0.2)' : 'rgba(203, 213, 225, 0.2)';
+                const labelColor = isDark ? '#adbac7' : '#475569';
+
+                if (pathsChartInstance) {
+                    pathsChartInstance.destroy();
+                }
+
+                const ctxB = document.getElementById('pdePathsChart').getContext('2d');
+                pathsChartInstance = new Chart(ctxB, {
+                    type: 'line',
+                    data: {
+                        labels: timeline,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Time (Years)', color: labelColor },
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor }
+                            },
+                            y: {
+                                title: { display: true, text: 'Position (y\')', color: labelColor },
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor }
+                            }
+                        }
+                    }
+                });
+
+                // Trigger update of histogram overlays on PDF Chart
+                updateCqfM1L3Simulation();
+            };
+
+            function drawPdeCharts(theoMean, theoVol, y0, T, c) {
+                const ctxA = document.getElementById('pdePdfChart').getContext('2d');
+                const isDark = document.body.classList.contains('dark-theme');
+                const axisColor = isDark ? '#444c56' : '#cbd5e1';
+                const gridColor = isDark ? 'rgba(68, 76, 86, 0.2)' : 'rgba(203, 213, 225, 0.2)';
+                const labelColor = isDark ? '#adbac7' : '#475569';
+
+                // Generate points for continuous analytical PDF
+                const rangeLimit = 3.5 * theoVol;
+                const minX = theoMean - rangeLimit;
+                const maxX = theoMean + rangeLimit;
+                const steps = 80;
+                const stepWidth = (maxX - minX) / steps;
+                
+                const pdfPoints = [];
+                const labels = [];
+                for (let i = 0; i <= steps; i++) {
+                    const x = minX + i * stepWidth;
+                    pdfPoints.push(gaussianPdf(x, theoMean, theoVol));
+                    labels.push(x.toFixed(2));
+                }
+
+                // If empirical endpoints are available, bin them into a histogram matching the labels coordinates
+                let histogramDataset = null;
+                if (simulatedEndpoints.length > 0) {
+                    const bins = new Array(labels.length).fill(0);
+                    simulatedEndpoints.forEach(val => {
+                        // Find closest index
+                        let bestIdx = 0;
+                        let bestDist = Infinity;
+                        for (let idx = 0; idx < labels.length; idx++) {
+                            const dist = Math.abs(val - parseFloat(labels[idx]));
+                            if (dist < bestDist) {
+                                bestDist = dist;
+                                bestIdx = idx;
+                            }
+                        }
+                        bins[bestIdx]++;
+                    });
+
+                    // Normalize histogram so total area equals 1
+                    // Area of each bar = height * stepWidth
+                    const totalCount = simulatedEndpoints.length;
+                    const histData = bins.map(count => count / (totalCount * stepWidth));
+
+                    histogramDataset = {
+                        label: 'Empirical Walkers',
+                        data: histData,
+                        type: 'bar',
+                        backgroundColor: 'rgba(59, 130, 246, 0.25)',
+                        borderColor: '#2563eb',
+                        borderWidth: 1,
+                        barPercentage: 1.0,
+                        categoryPercentage: 1.0,
+                        order: 2
+                    };
+                }
+
+                const datasets = [
+                    {
+                        label: 'Analytical transition PDF',
+                        data: pdfPoints,
+                        type: 'line',
+                        borderColor: '#10b981',
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        fill: false,
+                        order: 1
+                    }
+                ];
+
+                if (histogramDataset) {
+                    datasets.push(histogramDataset);
+                }
+
+                if (pdfChartInstance) {
+                    pdfChartInstance.destroy();
+                }
+
+                pdfChartInstance = new Chart(ctxA, {
+                    data: {
+                        labels: labels,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: { color: labelColor }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: { display: true, text: 'Future Position (y\')', color: labelColor },
+                                grid: { color: gridColor },
+                                ticks: {
+                                    color: labelColor,
+                                    maxTicksLimit: 10
+                                }
+                            },
+                            y: {
+                                title: { display: true, text: 'Probability Density (p)', color: labelColor },
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor }
+                            }
+                        }
+                    }
+                });
+            }
+
+            window.runCqfM1L3Simulation = function() {
+                // Initialize default walkthrough random walk paths automatically
+                setTimeout(() => {
+                    runTrinomialWalkSimulation();
+                }, 50);
+            };
+        })();
+    </script>
+</div>

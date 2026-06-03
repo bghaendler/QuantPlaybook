@@ -1,0 +1,379 @@
+<div id="view-cqf-mp-diffeq" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #f59e0b; font-family: var(--font-family-sans);">Differential Equations</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Differential Equations</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Ordinary, Partial &amp; Stochastic Differential Equations, Euler Method, and Solution Techniques</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
+        <button id="tabDiffEqLectures" onclick="switchDiffEqTab('lectures')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Video Lecture Index</button>
+        <button id="tabDiffEqTheory" onclick="switchDiffEqTab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Core ODE Theory</button>
+        <button id="tabDiffEqSandbox" onclick="switchDiffEqTab('sandbox')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Phase Portrait Sandbox</button>
+    </div>
+
+    <!-- Tab A: Video Lecture Index -->
+    <div id="secDiffEqLectures" style="display: block;">
+        <div style="max-height: 500px; overflow-y: auto;">
+            <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 2rem;">
+                <!-- Video 1 -->
+                <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                            <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Differential Equations - Introduction</h4>
+                            <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">25:40</span>
+                        </div>
+                        <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Types (ordinary, partial, stochastic), terminology (order, degree, linear/nonlinear), general vs particular solutions, initial/boundary value problems.</p>
+                    </div>
+                </div>
+
+                <!-- Video 2 -->
+                <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                            <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Differential Equations - First Order ODEs</h4>
+                            <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">~20:00</span>
+                        </div>
+                        <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Missing variables, variable separable equations, linear equations solved using integrating factors.</p>
+                    </div>
+                </div>
+
+                <!-- Video 3 -->
+                <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                            <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Differential Equations - Second Order ODEs Part 1</h4>
+                            <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">21:51</span>
+                        </div>
+                        <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Special cases, substitution methods, operator notation, complementary functions and particular integrals.</p>
+                    </div>
+                </div>
+
+                <!-- Video 4 -->
+                <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                            <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Differential Equations - Second Order ODEs Part 2</h4>
+                            <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">23:46</span>
+                        </div>
+                        <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Auxiliary equation method: distinct real roots, repeated roots, complex conjugate roots.</p>
+                    </div>
+                </div>
+
+                <!-- Video 5 -->
+                <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                            <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Differential Equations - General Nth Order Equation</h4>
+                            <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">07:58</span>
+                        </div>
+                        <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Nth degree polynomial auxiliary equation, distinct/repeated/complex roots generating solution forms.</p>
+                    </div>
+                </div>
+
+                <!-- Video 6 -->
+                <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                            <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Differential Equations - Linear ODEs with Variable Coefficients, Euler Equation</h4>
+                            <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">18:05</span>
+                        </div>
+                        <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Cauchy-Euler equations, auxiliary equations, three solution cases, transformation to constant coefficient.</p>
+                    </div>
+                </div>
+
+                <!-- Video 7 -->
+                <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                            <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Differential Equations - Non Homogeneous Case: Method of Undetermined Coefficients</h4>
+                            <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">20:44</span>
+                        </div>
+                        <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Polynomial, exponential, trigonometric RHS, failure cases requiring modified trial solutions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab B: Core ODE Theory -->
+    <div id="secDiffEqTheory" style="display: none;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Card 1: First Order Separable ODE -->
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700;">1. First Order Separable ODE</h3>
+                <p>A separable ODE can be written in the general form where both sides depend on a single variable:</p>
+                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
+                    $$\frac{dy}{dx} = f(x)\,g(y)$$
+                </p>
+                <p>Separating and integrating both sides yields:</p>
+                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
+                    $$\int \frac{1}{g(y)}\,dy = \int f(x)\,dx + C$$
+                </p>
+                <p>In finance, separable ODEs appear naturally in continuous-time growth models such as exponential asset decay, population dynamics, and simple interest rate models where the rate of change depends multiplicatively on the current state.</p>
+            </div>
+
+            <!-- Card 2: Second Order Constant Coefficient ODE -->
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">2. Second Order Constant Coefficient ODE</h3>
+                <p>The standard homogeneous second-order ODE with constant coefficients takes the form:</p>
+                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
+                    $$ay'' + by' + cy = 0$$
+                </p>
+                <p>The auxiliary (characteristic) equation is:</p>
+                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
+                    $$ar^2 + br + c = 0$$
+                </p>
+                <p>The nature of the roots determines the solution form:</p>
+                <ul style="font-size: 0.92rem; line-height: 1.8; padding-left: 1.25rem;">
+                    <li><strong>Distinct real roots</strong> $r_1, r_2$: &nbsp; $y = Ae^{r_1 x} + Be^{r_2 x}$</li>
+                    <li><strong>Repeated root</strong> $r$: &nbsp; $y = (A + Bx)e^{rx}$</li>
+                    <li><strong>Complex roots</strong> $\alpha \pm i\beta$: &nbsp; $y = e^{\alpha x}(A\cos\beta x + B\sin\beta x)$</li>
+                </ul>
+                <p>These solutions underpin oscillatory pricing models in quantitative finance, including mean-reverting processes and damped vibration analogues used in portfolio risk analysis.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab C: Phase Portrait Sandbox -->
+    <div id="secDiffEqSandbox" style="display: none;">
+        <div class="card" style="margin-bottom: 2rem;">
+            <div style="margin-bottom: 1.5rem;">
+                <h2 style="margin: 0; font-family: var(--font-family-sans); font-weight: 800; font-size: 1.4rem;">Phase Portrait Sandbox</h2>
+                <div style="color: #6b7280; font-size: 0.95rem; margin-top: 0.25rem;">Explore the analytical solutions of the second-order ODE $ay'' + by' + cy = 0$ by adjusting coefficients. The discriminant $\Delta = b^2 - 4ac$ determines whether the system exhibits exponential growth/decay, critical damping, or oscillatory behaviour.</div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 280px 1fr; gap: 2rem; align-items: start;">
+                <!-- Controls Column -->
+                <div style="background: var(--metric-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-family-sans);">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">ODE Coefficients</h3>
+
+                    <!-- Slider a -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label for="diffEqSliderA" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Coefficient $a$</label>
+                            <span id="diffEqValA" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">a = 1</span>
+                        </div>
+                        <input id="diffEqSliderA" type="range" min="1" max="5" step="1" value="1" style="width: 100%; cursor: pointer;" oninput="updateDiffEqSandbox()">
+                    </div>
+
+                    <!-- Slider b -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label for="diffEqSliderB" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Coefficient $b$</label>
+                            <span id="diffEqValB" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">b = 0</span>
+                        </div>
+                        <input id="diffEqSliderB" type="range" min="-4" max="4" step="0.5" value="0" style="width: 100%; cursor: pointer;" oninput="updateDiffEqSandbox()">
+                    </div>
+
+                    <!-- Slider c -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label for="diffEqSliderC" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Coefficient $c$</label>
+                            <span id="diffEqValC" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">c = 1</span>
+                        </div>
+                        <input id="diffEqSliderC" type="range" min="0.1" max="10" step="0.1" value="1" style="width: 100%; cursor: pointer;" oninput="updateDiffEqSandbox()">
+                    </div>
+
+                    <!-- Discriminant Display -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px; padding: 0.75rem; text-align: center;">
+                        <div style="font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Discriminant</div>
+                        <div id="diffEqDiscriminant" style="font-size: 1.1rem; font-weight: 800; color: var(--accent);">Δ = -4.00</div>
+                        <div id="diffEqCaseLabel" style="font-size: 0.75rem; font-weight: 600; color: #f59e0b; margin-top: 0.25rem;">Complex Roots (Oscillatory)</div>
+                    </div>
+                </div>
+
+                <!-- Plot Column -->
+                <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; min-height: 320px; position: relative;">
+                    <h4 style="margin: 0 0 0.75rem 0; font-family: var(--font-family-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-color); text-transform: uppercase; letter-spacing: 0.05em;">Solution Curves — $y(t)$ for $ay'' + by' + cy = 0$</h4>
+                    <div style="width: 100%; height: 260px;">
+                        <canvas id="diffEqPlotChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            let diffEqChartInstance = null;
+
+            window.switchDiffEqTab = function(tab) {
+                const tabLect = document.getElementById('tabDiffEqLectures');
+                const tabTheo = document.getElementById('tabDiffEqTheory');
+                const tabSand = document.getElementById('tabDiffEqSandbox');
+                const secLect = document.getElementById('secDiffEqLectures');
+                const secTheo = document.getElementById('secDiffEqTheory');
+                const secSand = document.getElementById('secDiffEqSandbox');
+
+                if (tab === 'lectures') {
+                    tabLect.style.color = 'var(--accent)';
+                    tabLect.style.borderBottomColor = 'var(--accent)';
+                    tabTheo.style.color = tabSand.style.color = '#6b7280';
+                    tabTheo.style.borderBottomColor = tabSand.style.borderBottomColor = 'transparent';
+                    secLect.style.display = 'block';
+                    secTheo.style.display = secSand.style.display = 'none';
+                } else if (tab === 'theory') {
+                    tabTheo.style.color = 'var(--accent)';
+                    tabTheo.style.borderBottomColor = 'var(--accent)';
+                    tabLect.style.color = tabSand.style.color = '#6b7280';
+                    tabLect.style.borderBottomColor = tabSand.style.borderBottomColor = 'transparent';
+                    secTheo.style.display = 'block';
+                    secLect.style.display = secSand.style.display = 'none';
+                } else {
+                    tabSand.style.color = 'var(--accent)';
+                    tabSand.style.borderBottomColor = 'var(--accent)';
+                    tabLect.style.color = tabTheo.style.color = '#6b7280';
+                    tabLect.style.borderBottomColor = tabTheo.style.borderBottomColor = 'transparent';
+                    secSand.style.display = 'block';
+                    secLect.style.display = secTheo.style.display = 'none';
+                    setTimeout(() => { updateDiffEqSandbox(); }, 50);
+                }
+            };
+
+            window.updateDiffEqSandbox = function() {
+                const a = parseFloat(document.getElementById('diffEqSliderA').value);
+                const b = parseFloat(document.getElementById('diffEqSliderB').value);
+                const c = parseFloat(document.getElementById('diffEqSliderC').value);
+
+                document.getElementById('diffEqValA').innerText = 'a = ' + a;
+                document.getElementById('diffEqValB').innerText = 'b = ' + b;
+                document.getElementById('diffEqValC').innerText = 'c = ' + c;
+
+                const disc = b * b - 4 * a * c;
+                document.getElementById('diffEqDiscriminant').innerText = 'Δ = ' + disc.toFixed(2);
+
+                let caseLabel = '';
+                if (disc > 0.001) {
+                    caseLabel = 'Distinct Real Roots (Overdamped)';
+                } else if (disc < -0.001) {
+                    caseLabel = 'Complex Roots (Oscillatory)';
+                } else {
+                    caseLabel = 'Repeated Root (Critically Damped)';
+                }
+                document.getElementById('diffEqCaseLabel').innerText = caseLabel;
+
+                // Generate solution data for t ∈ [0, 10]
+                const tMin = 0;
+                const tMax = 10;
+                const steps = 200;
+                const dt = (tMax - tMin) / steps;
+
+                const primaryPoints = [];
+                const secondaryPoints = [];
+
+                // Initial conditions: y(0) = 1, y'(0) = 0
+                const y0 = 1;
+                const yp0 = 0;
+
+                for (let i = 0; i <= steps; i++) {
+                    const t = tMin + i * dt;
+                    let yVal = 0;
+                    let yVal2 = null;
+
+                    if (disc > 0.001) {
+                        // Distinct real roots
+                        const r1 = (-b + Math.sqrt(disc)) / (2 * a);
+                        const r2 = (-b - Math.sqrt(disc)) / (2 * a);
+                        // y(0)=1 => A+B=1; y'(0)=0 => A*r1+B*r2=0
+                        const A = (yp0 - r2 * y0) / (r1 - r2);
+                        const B = y0 - A;
+                        yVal = A * Math.exp(r1 * t) + B * Math.exp(r2 * t);
+                        yVal2 = B * Math.exp(r2 * t); // second component
+                    } else if (disc < -0.001) {
+                        // Complex conjugate roots α ± iβ
+                        const alpha = -b / (2 * a);
+                        const beta = Math.sqrt(-disc) / (2 * a);
+                        // y(0)=1 => A=1; y'(0)=0 => α*A + β*B = 0 => B = -α/β
+                        const A = y0;
+                        const B = (yp0 - alpha * y0) / beta;
+                        yVal = Math.exp(alpha * t) * (A * Math.cos(beta * t) + B * Math.sin(beta * t));
+                        yVal2 = Math.exp(alpha * t) * B * Math.sin(beta * t); // sin component
+                    } else {
+                        // Repeated root r
+                        const r = -b / (2 * a);
+                        // y(0)=1 => A=1; y'(0)=0 => A*r + B = 0 => B = -r
+                        const A = y0;
+                        const B = yp0 - r * y0;
+                        yVal = (A + B * t) * Math.exp(r * t);
+                        yVal2 = B * t * Math.exp(r * t); // second component
+                    }
+
+                    // Clamp for display stability
+                    yVal = Math.max(-10, Math.min(10, yVal));
+                    primaryPoints.push({ x: t, y: yVal });
+
+                    if (yVal2 !== null) {
+                        yVal2 = Math.max(-10, Math.min(10, yVal2));
+                        secondaryPoints.push({ x: t, y: yVal2 });
+                    }
+                }
+
+                // Render Chart.js Plot
+                const isDark = document.body.classList.contains('dark-theme');
+                const gridColor = isDark ? 'rgba(68, 76, 86, 0.2)' : 'rgba(203, 213, 225, 0.2)';
+                const labelColor = isDark ? '#adbac7' : '#475569';
+
+                if (diffEqChartInstance) diffEqChartInstance.destroy();
+
+                const datasets = [
+                    {
+                        label: 'Exact Solution y(t)',
+                        data: primaryPoints,
+                        showLine: true,
+                        borderColor: '#10b981',
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        fill: false
+                    }
+                ];
+
+                if (secondaryPoints.length > 0) {
+                    datasets.push({
+                        label: 'Second Component',
+                        data: secondaryPoints,
+                        showLine: true,
+                        borderColor: '#f97316',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        pointRadius: 0,
+                        fill: false
+                    });
+                }
+
+                const ctx = document.getElementById('diffEqPlotChart').getContext('2d');
+                diffEqChartInstance = new Chart(ctx, {
+                    type: 'scatter',
+                    data: { datasets: datasets },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: labelColor } } },
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                position: 'bottom',
+                                min: 0,
+                                max: 10,
+                                title: { display: true, text: 't', color: labelColor },
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor }
+                            },
+                            y: {
+                                min: -5,
+                                max: 5,
+                                title: { display: true, text: 'y(t)', color: labelColor },
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor }
+                            }
+                        }
+                    }
+                });
+            };
+        })();
+    </script>
+</div>

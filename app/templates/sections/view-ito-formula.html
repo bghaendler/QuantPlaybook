@@ -1,0 +1,114 @@
+<div id="view-ito-formula" style="display: none;">
+    <header>
+        <h1>Module 3.1: Stochastic Calculus</h1>
+        <div class="subtitle" style="color: #6b7280;">3. Itô's Formula &amp; Calculus</div>
+    </header>
+    <div class="container" style="grid-template-columns: 1fr; gap: 3rem; max-width: 1400px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+            <div class="card" style="margin-bottom: 0;">
+                <h2>Itô's Formula &amp; Stochastic Calculus</h2>
+                <p>An <strong>Itô Process</strong> $X(t)$ is a stochastic process that can be written as the sum of a smooth deterministic trend (drift) and a rough stochastic integral (diffusion):</p>
+                <p style="text-align: center;">$$ X(t) = X(0) + \int_0^t \mu(s) ds + \int_0^t \sigma(s) dW(s) \quad \iff \quad dX(t) = \mu(t) dt + \sigma(t) dW(t) $$</p>
+                <p>Because Brownian motion paths are rough ($dW^2 = dt$), standard calculus rules fail. If we apply a smooth function $f(t, x)$ to an Itô process, the expansion must include the second-order Taylor term. This is known as **Itô's Lemma**:</p>
+                <div style="background: #f9fafb; padding: 1.5rem; border-radius: 4px; border-left: 4px solid var(--warning); margin: 1.5rem 0;">
+                    <strong>Theorem (Itô's Formula):</strong> Let $X(t)$ be an Itô process. For any twice-differentiable function $f(t, x)$, the differential is given by:
+                    <p style="text-align: center; font-size: 1.05rem; margin-top: 1rem; margin-bottom: 0.5rem;">
+                        $$ df(t, X(t)) = \frac{\partial f}{\partial t} dt + \frac{\partial f}{\partial x} dX(t) + \frac{1}{2} \frac{\partial^2 f}{\partial x^2} dX(t)^2 $$
+                    </p>
+                    Substituting $dX(t)^2 = \sigma(t)^2 dt$ yields:
+                    <p style="text-align: center; font-size: 1.05rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                        $$ df(t, X(t)) = \left( \frac{\partial f}{\partial t} + \frac{\partial f}{\partial x} \mu(t) + \underbrace{\frac{1}{2}\frac{\partial^2 f}{\partial x^2}\sigma(t)^2}_{\text{Stochastic Correction}} \right) dt + \frac{\partial f}{\partial x}\sigma(t) dW(t) $$
+                    </p>
+                </div>
+                <p>The highlighted term is the <strong>Itô correction</strong>. Ignoring it (i.e. using ordinary chain rule) leads to massive cumulative errors in derivative pricing and risk management.</p>
+            </div>
+            <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px;">
+                <h3 style="margin-top:0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+                <p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> In normal math, if you change $x$ a tiny bit, $dx^2$ is so microscopic it vanishes. In random math, because Brownian motion jumps around so wildly, the squared change $dW^2$ is actually a real, measurable time tick $dt$. Itô's formula is just a regular Taylor series that includes this extra second-order term.</p>
+                <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+                    <li style="margin-bottom: 1rem;"><strong>Why a Correction is Needed:</strong> Consider $f(x) = x^2$. If $x$ fluctuates symmetrically by $\pm \epsilon$, the average of $f(x \pm \epsilon)$ is $x^2 + \epsilon^2$. The function value goes *up* on average just from the volatility! The Itô correction measures this exact convexity bonus.</li>
+                    <li style="margin-bottom: 1rem;"><strong>$f(x) = x^2$ Correction:</strong> $df = 2x dW + dt$. The ordinary chain rule would predict just $2x dW$. The extra $+dt$ is a steady upward drift created entirely by randomness!</li>
+                    <li style="margin-bottom: 0;"><strong>Example:</strong> In stock modeling (Geometric Brownian Motion), the stock price has drift $\mu$. But if you look at the *logarithm* of the stock price, $\ln(S)$, Itô's formula says the drift of the log price is actually smaller: $\mu - \frac{1}{2}\sigma^2$. pure volatility acts as a "drag" on compounding growth.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Interactive Visualization -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <h2>Interactive Simulation: Stochastic vs. Ordinary Calculus Divergence</h2>
+            <p style="margin-bottom: 1.5rem;">Select a function $f(x)$ and adjust the volatility $\sigma$. We simulate an underlying Brownian motion $X(t) = W(t)$ (so $\mu=0$) and plot the actual path of $f(X(t))$. We compare this with the **Stochastic Calculus (Itô)** prediction and the **Ordinary Calculus** prediction (which ignores the second-order term). Watch how ordinary calculus fails to track the actual path's drift!</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <!-- Function Choice -->
+                <div style="display: flex; flex-direction: column; gap: 0.5rem; grid-column: span 2;">
+                    <label style="font-weight: 600; font-size: 0.85rem; color: #334155;">Curved Function $f(x)$:</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button id="btnItoQuadratic" class="ito-btn" style="flex: 1; background: var(--primary-color); color: white; border: none; padding: 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">$f(x) = x^2$</button>
+                        <button id="btnItoExponential" class="ito-btn" style="flex: 1; background: #e2e8f0; color: #334155; border: none; padding: 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">$f(x) = e^x$</button>
+                        <button id="btnItoLogarithmic" class="ito-btn" style="flex: 1; background: #e2e8f0; color: #334155; border: none; padding: 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">$f(x) = \ln(x)$</button>
+                    </div>
+                </div>
+                <!-- Volatility Slider -->
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <label for="itoSigmaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Diffusion Volatility $\sigma$: <span id="itoSigmaValue">0.30</span></label>
+                    <input id="itoSigmaSlider" max="0.60" min="0.05" step="0.01" style="width: 100%;" type="range" value="0.30"/>
+                </div>
+                <!-- Re-simulate Button -->
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <button id="resimulateItoBtn" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%;">Re-run Sim</button>
+                </div>
+            </div>
+
+            <div class="chart-container" style="height: 400px;">
+                <canvas id="itoChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Sample Exercise -->
+        <div class="card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
+            <h2 style="color: #166534;">Practice Exercise: Geometric Brownian Motion SDE</h2>
+            <p style="color: #166534; font-weight: 500;">Consider the Geometric Brownian Motion (GBM) model used for stocks: $dS(t) = \mu S(t) dt + \sigma S(t) dW(t)$ with $S(0) > 0$. Apply Itô's Lemma to the function $f(x) = \ln(x)$ to solve for the explicit path $S(t)$.</p>
+            <details style="background: white; padding: 1rem; border-radius: 6px; border: 1px solid #bbf7d0;">
+                <summary style="cursor: pointer; font-weight: 600; color: #15803d; list-style: none; display: flex; align-items: center;">
+                    <span style="margin-right: 0.5rem;">👉</span> Show Step-by-Step Solution
+                </summary>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; color: #334155;">
+                    <p>We want to find $d(\ln S(t))$. Let $f(s) = \ln(s)$:</p>
+                    <ol style="line-height: 1.8;">
+                        <li>Calculate the derivatives of $f(s) = \ln(s)$:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$\frac{\partial f}{\partial s} = \frac{1}{s}, \quad \frac{\partial^2 f}{\partial s^2} = -\frac{1}{s^2}, \quad \frac{\partial f}{\partial t} = 0$$
+                            </div>
+                        </li>
+                        <li>Apply Itô's formula:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$d(\ln S(t)) = \frac{1}{S(t)} dS(t) + \frac{1}{2} \left( -\frac{1}{S(t)^2} \right) dS(t)^2$$
+                            </div>
+                        </li>
+                        <li>Recall that $dS(t)^2 = \sigma^2 S(t)^2 dt$. Plug in $dS(t)$ and $dS(t)^2$:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$d(\ln S(t)) = \frac{1}{S(t)} \left( \mu S(t) dt + \sigma S(t) dW(t) \right) - \frac{1}{2 S(t)^2} \left( \sigma^2 S(t)^2 dt \right)$$
+                            </div>
+                        </li>
+                        <li>Simplify the terms:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$d(\ln S(t)) = \mu dt + \sigma dW(t) - \frac{1}{2} \sigma^2 dt = \left( \mu - \frac{1}{2}\sigma^2 \right) dt + \sigma dW(t)$$
+                            </div>
+                        </li>
+                        <li>Integrate both sides from $0$ to $t$:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$\ln S(t) - \ln S(0) = \left( \mu - \frac{1}{2}\sigma^2 \right) t + \sigma W(t)$$
+                            </div>
+                        </li>
+                        <li>Exponentiate to get the final solution:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$S(t) = S(0) \exp\left( \left( \mu - \frac{1}{2}\sigma^2 \right) t + \sigma W(t) \right)$$
+                            </div>
+                        </li>
+                    </ol>
+                    <p><strong>Conclusion:</strong> The explicit solution shows that the log-price grows at the modified rate **$\mu - \frac{1}{2}\sigma^2$**, proving that volatility acts as a "drag" on actual wealth growth due to convexity effects.</p>
+                </div>
+            </details>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,221 @@
+<div id="view-quiz-stochastic" style="display: none;">
+<header>
+<h1>Quiz: Stochastic Calculus</h1>
+<div class="subtitle" style="color: #6b7280;">Interactive Knowledge Check</div>
+</header>
+<div class="container" style="max-width: 900px; grid-template-columns: 1fr;">
+<p style="margin-bottom: 2rem; font-size: 1.1rem; color: #475569;">Test your understanding with these
+                    exam-style problems. Click on any question to reveal the step-by-step mathematical solution.</p>
+<!-- Q1 -->
+<details class="quiz-card">
+<summary class="quiz-question"><strong>Q1.</strong> Suppose that $W(t)$ is a standard Brownian
+                        motion. Which of the following processes are martingales?<br/>
+<span style="font-size: 0.95rem; font-weight: normal; color: #64748b; margin-top: 1rem; display: block; line-height: 2;">
+                            $\square \ W(t)^2$ <br/>
+                            $\square \ W(t)^3 - \int_0^t W(s) ds$ <br/>
+                            $\square \ W(t)^2 - t$ <br/>
+                            $\square \ e^{2W(t) - 2t}$
+                        </span>
+</summary>
+<div class="quiz-solution">
+<div style="background: #fff1f2; color: #9f1239; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; border-left: 4px solid #e11d48;">
+<strong><svg fill="none" stroke="currentColor" style="width: 16px; height: 16px; display: inline; vertical-align: text-bottom; margin-right: 0.25rem;" viewbox="0 0 24 24"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> $W(t)^2$ should not be selected</strong>
+<p style="margin-top: 0.5rem;">Applying Ito's lemma to $W(t)^2$ gives:</p>
+<p style="text-align: center;">$$ dW(t)^2 = 2W(t)dW(t) + dt. $$</p>
+<p style="margin-bottom: 0;">This cannot be a martingale since there is a non-zero drift term.</p>
+</div>
+<div style="background: #f0fdf4; color: #166534; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; border-left: 4px solid #10b981;">
+<strong><svg fill="none" stroke="currentColor" style="width: 16px; height: 16px; display: inline; vertical-align: text-bottom; margin-right: 0.25rem;" viewbox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg> $e^{2W(t) - 2t}$ is correct</strong>
+<p style="margin-top: 0.5rem;">The process is adapted since $W(t)$ is adapted. For $t \le T$ we have:</p>
+<div style="text-align: center; margin: 1rem 0; overflow-x: auto;">
+                                \begin{align*}
+                                \mathbb{E}_t[e^{2W(T)-2T}] &amp;= \mathbb{E}_t[e^{2(W(T)-W(t))} e^{2W(t)}] e^{-2T} \\
+                                &amp;= \mathbb{E}_t[e^{2(W(T)-W(t))}] e^{2W(t)-2T} \\
+                                &amp;= e^{2(T-t)} e^{2W(t)-2T} = e^{2W(t)-2t},
+                                \end{align*}
+                            </div>
+<p style="margin-bottom: 0;">where we have used independence of $W(T) - W(t)$ and $\mathcal{F}_t$, and the moment generating function of a Gaussian random variable.</p>
+</div>
+<div style="background: #f8fafc; padding: 1rem; border-radius: 6px; border-left: 4px solid #94a3b8;">
+<p style="margin-bottom: 0.5rem;"><strong>Note on the other options:</strong></p>
+<ul style="margin-bottom: 0;">
+<li>$W(t)^3 - \int_0^t W(s)ds$: Has drift $2W(t) dt$. (Not a martingale)</li>
+<li>$W(t)^2 - t$: $d(W(t)^2 - t) = 2W(t) dW(t) + dt - dt = 2W(t) dW(t)$. No drift term. (<strong>Martingale</strong>)</li>
+</ul>
+</div>
+</div>
+</details>
+<!-- Q2 -->
+<details class="quiz-card">
+<summary class="quiz-question"><strong>Q2.</strong> Suppose that $W(t)$ is a standard Brownian
+                        motion and define the process $Z(t) = t^2 W(t)$. Derive the volatility of $Z(t)$ using the
+                        integration by parts formula.</summary>
+<div class="quiz-solution">
+<p><strong>Solution:</strong> By applying the integration by parts formula (or Itô's product
+                            rule) to $f(t)W(t)$ where $f(t) = t^2$:</p>
+<p style="text-align: center;">$$ dZ(t) = d(t^2 W(t)) = W(t)d(t^2) + t^2 dW(t) + d[t^2, W](t) $$
+                        </p>
+<p style="text-align: center;">$$ dZ(t) = 2t W(t) dt + t^2 dW(t) + 0 $$</p>
+<p>The volatility is the coefficient scaling the Brownian noise $dW(t)$. Therefore, the
+                            volatility is $t^2$.</p>
+<p style="margin-bottom: 0;"><strong>Correct Answer:</strong> $t^2$</p>
+</div>
+</details>
+        <details class="quiz-card">
+            <summary class="quiz-question"><strong>Q3.</strong> Suppose $X(t)$ is an Itô process satisfying
+                $dX(t) = 2X(t)dt + X(t)dW(t)$ with $X(0) = 1$. What is the probability that $X(1) &gt; 3$?
+            </summary>
+            <div class="quiz-solution">
+                <p><strong>Solution:</strong> By applying Itô's lemma to $\log(X(t))$ we get the following solution for $X(1)$:</p>
+                <p style="text-align: center;">$$ X(1) = e^{3/2 + W(1)}. $$</p>
+                <p>Since the logarithm is an increasing function we have:</p>
+                <p style="text-align: center;">$$ \mathbb{P}[X(1) &gt; 3] = \mathbb{P}[\log(X(1)) &gt; \log(3)] = 1 - \Phi(\log(3) - 3/2), $$</p>
+                <p>where $\Phi$ represents the standard normal cumulative distribution function.</p>
+                <p style="margin-bottom: 0;"><strong>Correct Answer:</strong> $65.59\%$</p>
+            </div>
+        </details>
+<!-- Q4 -->
+<details class="quiz-card">
+<summary class="quiz-question"><strong>Q4.</strong> Suppose $W_1(t)$ and $W_2(t)$ are two
+                        independent standard Brownian motions. What is the probability that both processes are larger
+                        than 1 at $t=1$?</summary>
+<div class="quiz-solution">
+<p><strong>Solution:</strong> We want to find $\mathbb{P}(W_1(1) &gt; 1 \text{ and } W_2(1) &gt; 1)$.
+                        </p>
+<p>Since they are independent standard Brownian motions, $W_1(1)$ and $W_2(1)$ are independent
+                            standard normal variables $\mathcal{N}(0,1)$.</p>
+<p style="text-align: center;">$$ \mathbb{P}(W_1(1) &gt; 1) \times \mathbb{P}(W_2(1) &gt; 1) = (1 -
+                            \Phi(1))^2 $$</p>
+<p>Since $\Phi(1) \approx 0.8413$, the probability is $(1 - 0.8413)^2 = 0.1587^2 \approx
+                            0.0252$.</p>
+<p style="margin-bottom: 0;"><strong>Correct Answer:</strong> $2.52\%$</p>
+</div>
+</details>
+<!-- Q5 -->
+<details class="quiz-card">
+<summary class="quiz-question"><strong>Q5.</strong> Suppose $W(t)$ is a standard Brownian motion.
+                        Calculate the probability $\mathbb{P}[1 &lt; W(1) &lt; W(3) - 1]$.</summary>
+<div class="quiz-solution">
+<p><strong>Solution:</strong> The condition $1 &lt; W(1) &lt; W(3) - 1$ can be rewritten into
+                                        two independent events:</p>
+<p>1) $W(1) &gt; 1$</p>
+<p>2) $W(3) - W(1) &gt; 1$</p>
+<p>By the definition of Brownian motion, the increments $W(1) - W(0)$ and $W(3)
+                                            - W(1)$ are strictly independent.</p>
+<p style="text-align: center;">$$ \mathbb{P}(W(1) &gt; 1) = 1 - \Phi(1) \approx
+                                            0.1587 $$</p>
+<p>The increment $W(3) - W(1) \sim \mathcal{N}(0, 2)$. To standardize it, we
+                                            divide by $\sqrt{2}$:</p>
+<p style="text-align: center;">$$ \mathbb{P}(W(3) - W(1) &gt; 1) =
+                                            \mathbb{P}\left(Z &gt; \frac{1}{\sqrt{2}}\right) = 1 - \Phi(0.7071) \approx
+                                            0.2397 $$</p>
+<p>Multiplying the independent probabilities: $0.1587 \times 0.2397 = 0.0380$.
+                                        </p>
+<p style="margin-bottom: 0;"><strong>Correct Answer:</strong> $3.80\%$</p>
+</div>
+</details>
+<!-- Q6 -->
+<details class="quiz-card">
+<summary class="quiz-question"><strong>Q6.</strong> Suppose $W(t)$ is a standard Brownian motion.
+                        Conditional on the event that $W(1)$ is positive, what is the probability that it is negative at
+                        $t=2$?</summary>
+<div class="quiz-solution">
+<p><strong>Solution:</strong> We want to find $\mathbb{P}(W(2) &lt; 0 \mid W(1)&gt; 0)$.</p>
+<p>By Bayes' rule, this is $\frac{\mathbb{P}(W(2) &lt; 0 \text{ and } W(1)&gt; 0)}{\mathbb{P}(W(1) &gt;
+                                0)}$.</p>
+<p>Let $X = W(1)$ and $Y = W(2) - W(1)$. Since both are standard normal $\mathcal{N}(0,1)$ and
+                            independent, we can represent them as coordinates $(X,Y)$ on a 2D plane.</p>
+<p>We need $X &gt; 0$ and $X + Y &lt; 0 \implies Y &lt; -X$.</p>
+<p>Graphically, this is the region in the right half-plane ($X&gt;0$) but below the line $Y
+                                    = -X$. This forms a 45-degree wedge out of the full 360-degree plane, representing
+                                    $\frac{1}{8}$ of the total probability.</p>
+<p>Since $\mathbb{P}(W(1) &gt; 0) = \frac{1}{2}$, the conditional probability is
+                                    $\frac{1/8}{1/2} = \frac{1}{4}$.</p>
+<p style="margin-bottom: 0;"><strong>Correct Answer:</strong> $25.00\%$</p>
+</div>
+</details>
+<!-- Q7 -->
+<details class="quiz-card">
+<summary class="quiz-question"><strong>Q7.</strong> Which of the following transformed processes
+                        $Z(t)$ is again a standard Brownian motion?<br/>
+<span style="font-size: 0.95rem; font-weight: normal; color: #64748b; margin-top: 1rem; display: block; line-height: 2;">
+                            $\square \ Z(t) = \frac{1}{2}W(4t)$ <br/>
+                            $\square \ Z(t) = \frac{1}{4}W(4t)$ <br/>
+                            $\square \ Z(t) = t W(1/t) \text{ for } t &gt; 0, \text{ and } 0 \text{ for } t = 0$
+                        </span>
+</summary>
+<div class="quiz-solution">
+<p><strong>Solution:</strong> A standard Brownian motion must have variance $t$, continuous
+                            paths, and stationary independent increments.</p>
+<ul>
+<li>$Z(t) = \frac{1}{2}W(4t)$: $Var(Z(t)) = \frac{1}{4} Var(W(4t)) = \frac{1}{4}(4t) = t$.
+                                (<strong>Yes</strong>)</li>
+<li>$Z(t) = \frac{1}{4}W(4t)$: $Var(Z(t)) = \frac{1}{16}(4t) = t/4 \neq t$. (Not standard)
+                            </li>
+<li>$Z(t) = tW(1/t)$: This is the known <em>time inversion</em> of Brownian motion.
+                                $Var(tW(1/t)) = t^2 (1/t) = t$. By the Strong Law of Large Numbers, $\lim_{t \to 0}
+                                tW(1/t) = 0$, preserving continuity. (<strong>Yes</strong>)</li>
+</ul>
+<p style="margin-bottom: 0;"><strong>Correct Answer:</strong> $Z(t) = \frac{1}{2}W(4t)$ and
+                            $Z(t) = tW(1/t)$</p>
+</div>
+</details>
+<!-- Q8 -->
+<details class="quiz-card">
+<summary class="quiz-question"><strong>Q8.</strong> For which of the following processes can we find
+                        an equivalent probability measure through Girsanov's theorem such that the process becomes a
+                        standard Brownian motion?<br/>
+<span style="font-size: 0.95rem; font-weight: normal; color: #64748b; margin-top: 1rem; display: block; line-height: 2;">
+                            $\square \ dX_1(t) = 5dt + dW(t)$ <br/>
+                            $\square \ dX_2(t) = 5dt + 2dW(t)$ <br/>
+                            $\square \ dX_3(t) = W(t)dt + dW(t)$
+                        </span>
+</summary>
+<div class="quiz-solution">
+<p><strong>Solution:</strong> Girsanov's theorem can <em>only</em> change the drift of a
+                            process, never the volatility (quadratic variation). Therefore, the volatility term must
+                            already match standard Brownian motion (i.e., exactly $1 \times dW(t)$).</p>
+<ul>
+<li>$dX_1(t) = 5dt + dW(t)$: Volatility is 1. We can set the risk premium shift to
+                                $\lambda(t) = -5$ to remove the drift. (<strong>Yes</strong>)</li>
+<li>$dX_2(t) = 5dt + 2dW(t)$: Volatility is 2. No measure change can alter quadratic
+                                variation. (No)</li>
+<li>$dX_3(t) = W(t)dt + dW(t)$: Volatility is 1. We can set $\lambda(t) = -W(t)$ (satisfies
+                                Novikov's condition). (<strong>Yes</strong>)</li>
+</ul>
+<p style="margin-bottom: 0;"><strong>Correct Answer:</strong> $dX_1(t) = 5dt + dW(t)$ and
+                            $dX_3(t) = W(t)dt + dW(t)$</p>
+</div>
+</details>
+<!-- Q9 -->
+<details class="quiz-card">
+<summary class="quiz-question"><strong>Q9.</strong> Consider a market where you can trade in the
+                        money market account with constant short rate $r = 5\%$ and two assets $S_1$ and $S_2$. Which
+                        specification of their returns under $\mathbb{P}$ is compatible with the Arbitrage Pricing
+                        Theorem?<br/>
+<span style="font-size: 0.95rem; font-weight: normal; color: #64748b; margin-top: 1rem; display: block; line-height: 2;">
+                            1. $\frac{dS_1}{S_1} = 0.2dt + 0.15dW, \quad \frac{dS_2}{S_2} = 0.3dt + 0.25dW$ <br/>
+                            2. $\frac{dS_1}{S_1} = 0.25dt + 0.15dW, \quad \frac{dS_2}{S_2} = 0.1dt + 0.25dW$ <br/>
+                            3. $\frac{dS_1}{S_1} = 0.05dt + 0.15dW, \quad \frac{dS_2}{S_2} = 0.25dW$
+                        </span>
+</summary>
+<div class="quiz-solution">
+<p><strong>Solution:</strong> The Arbitrage Pricing Theorem dictates that there must be no free
+                            lunch. All assets exposed to the same source of risk $dW(t)$ must offer the exact same unit
+                            compensation for that risk, known as the Market Price of Risk ($\lambda$).</p>
+<p style="text-align: center;">$$ \lambda = \frac{\mu - r}{\sigma} $$</p>
+<p>Let's check the options for $r=0.05$:</p>
+<ul>
+<li><strong>Option 1:</strong><br/>$\lambda_1 = (0.2 - 0.05)/0.15 = 1$<br/>$\lambda_2 = (0.3 -
+                                0.05)/0.25 = 1$. Both $\lambda=1$. (<strong>Compatible!</strong>)</li>
+<li><strong>Option 2:</strong><br/>$\lambda_1 = (0.25 - 0.05)/0.15 \approx
+                                1.33$<br/>$\lambda_2 = (0.1 - 0.05)/0.25 = 0.2$. Arbitrage exists! (Not compatible)</li>
+<li><strong>Option 3:</strong><br/>$\lambda_1 = (0.05 - 0.05)/0.15 = 0$<br/>$\lambda_2 = (0 -
+                                0.05)/0.25 = -0.2$. Arbitrage exists! (Not compatible)</li>
+</ul>
+<p style="margin-bottom: 0;"><strong>Correct Answer:</strong> The first specification (Option 1)
+                        </p>
+</div>
+</details>
+</div>
+</div>

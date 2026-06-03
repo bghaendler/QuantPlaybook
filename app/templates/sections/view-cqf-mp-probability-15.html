@@ -1,0 +1,172 @@
+<div id="view-cqf-mp-probability-15" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">1.5 Classical Problems</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.5 Classical Probability Problems</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">The Birthday paradox, Monty Hall's door swap puzzle, and cognitive biases in statistical thinking.</div>
+    </header>
+
+    <!-- Core Theory Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">1.5.1 Famous Statistical Dilemmas</h3>
+        <p>Two famous probability setups challenge basic human intuition, demonstrating why rigorous mathematics is required over gut feelings:</p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li><strong>The Birthday Problem:</strong> The probability that at least 2 people in a group of $N$ share a birthday. Counter-intuitively, in a group of just 23 people, the probability is greater than 50% ($P \approx 50.73\%$), and for 50 people, it is 97%!</li>
+            <li><strong>The Monty Hall Dilemma:</strong> A game show host offers you a choice of three doors. One has a car, two have goats. You choose a door (e.g. Door 1). Monty, who knows what's behind them, opens another door showing a goat (e.g. Door 3) and offers you to **swap** to Door 2. Mathematically, swapping **doubles** your chances of winning from $\frac{1}{3}$ to $\frac{2}{3}$!</li>
+        </ul>
+    </div>
+
+    <!-- Monty Hall Simulator -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">1.5.2 Interactive Monty Hall Game Show Simulator</h3>
+        <p>Play the game show live to test your choices and track wins vs losses across multiple rounds:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start;">
+                <!-- Game Board -->
+                <div>
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem; justify-content: center;">
+                        <div id="door1" onclick="chooseDoor(1)" style="width: 70px; height: 110px; background: #3f3f46; border: 3px solid #71717a; border-radius: 6px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; color: white; font-weight: 700; transition: all 0.2s;">
+                            <span>Door 1</span>
+                            <span id="doorContent1" style="font-size: 0.75rem; margin-top: 5px;"></span>
+                        </div>
+                        <div id="door2" onclick="chooseDoor(2)" style="width: 70px; height: 110px; background: #3f3f46; border: 3px solid #71717a; border-radius: 6px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; color: white; font-weight: 700; transition: all 0.2s;">
+                            <span>Door 2</span>
+                            <span id="doorContent2" style="font-size: 0.75rem; margin-top: 5px;"></span>
+                        </div>
+                        <div id="door3" onclick="chooseDoor(3)" style="width: 70px; height: 110px; background: #3f3f46; border: 3px solid #71717a; border-radius: 6px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; color: white; font-weight: 700; transition: all 0.2s;">
+                            <span>Door 3</span>
+                            <span id="doorContent3" style="font-size: 0.75rem; margin-top: 5px;"></span>
+                        </div>
+                    </div>
+
+                    <div style="font-size: 0.85rem; line-height: 1.5; background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid #8b5cf6; min-height: 70px;">
+                        <div id="montyStatus">Pick a door to start your game show!</div>
+                        <div id="montyControls" style="display: none; gap: 0.5rem; margin-top: 0.5rem;">
+                            <button onclick="makeDecision(true)" style="background: var(--accent); color: white; border: none; padding: 0.35rem 0.6rem; border-radius: 4px; font-weight: 700; font-size: 0.8rem; cursor: pointer;">Swap Door</button>
+                            <button onclick="makeDecision(false)" style="background: #52525b; color: white; border: none; padding: 0.35rem 0.6rem; border-radius: 4px; font-weight: 700; font-size: 0.8rem; cursor: pointer;">Stay</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scorecard -->
+                <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; font-size: 0.85rem; line-height: 1.6;">
+                    <strong style="color: var(--accent); display: block; border-bottom: 1px solid var(--card-border); padding-bottom: 0.35rem; margin-bottom: 0.5rem;">Simulator Scoreboard</strong>
+                    <div>Total Played: <span id="montyTotal" style="font-weight: 700;">0</span></div>
+                    <div>Swapped Wins: <span id="montySwapWins" style="font-weight: 700; color: #10b981;">0</span> (Stay Wins: <span id="montyStayWins" style="font-weight: 700;">0</span>)</div>
+                    <div style="margin-top: 0.5rem; font-size: 0.78rem; color: #6b7280;">
+                        * Run multiple simulations to verify that swapping succeeds 2/3 of the time!
+                    </div>
+                    <button onclick="resetMontyStats()" style="margin-top: 0.5rem; background: none; border: 1px solid var(--card-border); color: #6b7280; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; cursor: pointer;">Reset Scoreboard</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            let carDoor = 0;
+            let chosenDoor = 0;
+            let openedGoatDoor = 0;
+            let gameState = 'idle'; // 'idle', 'doorChosen', 'resolved'
+
+            let totalPlayed = 0;
+            let swapWins = 0;
+            let stayWins = 0;
+
+            window.chooseDoor = function(num) {
+                if (gameState !== 'idle') return;
+
+                chosenDoor = num;
+                // Place car randomly
+                carDoor = Math.floor(Math.random() * 3) + 1;
+
+                // Host opens a door containing a goat
+                const options = [1, 2, 3].filter(d => d !== chosenDoor && d !== carDoor);
+                openedGoatDoor = options[Math.floor(Math.random() * options.length)];
+
+                // Highlight chosen door
+                document.getElementById(`door${chosenDoor}`).style.borderColor = 'var(--accent)';
+                
+                // Show goat behind opened door
+                document.getElementById(`door${openedGoatDoor}`).style.borderColor = '#ea580c';
+                document.getElementById(`doorContent${openedGoatDoor}`).innerText = '🐐 Goat';
+                document.getElementById(`doorContent${openedGoatDoor}`).style.color = '#ea580c';
+
+                document.getElementById('montyStatus').innerHTML = `You chose Door ${chosenDoor}. Monty has opened Door ${openedGoatDoor} to reveal a goat! Would you like to **swap** doors or **stay**?`;
+                document.getElementById('montyControls').style.display = 'flex';
+                gameState = 'doorChosen';
+            };
+
+            window.makeDecision = function(isSwap) {
+                if (gameState !== 'doorChosen') return;
+
+                let finalDoor = chosenDoor;
+                if (isSwap) {
+                    finalDoor = [1, 2, 3].find(d => d !== chosenDoor && d !== openedGoatDoor);
+                }
+
+                // Reveal all doors
+                for (let d = 1; d <= 3; d++) {
+                    const el = document.getElementById(`doorContent${d}`);
+                    if (d === carDoor) {
+                        el.innerText = '🚗 CAR!';
+                        el.style.color = '#10b981';
+                        document.getElementById(`door${d}`).style.borderColor = '#10b981';
+                    } else {
+                        el.innerText = '🐐 Goat';
+                        el.style.color = '#a1a1aa';
+                    }
+                }
+
+                totalPlayed++;
+                const won = (finalDoor === carDoor);
+
+                if (won) {
+                    if (isSwap) swapWins++;
+                    else stayWins++;
+                    document.getElementById('montyStatus').innerHTML = `🎉 **You won the Car!** ${isSwap ? 'Swapping' : 'Staying'} was successful! Choose any door to play again.`;
+                } else {
+                    document.getElementById('montyStatus').innerHTML = `🐐 **Goat!** You got a goat. ${isSwap ? 'Swapping' : 'Staying'} failed. Choose any door to play again.`;
+                }
+
+                updateMontyScoreboard();
+                gameState = 'resolved';
+                
+                // Reset board on next click
+                setTimeout(() => {
+                    if (gameState === 'resolved') {
+                        resetMontyBoard();
+                    }
+                }, 2000);
+            };
+
+            function resetMontyBoard() {
+                for (let d = 1; d <= 3; d++) {
+                    document.getElementById(`door${d}`).style.borderColor = '#71717a';
+                    document.getElementById(`doorContent${d}`).innerText = '';
+                }
+                document.getElementById('montyControls').style.display = 'none';
+                gameState = 'idle';
+            }
+
+            function updateMontyScoreboard() {
+                document.getElementById('montyTotal').innerText = totalPlayed;
+                document.getElementById('montySwapWins').innerText = swapWins;
+                document.getElementById('montyStayWins').innerText = stayWins;
+            }
+
+            window.resetMontyStats = function() {
+                totalPlayed = 0;
+                swapWins = 0;
+                stayWins = 0;
+                updateMontyScoreboard();
+                resetMontyBoard();
+                document.getElementById('montyStatus').innerText = 'Choose any door to start a new game!';
+            };
+        })();
+    </script>
+</div>

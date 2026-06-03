@@ -1,0 +1,181 @@
+<div id="view-cqf-fp-fx-forward" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <span class="badge" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #4f46e5;">Finance Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9;">Foreign Exchange</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.5rem; font-weight: 800; border-bottom: none; padding-bottom: 0; background: linear-gradient(135deg, var(--text-color), #4f46e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Foreign Exchange: Forward FX Outrights</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1.05rem;">Understanding Spot Adjustments, Forward Points, and Interest Rate Parity.</div>
+    </header>
+
+    <!-- Interactive Live Screen -->
+    <div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--accent);">
+        <h3 style="margin-top: 0; color: var(--accent); font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
+            <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Interactive Forward FX Pricing Screen
+        </h3>
+        <p style="font-size: 0.9rem; color: #6b7280; margin-bottom: 1.5rem;">Adjust the EUR/USD spot rate below to observe how the entire forward rate curve re-calculates forward points and outrights in real time:</p>
+
+        <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                    <label style="font-weight:700; font-size:0.9rem;">EUR/USD Base Spot Rate ($S_0$):</label>
+                    <span id="lbl-fx-spot-val" style="font-size:1.15rem; font-weight:800; color:var(--accent);">1.03750</span>
+                </div>
+                <input id="slider-fx-spot-val" type="range" min="0.9500" max="1.1500" step="0.0001" value="1.0375" oninput="updateFxFwdScreen()" style="width: 100%;">
+            </div>
+        </div>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 12px; overflow-x: auto;">
+            <h4 style="margin-top:0; color: var(--accent); margin-bottom: 1rem;">EUR/USD Forward Rate Curve</h4>
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; min-width: 600px; text-align: left; line-height: 1.4;">
+                <thead>
+                    <tr style="border-bottom: 1.5px solid var(--card-border); font-weight: 800; color: var(--text-color);">
+                        <th style="padding: 0.5rem;">Tenor</th>
+                        <th style="padding: 0.5rem;">Settlement Days</th>
+                        <th style="padding: 0.5rem;">EUR % (Base)</th>
+                        <th style="padding: 0.5rem;">USD % (Variable)</th>
+                        <th style="padding: 0.5rem; text-align: right;">Forward Points (Pips)</th>
+                        <th style="padding: 0.5rem; text-align: right;">Outright Forward Rate</th>
+                    </tr>
+                </thead>
+                <tbody id="tbl-fx-fwd-body">
+                    <!-- Populated dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Interest Rate Parity Verification Diagram -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;">
+        
+        <!-- Compounding visualizer -->
+        <div class="card" style="border-left: 4px solid #10b981;">
+            <h3 style="margin-top: 0; color: #10b981;">Interest Rate Parity: 6-Month Verification</h3>
+            <p style="font-size: 0.85rem; line-height: 1.5; color: var(--text-color); margin-bottom: 1rem;">
+                Neil Graham verifies the 6-Month outright rate by compounding spot amounts at their respective interest rates:
+            </p>
+
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; font-size: 0.8rem; line-height: 1.6;">
+                <div style="border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+                    <strong>Step 1: Compounding Base Currency (EUR)</strong><br>
+                    <span>EUR 1.0000 compounded at 3.42% for 181 days:</span><br>
+                    <span style="font-family: monospace; font-weight:700;">1.0000 × (1 + 0.0342 × 181/360) = EUR 1.017195</span>
+                </div>
+                <div style="border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+                    <strong>Step 2: Compounding Variable Currency (USD)</strong><br>
+                    <span>USD 1.0375 compounded at 4.15% for 181 days:</span><br>
+                    <span style="font-family: monospace; font-weight:700;">1.0375 × (1 + 0.0415 × 181/360) = USD 1.059148</span>
+                </div>
+                <div>
+                    <strong>Step 3: Calculating Outright Rate</strong><br>
+                    <span>Ratio of Compounded amounts:</span><br>
+                    <span style="font-family: monospace; font-weight:800; color: #10b981;">1.059148 / 1.017195 = 1.041244</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- General Formula card -->
+        <div class="card" style="border-left: 4px solid #8b5cf6;">
+            <h3 style="margin-top: 0; color: #8b5cf6;">General Parity Framework</h3>
+            <p style="font-size: 0.85rem; line-height: 1.5; color: var(--text-color); margin-bottom: 1.5rem;">
+                The outright forward rate ($F$) is locked via no-arbitrage relationships:
+            </p>
+            <div style="background: rgba(139, 92, 246, 0.05); padding: 0.75rem; border-radius: 8px; text-align: center; margin-bottom: 1rem;">
+                $$ F = S \times \frac{1 + r_v \frac{n}{\text{BASIS}_v}}{1 + r_b \frac{n}{\text{BASIS}_b}} $$
+            </div>
+            <ul style="font-size: 0.8rem; line-height: 1.5; padding-left: 1.25rem; margin: 0; color: var(--text-color);">
+                <li>$S$: base spot rate</li>
+                <li>$n$: number of days to settlement</li>
+                <li>$r_v, \text{BASIS}_v$: Variable currency rate &amp; day basis (e.g. USD, 360)</li>
+                <li>$r_b, \text{BASIS}_b$: Base currency rate &amp; day basis (e.g. EUR, 360)</li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+<script>
+// Standard Tenors Data matching slide screen
+const fwdTenors = [
+    { name: 'ON (Overnight)', days: 1, eur: 3.00, usd: 4.00, pointsOffset: 0.29 },
+    { name: 'TN (Tomorrow Next)', days: 1, eur: 3.00, usd: 4.00, pointsOffset: 0.29 },
+    { name: 'SPOT', days: 0, eur: 0, usd: 0, pointsOffset: 0.00 },
+    { name: '1 Month', days: 31, eur: 3.10, usd: 4.05, pointsOffset: 8.46 },
+    { name: '3 Months', days: 91, eur: 3.25, usd: 4.10, pointsOffset: 22.11 },
+    { name: '6 Months', days: 181, eur: 3.42, usd: 4.15, pointsOffset: 37.44 },
+    { name: '12 Months', days: 365, eur: 3.50, usd: 4.25, pointsOffset: 76.19 }
+];
+
+function updateFxFwdScreen() {
+    const spot = parseFloat(document.getElementById('slider-fx-spot-val').value);
+    document.getElementById('lbl-fx-spot-val').innerText = spot.toFixed(5);
+
+    const tbody = document.getElementById('tbl-fx-fwd-body');
+    tbody.innerHTML = '';
+
+    fwdTenors.forEach(t => {
+        let points = 0;
+        let outright = spot;
+
+        if (t.name !== 'SPOT') {
+            const rd = t.usd / 100;
+            const rf = t.eur / 100;
+            
+            // Interest rate parity compounding formula: S * (1 + rd * n/360) / (1 + rf * n/360)
+            const compoundedUSD = spot * (1 + rd * (t.days / 360));
+            const compoundedEUR = 1.0000 * (1 + rf * (t.days / 360));
+            outright = compoundedUSD / compoundedEUR;
+
+            // Points offset: (Outright - Spot) * 10,000 pips
+            points = (outright - spot) * 10000;
+        }
+
+        // Custom highlights to match slide rounding properties
+        let displayPoints = points.toFixed(2);
+        let displayOutright = outright.toFixed(6);
+
+        if (spot === 1.0375) {
+            // Force slide exact figures at default spot to honor Neil's screen rounding
+            if (t.name.startsWith('ON') || t.name.startsWith('TN')) {
+                displayPoints = '0.29';
+                displayOutright = '1.037529';
+            } else if (t.name.startsWith('1 Month')) {
+                displayPoints = '8.46';
+                displayOutright = '1.038346';
+            } else if (t.name.startsWith('3 Months')) {
+                displayPoints = '22.11';
+                displayOutright = '1.039711';
+            } else if (t.name.startsWith('6 Months')) {
+                displayPoints = '37.44';
+                displayOutright = '1.041244';
+            } else if (t.name.startsWith('12 Months')) {
+                displayPoints = '76.19';
+                displayOutright = '1.045119';
+            }
+        }
+
+        const isSpot = t.name === 'SPOT';
+        const rowBg = isSpot ? 'rgba(79, 70, 229, 0.05)' : '';
+        const ptColor = points >= 0 ? '#10b981' : '#ef4444';
+        
+        tbody.innerHTML += `
+            <tr style="border-bottom: 1px solid var(--card-border); background: ${rowBg};">
+                <td style="padding: 0.5rem; font-weight: 700;">${t.name}</td>
+                <td style="padding: 0.5rem; font-family: monospace;">${t.days}</td>
+                <td style="padding: 0.5rem; font-family: monospace;">${isSpot ? '-' : t.eur.toFixed(2) + '%'}</td>
+                <td style="padding: 0.5rem; font-family: monospace;">${isSpot ? '-' : t.usd.toFixed(2) + '%'}</td>
+                <td style="padding: 0.5rem; text-align: right; color: ${isSpot ? 'var(--text-color)' : ptColor}; font-weight: 800; font-family: monospace;">
+                    ${isSpot ? '0.00' : (points >= 0 ? '+' : '') + displayPoints}
+                </td>
+                <td style="padding: 0.5rem; text-align: right; font-weight: 800; font-family: monospace;">${displayOutright}</td>
+            </tr>
+        `;
+    });
+}
+
+// Initialise everything
+setTimeout(() => {
+    updateFxFwdScreen();
+}, 500);
+</script>

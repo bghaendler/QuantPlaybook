@@ -1,0 +1,145 @@
+<div id="view-forward-measures" style="display: none;">
+    <header>
+        <h1>Module 3.3: Advanced Models</h1>
+        <div class="subtitle" style="color: #6b7280;">2. Forward Measures & Option Pricing</div>
+    </header>
+
+    <div class="container" style="grid-template-columns: 1fr; gap: 3rem; max-width: 1400px;">
+        <!-- Theory Intro Row -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+            <div class="card" style="margin-bottom: 0;">
+                <h2>Numeraire & Forward Measure Setup</h2>
+                <p>By the Arbitrage Pricing Theory, discounted asset prices are martingales under the risk-neutral measure $\mathbb{Q}$. When we discount bond price processes by the savings account $B(t) = e^{\int_0^t r(s) ds}$, they are $\mathbb{Q}$-martingales. </p>
+                <p>If we instead discount by a specific $T$-bond $P(t, T)$, we obtain martingales under the <strong>$T$-forward measure $\mathbb{Q}^T$</strong>. This change of numeraire is equivalent to $\mathbb{Q}$ with a Radon-Nikodym density process given by:</p>
+                <p style="text-align: center;">$$\mathbb{E}^{\mathbb{Q}}\left[ \frac{d\mathbb{Q}^T}{d\mathbb{Q}} \middle| \mathcal{F}_t \right] = \frac{e^{-\int_0^t r(s) ds} P(t, T)}{P(0, T)}$$</p>
+                <p>This technique is extremely powerful for pricing interest rate derivatives because it removes the discount factor from inside the expectation operator:</p>
+                <p style="text-align: center;">$$p(t) = \mathbb{E}^{\mathbb{Q}}\left[ e^{-\int_t^T r(s) ds} X \middle| \mathcal{F}_t \right] = P(t, T) \mathbb{E}^{\mathbb{Q}^T} [X | \mathcal{F}_t]$$</p>
+            </div>
+            
+            <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px;">
+                <h3 style="margin-top:0; color: #b45309; font-family: 'Inter', sans-serif;">Key Analytical Properties</h3>
+                <p style="font-family: 'Inter', sans-serif;"><strong>Why Numeraire Changes Matter:</strong></p>
+                <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin-bottom: 0;">
+                    <li style="margin-bottom: 0.75rem;"><strong>Fundamental Property:</strong> For any time points $T_0$ and $T_1$, the ratio $\frac{P(t, T_0)}{P(t, T_1)}$ is a martingale under the $T_1$-forward measure $\mathbb{Q}^{T_1}$.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>Simple Forward Rates:</strong> As a direct consequence, simple forward rates $F(t, T_0, T_1)$ follow a martingale under the $T_1$-forward measure.</li>
+                    <li style="margin-bottom: 0.75rem;"><strong>HJM Martingale Representation:</strong> In the Gaussian Heath-Jarrow-Morton framework, the $T$-forward rate process $f(t, T)$ is a martingale under $\mathbb{Q}^T$, meaning $f(t, T) = \mathbb{E}^{\mathbb{Q}^T}[r(T) | \mathcal{F}_t]$.</li>
+                    <li style="margin-bottom: 0;"><strong>Girsanov Transformation:</strong> Under $\mathbb{Q}^T$, the drift-adjusted process $W^T(t) = W^*(t) - \int_0^t v(s, T) ds$ is a standard Brownian motion.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Interactive Option pricing simulator -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <h2>Interactive Simulator: Term Structure of Bond Options</h2>
+            <p style="margin-bottom: 1.5rem;">
+                Explore how the term structure of European put and call option prices behaves in a Gaussian HJM / Vasicek framework.
+                Adjust the parameters below to dynamically recalculate zero-coupon bond prices and option premiums (in basis points, $10^{-4}$) for options expiring at $T_{i-1}$ on $T_i$-maturity bonds at the At-The-Money (ATM) strike $K_i = \frac{P(0, T_i)}{P(0, T_{i-1})}$.
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <!-- Sliders block -->
+                <div style="display: flex; flex-direction: column; gap: 1rem; grid-column: span 2;">
+                    <div style="display: flex; gap: 1rem;">
+                        <div style="flex: 1;">
+                            <label for="fwdR0Slider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Initial Rate $r(0)$: <span id="fwdR0Value">6.0%</span></label>
+                            <input id="fwdR0Slider" max="0.15" min="0.01" step="0.005" style="width: 100%;" type="range" value="0.06"/>
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="fwdThetaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Long-Term Mean ($\theta$): <span id="fwdThetaValue">8.0%</span></label>
+                            <input id="fwdThetaSlider" max="0.15" min="0.01" step="0.005" style="width: 100%;" type="range" value="0.08"/>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <div style="flex: 1;">
+                            <label for="fwdKappaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Mean Reversion Speed ($\kappa$): <span id="fwdKappaValue">0.86</span></label>
+                            <input id="fwdKappaSlider" max="3.0" min="0.1" step="0.05" style="width: 100%;" type="range" value="0.86"/>
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="fwdSigmaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Volatility ($\sigma$): <span id="fwdSigmaValue">1.0%</span></label>
+                            <input id="fwdSigmaSlider" max="0.05" min="0.001" step="0.001" style="width: 100%;" type="range" value="0.01"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Toggle buttons and parameters readout -->
+                <div style="border-left: 2px solid #cbd5e1; padding-left: 1.5rem; display: flex; flex-direction: column; justify-content: center; gap: 1rem; grid-column: span 2;">
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <span style="font-weight: 600; font-size: 0.85rem; color: #334155; width: 100px;">Option Type:</span>
+                        <div class="btn-group" style="display: flex; gap: 0.5rem;">
+                            <button id="btnTogglePut" class="btn" style="background: var(--primary-color); color: white; border: none; padding: 0.4rem 1rem; border-radius: 4px; font-weight: 600; cursor: pointer;">Put Options</button>
+                            <button id="btnToggleCall" class="btn" style="background: #e2e8f0; color: #334155; border: none; padding: 0.4rem 1rem; border-radius: 4px; font-weight: 600; cursor: pointer;">Call Options</button>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-family: 'Courier New', monospace; font-size: 0.85rem; color: #475569;">
+                        <div>
+                            <strong>Peak Price:</strong> <span id="fwdPeakVal" style="color: var(--primary-color); font-weight: 700;">5.78 bps</span>
+                        </div>
+                        <div>
+                            <strong>Peak Expiry:</strong> <span id="fwdPeakMaturity" style="font-weight: 700;">1.50 Years</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart Canvas -->
+            <div class="chart-container" style="height: 400px; position: relative;">
+                <canvas id="fwdMeasuresChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Analytical Proofs Accordion -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <h2>Closed-Form Bond Option Pricing Derivation</h2>
+            <p>Here is the full step-by-step mathematical decomposition that enables options pricing under the HJM framework with deterministic volatilities.</p>
+            
+            <details style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 1rem;">
+                <summary style="cursor: pointer; font-weight: 700; color: #1e293b; list-style: none; display: flex; align-items: center; font-size: 1.05rem;">
+                    <span style="margin-right: 0.5rem; transition: transform 0.2s;">👉</span> 1. Payoff Decomposition & Bayes' Rule Application
+                </summary>
+                <div style="margin-top: 1rem; border-top: 1px solid #e2e8f0; padding-top: 1rem; line-height: 1.8; color: #334155;">
+                    <p>The time-0 price of a European call option on a $T_1$-bond with expiry $T_0$ and strike $K$ is:</p>
+                    <p style="text-align: center;">$$p_{\text{call}} = \mathbb{E}^{\mathbb{Q}}\left[ e^{-\int_0^{T_0} r(s)ds} (P(T_0, T_1) - K)^+ \right]$$</p>
+                    <p>Let $A_E = \{P(T_0, T_1) > K\}$ denote the exercise event. We can decompose the payoff $(P(T_0, T_1) - K)\mathbb{1}_{A_E}$ and write the price as the difference of two expectations:</p>
+                    <p style="text-align: center;">$$p_{\text{call}} = \mathbb{E}^{\mathbb{Q}}\left[ e^{-\int_0^{T_0} r(s)ds} P(T_0, T_1) \mathbb{1}_{A_E} \right] - K \mathbb{E}^{\mathbb{Q}}\left[ e^{-\int_0^{T_0} r(s)ds} \mathbb{1}_{A_E} \right]$$</p>
+                    <p>By changing measure to the $T_0$-forward measure $\mathbb{Q}^{T_0}$ in the second term, we get rid of the discount factor:</p>
+                    <p style="text-align: center;">$$K \mathbb{E}^{\mathbb{Q}}\left[ e^{-\int_0^{T_0} r(s)ds} \mathbb{1}_{A_E} \right] = K P(0, T_0) \mathbb{Q}^{T_0} [P(T_0, T_1) > K]$$</p>
+                    <p>For the first term, we change measure to the $T_1$-forward measure $\mathbb{Q}^{T_1}$ by using the Radon-Nikodym density relative to $T_1$:</p>
+                    <p style="text-align: center;">$$\mathbb{E}^{\mathbb{Q}}\left[ e^{-\int_0^{T_0} r(s)ds} P(T_0, T_1) \mathbb{1}_{A_E} \right] = P(0, T_1) \mathbb{Q}^{T_1} [P(T_0, T_1) > K]$$</p>
+                    <p>Thus, we arrive at the beautiful representation in terms of probability distributions:</p>
+                    <p style="text-align: center;">$$p_{\text{call}} = P(0, T_1) \mathbb{Q}^{T_1} [P(T_0, T_1) > K] - K P(0, T_0) \mathbb{Q}^{T_0} [P(T_0, T_1) > K]$$</p>
+                </div>
+            </details>
+
+            <details style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 1rem;">
+                <summary style="cursor: pointer; font-weight: 700; color: #1e293b; list-style: none; display: flex; align-items: center; font-size: 1.05rem;">
+                    <span style="margin-right: 0.5rem; transition: transform 0.2s;">👉</span> 2. Gaussian Log-Normal Volatilities (Vasicek Model Example)
+                </summary>
+                <div style="margin-top: 1rem; border-top: 1px solid #e2e8f0; padding-top: 1rem; line-height: 1.8; color: #334155;">
+                    <p>In a Gaussian HJM model where the forward rate volatility $\sigma(t, T)$ is deterministic, the ratio of bond prices is log-normally distributed. Under the $T_1$-forward measure, we have:</p>
+                    <p style="text-align: center;">$$\log \left( \frac{P(T_0, T_1)}{P(T_0, T_0)} \right) = \log P(T_0, T_1) \sim \mathcal{N}\left( \log \frac{P(0, T_1)}{P(0, T_0)} - \frac{1}{2}\Sigma_{T_0, T_1}^2, \; \Sigma_{T_0, T_1}^2 \right)$$</p>
+                    <p>Where the integrated variance of the bond returns ratio $\Sigma_{T_0, T_1}^2$ is:</p>
+                    <p style="text-align: center;">$$\Sigma_{T_0, T_1}^2 = \int_0^{T_0} \|v(s, T_0) - v(s, T_1)\|^2 ds$$</p>
+                    <p>For the Vasicek model, with decay volatility $\sigma(t, T) = \sigma e^{-\kappa(T-t)}$, the difference in bond volatilities is:</p>
+                    <p style="text-align: center;">$$v(t, T_0) - v(t, T_1) = \frac{\sigma}{\kappa} \left( e^{-\kappa(T_0 - t)} - e^{-\kappa(T_1 - t)} \right)$$</p>
+                    <p>Performing the integration results in the exact closed-form variance:</p>
+                    <p style="text-align: center;">$$\Sigma_{T_0, T_1}^2 = \frac{\sigma^2}{2\kappa^3} \left( 1 - e^{-\kappa(T_1 - T_0)} \right)^2 \left( 1 - e^{-2\kappa T_0} \right)$$</p>
+                </div>
+            </details>
+
+            <details style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <summary style="cursor: pointer; font-weight: 700; color: #1e293b; list-style: none; display: flex; align-items: center; font-size: 1.05rem;">
+                    <span style="margin-right: 0.5rem; transition: transform 0.2s;">👉</span> 3. Put-Call Parity & Put Option Formula
+                </summary>
+                <div style="margin-top: 1rem; border-top: 1px solid #e2e8f0; padding-top: 1rem; line-height: 1.8; color: #334155;">
+                    <p>The put-call parity for bond option prices relates call and put options with strike $K$ and expiry $T_0$ by:</p>
+                    <p style="text-align: center;">$$p_{\text{call}} - p_{\text{put}} = P(0, T_1) - K P(0, T_0)$$</p>
+                    <p>Solving for $p_{\text{put}}$ and substituting the Gaussian HJM call option formula:</p>
+                    <p style="text-align: center;">$$p_{\text{put}} = K P(0, T_0) \Phi(-d_2) - P(0, T_1) \Phi(-d_1)$$</p>
+                    <p>where:</p>
+                    <p style="text-align: center;">$$d_1 = \frac{\log \left( \frac{P(0, T_1)}{K P(0, T_0)} \right) + \frac{1}{2}\Sigma_{T_0, T_1}^2}{\Sigma_{T_0, T_1}}, \quad d_2 = d_1 - \Sigma_{T_0, T_1}$$</p>
+                </div>
+            </details>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,329 @@
+<div id="view-cqf-fp-deriv-futures-valuation" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <span class="badge" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #4f46e5;">Finance Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9;">Derivatives</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.5rem; font-weight: 800; border-bottom: none; padding-bottom: 0; background: linear-gradient(135deg, var(--text-color), #4f46e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Derivatives: Valuation of Futures &amp; Forwards</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1.05rem;">Mastering Cost of Carry replication, time convergence, and risk-free arbitrage pricing models.</div>
+    </header>
+
+    <!-- Sub Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.75rem; flex-wrap: wrap;">
+        <button class="nav-item tab-btn active" id="btn-fv-carry" onclick="selectFvTab('carry')" style="padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: 1px solid var(--card-border); background: var(--metric-bg); color: var(--text-color);">1. Cost of Carry Model</button>
+        <button class="nav-item tab-btn" id="btn-fv-arb" onclick="selectFvTab('arb')" style="padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: 1px solid var(--card-border); background: var(--metric-bg); color: var(--text-color);">2. Convergence &amp; Arbitrage Simulator</button>
+    </div>
+
+    <!-- TAB 1: Cost of Carry Model -->
+    <div id="fv-tab-content-carry" class="fv-tab-pane" style="display: block;">
+        <div class="card" style="margin-bottom: 2rem; border-left: 4px solid #4f46e5;">
+            <h3 style="margin-top: 0; color: #4f46e5;">Theoretical Fair Value of Futures</h3>
+            <p style="font-size: 0.9rem; line-height: 1.5;">
+                The price agreed in a futures or forward contract is not a wild guess. Instead, it is determined by the **Cost of Carry** model—the price of buying the physical asset now and carrying it (paying storage and financing costs) to the delivery date.
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; margin-top: 1.5rem;">
+                <!-- Sliders -->
+                <div>
+                    <h4 style="margin-top: 0; color: var(--accent);">Adjust Carry Parameters</h4>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                            <span>Asset Spot Price ($S_0$):</span>
+                            <strong id="lbl-fv-spot" style="color: var(--accent);">$78.57</strong>
+                        </div>
+                        <input id="slider-fv-spot" type="range" min="50" max="100" step="0.01" value="78.57" oninput="calcFvCarry()" style="width: 100%;">
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                            <span>Days to Expiry ($t$):</span>
+                            <strong id="lbl-fv-days" style="color: var(--accent);">90 Days</strong>
+                        </div>
+                        <input id="slider-fv-days" type="range" min="10" max="360" step="5" value="90" oninput="calcFvCarry()" style="width: 100%;">
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                            <span>Borrowing Interest Rate ($r$):</span>
+                            <strong id="lbl-fv-rate" style="color: var(--accent);">5.00% p.a.</strong>
+                        </div>
+                        <input id="slider-fv-rate" type="range" min="1" max="12" step="0.25" value="5.0" oninput="calcFvCarry()" style="width: 100%;">
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                            <span>Monthly Storage Cost:</span>
+                            <strong id="lbl-fv-storage" style="color: var(--accent);">$0.15 / month</strong>
+                        </div>
+                        <input id="slider-fv-storage" type="range" min="0.05" max="1" step="0.05" value="0.15" oninput="calcFvCarry()" style="width: 100%;">
+                    </div>
+
+                    <button onclick="setFvLecturePreset()" class="nav-item" style="padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; border: 1px solid var(--card-border); background: var(--card-bg); font-weight:700;">
+                        Preserve: Load Lecture Slide Numbers
+                    </button>
+                </div>
+
+                <!-- Carry Ledger -->
+                <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.5rem; border-radius: 12px;">
+                    <h4 style="margin-top: 0; color: var(--accent); margin-bottom: 1.25rem;">Theoretical Carry Breakdown at Delivery</h4>
+                    
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--card-border); padding: 0.4rem 0; font-size: 0.85rem;">
+                        <span>Spot Asset Cash Price ($S_0$):</span>
+                        <strong id="ledger-fv-spot">$78.57</strong>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--card-border); padding: 0.4rem 0; font-size: 0.85rem;">
+                        <span>Accrued Interest Cost ($S_0 \times r \times t/360$):</span>
+                        <strong id="ledger-fv-interest" style="color: #4f46e5;">+$0.98</strong>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--card-border); padding: 0.4rem 0; font-size: 0.85rem;">
+                        <span>Total Storage &amp; Carry Fees:</span>
+                        <strong id="ledger-fv-fees" style="color: #4f46e5;">+$0.45</strong>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; padding-top: 1rem; font-size: 1.2rem; font-weight: 800;">
+                        <span>Fair Value Future Price ($F_0$):</span>
+                        <span id="ledger-fv-total" style="color: #10b981;">$80.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Convergence & Arbitrage Simulator -->
+    <div id="fv-tab-content-arb" class="val-tab-pane" style="display: none;">
+        <div class="card" style="margin-bottom: 2rem; border-left: 4px solid #10b981;">
+            <h3 style="margin-top: 0; color: #10b981;">Cash and Carry Arbitrage</h3>
+            <p style="font-size: 0.9rem; line-height: 1.5;">
+                In the real market, observed futures prices almost never sit exactly at theoretical fair value. When they deviate significantly, risk-free **Arbitrage** forces the price back into alignment:
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 2rem; align-items: start;">
+                <!-- Arbitrage sandbox parameters -->
+                <div>
+                    <h4 style="margin-top: 0; color: var(--accent);">Observed Market Pricing Sandbox</h4>
+                    <p style="font-size: 0.82rem; margin-bottom: 1.25rem; line-height: 1.4; color: #6b7280;">
+                        We are currently <strong>55 days</strong> from expiry. The spot price is <strong>$79.26</strong>, carry costs total <strong>$0.56</strong>, making the theoretical Fair Value <strong>$79.82</strong>. Drag the slider to adjust the observed market price:
+                    </p>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                            <label style="font-weight:700; font-size:0.85rem;">Observed Futures Market Price:</label>
+                            <span id="lbl-arb-market" style="font-size:1.1rem; font-weight:800; color: var(--accent);">$80.04</span>
+                        </div>
+                        <input id="slider-arb-market" type="range" min="78" max="82" step="0.01" value="80.04" oninput="calcArbitrage()" style="width: 100%;">
+                    </div>
+
+                    <!-- Live Arbitrage alert ledger -->
+                    <div id="arb-ledger-card" style="background: rgba(16, 185, 129, 0.05); border: 1.5px dashed #10b981; padding: 1.25rem; border-radius: 8px;">
+                        <!-- Filled dynamically by JS -->
+                    </div>
+                </div>
+
+                <!-- Convergence Plot -->
+                <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 12px; height: 100%;">
+                    <h5 style="margin-top:0; color: var(--text-color); font-weight: 700; margin-bottom: 0.5rem;">Price Convergence Curve Over 90 Days</h5>
+                    <p style="font-size:0.75rem; color:#6b7280; margin-top:-0.25rem; margin-bottom: 1rem;">Carry costs diminish as maturity approaches, forcing Fair Value to converge exactly to Spot.</p>
+                    <div style="position: relative; height: 220px; width: 100%;">
+                        <canvas id="futuresConvergenceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let convergenceChartInstance = null;
+
+function selectFvTab(tabId) {
+    document.querySelectorAll('.fv-tab-pane').forEach(pane => pane.style.display = 'none');
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.background = 'var(--metric-bg)';
+        btn.style.borderColor = 'var(--card-border)';
+    });
+
+    document.getElementById('fv-tab-content-' + tabId).style.display = 'block';
+    
+    const activeBtn = document.getElementById('btn-fv-' + tabId);
+    if (activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.style.background = 'rgba(79, 70, 229, 0.1)';
+        activeBtn.style.borderColor = '#4f46e5';
+    }
+
+    if (tabId === 'arb') {
+        setTimeout(calcArbitrage, 100);
+    }
+}
+
+// TAB 1: Carry Model calculations
+function calcFvCarry() {
+    const spot = parseFloat(document.getElementById('slider-fv-spot').value);
+    const days = parseFloat(document.getElementById('slider-fv-days').value);
+    const rate = parseFloat(document.getElementById('slider-fv-rate').value) / 100;
+    const storage = parseFloat(document.getElementById('slider-fv-storage').value);
+
+    // Update labels
+    document.getElementById('lbl-fv-spot').innerText = '$' + spot.toFixed(2);
+    document.getElementById('lbl-fv-days').innerText = days + ' Days';
+    document.getElementById('lbl-fv-rate').innerText = (rate * 100).toFixed(2) + '% p.a.';
+    document.getElementById('lbl-fv-storage').innerText = '$' + storage.toFixed(2) + ' / month';
+
+    // Math calculations (90/360 or standard days/360, storage scaling 30-day months)
+    const interest = spot * rate * (days / 360);
+    const fees = storage * (days / 30);
+    const fairValue = spot + interest + fees;
+
+    // Ledgers update
+    document.getElementById('ledger-fv-spot').innerText = '$' + spot.toFixed(2);
+    document.getElementById('ledger-fv-interest').innerText = '+$' + interest.toFixed(2);
+    document.getElementById('ledger-fv-fees').innerText = '+$' + fees.toFixed(2);
+    document.getElementById('ledger-fv-total').innerText = '$' + fairValue.toFixed(2);
+}
+
+function setFvLecturePreset() {
+    document.getElementById('slider-fv-spot').value = 78.57;
+    document.getElementById('slider-fv-days').value = 90;
+    document.getElementById('slider-fv-rate').value = 5.0;
+    document.getElementById('slider-fv-storage').value = 0.15;
+    calcFvCarry();
+}
+
+// TAB 2: Arbitrage Sandbox calculations
+function calcArbitrage() {
+    const marketVal = parseFloat(document.getElementById('slider-arb-market').value);
+    document.getElementById('lbl-arb-market').innerText = '$' + marketVal.toFixed(2);
+
+    const fairVal = 79.82;
+    const spot = 79.26;
+    const diff = marketVal - fairVal;
+
+    const ledEl = document.getElementById('arb-ledger-card');
+
+    if (Math.abs(diff) < 0.05) {
+        ledEl.style.borderColor = 'var(--card-border)';
+        ledEl.style.background = 'var(--metric-bg)';
+        ledEl.innerHTML = `
+            <div style="font-weight: 700; color: #6b7280; display:flex; align-items:center; gap:0.25rem;">
+                ⚖️ Pricing is efficiently valued.
+            </div>
+            <p style="font-size:0.78rem; line-height:1.4; color: var(--text-color); margin-top:0.5rem; margin-bottom:0;">No significant arbitrage profits remain after transaction and execution friction.</p>
+        `;
+    } else if (diff > 0) {
+        ledEl.style.borderColor = '#10b981';
+        ledEl.style.background = 'rgba(16, 185, 129, 0.05)';
+        ledEl.innerHTML = `
+            <div style="font-weight: 800; color: #10b981; display:flex; align-items:center; gap:0.25rem; font-size: 0.9rem;">
+                🟢 Cash-and-Carry Arbitrage exists! (Overpriced Future)
+            </div>
+            <ul style="font-size:0.78rem; line-height:1.5; color: var(--text-color); padding-left:1.2rem; margin: 0.5rem 0 0 0;">
+                <li><strong>Step 1:</strong> Borrow cash at the 5% risk-free rate.</li>
+                <li><strong>Step 2:</strong> Buy spot crude oil now at <strong>$79.26 pb</strong>.</li>
+                <li><strong>Step 3:</strong> Sell the overpriced future contract at <strong>$${marketVal.toFixed(2)} pb</strong>.</li>
+                <li><strong>Step 4:</strong> Carry the oil for 55 days (accruing carrying costs of $0.56).</li>
+                <li><strong>Step 5:</strong> Deliver the oil to fulfill the contract, receiving $${marketVal.toFixed(2)}.</li>
+                <li style="margin-top: 0.25rem; font-weight:800; color: #10b981;">Net Risk-Free profit locked in: +$${diff.toFixed(2)} pb!</li>
+            </ul>
+        `;
+    } else {
+        ledEl.style.borderColor = '#ef4444';
+        ledEl.style.background = 'rgba(239, 68, 68, 0.05)';
+        ledEl.innerHTML = `
+            <div style="font-weight: 800; color: #ef4444; display:flex; align-items:center; gap:0.25rem; font-size: 0.9rem;">
+                🔴 Reverse Cash-and-Carry Arbitrage exists! (Underpriced Future)
+            </div>
+            <ul style="font-size:0.78rem; line-height:1.5; color: var(--text-color); padding-left:1.2rem; margin: 0.5rem 0 0 0;">
+                <li><strong>Step 1:</strong> Short-sell spot crude oil now at <strong>$79.26 pb</strong>.</li>
+                <li><strong>Step 2:</strong> Invest the short-sale proceeds immediately to earn the risk-free rate.</li>
+                <li><strong>Step 3:</strong> Buy the underpriced future contract at <strong>$${marketVal.toFixed(2)} pb</strong>.</li>
+                <li><strong>Step 4:</strong> At expiry, receive the oil via future to close the short, pocketing interest gains.</li>
+                <li style="margin-top: 0.25rem; font-weight:800; color: #ef4444;">Net Risk-Free profit locked in: +$${Math.abs(diff).toFixed(2)} pb!</li>
+            </ul>
+        `;
+    }
+
+    drawConvergenceChart();
+}
+
+function drawConvergenceChart() {
+    const ctx = document.getElementById('futuresConvergenceChart').getContext('2d');
+    if (convergenceChartInstance) {
+        convergenceChartInstance.destroy();
+    }
+
+    const isDark = document.body.classList.contains('dark-theme');
+    const gridColor = isDark ? '#2c2c2c' : '#edece9';
+    const textColor = isDark ? '#e3e3e3' : '#37352f';
+
+    // Convergence timelines: Spot fluctuates, Fair Value converges slowly
+    const days = [0, 15, 30, 45, 60, 75, 90];
+    const spotCurve = [78.57, 78.20, 79.30, 78.50, 79.80, 79.20, 80.80];
+    const fvCurve = [80.00, 79.30, 80.20, 79.10, 80.10, 79.35, 80.80];
+
+    convergenceChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: days.map(d => 'D-' + d),
+            datasets: [
+                {
+                    label: 'Spot Asset Price',
+                    data: spotCurve,
+                    borderColor: '#0ea5e9',
+                    borderWidth: 2,
+                    fill: false,
+                    pointRadius: 3
+                },
+                {
+                    label: 'Theoretical Fair Value',
+                    data: fvCurve,
+                    borderColor: '#10b981',
+                    borderWidth: 3,
+                    fill: false,
+                    pointRadius: 0
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: { color: textColor, font: { size: 9 } }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { color: gridColor },
+                    ticks: { color: textColor, font: { size: 8 } }
+                },
+                y: {
+                    grid: { color: gridColor },
+                    ticks: { color: textColor, font: { size: 8 } }
+                }
+            }
+        }
+    });
+}
+
+// Initialise everything
+setTimeout(() => {
+    selectFvTab('carry');
+    calcFvCarry();
+}, 500);
+
+// Observer to handle chart scale adjustments on visibility change
+const optFvObs = new MutationObserver(() => {
+    if (document.getElementById('view-cqf-fp-deriv-futures-valuation').style.display === 'block') {
+        setTimeout(() => {
+            if (convergenceChartInstance) {
+                convergenceChartInstance.resize();
+            }
+        }, 100);
+    }
+});
+optFvObs.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+</script>

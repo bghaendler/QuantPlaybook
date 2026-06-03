@@ -1,0 +1,130 @@
+<div id="view-stochastic-basis" style="display: none;">
+    <header>
+        <h1>Module 3.1: Stochastic Calculus</h1>
+        <div class="subtitle" style="color: #6b7280;">1. Stochastic Basis &amp; Martingales</div>
+    </header>
+    <div class="container" style="grid-template-columns: 1fr; gap: 3rem; max-width: 1400px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+            <div class="card" style="margin-bottom: 0;">
+                <h2>Stochastic Basis &amp; Martingale Theory</h2>
+                <p>Random variables and processes are modeled on a probability space $(\Omega, \mathcal{F}, \mathbb{P})$, where $\Omega$ is the set of all possible outcomes, $\mathcal{F}$ is the $\sigma$-algebra of measurable events, and $\mathbb{P}$ is the probability measure.</p>
+                <p>The flow of information over time is modeled by a <strong>Filtration</strong> $\mathcal{F}_t$ for $t \ge 0$, which is a family of sub-$\sigma$-algebras that are nested: $\mathcal{F}_s \subseteq \mathcal{F}_t$ for all $s \le t$. This represents that our information grows and past events are never forgotten.</p>
+                <div style="background: #f9fafb; padding: 1.5rem; border-radius: 4px; border-left: 4px solid var(--accent); margin: 1.5rem 0;">
+                    <strong>Definition (Martingale):</strong> A stochastic process $M(t)$ is a martingale with respect to the filtration $\mathcal{F}_t$ if:
+                    <ul style="padding-left: 1.2rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                        <li>$M(t)$ is adapted to $\mathcal{F}_t$ (its value is known at time $t$).</li>
+                        <li>$M(t)$ is integrable: $\mathbb{E}[|M(t)|] < \infty$ for all $t \ge 0$.</li>
+                        <li>The conditional expectation of future values given current information is the current value:</li>
+                    </ul>
+                    <p style="text-align: center; font-size: 1.1rem; margin-top: 1rem; margin-bottom: 0.5rem;">
+                        $$ \mathbb{E}[M(T) \mid \mathcal{F}_t] = M(t) \quad \text{for all } t \le T $$
+                    </p>
+                </div>
+                <p>If the expectation is a drift upwards, i.e., $\mathbb{E}[M(T) \mid \mathcal{F}_t] \ge M(t)$, the process is a <strong>submartingale</strong>. If it drifts downwards, $\mathbb{E}[M(T) \mid \mathcal{F}_t] \le M(t)$, it is a <strong>supermartingale</strong>.</p>
+            </div>
+            <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px;">
+                <h3 style="margin-top:0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+                <p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> A "stochastic process" is just a system that changes randomly over time—like a stock price, interest rate, or a gambler's wealth. Martingales mathematically model a "fair game."</p>
+                <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+                    <li style="margin-bottom: 1rem;"><strong>$\Omega$ (Samples):</strong> All possible histories. If you toss a coin twice, $\Omega = \{HH, HT, TH, TT\}$.</li>
+                    <li style="margin-bottom: 1rem;"><strong>$\mathcal{F}_t$ (Filtration):</strong> The "news feed" of what has happened up to time $t$. At halftime, you know the score of the game so far ($\mathcal{F}_t$), but not the final score ($\mathcal{F}_T$).</li>
+                    <li style="margin-bottom: 1rem;"><strong>Martingale (Fair Game):</strong> Your best guess for what you will have tomorrow is exactly what you have in your pocket right now. History does not help you beat the game.</li>
+                    <li style="margin-bottom: 1rem;"><strong>Submartingale (Favorable Game):</strong> A game where your wealth is expected to grow over time (sub = "going up" in expectation, think *sub*-way going up to the surface).</li>
+                    <li style="margin-bottom: 0;"><strong>Supermartingale (Unfavorable Game):</strong> A game where you expect to lose money over time, like any casino game. The house always wins.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Interactive Visualization -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <h2>Interactive Simulation: Martingale vs. Biased Gambler's Wealth</h2>
+            <p style="margin-bottom: 1.5rem;">Adjust the coin toss win probability ($p$) to see the transition from a Martingale (fair game, $p = 0.50$) to a Submartingale (favorable, $p > 0.50$) or a Supermartingale (unfavorable, $p < 0.50$). Note how the average of the simulated paths tracks the theoretical expectation.</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <!-- Sliders -->
+                <div style="display: flex; flex-direction: column; gap: 1rem; grid-column: span 2;">
+                    <div style="display: flex; gap: 1rem;">
+                        <div style="flex: 1;">
+                            <label for="basisPSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Win Probability $p$: <span id="basisPValue">0.50</span></label>
+                            <input id="basisPSlider" max="0.55" min="0.45" step="0.005" style="width: 100%;" type="range" value="0.50"/>
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="basisBetSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Bet Size ($): <span id="basisBetValue">5.00</span></label>
+                            <input id="basisBetSlider" max="10.0" min="1.0" step="0.5" style="width: 100%;" type="range" value="5.0"/>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <div style="flex: 1;">
+                            <label for="basisCapitalSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Initial Wealth $M_0$: <span id="basisCapitalValue">$100</span></label>
+                            <input id="basisCapitalSlider" max="200" min="50" step="5" style="width: 100%;" type="range" value="100"/>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Classification Indicator -->
+                <div style="border-left: 2px solid #cbd5e1; padding-left: 1.5rem; display: flex; flex-direction: column; justify-content: center;">
+                    <div style="font-size: 0.85rem; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem;">Process Classification</div>
+                    <div id="basisClassificationBox" style="font-size: 1.25rem; font-weight: 800; color: #1e3a8a; padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid #bfdbfe; background: #eff6ff; display: inline-block; text-align: center; font-family: 'Inter', sans-serif;">
+                        MARTINGALE (FAIR)
+                    </div>
+                </div>
+
+                <!-- Run Paths Button -->
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <button id="resimulateBasisBtn" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%;">Simulate 10 Paths</button>
+                </div>
+            </div>
+
+            <div class="chart-container" style="height: 400px;">
+                <canvas id="basisChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Sample Exercise -->
+        <div class="card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
+            <h2 style="color: #166534;">Practice Exercise: Verifying Martingale Properties</h2>
+            <p style="color: #166534; font-weight: 500;">Let $W(t)$ be standard Brownian motion. Show that the process $X(t) = W(t)^2 - t$ is a martingale with respect to its natural filtration $\mathcal{F}_t$.</p>
+            <details style="background: white; padding: 1rem; border-radius: 6px; border: 1px solid #bbf7d0;">
+                <summary style="cursor: pointer; font-weight: 600; color: #15803d; list-style: none; display: flex; align-items: center;">
+                    <span style="margin-right: 0.5rem;">👉</span> Show Step-by-Step Solution
+                </summary>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; color: #334155;">
+                    <p>To verify that $X(t) = W(t)^2 - t$ is a martingale, we must verify $\mathbb{E}[X(T) \mid \mathcal{F}_t] = X(t)$ for $t \le T$:</p>
+                    <ol style="line-height: 1.8;">
+                        <li>Write out the target conditional expectation:
+                            <div style="text-align: center; margin: 0.5rem 0;">$$\mathbb{E}[W(T)^2 - T \mid \mathcal{F}_t] = \mathbb{E}[W(T)^2 \mid \mathcal{F}_t] - T$$</div>
+                        </li>
+                        <li>Decompose $W(T)$ into its known part at time $t$ and the independent future increment: $W(T) = W(t) + (W(T) - W(t))$.
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$\mathbb{E}[W(T)^2 \mid \mathcal{F}_t] = \mathbb{E}[(W(t) + (W(T) - W(t)))^2 \mid \mathcal{F}_t]$$
+                            </div>
+                        </li>
+                        <li>Expand the square:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$\mathbb{E}[W(t)^2 + 2W(t)(W(T) - W(t)) + (W(T) - W(t))^2 \mid \mathcal{F}_t]$$
+                            </div>
+                        </li>
+                        <li>Use the properties of conditional expectation:
+                            <ul style="padding-left: 1.2rem; margin-top: 0.5rem;">
+                                <li>$W(t)^2$ is known given $\mathcal{F}_t$, so it factors out: $\mathbb{E}[W(t)^2 \mid \mathcal{F}_t] = W(t)^2$.</li>
+                                <li>The increment $W(T) - W(t)$ is independent of $\mathcal{F}_t$, so its conditional expectation is its unconditional expectation: $\mathbb{E}[W(T) - W(t) \mid \mathcal{F}_t] = 0$. This kills the middle cross-product term.</li>
+                                <li>The squared increment $(W(T) - W(t))^2$ is independent of $\mathcal{F}_t$, so its conditional expectation is its unconditional variance: $\mathbb{E}[(W(T) - W(t))^2 \mid \mathcal{F}_t] = T - t$.</li>
+                            </ul>
+                        </li>
+                        <li>Combine these results:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$\mathbb{E}[W(T)^2 \mid \mathcal{F}_t] = W(t)^2 + 0 + (T - t) = W(t)^2 + T - t$$
+                            </div>
+                        </li>
+                        <li>Subtract $T$:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$\mathbb{E}[W(T)^2 - T \mid \mathcal{F}_t] = W(t)^2 + T - t - T = W(t)^2 - t = X(t)$$
+                            </div>
+                        </li>
+                    </ol>
+                    <p><strong>Conclusion:</strong> Since $\mathbb{E}[X(T) \mid \mathcal{F}_t] = X(t)$, the process $W(t)^2 - t$ is indeed a **martingale**. In fact, it compensates for the quadratic variance growth of Brownian motion.</p>
+                </div>
+            </details>
+        </div>
+    </div>
+</div>

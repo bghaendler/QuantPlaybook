@@ -1,0 +1,207 @@
+<div id="view-cqf-fp-sec-corp-bonds" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #4f46e5;">Finance Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9;">Securities</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Corporate Bonds & Credit Spreads</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Explore how corporations issue bonds through investment banks, manage credit ratings, and pay credit spreads to compensate investors for default risk.</p>
+    </header>
+
+    <!-- Row 1: Conceptual Split (DCM Advising vs Ratings) -->
+    <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+        
+        <!-- DCM Advising Flow -->
+        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                    Debt Capital Markets (DCM) Advising
+                </h3>
+                <p style="font-size: 0.9rem; line-height: 1.6;">Unlike governments who use public auctions, companies appoint an **Investment Bank** to manage and underwrite bond issuances. The **DCM** desk advises on maturity, structure, currency, and helps arrange a credit rating:</p>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin: 1rem 0;">
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px;">
+                        <span style="font-weight: 700; color: var(--accent); font-size: 0.8rem; display: block; text-transform: uppercase;">1. Special Features</span>
+                        <span style="font-size: 0.85rem;">Callable, Convertible, or plain vanilla fixed rate structures.</span>
+                    </div>
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px;">
+                        <span style="font-weight: 700; color: var(--accent); font-size: 0.8rem; display: block; text-transform: uppercase;">2. DCM Pricing</span>
+                        <span style="font-size: 0.85rem;">Pricing against treasury benchmarks plus an extra risk spread.</span>
+                    </div>
+                </div>
+
+                <!-- Interactive DCM Step-by-Step Calculator -->
+                <div style="background: var(--accent-glow); border: 1px solid var(--accent); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                    <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; display: block; margin-bottom: 0.5rem;">Interactive DCM Advisor Simulator</span>
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
+                        <select id="dcmMaturity" onchange="adviseDCM()" style="flex: 1; padding: 0.3rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);">
+                            <option value="3">3Y Maturity</option>
+                            <option value="5" selected>5Y Maturity</option>
+                            <option value="10">10Y Maturity</option>
+                        </select>
+                        <select id="dcmStructure" onchange="adviseDCM()" style="flex: 1; padding: 0.3rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);">
+                            <option value="0" selected>Vanilla Fixed</option>
+                            <option value="-25">Convertible (-25 bps)</option>
+                            <option value="35">Callable (+35 bps)</option>
+                        </select>
+                        <select id="dcmRating" onchange="adviseDCM()" style="flex: 1; padding: 0.3rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);">
+                            <option value="50">AAA Rating (50 bps)</option>
+                            <option value="90" selected>AA Rating (90 bps)</option>
+                            <option value="160">BBB Rating (160 bps)</option>
+                            <option value="450">High Yield (450 bps)</option>
+                        </select>
+                    </div>
+                    <div style="font-size: 0.88rem; display: flex; justify-content: space-between; font-weight: 700; color: var(--text-color);">
+                        <span>Estimated Yield Spread:</span>
+                        <span id="dcmResult" style="color: var(--accent);">+100 bps</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Credit Ratings & Restrictions Panel -->
+        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <h3 style="margin-top: 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Credit Ratings &amp; Constraints
+                </h3>
+                <p style="font-size: 0.88rem; color: #64748b; margin-top: 0;">Institutional investors (like pension funds) face strict allocation limits on **High Yield** (non-investment grade) bonds:</p>
+                
+                <div style="margin-bottom: 1rem;">
+                    <!-- Credit Rating Scale Graphics -->
+                    <div style="display: flex; flex-direction: column; gap: 2px; font-family: monospace; font-size: 0.78rem;">
+                        <div style="display: flex; background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 0.25rem 0.5rem; border-radius: 4px;">
+                            <span style="width: 80px; font-weight:700;">AAA / Aaa</span> <span>Investment Grade - Extremely Safe</span>
+                        </div>
+                        <div style="display: flex; background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 0.25rem 0.5rem; border-radius: 4px;">
+                            <span style="width: 80px; font-weight:700;">AA / Aa</span> <span>Investment Grade - High Quality</span>
+                        </div>
+                        <div style="display: flex; background: rgba(16, 185, 129, 0.05); color: #10b981; padding: 0.25rem 0.5rem; border-radius: 4px;">
+                            <span style="width: 80px; font-weight:700;">BBB / Baa</span> <span>Investment Grade - Medium Quality</span>
+                        </div>
+                        <div style="display: flex; background: rgba(245, 158, 11, 0.1); color: #d97706; padding: 0.25rem 0.5rem; border-radius: 4px;">
+                            <span style="width: 80px; font-weight:700;">BB / Ba</span> <span>High Yield / Junk - Speculative</span>
+                        </div>
+                        <div style="display: flex; background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 0.25rem 0.5rem; border-radius: 4px;">
+                            <span style="width: 80px; font-weight:700;">B &amp; Below</span> <span>Highly Risky / In Default</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px;">
+                    <label style="font-size: 0.8rem; font-weight: 700; display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <span>Pension Fund High-Yield Limit:</span>
+                        <span id="pensionLimitVal" style="color: #ef4444; font-weight: 800;">5%</span>
+                    </label>
+                    <input type="range" id="pensionSlider" min="0" max="20" step="1" value="5" style="width: 100%; cursor: pointer;" oninput="updatePensionLimits()">
+                    <span id="pensionWarning" style="font-size: 0.75rem; color: #ef4444; font-weight: 700; display: block; margin-top: 0.25rem;">✔ Safe Allocation Level</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 2: Bloomberg Terminal Amazon Bond Recreation -->
+    <div class="card" style="border: 2px solid #2e2e2e; background: #000; color: #ff9d00; padding: 1.5rem; border-radius: 8px; font-family: monospace; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #ff9d00; padding-bottom: 0.5rem; margin-bottom: 1rem;">
+            <span style="font-weight: 700; font-size: 1.1rem; color: #fff;">AMZN 1.2 06/03/27</span>
+            <span style="color: #00ff00;">BBG ID: BBG00V6PVBK8</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 1.5rem;">
+            
+            <!-- left column: Bloomberg descriptions -->
+            <div style="color: #00ff00; line-height: 1.5;">
+                <div style="color: #fff; font-weight: 700; margin-bottom: 0.5rem; font-size: 0.95rem;">ISSUER DESCRIPTION</div>
+                <div style="display: flex; justify-content: space-between;"><span>Name:</span> <span style="color: #fff;">AMAZON.COM INC</span></div>
+                <div style="display: flex; justify-content: space-between;"><span>Maturity:</span> <span style="color: #fff;">06/03/2027 (3-Year remaining)</span></div>
+                <div style="display: flex; justify-content: space-between;"><span>Coupon:</span> <span style="color: #fff;">1.20000% (Fixed, Semi-Annual)</span></div>
+                <div style="display: flex; justify-content: space-between;"><span>Credit Ratings:</span> <span style="color: #fff;">Moody's: A1 / S&P: AA / Fitch: AA-</span></div>
+                <div style="display: flex; justify-content: space-between;"><span>Day Count:</span> <span style="color: #fff;">30/360</span></div>
+                <div style="display: flex; justify-content: space-between;"><span>Amount Issued:</span> <span style="color: #fff;">$1,250,000,000</span></div>
+            </div>
+
+            <!-- right column: Pricing, yields and interactive spreads -->
+            <div style="background: #111; padding: 1rem; border-radius: 6px; border: 1px solid #333; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <span style="color: #fff; font-weight: 700; font-size: 0.85rem; display: block; margin-bottom: 0.5rem;">YIELD &amp; SPREAD SIMULATION</span>
+                    <label style="font-size: 0.78rem; display: block; margin-bottom: 0.25rem;">Market Credit Spread (bps):</label>
+                    <input type="range" id="bbgSpreadSlider" min="30" max="250" step="5" value="70" style="width: 100%; cursor: pointer;" oninput="updateBBGPrice()">
+                    
+                    <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.85rem;">
+                        <span>Nominal Spread:</span>
+                        <span id="bbgSpreadVal" style="color: #fff; font-weight: 800;">70 bps</span>
+                    </div>
+                </div>
+
+                <div style="border-top: 1px solid #333; padding-top: 0.75rem; margin-top: 0.75rem; font-size: 0.85rem;">
+                    <div style="display: flex; justify-content: space-between;"><span>US 3Y Treasury Yield:</span> <span style="color: #00ff00;">3.00%</span></div>
+                    <div style="display: flex; justify-content: space-between; font-weight: 700; margin-top: 0.25rem;"><span>Corporate Yield:</span> <span id="bbgTotalYield" style="color: #ff9d00;">3.70%</span></div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 0.25rem;"><span>Bond Cash Price:</span> <span id="bbgPrice" style="color: #fff;">99.96</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 1rem; border-top: 1px solid #2e2e2e; padding-top: 0.75rem; display: flex; align-items: center; gap: 0.5rem; color: #fff; font-size: 0.8rem;">
+            <span style="background: #e11d48; color: white; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 0.7rem;">UX QUESTION</span>
+            <span>Do you expect the Amazon corporate bond yield to be higher or lower than the Treasury?</span>
+            <strong style="color: #00ff00; margin-left: auto;">Higher</strong> (compensated by the +70 bp Credit Spread)
+        </div>
+    </div>
+</div>
+
+<script>
+// DCM Simulator
+function adviseDCM() {
+    const maturity = parseInt(document.getElementById('dcmMaturity').value);
+    const structSpread = parseInt(document.getElementById('dcmStructure').value);
+    const ratingSpread = parseInt(document.getElementById('dcmRating').value);
+    
+    // Base spread based on maturity (e.g. 3Y adds 10, 5Y adds 20, 10Y adds 40)
+    let matSpread = 10;
+    if (maturity === 5) matSpread = 20;
+    if (maturity === 10) matSpread = 45;
+    
+    const finalSpread = matSpread + structSpread + ratingSpread;
+    document.getElementById('dcmResult').innerText = '+' + finalSpread + ' bps';
+}
+
+// Pension Fund Limit warning
+function updatePensionLimits() {
+    const limit = parseInt(document.getElementById('pensionSlider').value);
+    document.getElementById('pensionLimitVal').innerText = limit + '%';
+    
+    const warning = document.getElementById('pensionWarning');
+    if (limit > 10) {
+        warning.innerText = '⚠ High Risk! Exceeds standard mandate limits';
+        warning.style.color = '#ef4444';
+    } else {
+        warning.innerText = '✔ Safe Allocation Level';
+        warning.style.color = '#10b981';
+    }
+}
+
+// Bloomberg pricing calculations
+function updateBBGPrice() {
+    const spreadBps = parseInt(document.getElementById('bbgSpreadSlider').value);
+    const treasuryYield = 3.00; // Fixed 3.00% benchmark for simple demo
+    
+    const spreadPct = spreadBps / 100;
+    const corpYield = treasuryYield + spreadPct;
+    
+    // Simple valuation formula: Price = 100 / (1 + Yield/100)^3
+    const price = 100 / Math.pow(1 + (corpYield / 100), 3);
+    
+    document.getElementById('bbgSpreadVal').innerText = spreadBps + ' bps';
+    document.getElementById('bbgTotalYield').innerText = corpYield.toFixed(2) + '%';
+    document.getElementById('bbgPrice').innerText = price.toFixed(2);
+}
+
+// Initialize on page load
+setTimeout(() => {
+    adviseDCM();
+    updatePensionLimits();
+    updateBBGPrice();
+}, 200);
+</script>

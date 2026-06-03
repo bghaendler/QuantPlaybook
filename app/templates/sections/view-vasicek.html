@@ -1,0 +1,101 @@
+<div id="view-vasicek" style="display: none;">
+<header>
+<h1>Module 3.2: Short Rate Models</h1>
+<div class="subtitle" style="color: #6b7280;">2. The Vasicek Model</div>
+</header>
+<div class="container" style="grid-template-columns: 1fr; gap: 3rem; max-width: 1400px;">
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+<div class="card" style="margin-bottom: 0;">
+<h2>2. The Vasicek Model</h2>
+<p>The Vasicek model specifies the $\mathbb{Q}$-dynamics of the short rate as an Ornstein-Uhlenbeck process:</p>
+<p style="text-align: center;">$$ dr(t) = \kappa(\theta - r(t))dt + \sigma dW^*(t) $$</p>
+<ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+<li><strong>$\theta$:</strong> mean-reversion level</li>
+<li><strong>$\kappa$:</strong> mean-reversion speed</li>
+<li><strong>$\sigma$:</strong> volatility</li>
+</ul>
+<p>Using the variation of constants formula, the explicit solution shows it is a Gaussian process:</p>
+<p style="text-align: center; font-size: 0.95rem;">$$ r(t) = e^{-\kappa t}r(0) + \int_0^t e^{-\kappa(t-s)}\kappa\theta ds + \int_0^t e^{-\kappa(t-s)}\sigma dW^*(s) $$</p>
+<p>The limiting distribution for $t \to \infty$ is normal with mean $\theta$ and variance $\frac{\sigma^2}{2\kappa}$.</p>
+</div>
+<div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px;">
+<h3 style="margin-top:0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+<p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> Interest rates don't grow forever; they tend to stay around a "normal" level. The Vasicek model mathematically captures this "rubber band" effect.</p>
+<ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+<li style="margin-bottom: 1rem;"><strong>Mean Reversion:</strong> Think of $\theta$ as the thermostat setting in a room, and $\kappa$ as how strongly the AC kicks in to push the temperature back to $\theta$.</li>
+<li style="margin-bottom: 1rem;"><strong>Gaussian Flaw:</strong> Because the noise is normally distributed, the rate can technically become negative (a flaw in older models, though sometimes realistic today!).</li>
+<li style="margin-bottom: 0;"><strong>Example:</strong> If current rates are at 6% but the long-term average ($\theta$) is 8%, the "drift" will constantly pull the rate upwards toward 8%, while the noise ($\sigma$) makes it zig-zag along the way.</li>
+</ul>
+</div>
+</div>
+<!-- Interactive Visualization -->
+<div class="card" style="margin-bottom: 2rem;">
+<h2>Interactive Visualization: The "Rubber Band" Effect</h2>
+<p style="margin-bottom: 1.5rem;">Observe how simulated paths are pulled towards the Long-Term Mean ($\theta$). A higher $\kappa$ tightens the rubber band, while higher $\sigma$ increases the erratic zig-zagging, leading to a wider limiting variance $\frac{\sigma^2}{2\kappa}$.</p>
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+<!-- Sliders -->
+<div style="display: flex; flex-direction: column; gap: 1rem; grid-column: span 2;">
+<div style="display: flex; gap: 1rem;">
+<div style="flex: 1;">
+<label for="vasInitialSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Initial Rate $r(0)$: <span id="vasInitialValue">2.0%</span></label>
+<input id="vasInitialSlider" max="0.10" min="-0.02" step="0.01" style="width: 100%;" type="range" value="0.02"/>
+</div>
+<div style="flex: 1;">
+<label for="vasThetaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Long-Term Mean ($\theta$): <span id="vasThetaValue">6.0%</span></label>
+<input id="vasThetaSlider" max="0.10" min="0" step="0.01" style="width: 100%;" type="range" value="0.06"/>
+</div>
+</div>
+<div style="display: flex; gap: 1rem;">
+<div style="flex: 1;">
+<label for="vasKappaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Mean Reversion ($\kappa$): <span id="vasKappaValue">0.80</span></label>
+<input id="vasKappaSlider" max="3" min="0" step="0.1" style="width: 100%;" type="range" value="0.8"/>
+</div>
+<div style="flex: 1;">
+<label for="vasSigmaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Volatility ($\sigma$): <span id="vasSigmaValue">0.03</span></label>
+<input id="vasSigmaSlider" max="0.15" min="0" step="0.01" style="width: 100%;" type="range" value="0.03"/>
+</div>
+</div>
+</div>
+<!-- Math Details -->
+<div style="border-left: 2px solid #cbd5e1; padding-left: 1.5rem; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 0.85rem; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem;">Limiting Variance</div>
+<div style="font-size: 1.5rem; font-weight: 800; color: #475569; font-family: 'Courier New', monospace; margin-bottom: 0.5rem;">
+                                $\frac{\sigma^2}{2\kappa}$ = <span id="vasLimitVar" style="color: var(--primary-color);">0.00056</span>
+</div>
+<div style="font-size: 0.85rem; color: #475569; font-weight: 500;">
+                                Std Dev: <span id="vasLimitStd">2.37%</span>
+</div>
+</div>
+<!-- Output Button -->
+<div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+<button id="resimulateVasicekBtn" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%;">Run 5 Paths</button>
+</div>
+</div>
+<div class="chart-container" style="height: 400px;">
+<canvas id="vasicekChart"></canvas>
+</div>
+</div>
+<!-- Sample Exercise -->
+<div class="card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
+<h2 style="color: #166534;">Practice Exercise: The Gaussian Flaw</h2>
+<p style="color: #166534; font-weight: 500;">Let the short rate follow a Vasicek process with parameters $\kappa = 0.5$, $\theta = 0.04$ (4%), and $\sigma = 0.03$. Assuming $t \to \infty$ so the distribution reaches its limiting state, what is the probability that the short rate is negative?</p>
+<details style="background: white; padding: 1rem; border-radius: 6px; border: 1px solid #bbf7d0;">
+<summary style="cursor: pointer; font-weight: 600; color: #15803d; list-style: none; display: flex; align-items: center;">
+<span style="margin-right: 0.5rem;">👉</span> Show Step-by-Step Solution
+                        </summary>
+<div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; color: #334155;">
+<ol style="line-height: 1.8;">
+<li>The limiting distribution of $r(t)$ in the Vasicek model is Normal: $r(\infty) \sim \mathcal{N}(\theta, \frac{\sigma^2}{2\kappa})$.</li>
+<li>Calculate the variance: $\frac{0.03^2}{2 \times 0.5} = \frac{0.0009}{1} = 0.0009$.</li>
+<li>Calculate the standard deviation: $\sqrt{0.0009} = 0.03$ (3%).</li>
+<li>We want to find $P(r &lt; 0)$. Since $r(\infty) \sim \mathcal{N}(0.04, 0.03^2)$, we standardize to find the Z-score:
+                                    <div style="text-align: center; margin: 0.5rem 0;">$$ Z = \frac{0 - 0.04}{0.03} = -1.333 $$</div>
+</li>
+<li>Using a standard normal table, $P(Z &lt; -1.33) \approx 0.0918$.</li>
+</ol>
+<p><strong>Answer:</strong> There is a <strong>9.18%</strong> probability that the short rate is negative in the long run. This demonstrates the "Gaussian Flaw" of the Vasicek model, which allows for negative interest rates.</p>
+</div>
+</details>
+</div>
+</div>
+</div>

@@ -1,0 +1,966 @@
+<div id="view-swaptions" style="display: none;">
+    <header>
+        <h1>Module 4: Interest Rate Derivatives</h1>
+        <div class="subtitle" style="color: #6b7280;">3. Swaptions</div>
+    </header>
+
+    <div style="display: flex; flex-direction: column; gap: 3rem; max-width: 1400px; margin-bottom: 4rem;">
+
+        <!-- Intro: Two-column overview -->
+        <div class="container" style="margin-bottom: 0; gap: 2rem; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; flex: 1.2;">
+                <h2>Swaptions (Options on Swaps)</h2>
+                <p>An interest rate <strong>swaption</strong> is an option that gives the holder the right, but not the obligation, to enter into an interest rate swap at a future expiry date $T_0$ with a pre-specified fixed strike rate $K$. Swaptions are classified into two primary types:</p>
+                <ul style="padding-left: 1.2rem; margin-top: 0.5rem; line-height: 1.6;">
+                    <li><strong>Payer Swaption:</strong> Gives the holder the right to <strong>pay fixed</strong> and receive floating. This is an option to enter a payer swap, protecting the holder against rising interest rates.</li>
+                    <li><strong>Receiver Swaption:</strong> Gives the holder the right to <strong>receive fixed</strong> and pay floating. This is an option to enter a receiver swap, protecting the holder against falling interest rates.</li>
+                </ul>
+                <p>Usually, the swaption expiry date $T_0$ equals the first reset date of the underlying swap. Unlike caps and floors, a swaption payoff <strong>cannot</strong> be decomposed into more elementary payoffs (like caplets/floorlets). This is because the positive part of a sum is not equal to the sum of positive parts: $\left( \sum w_i (R_i - K) \right)^+ \neq \sum \left( w_i (R_i - K) \right)^+$.</p>
+                <p>Consequently, the joint distribution and <strong>correlations</strong> between different forward rates directly impact the valuation of a swaption, making them highly sensitive to the structure of the interest rate model.</p>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; flex: 0.8; background: #eff6ff; border-left: 4px solid var(--accent); display: flex; flex-direction: column; justify-content: center;">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: 'Inter', sans-serif;">Key Concepts</h3>
+                <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #1e3a8a; padding-left: 1.2rem; margin-bottom: 0;">
+                    <li style="margin-bottom: 0.5rem;"><strong>Expiry &amp; Tenor:</strong> An "$X$ year into $Y$ year" swaption expires in $X$ years, and the underlying swap has a length of $Y$ years.</li>
+                    <li style="margin-bottom: 0.5rem;"><strong>Annuity Measure:</strong> Swaption pricing is modeled under the swap (annuity) measure $\mathbb{Q}^A$ where the annuity is the numeraire.</li>
+                    <li style="margin-bottom: 0.5rem;"><strong>Moneyness Relation:</strong> A payer swaption is ATM when the strike $K$ equals the forward swap rate $R_{swap}(t)$.</li>
+                    <li><strong>Synthetic Options:</strong> Buying a receiver swaption allows companies to synthetically create callable bonds to refinance debt if rates drop.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Mathematical Foundations & Payoffs -->
+        <div class="container" style="margin-bottom: 0; gap: 2rem; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; flex: 1;">
+                <h2>Swaption Payoffs &amp; Level Factor</h2>
+                <p>Let $T_0$ be the swaption expiry (first reset date), and $T_1 < T_2 < \dots < T_n$ be the payment dates of the underlying swap of length $T_n - T_0$. The accrual period is $\delta = T_i - T_{i-1}$.</p>
+                <p>The value of a forward payer swap at expiry $T_0$ is:</p>
+                <p style="text-align: center; font-size: 1.1rem;">$$ V_p(T_0) = N \sum_{i=1}^n P(T_0, T_i)\delta \bigl( R_{swap}(T_0) - K \bigr) = N A(T_0) \bigl( R_{swap}(T_0) - K \bigr) $$</p>
+                <p>where $N$ is the notional, $K$ is the strike rate, and $A(T) = \sum_{i=1}^n \delta P(T, T_i)$ is the <strong>annuity factor</strong> (or level factor).</p>
+                <p>The payer swaption holder will only exercise if the swap value at expiry is positive, so the payoff is:</p>
+                <p style="text-align: center; font-size: 1.2rem; font-weight: 700; color: var(--accent);">$$ \text{Payoff}_p(T_0) = N A(T_0) \bigl( R_{swap}(T_0) - K \bigr)^+ $$</p>
+                <p>For a receiver swaption, the payoff is the positive part of the receiver swap:</p>
+                <p style="text-align: center; font-size: 1.2rem; font-weight: 700; color: var(--secondary-accent);">$$ \text{Payoff}_r(T_0) = N A(T_0) \bigl( K - R_{swap}(T_0) \bigr)^+ $$</p>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; flex: 1;">
+                <h2>Swaption Moneyness</h2>
+                <p>Since the payoff depends on the relationship between the strike rate $K$ and the prevailing forward swap rate $R_{swap}(t)$, swaption moneyness is classified as follows:</p>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.9rem;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--card-border); text-align: left;">
+                            <th style="padding: 0.5rem;">Moneyness State</th>
+                            <th style="padding: 0.5rem;">Condition</th>
+                            <th style="padding: 0.5rem;">Payer Swaption</th>
+                            <th style="padding: 0.5rem;">Receiver Swaption</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.5rem; font-weight: 600; color: #b45309;">At-the-Money (ATM)</td>
+                            <td style="padding: 0.5rem;">$K = R_{swap}(t)$</td>
+                            <td style="padding: 0.5rem; color: #b45309;">$\text{Swpt}_p = \text{Swpt}_r$</td>
+                            <td style="padding: 0.5rem; color: #b45309;">$\text{Swpt}_r = \text{Swpt}_p$</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.5rem; font-weight: 600; color: #16a34a;">In-the-Money (ITM)</td>
+                            <td style="padding: 0.5rem;">Payer: $K < R_{swap}$<br>Receiver: $K > R_{swap}$</td>
+                            <td style="padding: 0.5rem; color: #16a34a;">Lower strike (Valuable)</td>
+                            <td style="padding: 0.5rem; color: #16a34a;">Higher strike (Valuable)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.5rem; font-weight: 600; color: #dc2626;">Out-of-the-Money (OTM)</td>
+                            <td style="padding: 0.5rem;">Payer: $K > R_{swap}$<br>Receiver: $K < R_{swap}$</td>
+                            <td style="padding: 0.5rem; color: #dc2626;">Higher strike</td>
+                            <td style="padding: 0.5rem; color: #dc2626;">Lower strike</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="margin-top: 1rem; padding: 0.75rem; background: var(--nav-hover); border-radius: 6px; font-size: 0.85rem; border: 1px solid var(--card-border);">
+                    <strong>Payer-Receiver Parity:</strong> The difference between a payer and receiver swaption price is exactly equal to the forward starting swap value:
+                    $$\text{Swpt}_p(t) - \text{Swpt}_r(t) = N A(t) \bigl( R_{swap}(t) - K \bigr) = V_{swap}(t)$$
+                </div>
+            </div>
+        </div>
+
+        <!-- Application: Synthetic Callable Bond Simulator -->
+        <div class="card" style="margin-bottom: 0;">
+            <h2>Interactive Application: Synthetic Callable Bonds</h2>
+            <p>A classic application of swaptions is for a corporation to synthetically create a **callable bond** when the original bond's indenture cannot be legally changed. Let's see how this works step-by-step.</p>
+
+            <div style="background: var(--nav-hover); border: 1px solid var(--card-border); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+                <p style="margin: 0; font-size: 0.95rem; line-height: 1.6;">
+                    <strong>The Scenario:</strong> A corporation has issued a 10-year bond with a <strong>4.00% coupon</strong> on a principal $N$.
+                    At year 5, the corporation wants to add the right to prepay (call) the bond at par ($N$).
+                    If interest rates drop below 4%, they want to refinance their debt.
+                    <strong>The Solution:</strong> The company buys a <strong>5-year into 5-year receiver swaption</strong> with a strike rate of 4.00%.
+                </p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1.2fr 1.8fr; gap: 3rem; align-items: start;">
+                <!-- Controls and Explanations -->
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <h3 style="margin-top: 0; color: var(--text-color); border-bottom: 2px solid var(--card-border); padding-bottom: 0.5rem;">Simulator Controls</h3>
+                    
+                    <div>
+                        <label style="font-weight: 600; font-size: 0.95rem; display: block; margin-bottom: 0.5rem;">Bond Coupon &amp; Swaption Strike ($K$):</label>
+                        <select id="sim_bond_coupon" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); font-weight: 600;" onchange="updateCallableSimulator()">
+                            <option value="0.03">3.00% Annual Coupon</option>
+                            <option value="0.04" selected>4.00% Annual Coupon (Recommended)</option>
+                            <option value="0.05">5.00% Annual Coupon</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="font-weight: 600; font-size: 0.95rem; display: block; margin-bottom: 0.5rem;">Refinancing Market Rate (Forward Swap Rate at Year 5):</label>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <span style="font-size: 0.85rem; color: #6b7280;">Rates Drop (Refinance Favorable)</span>
+                            <span style="font-size: 0.85rem; color: #6b7280;">Rates Rise (Refinance Unfavorable)</span>
+                        </div>
+                        <input type="range" id="sim_market_rate" min="1.0" max="7.0" step="0.25" value="2.5" style="width: 100%; accent-color: var(--accent);" oninput="updateCallableSimulator()">
+                        <div style="text-align: center; margin-top: 0.5rem;">
+                            <strong style="font-size: 1.1rem; color: var(--accent);">Prevailing 5Y Swap Rate at Year 5: <span id="sim_market_rate_val" style="font-family: monospace;">2.50%</span></strong>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px;">
+                        <h4 style="margin-top: 0; margin-bottom: 0.75rem; color: var(--text-color);">Current Option State</h4>
+                        <div id="sim_status_badge" style="display: inline-block; padding: 0.25rem 0.6rem; border-radius: 4px; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 0.75rem;">ITM - EXERCISED</div>
+                        <p id="sim_status_explanation" style="margin: 0; font-size: 0.9rem; line-height: 1.5; color: var(--text-color); opacity: 0.85;">
+                            Because the prevailing rate (2.50%) is below the coupon rate (4.00%), the receiver swap is highly valuable! The company exercises the swaption to receive 4% fixed and pay floating.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Visual Cash Flow Timeline -->
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <h3 style="margin-top: 0; color: var(--text-color); border-bottom: 2px solid var(--card-border); padding-bottom: 0.5rem;">Cash Flows (Years 5 to 10)</h3>
+                    
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.5rem; border-radius: 12px; display: flex; flex-direction: column; gap: 1.5rem; box-shadow: var(--card-shadow);">
+                        <!-- Legend -->
+                        <div style="display: flex; gap: 1.5rem; font-size: 0.8rem; justify-content: center; border-bottom: 1px solid var(--card-border); padding-bottom: 0.75rem;">
+                            <div style="display: flex; align-items: center; gap: 0.4rem;">
+                                <span style="display: inline-block; width: 12px; height: 12px; background: #dc2626; border-radius: 3px;"></span>
+                                <span style="color: var(--text-color);">Original Bond Coupon (Outflow)</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.4rem;">
+                                <span style="display: inline-block; width: 12px; height: 12px; background: #16a34a; border-radius: 3px;"></span>
+                                <span style="color: var(--text-color);">Receiver Swap Fixed Leg (Inflow)</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.4rem;">
+                                <span style="display: inline-block; width: 12px; height: 12px; background: #2563eb; border-radius: 3px;"></span>
+                                <span style="color: var(--text-color);">Receiver Swap Floating Leg (Outflow)</span>
+                            </div>
+                        </div>
+
+                        <!-- Step visualizer -->
+                        <div id="sim_flow_container" style="display: flex; flex-direction: column; gap: 1rem;">
+                            <!-- Will be filled by JS -->
+                        </div>
+
+                        <!-- Net Cash Flow Outcome -->
+                        <div id="sim_outcome_card" style="padding: 1rem; border-radius: 8px; border: 1px solid #bfdbfe; background: #eff6ff; display: flex; flex-direction: column; gap: 0.5rem;">
+                            <strong style="color: #1e40af; font-size: 0.95rem;">Net Result of Synthetic Callable Bond:</strong>
+                            <p id="sim_outcome_text" style="margin: 0; font-size: 0.9rem; line-height: 1.5; color: #1e3a8a;">
+                                By combining the straight bond coupon (-4.00%) with the exercised swap (+4.00% fixed, -Floating), the fixed coupon is 100% cancelled out! The corporation effectively pays <strong>Floating</strong> from years 5 to 10 and pays the par value at year 10. In interest rate theory, this is exactly mathematically equivalent to calling the bond at par at year 5!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pricing Models: Black vs. Bachelier Pricing Calculator -->
+        <div class="card" style="margin-bottom: 0;">
+            <h2>Interactive Payer &amp; Receiver Swaption Calculator</h2>
+            <p style="margin-bottom: 2rem;">Construct a customizable interest rate yield curve using base level and slope parameters, adjust swaption contracts (tenor and strike), and compare the analytic pricing results of Black's Log-Normal vs. Bachelier's Gaussian model in real-time.</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
+                <!-- Inputs (Left Column) -->
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <h3 style="margin-top: 0; color: var(--text-color); border-bottom: 2px solid var(--card-border); padding-bottom: 0.5rem;">Market, Yield Curve &amp; Tenor</h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 600; font-size: 0.95rem;">Swaption Expiry ($T_0$):</label>
+                                <span id="calc_expiry_val" style="color: var(--accent); font-weight: 700; font-family: monospace;">5.0 yr</span>
+                            </div>
+                            <input type="range" id="sw_calc_expiry" min="1.0" max="10.0" step="1.0" value="5.0" style="width: 100%; accent-color: var(--accent);" oninput="updatePricingCalculator()">
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 600; font-size: 0.95rem;">Underlying Swap Length ($Y$):</label>
+                                <span id="calc_length_val" style="color: var(--accent); font-weight: 700; font-family: monospace;">5.0 yr</span>
+                            </div>
+                            <input type="range" id="sw_calc_length" min="1.0" max="10.0" step="1.0" value="5.0" style="width: 100%; accent-color: var(--accent);" oninput="updatePricingCalculator()">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div>
+                            <label style="font-weight: 600; font-size: 0.95rem; display: block; margin-bottom: 0.5rem;">Yield Curve Shape:</label>
+                            <select id="sw_calc_curve_shape" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); font-weight: 600;" onchange="updatePricingCalculator()">
+                                <option value="flat">Flat Curve</option>
+                                <option value="normal" selected>Normal (Upward Sloping)</option>
+                                <option value="inverted">Inverted (Downward Sloping)</option>
+                                <option value="humped">Humped Curve</option>
+                            </select>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 600; font-size: 0.95rem;">Yield Base Level ($a$):</label>
+                                <span id="calc_base_rate_val" style="color: var(--accent); font-weight: 700; font-family: monospace;">3.00%</span>
+                            </div>
+                            <input type="range" id="sw_calc_base_rate" min="0.5" max="8.0" step="0.25" value="3.0" style="width: 100%; accent-color: var(--accent);" oninput="updatePricingCalculator()">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 600; font-size: 0.95rem;">Yield Curve Slope ($b$):</label>
+                                <span id="calc_slope_val" style="color: var(--accent); font-weight: 700; font-family: monospace;">0.80%</span>
+                            </div>
+                            <input type="range" id="sw_calc_slope" min="-2.0" max="3.0" step="0.1" value="0.8" style="width: 100%; accent-color: var(--accent);" oninput="updatePricingCalculator()">
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 600; font-size: 0.95rem;">Strike Rate ($K$):</label>
+                                <span id="calc_strike_val" style="color: var(--accent); font-weight: 700; font-family: monospace;">4.00%</span>
+                            </div>
+                            <input type="range" id="sw_calc_strike" min="0.5" max="10.0" step="0.1" value="4.0" style="width: 100%; accent-color: var(--accent);" oninput="updatePricingCalculator()">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 600; font-size: 0.95rem; color: #2563eb;">Black Vol ($\sigma_B$):</label>
+                                <span id="calc_vol_black_val" style="color: #2563eb; font-weight: 700; font-family: monospace;">35.72%</span>
+                            </div>
+                            <input type="range" id="sw_calc_vol_black" min="5" max="100" step="1" value="35" style="width: 100%; accent-color: #2563eb;" oninput="updatePricingCalculator()">
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <label style="font-weight: 600; font-size: 0.95rem; color: #dc2626;">Normal Vol ($\sigma_N$):</label>
+                                <span id="calc_vol_normal_val" style="color: #dc2626; font-weight: 700; font-family: monospace;">88.79 bps</span>
+                            </div>
+                            <input type="range" id="sw_calc_vol_normal" min="10" max="250" step="5" value="88" style="width: 100%; accent-color: #dc2626;" oninput="updatePricingCalculator()">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div>
+                            <label style="font-weight: 600; font-size: 0.95rem; display: block; margin-bottom: 0.5rem;">Payment Frequency ($\delta$):</label>
+                            <select id="sw_calc_delta" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); font-weight: 600;" onchange="updatePricingCalculator()">
+                                <option value="1.0" selected>Annual ($\delta = 1.0$)</option>
+                                <option value="0.5">Semi-Annual ($\delta = 0.5$)</option>
+                                <option value="0.25">Quarterly ($\delta = 0.25$)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-weight: 600; font-size: 0.95rem; display: block; margin-bottom: 0.5rem;">Notional ($N$):</label>
+                            <input type="number" id="sw_calc_notional" value="1000000" step="100000" style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); font-weight: 600; font-family: monospace;" oninput="updatePricingCalculator()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Outputs (Right Column) -->
+                <div style="display: flex; flex-direction: column; gap: 2rem; justify-content: center;">
+                    
+                    <!-- Yield curve parameters -->
+                    <div style="background: var(--nav-hover); border: 1px solid var(--card-border); border-radius: 12px; padding: 1.25rem; font-size: 0.9rem;">
+                        <h4 style="margin-top: 0; margin-bottom: 0.75rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.4rem; color: var(--text-color);">Annuity and Forward Swap Rate</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-family: monospace;">
+                            <div>Annuity factor $A(0)$: <strong id="calc_out_annuity" style="color: var(--accent);">3.9510</strong></div>
+                            <div>Forward swap rate $R_{swap}$: <strong id="calc_out_swap_rate" style="color: var(--accent);">4.12%</strong></div>
+                            <div>Swap Expiry $T_0$: <strong id="calc_out_t0">5.00 yrs</strong></div>
+                            <div>Swap Maturity $T_n$: <strong id="calc_out_tn">10.00 yrs</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- Black Card -->
+                    <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='none'">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight: 800; color: #1e40af; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.05em;">Black's Pricing Model</span>
+                            <span id="black_moneyness_badge" style="font-size: 0.75rem; background: #dbeafe; color: #1e40af; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 700;">ITM</span>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; border-bottom: 1px dashed #bfdbfe; padding-bottom: 1rem;">
+                            <div>
+                                <span style="font-size: 0.85rem; color: #60a5fa; font-weight: 500;">Payer Swaption Value</span>
+                                <div id="black_payer_price" style="font-size: 1.4rem; font-weight: 800; color: #1e3a8a; font-family: monospace;">$24,192</div>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.85rem; color: #60a5fa; font-weight: 500;">Receiver Swaption Value</span>
+                                <div id="black_receiver_price" style="font-size: 1.4rem; font-weight: 800; color: #1e3a8a; font-family: monospace;">$19,451</div>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; font-size: 0.85rem; color: #1e40af;">
+                            <div>$d_1$: <strong id="black_d1_val" style="font-family: monospace;">0.1124</strong></div>
+                            <div>$d_2$: <strong id="black_d2_val" style="font-family: monospace;">-0.6860</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- Bachelier Card -->
+                    <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='none'">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight: 800; color: #991b1b; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.05em;">Bachelier's Pricing Model</span>
+                            <span id="bach_moneyness_badge" style="font-size: 0.75rem; background: #fee2e2; color: #991b1b; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 700;">ITM</span>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; border-bottom: 1px dashed #fecaca; padding-bottom: 1rem;">
+                            <div>
+                                <span style="font-size: 0.85rem; color: #f87171; font-weight: 500;">Payer Swaption Value</span>
+                                <div id="bach_payer_price" style="font-size: 1.4rem; font-weight: 800; color: #7f1d1d; font-family: monospace;">$23,894</div>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.85rem; color: #f87171; font-weight: 500;">Receiver Swaption Value</span>
+                                <div id="bach_receiver_price" style="font-size: 1.4rem; font-weight: 800; color: #7f1d1d; font-family: monospace;">$19,153</div>
+                            </div>
+                        </div>
+
+                        <div style="font-size: 0.85rem; color: #991b1b;">
+                            <div>Parameter $D$: <strong id="bach_d_val" style="font-family: monospace;">0.0605</strong></div>
+                        </div>
+                    </div>
+
+                    <!-- Parity Verification Card -->
+                    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-weight: 800; color: #166534; font-size: 0.8rem; letter-spacing: 0.05em; text-transform: uppercase;">Payer-Receiver Parity Verification</span>
+                            <span id="pb_parity_status" style="font-size: 0.75rem; background: #dcfce7; color: #166534; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 700;">Matches Exactly</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; font-family: monospace; font-size: 0.85rem; color: #166534; border-top: 1px dashed #bbf7d0; padding-top: 0.5rem; margin-top: 0.25rem;">
+                            <div>$\text{Swpt}_p - \text{Swpt}_r$: <strong id="pb_swpt_diff_val" style="font-weight: 800;">$4,741.00</strong></div>
+                            <div>$V_{swap}(0)$: <strong id="pb_swap_val" style="font-weight: 800;">$4,741.00</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ATM Volatility Surface Explorer -->
+        <div class="card" style="margin-bottom: 0;">
+            <h2>Historical ATM Volatility Surface (August 30, 2013)</h2>
+            <p>Market swaption contracts are quoted in terms of their implied volatilities. The Eurozone market quotes from August 30, 2013, show a characteristic surface shape. High-fidelity 3D perspective wireframe canvas renders the volatility surface below. You can rotate and tilt the surface by **clicking and dragging** directly on the canvas, or using the sliders!</p>
+
+            <div style="display: grid; grid-template-columns: 1.3fr 0.7fr; gap: 3rem; margin-top: 2rem;">
+                <!-- 3D Canvas + Controls -->
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--nav-hover); border-radius: 12px; border: 1px solid var(--card-border); padding: 1.5rem; box-shadow: var(--card-shadow); min-height: 480px; position: relative;">
+                    <!-- Volatility Measure Choice -->
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem; z-index: 10;">
+                        <button id="vol_type_black" class="surface-btn active-surface-btn" onclick="toggleVolType('black')" style="padding: 0.5rem 1rem; border-radius: 6px; font-weight: 700; cursor: pointer; transition: all 0.2s; border: 1px solid var(--accent); background: var(--accent); color: white;">Black Relative Vol (%)</button>
+                        <button id="vol_type_normal" class="surface-btn" onclick="toggleVolType('normal')" style="padding: 0.5rem 1rem; border-radius: 6px; font-weight: 700; cursor: pointer; transition: all 0.2s; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color);">Normal Absolute Vol (bps)</button>
+                    </div>
+
+                    <canvas id="vol3dCanvas" width="600" height="380" style="cursor: grab; max-width: 100%; height: auto;"></canvas>
+
+                    <!-- Sliders -->
+                    <div style="display: flex; gap: 2rem; align-items: center; justify-content: center; margin-top: 1rem; width: 100%;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <label style="font-weight: 600; font-size: 0.85rem;">Yaw:</label>
+                            <input type="range" id="vol3d_yaw" min="-180" max="180" value="-40" style="width: 120px; accent-color: var(--accent);" oninput="draw3DVolSurface()">
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <label style="font-weight: 600; font-size: 0.85rem;">Pitch:</label>
+                            <input type="range" id="vol3d_pitch" min="10" max="80" value="30" style="width: 120px; accent-color: var(--accent);" oninput="draw3DVolSurface()">
+                        </div>
+                        <button onclick="reset3DVolSurface()" style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 0.3rem 0.6rem; border-radius: 4px; font-weight: 600; font-size: 0.8rem; cursor: pointer; color: var(--text-color);">Reset View</button>
+                    </div>
+                </div>
+
+                <!-- Explanation / Interactive Grid load trigger -->
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <h3 style="margin-top: 0; color: var(--text-color); border-bottom: 2px solid var(--card-border); padding-bottom: 0.5rem;">Interactive Grid Selection</h3>
+                    <p style="font-size: 0.95rem; line-height: 1.6; margin: 0;">
+                        Clicking any quote in the matrix on the next row will automatically load the swaption expiry ($T_0$), underlying swap length ($Y$), and its corresponding historical volatility quote directly into the pricing calculator above!
+                    </p>
+                    <div style="background: var(--nav-hover); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px;">
+                        <h4 style="margin-top: 0; margin-bottom: 0.5rem; color: var(--accent);">Selected Swaption Contract:</h4>
+                        <div style="font-family: monospace; font-size: 0.95rem; display: flex; flex-direction: column; gap: 0.4rem; color: var(--text-color);">
+                            <div>Maturity (Expiry $T_0$): <strong id="grid_sel_expiry">5.0 Years</strong></div>
+                            <div>Swap Length ($Y$): <strong id="grid_sel_length">5.0 Years</strong></div>
+                            <div>Loaded Black Vol: <strong id="grid_sel_black_vol" style="color: #2563eb;">29.09%</strong></div>
+                            <div>Loaded Normal Vol: <strong id="grid_sel_normal_vol" style="color: #dc2626;">88.79 bps</strong></div>
+                        </div>
+                        <div id="grid_load_alert" style="margin-top: 1rem; display: none; background: #dcfce7; border: 1px solid #bbf7d0; color: #166534; padding: 0.5rem; border-radius: 4px; text-align: center; font-size: 0.85rem; font-weight: 700;">
+                            ✓ Loaded directly into pricing calculator!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive 2D Quotes Matrix Table -->
+            <div style="overflow-x: auto; margin-top: 3rem;">
+                <h3 style="margin-top: 0; color: var(--text-color); border-bottom: 2px solid var(--card-border); padding-bottom: 0.5rem; font-size: 1.15rem;">
+                    Interactive Swaption Quotes Matrix (EUR ATM, 30 August 2013)
+                </h3>
+                <p style="font-size: 0.85rem; color: #6b7280; margin-top: 0.25rem; margin-bottom: 1rem;">
+                    Rows represent Swaption Expiry (Maturity of the option) and Columns represent Swap Length. Values are quoted in % for Black Vol or in bps for Normal Vol. Click any cell to load its exact parameters!
+                </p>
+                <table id="swaptionQuotesTable" style="width: 100%; border-collapse: collapse; font-size: 0.85rem; border: 1px solid var(--card-border); text-align: center;">
+                    <!-- Dynamically generated by JS to keep rendering responsive and highly styled -->
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // --- Data Definition for EUR ATM Swaption Quotes on August 30, 2013 ---
+    const sw_maturities = [1, 2, 3, 4, 5, 7, 10]; // 7 rows
+    const sw_swapLengths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; // 10 cols
+    
+    // Black ATM Volatilities (%)
+    const sw_blackVols = [
+        [81.56, 66.80, 59.10, 53.00, 48.92, 44.02, 40.42, 37.61, 35.34, 33.53], // 1Y
+        [67.35, 53.70, 47.88, 43.70, 40.80, 37.86, 35.48, 33.53, 31.92, 30.65], // 2Y
+        [52.32, 44.20, 40.85, 38.00, 35.72, 33.72, 32.01, 30.61, 29.48, 28.55], // 3Y
+        [43.26, 38.03, 35.61, 33.58, 31.86, 30.52, 29.18, 28.02, 27.51, 27.26], // 4Y
+        [37.37, 33.48, 31.75, 30.28, 29.09, 28.11, 27.41, 26.87, 26.46, 26.00], // 5Y
+        [29.84, 27.44, 26.44, 25.60, 24.99, 24.65, 24.37, 24.24, 24.29, 24.17], // 7Y
+        [23.76, 22.86, 22.58, 22.59, 22.37, 22.59, 22.52, 22.89, 23.29, 23.01]  // 10Y
+    ];
+
+    // Normal ATM Volatilities (bps)
+    const sw_normalVols = [
+        [53.70, 69.78, 78.50, 83.79, 86.32, 86.89, 85.79, 83.02, 80.22, 77.48], // 1Y
+        [76.01, 85.31, 87.90, 88.08, 88.34, 87.95, 86.80, 84.80, 81.70, 79.10], // 2Y
+        [89.26, 91.36, 90.80, 90.31, 90.56, 90.14, 88.74, 86.80, 84.70, 82.50], // 3Y
+        [94.31, 94.10, 92.80, 91.88, 90.89, 90.81, 89.81, 87.64, 86.00, 83.90], // 4Y
+        [93.04, 91.83, 90.82, 89.81, 88.79, 88.23, 87.04, 85.15, 83.84, 81.85], // 5Y
+        [88.22, 87.20, 86.29, 85.40, 84.49, 84.09, 83.00, 82.28, 81.34, 80.47], // 7Y
+        [82.41, 81.12, 80.35, 79.60, 78.84, 78.48, 78.07, 77.79, 77.52, 76.97]  // 10Y
+    ];
+
+    let activeVolType = 'black'; // 'black' or 'normal'
+    let selectedExpiryIdx = 4; // defaults to 5Y
+    let selectedLengthIdx = 4; // defaults to 5Y
+
+    function toggleVolType(type) {
+        activeVolType = type;
+        document.getElementById('vol_type_black').className = (type === 'black') ? 'surface-btn active-surface-btn' : 'surface-btn';
+        document.getElementById('vol_type_normal').className = (type === 'normal') ? 'surface-btn active-surface-btn' : 'surface-btn';
+        
+        // update style of buttons manually for instant response
+        if (type === 'black') {
+            document.getElementById('vol_type_black').style.background = 'var(--accent)';
+            document.getElementById('vol_type_black').style.color = 'white';
+            document.getElementById('vol_type_black').style.borderColor = 'var(--accent)';
+            document.getElementById('vol_type_normal').style.background = 'var(--card-bg)';
+            document.getElementById('vol_type_normal').style.color = 'var(--text-color)';
+            document.getElementById('vol_type_normal').style.borderColor = 'var(--card-border)';
+        } else {
+            document.getElementById('vol_type_normal').style.background = 'var(--accent)';
+            document.getElementById('vol_type_normal').style.color = 'white';
+            document.getElementById('vol_type_normal').style.borderColor = 'var(--accent)';
+            document.getElementById('vol_type_black').style.background = 'var(--card-bg)';
+            document.getElementById('vol_type_black').style.color = 'var(--text-color)';
+            document.getElementById('vol_type_black').style.borderColor = 'var(--card-border)';
+        }
+
+        renderQuotesMatrix();
+        draw3DVolSurface();
+    }
+
+    // Generate table dynamically
+    function renderQuotesMatrix() {
+        const table = document.getElementById('swaptionQuotesTable');
+        let html = `
+            <thead>
+                <tr style="background: var(--nav-hover); border-bottom: 2px solid var(--card-border);">
+                    <th style="padding: 0.6rem; border: 1px solid var(--card-border);">Expiry / Swap Length</th>
+        `;
+        
+        for (let j = 0; j < sw_swapLengths.length; j++) {
+            html += `<th style="padding: 0.6rem; border: 1px solid var(--card-border); font-weight: 700;">${sw_swapLengths[j]}YR</th>`;
+        }
+        html += `</tr></thead><tbody>`;
+
+        for (let i = 0; i < sw_maturities.length; i++) {
+            html += `
+                <tr style="border-bottom: 1px solid var(--card-border);">
+                    <td style="padding: 0.6rem; border: 1px solid var(--card-border); font-weight: 700; background: var(--nav-hover);">${sw_maturities[i]}YR</td>
+            `;
+            for (let j = 0; j < sw_swapLengths.length; j++) {
+                const isSelected = (i === selectedExpiryIdx && j === selectedLengthIdx);
+                const val = (activeVolType === 'black') ? sw_blackVols[i][j].toFixed(2) + '%' : sw_normalVols[i][j].toFixed(1) + ' bps';
+                const cellBg = isSelected ? 'rgba(35, 131, 226, 0.15)' : 'transparent';
+                const cellBorder = isSelected ? '2px solid var(--accent)' : '1px solid var(--card-border)';
+                const cellColor = isSelected ? 'var(--accent)' : 'var(--text-color)';
+                const cellFontWeight = isSelected ? '800' : '500';
+
+                html += `
+                    <td onclick="selectGridCell(${i}, ${j})" style="padding: 0.6rem; border: ${cellBorder}; background: ${cellBg}; color: ${cellColor}; font-weight: ${cellFontWeight}; font-family: monospace; cursor: pointer; transition: all 0.15s;" 
+                        onmouseover="if(!${isSelected}) { this.style.background='var(--nav-hover)'; this.style.borderColor='var(--accent)'; }" 
+                        onmouseout="if(!${isSelected}) { this.style.background='transparent'; this.style.borderColor='var(--card-border)'; }">
+                        ${val}
+                    </td>
+                `;
+            }
+            html += `</tr>`;
+        }
+        html += `</tbody>`;
+        table.innerHTML = html;
+    }
+
+    function selectGridCell(i, j) {
+        selectedExpiryIdx = i;
+        selectedLengthIdx = j;
+        
+        renderQuotesMatrix();
+        
+        const exp = sw_maturities[i];
+        const len = sw_swapLengths[j];
+        const bVol = sw_blackVols[i][j];
+        const nVol = sw_normalVols[i][j];
+
+        document.getElementById('grid_sel_expiry').innerText = exp.toFixed(1) + ' Years';
+        document.getElementById('grid_sel_length').innerText = len.toFixed(1) + ' Years';
+        document.getElementById('grid_sel_black_vol').innerText = bVol.toFixed(2) + '%';
+        document.getElementById('grid_sel_normal_vol').innerText = nVol.toFixed(2) + ' bps';
+
+        // Load into calculator inputs
+        document.getElementById('sw_calc_expiry').value = exp.toFixed(1);
+        document.getElementById('sw_calc_length').value = len.toFixed(1);
+        document.getElementById('sw_calc_vol_black').value = Math.round(bVol);
+        document.getElementById('sw_calc_vol_normal').value = Math.round(nVol);
+
+        updatePricingCalculator();
+
+        // Flash alert
+        const alertBox = document.getElementById('grid_load_alert');
+        alertBox.style.display = 'block';
+        setTimeout(() => {
+            alertBox.style.display = 'none';
+        }, 1500);
+    }
+
+    // --- Interactive Callable Bond Simulator Engine ---
+    function updateCallableSimulator() {
+        const coupon = parseFloat(document.getElementById('sim_bond_coupon').value);
+        const marketRate = parseFloat(document.getElementById('sim_market_rate').value) / 100.0;
+        
+        // Display prevailing rate
+        document.getElementById('sim_market_rate_val').innerText = (marketRate * 100.0).toFixed(2) + '%';
+        
+        const badge = document.getElementById('sim_status_badge');
+        const expl = document.getElementById('sim_status_explanation');
+        const container = document.getElementById('sim_flow_container');
+        const outcomeCard = document.getElementById('sim_outcome_card');
+        const outcomeText = document.getElementById('sim_outcome_text');
+
+        const isEx = (marketRate < coupon - 1e-6);
+
+        if (isEx) {
+            badge.innerText = 'ITM - EXERCISED';
+            badge.style.background = '#dcfce7';
+            badge.style.color = '#166534';
+            expl.innerHTML = `Because the prevailing refinancing rate (<strong>${(marketRate * 100.0).toFixed(2)}%</strong>) is below the bond coupon rate (<strong>${(coupon * 100.0).toFixed(2)}%</strong>), the receiver swaption is <strong>In the Money</strong>. The corporation exercises the swaption, enters the receiver swap to receive fixed and pay floating, effectively cancelling the bond coupon.`;
+            
+            outcomeCard.style.background = '#eff6ff';
+            outcomeCard.style.borderColor = '#bfdbfe';
+            outcomeText.innerHTML = `By combining the straight bond coupon (<strong>-${(coupon * 100.0).toFixed(2)}%</strong>) with the exercised swap (<strong>+${(coupon * 100.0).toFixed(2)}%</strong> fixed inflow and <strong>-Floating</strong> outflow), the fixed coupon is <strong>100% cancelled out</strong>! The corporation effectively pays <strong>Floating</strong> from years 5 to 10. Mathematically, paying floating and par at year 10 is equivalent to calling the bond at par at year 5.`;
+        } else {
+            badge.innerText = 'OTM - LAPSED';
+            badge.style.background = '#fee2e2';
+            badge.style.color = '#991b1b';
+            expl.innerHTML = `Because the prevailing refinancing rate (<strong>${(marketRate * 100.0).toFixed(2)}%</strong>) is equal to or above the bond coupon rate (<strong>${(coupon * 100.0).toFixed(2)}%</strong>), the receiver swaption is <strong>Out of the Money</strong>. The corporation lets the swaption lapse. They continue paying the standard fixed coupon.`;
+            
+            outcomeCard.style.background = '#fffbeb';
+            outcomeCard.style.borderColor = '#fef3c7';
+            outcomeText.innerHTML = `The swaption lapses and is not exercised. The corporation continues to pay the original coupon rate of <strong>${(coupon * 100.0).toFixed(2)}%</strong> until maturity. This is optimal because refinancing in the market would cost <strong>${(marketRate * 100.0).toFixed(2)}%</strong>, which is higher than their current debt cost.`;
+        }
+
+        // Build cash flow timeline visualizer (Years 5 to 10)
+        let html = '';
+        for (let yr = 5; yr <= 10; yr++) {
+            const isLast = (yr === 10);
+            const couponOut = `-$${(coupon * 1000).toFixed(0)}k`;
+            const swapFixedIn = isEx ? `+$${(coupon * 1000).toFixed(0)}k` : `$0`;
+            const swapFloatOut = isEx ? `-$${(marketRate * 1000).toFixed(0)}k*` : `$0`;
+            const netFlow = isEx 
+                ? (isLast ? `-$${(1000 + marketRate * 1000).toFixed(0)}k (Floating + Par)` : `-$${(marketRate * 1000).toFixed(0)}k (Floating)`)
+                : (isLast ? `-$${(1000 + coupon * 1000).toFixed(0)}k (Fixed + Par)` : `-$${(coupon * 1000).toFixed(0)}k (Fixed)`);
+
+            html += `
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem; border-bottom: 1px dashed var(--card-border); font-size: 0.9rem;">
+                    <div style="width: 50px; font-weight: 700; color: var(--text-color);">Yr ${yr}</div>
+                    
+                    <div style="display: flex; gap: 0.5rem; flex: 1; justify-content: space-around;">
+                        <span style="color: #dc2626; font-family: monospace; font-weight: 600;">${couponOut}</span>
+                        <span style="color: #16a34a; font-family: monospace; font-weight: 600;">${swapFixedIn}</span>
+                        <span style="color: #2563eb; font-family: monospace; font-weight: 600;">${swapFloatOut}</span>
+                    </div>
+
+                    <div style="width: 160px; text-align: right; font-weight: 700; font-family: monospace; color: var(--accent);">
+                        Net: ${netFlow}
+                    </div>
+                </div>
+            `;
+        }
+        container.innerHTML = html;
+    }
+
+    // --- Interactive Swaption Calculator Engines ---
+    function cf_normalCDF(x) {
+        const t = 1.0 / (1.0 + 0.2316419 * Math.abs(x));
+        const d = 0.3989422804 * Math.exp(-0.5 * x * x);
+        let p = d * t * (0.319381530 + t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429))));
+        if (x > 0) p = 1.0 - p;
+        return p;
+    }
+
+    function cf_normalPDF(x) {
+        return 0.3989422804 * Math.exp(-0.5 * x * x);
+    }
+
+    function updatePricingCalculator() {
+        const T0 = parseFloat(document.getElementById('sw_calc_expiry').value);
+        const Y = parseFloat(document.getElementById('sw_calc_length').value);
+        const shape = document.getElementById('sw_calc_curve_shape').value;
+        const a = parseFloat(document.getElementById('sw_calc_base_rate').value) / 100.0;
+        const b = parseFloat(document.getElementById('sw_calc_slope').value) / 100.0;
+        const K = parseFloat(document.getElementById('sw_calc_strike').value) / 100.0;
+        const delta = parseFloat(document.getElementById('sw_calc_delta').value);
+        const N = parseFloat(document.getElementById('sw_calc_notional').value);
+        const volB = parseFloat(document.getElementById('sw_calc_vol_black').value) / 100.0;
+        const volN = parseFloat(document.getElementById('sw_calc_vol_normal').value) / 10000.0;
+
+        // Display text values
+        document.getElementById('calc_expiry_val').innerText = T0.toFixed(1) + ' yr';
+        document.getElementById('calc_length_val').innerText = Y.toFixed(1) + ' yr';
+        document.getElementById('calc_base_rate_val').innerText = (a * 100.0).toFixed(2) + '%';
+        document.getElementById('calc_slope_val').innerText = (b * 100.0).toFixed(2) + '%';
+        document.getElementById('calc_strike_val').innerText = (K * 100.0).toFixed(2) + '%';
+        document.getElementById('calc_vol_black_val').innerText = (volB * 100.0).toFixed(2) + '%';
+        document.getElementById('calc_vol_normal_val').innerText = (volN * 10000.0).toFixed(2) + ' bps';
+        document.getElementById('calc_out_t0').innerText = T0.toFixed(2) + ' yrs';
+        document.getElementById('calc_out_tn').innerText = (T0 + Y).toFixed(2) + ' yrs';
+
+        // Construct Curve & Discount Factors
+        // Underlying swap pays at dates T_i = T_0 + i * delta
+        const numPeriods = Math.round(Y / delta);
+        let annuity = 0.0;
+        let p_prev = 1.0;
+        
+        // We compute Spot Rates f(t) and discount factor P(0, t)
+        // Let's compute P(0, T_0) first
+        let p_t0 = 1.0;
+        for (let i = 1; i <= Math.round(T0 / delta); i++) {
+            let t = i * delta;
+            let ft = 0.0;
+            if (shape === 'flat') ft = a;
+            else if (shape === 'normal') ft = a + b * Math.log(i);
+            else if (shape === 'inverted') ft = a - b * Math.log(i);
+            else if (shape === 'humped') ft = a + b * Math.exp(-Math.pow(i - 3, 2) / 8.0);
+            ft = Math.max(0.0001, ft);
+            p_t0 = p_t0 / (1.0 + delta * ft);
+        }
+
+        // Now compute P(0, T_i) and level factor (annuity)
+        let p_last = p_t0;
+        let discountFactors = [];
+        for (let i = 1; i <= numPeriods; i++) {
+            let ti = T0 + i * delta;
+            let idx = Math.round(ti / delta);
+            let fti = 0.0;
+            if (shape === 'flat') fti = a;
+            else if (shape === 'normal') fti = a + b * Math.log(idx);
+            else if (shape === 'inverted') fti = a - b * Math.log(idx);
+            else if (shape === 'humped') fti = a + b * Math.exp(-Math.pow(idx - 3, 2) / 8.0);
+            fti = Math.max(0.0001, fti);
+            
+            let pi = p_last / (1.0 + delta * fti);
+            discountFactors.push(pi);
+            annuity += delta * pi;
+            p_last = pi;
+        }
+
+        const R_swap = (p_t0 - p_last) / annuity;
+        document.getElementById('calc_out_annuity').innerText = annuity.toFixed(4);
+        document.getElementById('calc_out_swap_rate').innerText = (R_swap * 100.0).toFixed(2) + '%';
+
+        // --- Black's pricing ---
+        let blackPayer = 0.0;
+        let blackReceiver = 0.0;
+        let d1 = 0.0;
+        let d2 = 0.0;
+
+        if (T0 < 1e-7) {
+            blackPayer = N * annuity * Math.max(0.0, R_swap - K);
+            blackReceiver = N * annuity * Math.max(0.0, K - R_swap);
+        } else {
+            const sqrtTau = Math.sqrt(T0);
+            d1 = (Math.log(R_swap / K) + 0.5 * volB * volB * T0) / (volB * sqrtTau);
+            d2 = d1 - volB * sqrtTau;
+            blackPayer = N * annuity * (R_swap * cf_normalCDF(d1) - K * cf_normalCDF(d2));
+            blackReceiver = N * annuity * (K * cf_normalCDF(-d2) - R_swap * cf_normalCDF(-d1));
+        }
+
+        document.getElementById('black_payer_price').innerText = '$' + blackPayer.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('black_receiver_price').innerText = '$' + blackReceiver.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('black_d1_val').innerText = d1.toFixed(4);
+        document.getElementById('black_d2_val').innerText = d2.toFixed(4);
+
+        // --- Bachelier's pricing ---
+        let bachPayer = 0.0;
+        let bachReceiver = 0.0;
+        let D = 0.0;
+
+        if (T0 < 1e-7) {
+            bachPayer = N * annuity * Math.max(0.0, R_swap - K);
+            bachReceiver = N * annuity * Math.max(0.0, K - R_swap);
+        } else {
+            const sqrtTau = Math.sqrt(T0);
+            D = (R_swap - K) / (volN * sqrtTau);
+            bachPayer = N * annuity * volN * sqrtTau * (D * cf_normalCDF(D) + cf_normalPDF(D));
+            bachReceiver = N * annuity * volN * sqrtTau * (-D * cf_normalCDF(-D) + cf_normalPDF(D));
+        }
+
+        document.getElementById('bach_payer_price').innerText = '$' + bachPayer.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('bach_receiver_price').innerText = '$' + bachReceiver.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('bach_d_val').innerText = D.toFixed(4);
+
+        // Moneyness badges
+        const blackBadge = document.getElementById('black_moneyness_badge');
+        const bachBadge = document.getElementById('bach_moneyness_badge');
+        let moneynessText = 'ATM';
+        let badgeColor = '#b45309';
+        let badgeBg = '#fef3c7';
+
+        if (R_swap > K + 1e-6) {
+            moneynessText = 'ITM (Payer) / OTM (Rec)';
+            badgeColor = '#166534';
+            badgeBg = '#dcfce7';
+        } else if (R_swap < K - 1e-6) {
+            moneynessText = 'OTM (Payer) / ITM (Rec)';
+            badgeColor = '#991b1b';
+            badgeBg = '#fee2e2';
+        }
+        
+        blackBadge.innerText = moneynessText;
+        blackBadge.style.color = badgeColor;
+        blackBadge.style.background = badgeBg;
+        
+        bachBadge.innerText = moneynessText;
+        bachBadge.style.color = badgeColor;
+        bachBadge.style.background = badgeBg;
+
+        // Parity Verification
+        // Swpt_p - Swpt_r = V_swap(0) = N * Annuity * (R_swap - K)
+        const v_swap = N * annuity * (R_swap - K);
+        const blackDiff = blackPayer - blackReceiver;
+        const parityDiff = Math.abs(blackDiff - v_swap);
+
+        document.getElementById('pb_swpt_diff_val').innerText = (blackDiff >= 0 ? '$' : '-$') + Math.abs(blackDiff).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('pb_swap_val').innerText = (v_swap >= 0 ? '$' : '-$') + Math.abs(v_swap).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        
+        const parityStatus = document.getElementById('pb_parity_status');
+        if (parityDiff < 1e-2) {
+            parityStatus.innerText = 'Matches Exactly';
+            parityStatus.style.background = '#dcfce7';
+            parityStatus.style.color = '#166534';
+        } else {
+            parityStatus.innerText = 'Mismatch!';
+            parityStatus.style.background = '#fee2e2';
+            parityStatus.style.color = '#991b1b';
+        }
+    }
+
+    // --- Interactive 3D Perspective Vol Surface Renderer ---
+    let yawAngle = -40; // horizontal angle in degrees
+    let pitchAngle = 30; // vertical angle in degrees
+
+    function reset3DVolSurface() {
+        document.getElementById('vol3d_yaw').value = -40;
+        document.getElementById('vol3d_pitch').value = 30;
+        draw3DVolSurface();
+    }
+
+    function draw3DVolSurface() {
+        const canvas = document.getElementById('vol3dCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        yawAngle = parseInt(document.getElementById('vol3d_yaw').value);
+        pitchAngle = parseInt(document.getElementById('vol3d_pitch').value);
+
+        // Convert angles to radians
+        const theta = yawAngle * Math.PI / 180.0;
+        const phi = pitchAngle * Math.PI / 180.0;
+
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2 + 30;
+        const scale = 140;
+
+        // Choose data grid
+        const grid = (activeVolType === 'black') ? sw_blackVols : sw_normalVols;
+        // Normalization bounds
+        let zMin = 999, zMax = -999;
+        for (let i = 0; i < sw_maturities.length; i++) {
+            for (let j = 0; j < sw_swapLengths.length; j++) {
+                const z = grid[i][j];
+                if (z < zMin) zMin = z;
+                if (z > zMax) zMax = z;
+            }
+        }
+
+        // Generate coordinates for all grid points
+        // Mapped to x in [-1, 1], y in [-1, 1], z in [-0.5, 0.5]
+        let points = [];
+        for (let i = 0; i < sw_maturities.length; i++) {
+            points[i] = [];
+            const y_norm = -1.0 + 2.0 * (i / (sw_maturities.length - 1)); // maturity mapping
+            for (let j = 0; j < sw_swapLengths.length; j++) {
+                const x_norm = -1.0 + 2.0 * (j / (sw_swapLengths.length - 1)); // length mapping
+                const z = grid[i][j];
+                // normalize z
+                const z_norm = -0.3 + 0.6 * ((z - zMin) / (zMax - zMin));
+
+                // 3D rotation
+                // 1. Yaw (horizontal around Z axis)
+                const x1 = x_norm * Math.cos(theta) - y_norm * Math.sin(theta);
+                const y1 = x_norm * Math.sin(theta) + y_norm * Math.cos(theta);
+                // 2. Pitch (vertical tilt around X axis)
+                const x2 = x1;
+                const y2 = y1 * Math.cos(phi) - z_norm * Math.sin(phi);
+                const depth = y1 * Math.sin(phi) + z_norm * Math.cos(phi); // depth for painter's sorting
+
+                // 2D Projection
+                const px = centerX + x2 * scale;
+                const py = centerY - y2 * scale;
+
+                points[i][j] = { x: px, y: py, zVal: z, d: depth, origI: i, origJ: j };
+            }
+        }
+
+        // Create polygons for painter's algorithm
+        let polygons = [];
+        for (let i = 0; i < sw_maturities.length - 1; i++) {
+            for (let j = 0; j < sw_swapLengths.length - 1; j++) {
+                const p1 = points[i][j];
+                const p2 = points[i+1][j];
+                const p3 = points[i+1][j+1];
+                const p4 = points[i][j+1];
+                
+                // Average depth of the 4 nodes
+                const avgDepth = (p1.d + p2.d + p3.d + p4.d) / 4.0;
+                const avgVal = (p1.zVal + p2.zVal + p3.zVal + p4.zVal) / 4.0;
+
+                polygons.push({
+                    pts: [p1, p2, p3, p4],
+                    depth: avgDepth,
+                    val: avgVal
+                });
+            }
+        }
+
+        // Sort polygons by depth: draw back to front (largest depth value is farthest, so drawn first)
+        polygons.sort((a, b) => b.depth - a.depth);
+
+        const isDarkTheme = document.body.classList.contains('dark-theme');
+        const strokeColor = isDarkTheme ? 'rgba(255, 255, 255, 0.25)' : 'rgba(0, 0, 0, 0.15)';
+
+        // Draw Polygons
+        polygons.forEach(poly => {
+            ctx.beginPath();
+            ctx.moveTo(poly.pts[0].x, poly.pts[0].y);
+            for (let k = 1; k < 4; k++) {
+                ctx.lineTo(poly.pts[k].x, poly.pts[k].y);
+            }
+            ctx.closePath();
+
+            // Dynamic color: HSL map from blue (240) to red (0)
+            const fraction = (poly.val - zMin) / (zMax - zMin);
+            const hue = 240 - 240 * fraction; // Hue: 240 (blue) -> 0 (red)
+            ctx.fillStyle = `hsla(${hue}, 85%, 55%, 0.8)`;
+            ctx.fill();
+
+            ctx.strokeStyle = strokeColor;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+        });
+
+        // Draw helper Axes lines & labels
+        ctx.strokeStyle = isDarkTheme ? '#ffffff' : '#000000';
+        ctx.lineWidth = 1.5;
+        ctx.fillStyle = isDarkTheme ? '#ffffff' : '#000000';
+        ctx.font = '10px sans-serif';
+
+        // Length Axis (X direction in projected plane)
+        // From point (i=0, j=0) to (i=0, j=last)
+        const l0 = points[0][0];
+        const lEnd = points[0][sw_swapLengths.length - 1];
+        ctx.beginPath();
+        ctx.moveTo(l0.x, l0.y);
+        ctx.lineTo(lEnd.x, lEnd.y);
+        ctx.stroke();
+        ctx.fillText("Swap Length (1Y → 10Y)", (l0.x + lEnd.x)/2 - 50, (l0.y + lEnd.y)/2 + 20);
+
+        // Maturity Axis (Y direction in projected plane)
+        // From point (i=0, j=0) to (i=last, j=0)
+        const m0 = points[0][0];
+        const mEnd = points[sw_maturities.length - 1][0];
+        ctx.beginPath();
+        ctx.moveTo(m0.x, m0.y);
+        ctx.lineTo(mEnd.x, mEnd.y);
+        ctx.stroke();
+        ctx.save();
+        ctx.translate((m0.x + mEnd.x)/2 - 25, (m0.y + mEnd.y)/2);
+        ctx.rotate(-Math.PI/6);
+        ctx.fillText("Maturity (1Y → 10Y)", 0, 0);
+        ctx.restore();
+    }
+
+    // Add Canvas Drag support
+    let isDragging = false;
+    let previousMousePosition = { x: 0, y: 0 };
+    const cv = document.getElementById('vol3dCanvas');
+
+    cv.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        previousMousePosition = { x: e.clientX, y: e.clientY };
+        cv.style.cursor = 'grabbing';
+    });
+
+    cv.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const deltaX = e.clientX - previousMousePosition.x;
+        const deltaY = e.clientY - previousMousePosition.y;
+        
+        let yaw = parseInt(document.getElementById('vol3d_yaw').value) + deltaX * 0.5;
+        let pitch = parseInt(document.getElementById('vol3d_pitch').value) - deltaY * 0.5;
+        
+        if (yaw > 180) yaw -= 360;
+        if (yaw < -180) yaw += 360;
+        pitch = Math.max(10, Math.min(80, pitch));
+        
+        document.getElementById('vol3d_yaw').value = Math.round(yaw);
+        document.getElementById('vol3d_pitch').value = Math.round(pitch);
+        
+        previousMousePosition = { x: e.clientX, y: e.clientY };
+        draw3DVolSurface();
+    });
+
+    window.addEventListener('mouseup', () => {
+        isDragging = false;
+        if (cv) cv.style.cursor = 'grab';
+    });
+
+    // Global initializer for tabs
+    function initSwaptionsCharts() {
+        setTimeout(() => {
+            renderQuotesMatrix();
+            draw3DVolSurface();
+            updateCallableSimulator();
+            updatePricingCalculator();
+        }, 50);
+    }
+</script>

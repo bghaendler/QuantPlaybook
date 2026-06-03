@@ -1,0 +1,266 @@
+<div id="view-cqf-mp-calculus-110" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9; font-family: var(--font-family-sans);">1.10 Substitution Pitfalls</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.10 Definite Integrals &amp; Substitution Pitfalls</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Integral bounds mapping, dummy variables, substitution theorems, and non-invertible transformation traps.</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
+        <button id="tabCalc110Theory" onclick="switchCalc110Tab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Theory</button>
+        <button id="tabCalc110Exercises" onclick="switchCalc110Tab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Solutions</button>
+    </div>
+
+    <!-- Tab: Core Theory -->
+    <div id="secCalc110Theory" style="display: block;">
+        <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1.10.1 Definite Integrals &amp; Substitution Rule</h3>
+            <p>The definite integral $\int_a^b f(x)dx$ represents the signed geometric area under $f(x)$ bounded by the interval $[a, b]$. Because the variable of integration is bound by the limits, it acts strictly as a dummy variable:</p>
+            <p style="text-align: center; font-weight: 700; margin: 0.5rem 0;">
+                $$\int_a^b f(x)dx = \int_a^b f(y)dy = \int_a^b f(\theta)d\theta$$
+            </p>
+            <p><strong>The Substitution Rule:</strong> Differentiable variable changes require transforming the integration bounds. If $z = g(x) \implies dz = g'(x)dx$:</p>
+            <p style="text-align: center; font-size: 0.98rem; font-weight: 700; margin: 0.5rem 0;">
+                $$\int_a^b f(g(x))g'(x)dx = \int_{g(a)}^{g(b)} f(z)dz$$
+            </p>
+            <div style="background: rgba(245, 158, 11, 0.05); border-left: 4px solid #f59e0b; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+                <strong style="color: #b45309;">⚠️ CRITICAL ACADEMIC WARNING: The Non-Invertibility Trap</strong><br>
+                Substitutions like $z = x^2$ fail on symmetric intervals containing the origin (e.g. $[-1, 1]$) because the derivative $\frac{dz}{dx} = 2x$ vanishes at $x=0$. This breaks the mathematical assumption of bijectivity (one-to-one mapping) for the transformation, collapsing the boundary limits ($g(-1) = g(1) = 1$) to yield a false zero result. Always verify that $g'(x) \ne 0$ on the entire integration range.
+            </div>
+        </div>
+
+        <!-- Interactive Laboratory -->
+        <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1.10.2 Interactive Integration &amp; Bounds Mapping Laboratory</h3>
+            <p>Evaluate the definite integral $\int_a^b 2x e^{x^2} dx$ using the substitution $z = x^2 \implies dz = 2x\,dx$ and diagnose bounds mapping traps:</p>
+
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start;">
+                    <!-- Left Column: Inputs & Outputs -->
+                    <div>
+                        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
+                            <div>
+                                <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Lower bound $a$:</label>
+                                <input id="calc110InputA" type="number" value="-1.0" step="0.1" min="-2.0" max="2.0" oninput="calculateInteractiveIntegral()" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Upper bound $b$:</label>
+                                <input id="calc110InputB" type="number" value="1.0" step="0.1" min="-2.0" max="2.0" oninput="calculateInteractiveIntegral()" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
+                            </div>
+                        </div>
+                        <div style="font-size: 0.85rem; line-height: 1.6; color: var(--text-color); background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid #f59e0b; margin-bottom: 0.5rem;">
+                            <div id="calc110OutputBounds"><strong>Transformed Bounds ($z = x^2$):</strong> Evaluating...</div>
+                            <div id="calc110OutputVal" style="margin-top: 0.25rem;"><strong>Result value:</strong> Evaluating...</div>
+                            <div id="calc110OutputStatus" style="margin-top: 0.5rem; font-weight: 700;">Evaluating...</div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Visual Area Graph -->
+                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
+                        <canvas id="calc110Canvas" width="400" height="240" style="width: 100%; height: 240px; background: #000; border-radius: 6px;"></canvas>
+                        <div style="position: absolute; bottom: 8px; right: 12px; font-size: 0.68rem; color: #a1a1aa; display: flex; gap: 0.5rem; background: rgba(0,0,0,0.8); padding: 2px 6px; border-radius: 4px;">
+                            <span><span style="color: #f59e0b;">■</span> Integrand $2x e^{x^2}$</span>
+                            <span><span style="color: rgba(245, 158, 11, 0.3);">■</span> Shaded Area</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab: Worked Solutions Sheet -->
+    <div id="secCalc110Exercises" style="display: none;">
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="card" style="padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Exercise 1: Standard Bounds Substitution</h3>
+                <p>Evaluate $\int_0^{\pi/2} \sin^3 x \cos x \, dx$ using trigonometric substitution.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6;">
+                    <strong>Step-by-Step Solution:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Set up substitution:</strong> Let $z = \sin x \implies dz = \cos x \, dx$.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Transform bounds:</strong>
+                            $$\text{Lower bound: } x=0 \implies z = \sin(0) = 0$$
+                            $$\text{Upper bound: } x=\pi/2 \implies z = \sin(\pi/2) = 1$$
+                        </li>
+                        <li style="margin: 0;">
+                            <strong>Integrate:</strong>
+                            $$\int_0^1 z^3 dz = \left[ \frac{z^4}{4} \right]_0^1 = \frac{1}{4}$$
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.switchCalc110Tab = function(tab) {
+                const tabTheo = document.getElementById('tabCalc110Theory');
+                const tabExer = document.getElementById('tabCalc110Exercises');
+                const secTheo = document.getElementById('secCalc110Theory');
+                const secExer = document.getElementById('secCalc110Exercises');
+
+                if (tab === 'theory') {
+                    tabTheo.style.color = '#f59e0b';
+                    tabTheo.style.borderBottomColor = '#f59e0b';
+                    tabExer.style.color = '#6b7280';
+                    tabExer.style.borderBottomColor = 'transparent';
+                    secTheo.style.display = 'block';
+                    secExer.style.display = 'none';
+                    setTimeout(drawIntegrationGraph, 20);
+                } else {
+                    tabExer.style.color = '#f59e0b';
+                    tabExer.style.borderBottomColor = '#f59e0b';
+                    tabTheo.style.color = '#6b7280';
+                    tabTheo.style.borderBottomColor = 'transparent';
+                    secExer.style.display = 'block';
+                    secTheo.style.display = 'none';
+                }
+            };
+
+            window.calculateInteractiveIntegral = function() {
+                const a = parseFloat(document.getElementById('calc110InputA').value);
+                const b = parseFloat(document.getElementById('calc110InputB').value);
+
+                const elBounds = document.getElementById('calc110OutputBounds');
+                const elVal = document.getElementById('calc110OutputVal');
+                const elStatus = document.getElementById('calc110OutputStatus');
+
+                if (isNaN(a) || isNaN(b)) {
+                    return;
+                }
+
+                const za = a * a;
+                const zb = b * b;
+
+                elBounds.innerHTML = `<strong>Transformed Bounds ($z = x^2$):</strong> $z_{start} = ${za.toFixed(2)}, z_{end} = ${zb.toFixed(2)}$`;
+
+                const res = Math.exp(zb) - Math.exp(za);
+                elVal.innerHTML = `<strong>Result value:</strong> $\\int_{${za.toFixed(2)}}^{${zb.toFixed(2)}} e^z dz = ${res.toFixed(4)}$`;
+
+                if (a < 0 && b > 0) {
+                    elStatus.innerText = "Status: Trap Activated! substitution collapses bounds (a=-1, b=1 maps to z_start=1, z_end=1) yielding a mathematical anomaly (Result = 0) because the substitution variable transition is not bijective!";
+                    elStatus.style.color = "#ea580c";
+                } else {
+                    elStatus.innerText = "Status: Safe substitution. Transformed bounds map bijectively.";
+                    elStatus.style.color = "#10b981";
+                }
+
+                drawIntegrationGraph(a, b);
+
+                const parent = document.getElementById('view-cqf-mp-calculus-110');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            window.drawIntegrationGraph = function(a, b) {
+                const canvas = document.getElementById('calc110Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Grid
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= canvas.width; i += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, canvas.height);
+                    ctx.stroke();
+                }
+                for (let i = 0; i <= canvas.height; i += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(canvas.width, i);
+                    ctx.stroke();
+                }
+
+                const xMin = -2.0, xMax = 2.0;
+                const yMin = -10.0, yMax = 10.0;
+
+                const toCanvasX = (x) => ((x - xMin) / (xMax - xMin)) * canvas.width;
+                const toCanvasY = (y) => canvas.height - ((y - yMin) / (yMax - yMin)) * canvas.height;
+
+                // Axes
+                ctx.strokeStyle = '#52525b';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(0, toCanvasY(0));
+                ctx.lineTo(canvas.width, toCanvasY(0));
+                ctx.moveTo(toCanvasX(0), 0);
+                ctx.lineTo(toCanvasX(0), canvas.height);
+                ctx.stroke();
+
+                const f = (x) => 2 * x * Math.exp(x * x);
+
+                // Shade integration area
+                ctx.fillStyle = (a < 0 && b > 0) ? 'rgba(234, 88, 12, 0.25)' : 'rgba(245, 158, 11, 0.25)';
+                ctx.beginPath();
+                let firstShade = true;
+                const startPX = Math.max(0, Math.min(canvas.width, Math.round(toCanvasX(Math.min(a, b)))));
+                const endPX = Math.max(0, Math.min(canvas.width, Math.round(toCanvasX(Math.max(a, b)))));
+
+                for (let px = startPX; px <= endPX; px++) {
+                    const x = xMin + (px / canvas.width) * (xMax - xMin);
+                    const y = f(x);
+                    if (firstShade) {
+                        ctx.moveTo(px, toCanvasY(0));
+                        ctx.lineTo(px, toCanvasY(y));
+                        firstShade = false;
+                    } else {
+                        ctx.lineTo(px, toCanvasY(y));
+                    }
+                }
+                ctx.lineTo(toCanvasX(Math.max(a, b)), toCanvasY(0));
+                ctx.closePath();
+                ctx.fill();
+
+                // Plot Curve (Orange)
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                let firstCurve = true;
+                for (let px = 0; px <= canvas.width; px++) {
+                    const x = xMin + (px / canvas.width) * (xMax - xMin);
+                    const y = f(x);
+                    if (y < yMin || y > yMax) continue;
+                    if (firstCurve) {
+                        ctx.moveTo(px, toCanvasY(y));
+                        firstCurve = false;
+                    } else {
+                        ctx.lineTo(px, toCanvasY(y));
+                    }
+                }
+                ctx.stroke();
+
+                // Draw boundary lines at a and b
+                ctx.strokeStyle = '#ea580c';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([3, 3]);
+                
+                ctx.beginPath();
+                ctx.moveTo(toCanvasX(a), 0);
+                ctx.lineTo(toCanvasX(a), canvas.height);
+                ctx.moveTo(toCanvasX(b), 0);
+                ctx.lineTo(toCanvasX(b), canvas.height);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            };
+
+            setTimeout(() => {
+                if (document.getElementById('calc110InputA')) calculateInteractiveIntegral();
+            }, 100);
+        })();
+    </script>
+</div>

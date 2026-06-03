@@ -1,0 +1,1275 @@
+<div id="view-cqf-m2-l1" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 02: Risk &amp; Return</span>
+            <span class="badge" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #8b5cf6; font-family: var(--font-family-sans);">Lecture 01</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L1: Portfolio Management</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Modern Portfolio Theory, Efficient Frontier, and Empirical Factor Models</div>
+    </header>
+
+    <!-- Navigation Tabs for L1 Sections -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM2L1Core" onclick="switchM2L1Tab('core')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. Core Concepts</button>
+        <button id="tabM2L1TwoAsset" onclick="switchM2L1Tab('twoasset')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Two-Asset &amp; GMVP</button>
+        <button id="tabM2L1Tangency" onclick="switchM2L1Tab('tangency')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Tangency &amp; CML</button>
+        <button id="tabM2L1Opt" onclick="switchM2L1Tab('opt')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. MVO Solver</button>
+        <button id="tabM2L1Capm" onclick="switchM2L1Tab('capm')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. CAPM &amp; Diversification</button>
+        <button id="tabM2L1Factor" onclick="switchM2L1Tab('factor')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Empirical Factors</button>
+        <button id="tabM2L1Perf" onclick="switchM2L1Tab('perf')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">7. Ratios &amp; Safety-First</button>
+    </div>
+
+    <!-- TAB 1: Core Concepts & Formulations -->
+    <div id="secM2L1Core" style="display: block;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; align-items: stretch;">
+            <!-- Weights Formulation Card -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent);">1.1 Portfolio Weights &amp; Budget Constraint</h3>
+                    <p>To represent asset allocation in a portfolio of $N$ assets, we use portfolio weights $w_i$, defined as the proportion of total wealth invested in each asset:</p>
+                    <div style="background: var(--metric-bg); padding: 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-bottom: 1rem; text-align: center;">
+                        $$w_i = \frac{\text{Market Value of Asset } i}{\text{Total Market Value of Portfolio}}$$
+                    </div>
+                    <p>Since all wealth must be fully invested, the weights must satisfy the **budget equation** (sum to exactly one):</p>
+                    <div style="background: var(--metric-bg); padding: 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-bottom: 1rem; text-align: center;">
+                        $$\sum_{i=1}^{N} w_i = 1 \quad \text{or, in matrix notation} \quad \mathbf{w}^{\mathrm{T}} \mathbf{1}_N = 1$$
+                    </div>
+                </div>
+                <div style="background: rgba(16, 185, 129, 0.05); border-left: 3px solid #10b981; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; font-family: var(--font-family-sans); margin-top: 1rem;">
+                    💡 Weights are dimensionless, independent of initial wealth, and sum to 1.
+                </div>
+            </div>
+
+            <!-- Core Assumptions of MPT -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: #8b5cf6;">1.2 Core Assumptions &amp; Elliptical Returns</h3>
+                    <p>All risky assets in Modern Portfolio Theory are assumed to be fully characterized by their first two statistical moments:</p>
+                    <ul style="padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.5; margin-bottom: 1rem;">
+                        <li><strong>Expected Return ($\mu_i$):</strong> The mean value of future returns.</li>
+                        <li><strong>Volatility ($\sigma_i$):</strong> Standard deviation of returns.</li>
+                        <li><strong>Pairwise Correlation ($\rho_{ij}$):</strong> Linear relationship between returns.</li>
+                    </ul>
+                    <p>This mean-variance assumption holds as long as the joint distribution of asset returns is **elliptical** (such as Normal or Student's $t$ distributions with fat tails).</p>
+                </div>
+                <div style="background: var(--metric-bg); padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; font-family: var(--font-family-sans); margin-top: 1rem;">
+                    Matrix expected return &amp; risk: $\mu_{\Pi} = \mathbf{w}^{\mathrm{T}} \boldsymbol{\mu} \quad \sigma_{\Pi} = \sqrt{\mathbf{w}^{\mathrm{T}} \mathbf{\Sigma} \mathbf{w}}$
+                </div>
+            </div>
+
+            <!-- Dynamic Allocation Calculator Card -->
+            <div class="card" style="grid-column: span 2; margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: #10b981;">Interactive Portfolio Allocation &amp; Budget Verifier</h3>
+                <p>Enter the monetary amount invested in each of the 4 assets to calculate their exact weights and confirm that the budget constraint is fully satisfied.</p>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1.5rem; align-items: center;">
+                    <!-- Controls block -->
+                    <div style="display: flex; flex-direction: column; gap: 1rem; font-family: var(--font-family-sans);">
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem;">
+                            <div>
+                                <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Asset A Investment (£)</label>
+                                <input type="number" id="allocValA" value="25000" oninput="calculateM2L1Allocation()" style="width: 90%; padding: 0.5rem; border: 1px solid var(--input-border); border-radius: 6px; font-family: monospace; font-size: 0.9rem;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Asset B Investment (£)</label>
+                                <input type="number" id="allocValB" value="35000" oninput="calculateM2L1Allocation()" style="width: 90%; padding: 0.5rem; border: 1px solid var(--input-border); border-radius: 6px; font-family: monospace; font-size: 0.9rem;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Asset C Investment (£)</label>
+                                <input type="number" id="allocValC" value="15000" oninput="calculateM2L1Allocation()" style="width: 90%; padding: 0.5rem; border: 1px solid var(--input-border); border-radius: 6px; font-family: monospace; font-size: 0.9rem;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Asset D Investment (£)</label>
+                                <input type="number" id="allocValD" value="25000" oninput="calculateM2L1Allocation()" style="width: 90%; padding: 0.5rem; border: 1px solid var(--input-border); border-radius: 6px; font-family: monospace; font-size: 0.9rem;">
+                            </div>
+                        </div>
+
+                        <!-- Computed total wealth metrics -->
+                        <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; margin-top: 0.5rem;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem;">
+                                <span>Total Wealth Investment:</span>
+                                <span id="allocTotalVal" style="color: var(--accent); font-family: monospace; font-size: 0.95rem;">£100,000</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600;">
+                                <span>Sum of Weights ($\sum w_i$):</span>
+                                <span id="allocSumWeights" style="color: #10b981; font-family: monospace; font-size: 0.95rem;">1.0000 (100.0%)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual layout bars -->
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem; font-family: var(--font-family-sans);">
+                        <!-- Asset A bar -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.2rem;">
+                                <span>Asset A Weight ($w_A$)</span>
+                                <span id="allocWeightA">25.00%</span>
+                            </div>
+                            <div style="height: 8px; background: var(--sidebar-border); border-radius: 4px; overflow: hidden;">
+                                <div id="allocBarA" style="height: 100%; background: var(--accent); width: 25%;"></div>
+                            </div>
+                        </div>
+                        <!-- Asset B bar -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.2rem;">
+                                <span>Asset B Weight ($w_B$)</span>
+                                <span id="allocWeightB">35.00%</span>
+                            </div>
+                            <div style="height: 8px; background: var(--sidebar-border); border-radius: 4px; overflow: hidden;">
+                                <div id="allocBarB" style="height: 100%; background: #8b5cf6; width: 35%;"></div>
+                            </div>
+                        </div>
+                        <!-- Asset C bar -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.2rem;">
+                                <span>Asset C Weight ($w_C$)</span>
+                                <span id="allocWeightC">15.00%</span>
+                            </div>
+                            <div style="height: 8px; background: var(--sidebar-border); border-radius: 4px; overflow: hidden;">
+                                <div id="allocBarC" style="height: 100%; background: #10b981; width: 15%;"></div>
+                            </div>
+                        </div>
+                        <!-- Asset D bar -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.2rem;">
+                                <span>Asset D Weight ($w_D$)</span>
+                                <span id="allocWeightD">25.00%</span>
+                            </div>
+                            <div style="height: 8px; background: var(--sidebar-border); border-radius: 4px; overflow: hidden;">
+                                <div id="allocBarD" style="height: 100%; background: #f59e0b; width: 25%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Two-Asset Portfolios and GMVP -->
+    <div id="secM2L1TwoAsset" style="display: none;">
+        <div class="card" style="margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                <div>
+                    <h2 style="margin: 0; font-family: var(--font-family-sans); font-weight: 800; font-size: 1.4rem;">2.1 Two-Asset Portfolio Opportunity Frontier</h2>
+                    <div style="color: #6b7280; font-size: 0.95rem; margin-top: 0.25rem;">Adjust the parameters for Assets $A$ and $B$ to see the hyperbolic opportunity set trace its shape and to locate the mathematically optimized Global Minimum Variance Portfolio (GMVP).</div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 320px 1fr; gap: 2rem; align-items: start;">
+                <!-- Simulation Controls Column -->
+                <div style="background: var(--metric-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 1.2rem; font-family: var(--font-family-sans);">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">Asset Parameters</h3>
+                    
+                    <!-- Expected Return A -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Asset A Expected Return ($\mu_A$)</label>
+                            <span id="m2l1ValMuA" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">12.0%</span>
+                        </div>
+                        <input id="m2l1SliderMuA" type="range" min="2" max="25" step="0.5" value="12" style="width: 100%; cursor: pointer;" oninput="updateM2L1TwoAssetSimulation()">
+                    </div>
+
+                    <!-- Volatility A -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Asset A Volatility ($\sigma_A$)</label>
+                            <span id="m2l1ValSigA" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">20.0%</span>
+                        </div>
+                        <input id="m2l1SliderSigA" type="range" min="5" max="45" step="0.5" value="20" style="width: 100%; cursor: pointer;" oninput="updateM2L1TwoAssetSimulation()">
+                    </div>
+
+                    <!-- Expected Return B -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Asset B Expected Return ($\mu_B$)</label>
+                            <span id="m2l1ValMuB" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">6.0%</span>
+                        </div>
+                        <input id="m2l1SliderMuB" type="range" min="2" max="25" step="0.5" value="6" style="width: 100%; cursor: pointer;" oninput="updateM2L1TwoAssetSimulation()">
+                    </div>
+
+                    <!-- Volatility B -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Asset B Volatility ($\sigma_B$)</label>
+                            <span id="m2l1ValSigB" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">10.0%</span>
+                        </div>
+                        <input id="m2l1SliderSigB" type="range" min="5" max="45" step="0.5" value="10" style="width: 100%; cursor: pointer;" oninput="updateM2L1TwoAssetSimulation()">
+                    </div>
+
+                    <!-- Correlation coefficient -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Correlation ($\rho_{AB}$)</label>
+                            <span id="m2l1ValRho" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">0.20</span>
+                        </div>
+                        <input id="m2l1SliderRho" type="range" min="-1" max="1" step="0.05" value="0.2" style="width: 100%; cursor: pointer;" oninput="updateM2L1TwoAssetSimulation()">
+                    </div>
+                </div>
+
+                <!-- Graphs & Calculations -->
+                <div>
+                    <!-- Computed Optimization Outputs -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; font-family: var(--font-family-sans);">
+                        <!-- GMVP Weight A -->
+                        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.68rem; text-transform: uppercase; color: #64748b; font-weight: 700;">GMVP Asset A Weight ($w_A^G$)</div>
+                            <div id="m2l1OutGmvpWeight" style="font-size: 1.25rem; font-weight: 800; margin-top: 0.2rem; font-family: monospace; color: var(--text-color);">20.0%</div>
+                        </div>
+                        <!-- GMVP Min Volatility -->
+                        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.68rem; text-transform: uppercase; color: #64748b; font-weight: 700;">GMVP Min Volatility ($\sigma_{\text{min}}$)</div>
+                            <div id="m2l1OutGmvpVol" style="font-size: 1.25rem; font-weight: 800; margin-top: 0.2rem; font-family: monospace; color: var(--text-color);">9.5%</div>
+                        </div>
+                        <!-- Zero-Variance Portfolio Weight (If rho = -1) -->
+                        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; text-align: center; border-bottom: 2px solid #10b981;">
+                            <div style="font-size: 0.68rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Zero-Risk Weight $w_A^Z$ ($\rho = -1$)</div>
+                            <div id="m2l1OutZeroVolWeight" style="font-size: 1.25rem; font-weight: 800; margin-top: 0.2rem; font-family: monospace; color: #10b981;">33.3%</div>
+                        </div>
+                    </div>
+
+                    <!-- Live curve display canvas card -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px;">
+                        <h4 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-color);">Two-Asset Mean-Variance Frontier Curve Plot</h4>
+                        <div class="chart-container" style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="m2l1FrontierChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mathematical Derivations Accordion -->
+            <details style="margin-top: 1.5rem; color: var(--text-color);">
+                <summary style="cursor: pointer; font-weight: 600; color: var(--accent); font-family: var(--font-family-sans); font-size: 0.95rem; user-select: none;">View Analytical Derivations for Two-Asset Portfolios</summary>
+                <div style="padding: 1.5rem; background: var(--metric-bg); border-radius: 8px; border-left: 4px solid var(--accent); margin-top: 0.75rem; font-size: 0.95rem; line-height: 1.6; font-family: var(--font-family-sans);">
+                    <p>The mathematical properties of the opportunity set of two risky assets $A$ and $B$ are summarized below:</p>
+                    <ul style="padding-left: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <li>
+                            <strong>Variance Formulation:</strong>
+                            $$\sigma_{\Pi}^2 = w_A^2\sigma_A^2 + (1-w_A)^2\sigma_B^2 + 2\rho_{AB}w_A(1-w_A)\sigma_A\sigma_B$$
+                        </li>
+                        <li>
+                            <strong>Derivation of Global Minimum Variance Portfolio (GMVP):</strong>
+                            Setting the derivative $\frac{d\sigma_{\Pi}^2}{dw_A} = 0$ yields the weight minimizing unconstrained risk:
+                            $$w_A^G = \frac{\sigma_B^2 - \rho_{AB}\sigma_A\sigma_B}{\sigma_A^2 + \sigma_B^2 - 2\rho_{AB}\sigma_A\sigma_B} = \frac{\sigma_B(\sigma_B - \rho_{AB}\sigma_A)}{\sigma_A^2 + \sigma_B^2 - 2\rho_{AB}\sigma_A\sigma_B}$$
+                        </li>
+                        <li>
+                            <strong>Zero-Variance Portfolio under Perfect Negative Correlation ($\rho_{AB} = -1$):</strong>
+                            Under $\rho_{AB} = -1$, the portfolio volatility collapses to a linear equation:
+                            $$\sigma_{\Pi} = |w_A\sigma_A - (1-w_A)\sigma_B| = 0 \implies w_A^Z = \frac{\sigma_B}{\sigma_A + \sigma_B}$$
+                        </li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <!-- TAB 3: Tangency Portfolio and CML -->
+    <div id="secM2L1Tangency" style="display: none;">
+        <div class="card" style="margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                <div>
+                    <h2 style="margin: 0; font-family: var(--font-family-sans); font-weight: 800; font-size: 1.4rem;">3.1 The Capital Market Line (CML) and Tangency Allocation</h2>
+                    <div style="color: #6b7280; font-size: 0.95rem; margin-top: 0.25rem;">Adjust the risk-free rate ($R$) slider and observe how the Capital Market Line (CML) connects $(0, R)$ to the hyperbolic opportunity set at the mathematically optimal Tangency Portfolio.</div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 320px 1fr; gap: 2rem; align-items: start;">
+                <!-- Simulation Controls Column -->
+                <div style="background: var(--metric-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-family-sans);">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">CML Inputs</h3>
+                    
+                    <!-- Risk free rate slider -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Risk-Free Rate ($R$)</label>
+                            <span id="m2l1ValRf" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">3.0%</span>
+                        </div>
+                        <input id="m2l1SliderRf" type="range" min="0.5" max="8.0" step="0.1" value="3.0" style="width: 100%; cursor: pointer;" oninput="updateM2L1TangencySimulation()">
+                    </div>
+
+                    <!-- Shared opportunity set attributes -->
+                    <div style="border-top: 1px solid var(--card-border); padding-top: 0.75rem;">
+                        <span style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Linked Frontier Asset Info</span>
+                        <div style="margin-top: 0.5rem; font-size: 0.82rem; line-height: 1.5; color: var(--text-color);">
+                            <div>• Asset A: $\mu_A = 12.0\%, \sigma_A = 20.0\%$</div>
+                            <div>• Asset B: $\mu_B = 6.0\%, \sigma_B = 10.0\%$</div>
+                            <div>• Correlation: $\rho_{AB} = 0.20$</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Graphs & Calculations -->
+                <div>
+                    <!-- Computed Outputs -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; font-family: var(--font-family-sans);">
+                        <!-- Tangency Weight A -->
+                        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.68rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Tangency Weight ($w_A^t$)</div>
+                            <div id="m2l1OutTangWeight" style="font-size: 1.25rem; font-weight: 800; margin-top: 0.2rem; font-family: monospace; color: var(--text-color);">38.2%</div>
+                        </div>
+                        <!-- Tangency Sharpe Ratio -->
+                        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; text-align: center; border-bottom: 2px solid var(--accent);">
+                            <div style="font-size: 0.68rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Max Sharpe Ratio ($S_t$)</div>
+                            <div id="m2l1OutTangSharpe" style="font-size: 1.25rem; font-weight: 800; margin-top: 0.2rem; font-family: monospace; color: var(--accent);">0.52</div>
+                        </div>
+                        <!-- CML Expected Return for 15% Volatility -->
+                        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.68rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Return at 15% Vol ($\mu_{CML}$)</div>
+                            <div id="m2l1OutCmlReturn" style="font-size: 1.25rem; font-weight: 800; margin-top: 0.2rem; font-family: monospace; color: var(--text-color);">10.8%</div>
+                        </div>
+                    </div>
+
+                    <!-- Live CML Curve Plot -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px;">
+                        <h4 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-color);">Tangency Line &amp; Capital Market Line Plot</h4>
+                        <div class="chart-container" style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="m2l1TangencyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Mean-Variance Optimization Solver -->
+    <div id="secM2L1Opt" style="display: none;">
+        <div class="container" style="grid-template-columns: 350px 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch;">
+            <!-- Solver inputs block -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-family-sans);">
+                <h3 style="margin-top: 0; font-size: 1.1rem; font-weight: 700; color: var(--accent);">MVO Objective Selection</h3>
+                <p>Choose an optimization formulation representing the three mathematically equivalent methods under MPT:</p>
+                
+                <!-- Objective radios -->
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
+                        <input type="radio" name="mvoFormulation" value="minrisk" checked onchange="updateM2L1MvoSolver()" style="cursor: pointer;"> Minimize Risk for Return Target
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
+                        <input type="radio" name="mvoFormulation" value="maxret" onchange="updateM2L1MvoSolver()" style="cursor: pointer;"> Maximize Return for Risk Budget
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; cursor: pointer;">
+                        <input type="radio" name="mvoFormulation" value="utility" onchange="updateM2L1MvoSolver()" style="cursor: pointer;"> Maximize Utility (Risk Aversion $\lambda$)
+                    </label>
+                </div>
+
+                <!-- Targeted Return Slider -->
+                <div id="mvoTargetReturnRow">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Target Portfolio Return ($m$)</label>
+                        <span id="mvoTargetReturnVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">9.0%</span>
+                    </div>
+                    <input id="mvoTargetReturnSlider" type="range" min="6.5" max="11.5" step="0.1" value="9.0" style="width: 100%; cursor: pointer;" oninput="updateM2L1MvoSolver()">
+                </div>
+
+                <!-- Risk Budget Slider -->
+                <div id="mvoRiskBudgetRow" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Volatility Budget ($v$)</label>
+                        <span id="mvoRiskBudgetVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">12.0%</span>
+                    </div>
+                    <input id="mvoRiskBudgetSlider" type="range" min="9.6" max="18.0" step="0.1" value="12.0" style="width: 100%; cursor: pointer;" oninput="updateM2L1MvoSolver()">
+                </div>
+
+                <!-- Risk Aversion Lambda Slider -->
+                <div id="mvoLambdaRow" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Risk Aversion Penalty ($\lambda$)</label>
+                        <span id="mvoLambdaVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">3.0</span>
+                    </div>
+                    <input id="mvoLambdaSlider" type="range" min="0.5" max="10.0" step="0.1" value="3.0" style="width: 100%; cursor: pointer;" oninput="updateM2L1MvoSolver()">
+                </div>
+            </div>
+
+            <!-- Solver outputs & formulations comparison -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; font-family: var(--font-family-sans);">
+                <div>
+                    <h3 style="margin-top: 0; font-size: 1.1rem; font-weight: 700; color: #10b981;">Solver Results Summary</h3>
+                    
+                    <!-- Weights visualizer result card -->
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem; margin-bottom: 1.5rem;">
+                        <div style="background: var(--metric-bg); border-left: 3px solid var(--accent); padding: 1rem; border-radius: 6px;">
+                            <div style="font-size: 0.72rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Asset A Weight ($w_A$)</div>
+                            <div id="mvoOutWeightA" style="font-size: 1.4rem; font-weight: 800; font-family: monospace; color: var(--text-color);">50.0%</div>
+                        </div>
+                        <div style="background: var(--metric-bg); border-left: 3px solid #8b5cf6; padding: 1rem; border-radius: 6px;">
+                            <div style="font-size: 0.72rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Asset B Weight ($w_B$)</div>
+                            <div id="mvoOutWeightB" style="font-size: 1.4rem; font-weight: 800; font-family: monospace; color: var(--text-color);">50.0%</div>
+                        </div>
+                    </div>
+
+                    <!-- Mathematical objective representation -->
+                    <div id="mvoFormulaCard" style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <strong>Current Formulation:</strong>
+                        <div style="font-family: monospace; font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-color);">
+                            $\min_{\mathbf{w}} \mathbf{w}^{\mathrm{T}} \mathbf{\Sigma} \mathbf{w}$ subject to $\mathbf{w}^{\mathrm{T}} \boldsymbol{\mu} = 9.0\%$ and $\mathbf{w}^{\mathrm{T}} \mathbf{1}_N = 1$
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.1); padding: 1rem; border-radius: 8px; font-size: 0.88rem; line-height: 1.5;">
+                    💡 **Equivalence Principle:** The three formulations are dual to each other. For any chosen target return $m$, there is a corresponding risk aversion parameter $\lambda$ and risk budget $v$ that yield the exact same optimal allocation vector $\mathbf{w}^*$.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: CAPM and Diversification -->
+    <div id="secM2L1Capm" style="display: none;">
+        <div class="card" style="margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                <div>
+                    <h2 style="margin: 0; font-family: var(--font-family-sans); font-weight: 800; font-size: 1.4rem;">5.1 Sharpe's Single-Factor Model &amp; Diversification Decay</h2>
+                    <div style="color: #6b7280; font-size: 0.95rem; margin-top: 0.25rem;">Adjust the number of assets $N$, index volatility, and idiosyncratic variance to see in real-time how idiosyncratic risk is diversified away, leaving only systematic market risk.</div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 320px 1fr; gap: 2rem; align-items: start;">
+                <!-- Simulation Controls Column -->
+                <div style="background: var(--metric-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-family-sans);">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">Model Inputs</h3>
+                    
+                    <!-- Market Volatility slider -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Market Index Vol ($\sigma_M$)</label>
+                            <span id="m2l1ValSigM" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">15.0%</span>
+                        </div>
+                        <input id="m2l1SliderSigM" type="range" min="5" max="30" step="0.5" value="15" style="width: 100%; cursor: pointer;" oninput="updateM2L1CapmSimulation()">
+                    </div>
+
+                    <!-- Common beta factor -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Systematic Beta Sensitivity ($\beta$)</label>
+                            <span id="m2l1ValBeta" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">1.00</span>
+                        </div>
+                        <input id="m2l1SliderBeta" type="range" min="0.2" max="2.0" step="0.05" value="1.0" style="width: 100%; cursor: pointer;" oninput="updateM2L1CapmSimulation()">
+                    </div>
+
+                    <!-- Idiosyncratic variance -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Residual Risk Vol ($e$)</label>
+                            <span id="m2l1ValResidual" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">25.0%</span>
+                        </div>
+                        <input id="m2l1SliderResidual" type="range" min="5" max="50" step="1" value="25" style="width: 100%; cursor: pointer;" oninput="updateM2L1CapmSimulation()">
+                    </div>
+
+                    <!-- Dynamic Asset Count N selection -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Portfolio Assets ($N$)</label>
+                            <span id="m2l1ValN" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">10</span>
+                        </div>
+                        <input id="m2l1SliderN" type="range" min="1" max="100" step="1" value="10" style="width: 100%; cursor: pointer;" oninput="updateM2L1CapmSimulation()">
+                    </div>
+                </div>
+
+                <!-- Graphs & Calculations -->
+                <div>
+                    <!-- Computed Outputs -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; font-family: var(--font-family-sans);">
+                        <!-- Systematic Risk component -->
+                        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 0.68rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Systematic Risk ($\beta^2 \sigma_M^2$)</div>
+                            <div id="m2l1OutSysRisk" style="font-size: 1.25rem; font-weight: 800; margin-top: 0.2rem; font-family: monospace; color: var(--text-color);">15.0%</div>
+                        </div>
+                        <!-- Idiosyncratic component -->
+                        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; text-align: center; border-bottom: 2px solid #ea580c;">
+                            <div style="font-size: 0.68rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Idiosyncratic Risk ($e^2 / N$)</div>
+                            <div id="m2l1OutIdioRisk" style="font-size: 1.25rem; font-weight: 800; margin-top: 0.2rem; font-family: monospace; color: #ea580c;">7.9%</div>
+                        </div>
+                        <!-- Total Portfolio Volatility -->
+                        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; text-align: center; border-bottom: 2px solid #10b981;">
+                            <div style="font-size: 0.68rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Total Volatility ($\sigma_{\Pi}$)</div>
+                            <div id="m2l1OutTotalVol" style="font-size: 1.25rem; font-weight: 800; margin-top: 0.2rem; font-family: monospace; color: #10b981;">16.9%</div>
+                        </div>
+                    </div>
+
+                    <!-- Live Risk Decay curve Plot -->
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px;">
+                        <h4 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-color);">Diversification Decay Curve: Risk vs. Asset Count</h4>
+                        <div class="chart-container" style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="m2l1CapmChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Empirical Factor Models -->
+    <div id="secM2L1Factor" style="display: none;">
+        <div class="container" style="grid-template-columns: 350px 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch;">
+            <!-- Factor Model Config Card -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-family-sans);">
+                <h3 style="margin-top: 0; font-size: 1.1rem; font-weight: 700; color: var(--accent);">Model Selection</h3>
+                
+                <!-- Model Selection dropdown -->
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Multi-Factor Model</label>
+                    <select id="factorModelSelect" onchange="switchFactorModelRegime()" style="width: 100%; padding: 0.5rem; border: 1px solid var(--input-border); border-radius: 6px; font-family: var(--font-family-sans); font-size: 0.9rem;">
+                        <option value="capm">1. Capital Asset Pricing Model (CAPM)</option>
+                        <option value="ff3">2. Fama-French Three-Factor Model</option>
+                        <option value="carhart">3. Carhart Four-Factor Model</option>
+                    </select>
+                </div>
+
+                <!-- Shared Risk Free rate -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Risk-Free Rate ($R_F$)</label>
+                        <span id="factValRf" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">3.0%</span>
+                    </div>
+                    <input id="factSliderRf" type="range" min="0" max="8" step="0.1" value="3.0" style="width: 100%; cursor: pointer;" oninput="updateM2L1FactorSimulation()">
+                </div>
+
+                <!-- Market Risk Premium beta slider -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Market Exposure Beta ($\beta_{\text{mkt}}$)</label>
+                        <span id="factValBetaMkt" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">1.10</span>
+                    </div>
+                    <input id="factSliderBetaMkt" type="range" min="0.1" max="2.0" step="0.05" value="1.1" style="width: 100%; cursor: pointer;" oninput="updateM2L1FactorSimulation()">
+                </div>
+
+                <!-- SMB Slider -->
+                <div id="ff3SmbRow" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Size Exposure Beta ($\beta_{\text{SMB}}$)</label>
+                        <span id="factValBetaSmb" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">0.35</span>
+                    </div>
+                    <input id="factSliderBetaSmb" type="range" min="-1.0" max="1.5" step="0.05" value="0.35" style="width: 100%; cursor: pointer;" oninput="updateM2L1FactorSimulation()">
+                </div>
+
+                <!-- HML Slider -->
+                <div id="ff3HmlRow" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Value Exposure Beta ($\beta_{\text{HML}}$)</label>
+                        <span id="factValBetaHml" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">0.50</span>
+                    </div>
+                    <input id="factSliderBetaHml" type="range" min="-1.0" max="1.5" step="0.05" value="0.5" style="width: 100%; cursor: pointer;" oninput="updateM2L1FactorSimulation()">
+                </div>
+
+                <!-- Momentum Slider -->
+                <div id="carhartMomRow" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Momentum Exposure Beta ($\beta_{\text{MOM}}$)</label>
+                        <span id="factValBetaMom" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">0.15</span>
+                    </div>
+                    <input id="factSliderBetaMom" type="range" min="-0.5" max="1.0" step="0.05" value="0.15" style="width: 100%; cursor: pointer;" oninput="updateM2L1FactorSimulation()">
+                </div>
+            </div>
+
+            <!-- Expected Return and math representation card -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; font-family: var(--font-family-sans);">
+                <div>
+                    <h3 style="margin-top: 0; font-size: 1.1rem; font-weight: 700; color: #10b981;">Expected Return Calculator</h3>
+                    
+                    <div style="background: var(--metric-bg); border-radius: 8px; padding: 1.5rem; text-align: center; margin-top: 1rem; margin-bottom: 1.5rem;">
+                        <div style="font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-weight: 700; letter-spacing: 0.05em;">Estimated Expected Return ($E[R_i]$)</div>
+                        <div id="factOutReturn" style="font-size: 2.5rem; font-weight: 800; color: var(--accent); font-family: monospace; margin-top: 0.5rem;">10.70%</div>
+                    </div>
+
+                    <!-- Mathematical Formula display card -->
+                    <div id="factFormulaText" style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.88rem; line-height: 1.6; color: var(--text-color);">
+                        $E[R_i] = R_F + \beta_{\text{mkt}}(E[R_{mkt}] - R_F)$
+                    </div>
+                </div>
+
+                <div style="background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.1); padding: 1rem; border-radius: 8px; font-size: 0.85rem; line-height: 1.5;">
+                    📌 **Factor Risk Premiums used:** Market Premium = 7.0%, SMB Size Premium = 3.2%, HML Value Premium = 4.8%, MOM Momentum Premium = 6.4%.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 7: Performance Measurement and Safety-First -->
+    <div id="secM2L1Perf" style="display: none;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; align-items: stretch;">
+            <!-- Inputs block -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-family-sans);">
+                <h3 style="margin-top: 0; font-size: 1.1rem; font-weight: 700; color: var(--accent);">Portfolio Metrics Input</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem;">
+                    <div>
+                        <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Risk-Free Rate ($R$)</label>
+                        <input type="number" id="perfInRf" value="3.0" step="0.1" oninput="updateM2L1PerformanceMetrics()" style="width: 85%; padding: 0.5rem; border: 1px solid var(--input-border); border-radius: 6px; font-family: monospace;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Expected Return ($\mu_{\Pi}$)</label>
+                        <input type="number" id="perfInRet" value="12.0" step="0.1" oninput="updateM2L1PerformanceMetrics()" style="width: 85%; padding: 0.5rem; border: 1px solid var(--input-border); border-radius: 6px; font-family: monospace;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Total Volatility ($\sigma_{\Pi}$)</label>
+                        <input type="number" id="perfInVol" value="18.0" step="0.1" oninput="updateM2L1PerformanceMetrics()" style="width: 85%; padding: 0.5rem; border: 1px solid var(--input-border); border-radius: 6px; font-family: monospace;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Beta Sensitivity ($\beta$)</label>
+                        <input type="number" id="perfInBeta" value="1.15" step="0.05" oninput="updateM2L1PerformanceMetrics()" style="width: 85%; padding: 0.5rem; border: 1px solid var(--input-border); border-radius: 6px; font-family: monospace;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Safety Threshold ($R_L$)</label>
+                        <input type="number" id="perfInRl" value="4.5" step="0.1" oninput="updateM2L1PerformanceMetrics()" style="width: 85%; padding: 0.5rem; border: 1px solid var(--input-border); border-radius: 6px; font-family: monospace;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Tracking Error ($\omega$)</label>
+                        <input type="number" id="perfInTe" value="4.0" step="0.1" oninput="updateM2L1PerformanceMetrics()" style="width: 85%; padding: 0.5rem; border: 1px solid var(--input-border); border-radius: 6px; font-family: monospace;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Computed Performance Dashboard card -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; font-family: var(--font-family-sans);">
+                <div>
+                    <h3 style="margin-top: 0; font-size: 1.1rem; font-weight: 700; color: #10b981;">Evaluation Dashboard</h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-top: 0.75rem;">
+                        <div style="background: var(--metric-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid var(--accent);">
+                            <div style="font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Sharpe Ratio</div>
+                            <div id="perfOutSharpe" style="font-size: 1.15rem; font-weight: 800; font-family: monospace; color: var(--text-color);">0.500</div>
+                        </div>
+                        <div style="background: var(--metric-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid #8b5cf6;">
+                            <div style="font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Treynor Ratio</div>
+                            <div id="perfOutTreynor" style="font-size: 1.15rem; font-weight: 800; font-family: monospace; color: var(--text-color);">0.078</div>
+                        </div>
+                        <div style="background: var(--metric-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid #10b981;">
+                            <div style="font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Roy's Safety-First</div>
+                            <div id="perfOutRoy" style="font-size: 1.15rem; font-weight: 800; font-family: monospace; color: #10b981;">0.417</div>
+                        </div>
+                        <div style="background: var(--metric-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid #f59e0b;">
+                            <div style="font-size: 0.65rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Information Ratio</div>
+                            <div id="perfOutIR" style="font-size: 1.15rem; font-weight: 800; font-family: monospace; color: var(--text-color);">0.225</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: var(--metric-bg); padding: 0.75rem; border-radius: 8px; font-size: 0.82rem; line-height: 1.5; color: var(--text-color);">
+                    <strong>Formula reminder:</strong>
+                    Sharpe = $\frac{\mu - R}{\sigma} \quad$ Treynor = $\frac{\mu - R}{\beta} \quad$ Roy = $\frac{\mu - R_L}{\sigma}$
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- SCRIPT LAB CONTROLLERS FOR PORTFOLIO THEORY -->
+<script>
+    window.switchM2L1Tab = function(tab) {
+        // Toggle tab styles
+        const tabs = ['Core', 'TwoAsset', 'Tangency', 'Opt', 'Capm', 'Factor', 'Perf'];
+        tabs.forEach(t => {
+            const btn = document.getElementById('tabM2L1' + t);
+            if (btn) {
+                if (t.toLowerCase() === tab.toLowerCase()) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottomColor = 'var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottomColor = 'transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        // Toggle section visibility
+        const sections = ['Core', 'TwoAsset', 'Tangency', 'Opt', 'Capm', 'Factor', 'Perf'];
+        sections.forEach(s => {
+            const el = document.getElementById('secM2L1' + s);
+            if (el) {
+                el.style.display = (s.toLowerCase() === tab.toLowerCase()) ? 'block' : 'none';
+            }
+        });
+
+        // Trigger simulation initialization where appropriate
+        if (tab === 'twoasset') {
+            setTimeout(initM2L1TwoAssetFrontierPlot, 100);
+        } else if (tab === 'tangency') {
+            setTimeout(initM2L1TangencyCmlPlot, 100);
+        } else if (tab === 'capm') {
+            setTimeout(initM2L1CapmDecayPlot, 100);
+        } else if (tab === 'factor') {
+            switchFactorModelRegime();
+        }
+    };
+
+    // TAB 1: Allocation & Budget Constraint calculations
+    window.calculateM2L1Allocation = function() {
+        const valA = parseFloat(document.getElementById('allocValA').value) || 0;
+        const valB = parseFloat(document.getElementById('allocValB').value) || 0;
+        const valC = parseFloat(document.getElementById('allocValC').value) || 0;
+        const valD = parseFloat(document.getElementById('allocValD').value) || 0;
+
+        const total = valA + valB + valC + valD;
+        document.getElementById('allocTotalVal').innerText = '£' + total.toLocaleString(undefined, {minimumFractionDigits: 0});
+
+        if (total > 0) {
+            const wA = (valA / total) * 100;
+            const wB = (valB / total) * 100;
+            const wC = (valC / total) * 100;
+            const wD = (valD / total) * 100;
+
+            document.getElementById('allocWeightA').innerText = wA.toFixed(2) + '%';
+            document.getElementById('allocWeightB').innerText = wB.toFixed(2) + '%';
+            document.getElementById('allocWeightC').innerText = wC.toFixed(2) + '%';
+            document.getElementById('allocWeightD').innerText = wD.toFixed(2) + '%';
+
+            document.getElementById('allocBarA').style.width = wA + '%';
+            document.getElementById('allocBarB').style.width = wB + '%';
+            document.getElementById('allocBarC').style.width = wC + '%';
+            document.getElementById('allocBarD').style.width = wD + '%';
+
+            const sum = (wA + wB + wC + wD) / 100;
+            document.getElementById('allocSumWeights').innerText = sum.toFixed(4) + ' (' + (sum * 100).toFixed(1) + '%)';
+        } else {
+            document.getElementById('allocSumWeights').innerText = '0.0000 (0.0%)';
+        }
+    };
+
+    // TAB 2: Two-Asset opportunities & GMVP
+    let m2l1FrontierChartInstance = null;
+
+    function initM2L1TwoAssetFrontierPlot() {
+        const ctx = document.getElementById('m2l1FrontierChart');
+        if (!ctx) return;
+
+        if (m2l1FrontierChartInstance) {
+            updateM2L1TwoAssetSimulation();
+            return;
+        }
+
+        m2l1FrontierChartInstance = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [
+                    {
+                        label: 'Frontier Opportunity Set',
+                        data: [],
+                        showLine: true,
+                        borderColor: 'var(--accent)',
+                        borderWidth: 2,
+                        fill: false,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'GMVP Portfolio',
+                        data: [],
+                        pointBackgroundColor: '#ea580c',
+                        pointBorderColor: '#ea580c',
+                        pointRadius: 6
+                    },
+                    {
+                        label: 'Individual Assets',
+                        data: [],
+                        pointBackgroundColor: '#8b5cf6',
+                        pointBorderColor: '#8b5cf6',
+                        pointRadius: 5
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: 'var(--text-color)' } }
+                },
+                scales: {
+                    x: {
+                        type: 'linear',
+                        title: { display: true, text: 'Volatility σ (%)', color: 'var(--text-color)' },
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: { color: 'var(--text-color)' }
+                    },
+                    y: {
+                        title: { display: true, text: 'Expected Return μ (%)', color: 'var(--text-color)' },
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: { color: 'var(--text-color)' }
+                    }
+                }
+            }
+        });
+
+        updateM2L1TwoAssetSimulation();
+    }
+
+    window.updateM2L1TwoAssetSimulation = function() {
+        const muA = parseFloat(document.getElementById('m2l1SliderMuA').value) / 100;
+        const sigA = parseFloat(document.getElementById('m2l1SliderSigA').value) / 100;
+        const muB = parseFloat(document.getElementById('m2l1SliderMuB').value) / 100;
+        const sigB = parseFloat(document.getElementById('m2l1SliderSigB').value) / 100;
+        const rho = parseFloat(document.getElementById('m2l1SliderRho').value);
+
+        // Update labels
+        document.getElementById('m2l1ValMuA').innerText = (muA * 100).toFixed(1) + '%';
+        document.getElementById('m2l1ValSigA').innerText = (sigA * 100).toFixed(1) + '%';
+        document.getElementById('m2l1ValMuB').innerText = (muB * 100).toFixed(1) + '%';
+        document.getElementById('m2l1ValSigB').innerText = (sigB * 100).toFixed(1) + '%';
+        document.getElementById('m2l1ValRho').innerText = rho.toFixed(2);
+
+        // Calculate GMVP Weight
+        const numerator = sigB * (sigB - rho * sigA);
+        const denominator = sigA * sigA + sigB * sigB - 2 * rho * sigA * sigB;
+        let wG = 0.5;
+        if (denominator !== 0) {
+            wG = numerator / denominator;
+        }
+
+        const volG = Math.sqrt(wG * wG * sigA * sigA + (1 - wG) * (1 - wG) * sigB * sigB + 2 * rho * wG * (1 - wG) * sigA * sigB);
+        const retG = wG * muA + (1 - wG) * muB;
+
+        // Zero variance weight (if rho = -1)
+        const wZ = sigB / (sigA + sigB);
+
+        // Update output fields
+        document.getElementById('m2l1OutGmvpWeight').innerText = (wG * 100).toFixed(1) + '%';
+        document.getElementById('m2l1OutGmvpVol').innerText = (volG * 100).toFixed(2) + '%';
+        document.getElementById('m2l1OutZeroVolWeight').innerText = (wZ * 100).toFixed(1) + '%';
+
+        // Generate plot curve coordinates
+        const points = [];
+        for (let w = -0.5; w <= 1.5; w += 0.05) {
+            const vol = Math.sqrt(w * w * sigA * sigA + (1 - w) * (1 - w) * sigB * sigB + 2 * rho * w * (1 - w) * sigA * sigB);
+            const ret = w * muA + (1 - w) * muB;
+            points.push({ x: vol * 100, y: ret * 100 });
+        }
+
+        if (m2l1FrontierChartInstance) {
+            // Update opportunity set curve
+            m2l1FrontierChartInstance.data.datasets[0].data = points;
+            // Update GMVP dot
+            m2l1FrontierChartInstance.data.datasets[1].data = [{ x: volG * 100, y: retG * 100 }];
+            // Update Asset dots
+            m2l1FrontierChartInstance.data.datasets[2].data = [
+                { x: sigA * 100, y: muA * 100 },
+                { x: sigB * 100, y: muB * 100 }
+            ];
+            m2l1FrontierChartInstance.update();
+        }
+    };
+
+    // TAB 3: Tangency portfolio and CML Plot
+    let m2l1TangencyChartInstance = null;
+
+    function initM2L1TangencyCmlPlot() {
+        const ctx = document.getElementById('m2l1TangencyChart');
+        if (!ctx) return;
+
+        if (m2l1TangencyChartInstance) {
+            updateM2L1TangencySimulation();
+            return;
+        }
+
+        m2l1TangencyChartInstance = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [
+                    {
+                        label: 'Risky opportunity set',
+                        data: [],
+                        showLine: true,
+                        borderColor: 'var(--card-border)',
+                        borderWidth: 1.5,
+                        fill: false,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Capital Market Line (CML)',
+                        data: [],
+                        showLine: true,
+                        borderColor: 'var(--accent)',
+                        borderWidth: 2.5,
+                        fill: false,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Tangency Portfolio',
+                        data: [],
+                        pointBackgroundColor: '#10b981',
+                        pointBorderColor: '#10b981',
+                        pointRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: 'var(--text-color)' } }
+                },
+                scales: {
+                    x: {
+                        type: 'linear',
+                        min: 0,
+                        max: 30,
+                        title: { display: true, text: 'Volatility σ (%)', color: 'var(--text-color)' },
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: { color: 'var(--text-color)' }
+                    },
+                    y: {
+                        min: 0,
+                        max: 18,
+                        title: { display: true, text: 'Expected Return μ (%)', color: 'var(--text-color)' },
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: { color: 'var(--text-color)' }
+                    }
+                }
+            }
+        });
+
+        updateM2L1TangencySimulation();
+    }
+
+    window.updateM2L1TangencySimulation = function() {
+        const Rf = parseFloat(document.getElementById('m2l1SliderRf').value) / 100;
+        document.getElementById('m2l1ValRf').innerText = (Rf * 100).toFixed(1) + '%';
+
+        // Static opportunity set params from linked tab
+        const muA = 0.12;
+        const sigA = 0.20;
+        const muB = 0.06;
+        const sigB = 0.10;
+        const rho = 0.20;
+
+        // Calculate Tangency weight A
+        const num = sigB * ((muB - Rf) * rho * sigA - (muA - Rf) * sigB);
+        const den = -((muA - Rf) * sigB * sigB) - (muB - Rf) * sigA * sigA + (muA + muB - 2 * Rf) * rho * sigA * sigB;
+        let wt = 0.5;
+        if (den !== 0) {
+            wt = num / den;
+        }
+
+        const sigT = Math.sqrt(wt * wt * sigA * sigA + (1 - wt) * (1 - wt) * sigB * sigB + 2 * rho * wt * (1 - wt) * sigA * sigB);
+        const retT = wt * muA + (1 - wt) * muB;
+
+        // Slope Sharpe Ratio
+        const sharpe = (retT - Rf) / sigT;
+
+        // Update outputs
+        document.getElementById('m2l1OutTangWeight').innerText = (wt * 100).toFixed(1) + '%';
+        document.getElementById('m2l1OutTangSharpe').innerText = sharpe.toFixed(3);
+
+        // Expected return at 15% volatility on CML
+        const cmlRet15 = Rf + sharpe * 0.15;
+        document.getElementById('m2l1OutCmlReturn').innerText = (cmlRet15 * 100).toFixed(1) + '%';
+
+        // Curve data coordinates
+        const frontierPoints = [];
+        for (let w = -0.2; w <= 1.2; w += 0.05) {
+            const vol = Math.sqrt(w * w * sigA * sigA + (1 - w) * (1 - w) * sigB * sigB + 2 * rho * w * (1 - w) * sigA * sigB);
+            const ret = w * muA + (1 - w) * muB;
+            frontierPoints.push({ x: vol * 100, y: ret * 100 });
+        }
+
+        // CML line coordinates
+        const cmlPoints = [
+            { x: 0, y: Rf * 100 },
+            { x: 25, y: (Rf + sharpe * 0.25) * 100 }
+        ];
+
+        if (m2l1TangencyChartInstance) {
+            m2l1TangencyChartInstance.data.datasets[0].data = frontierPoints;
+            m2l1TangencyChartInstance.data.datasets[1].data = cmlPoints;
+            m2l1TangencyChartInstance.data.datasets[2].data = [{ x: sigT * 100, y: retT * 100 }];
+            m2l1TangencyChartInstance.update();
+        }
+    };
+
+    // TAB 4: MVO Solver Logic
+    let mvoTypesetTimeout = null;
+    function queueMvoTypeset() {
+        if (mvoTypesetTimeout) {
+            clearTimeout(mvoTypesetTimeout);
+        }
+        mvoTypesetTimeout = setTimeout(() => {
+            if (window.MathJax && typeof MathJax.typesetPromise === 'function') {
+                const card = document.getElementById('mvoFormulaCard');
+                if (card) {
+                    // Tell MathJax to clear previous elements to prevent replaceChild errors
+                    if (typeof MathJax.typesetClear === 'function') {
+                        MathJax.typesetClear([card]);
+                    }
+                    MathJax.typesetPromise([card]).catch((err) => console.log("MathJax error:", err));
+                }
+            }
+        }, 150); // 150ms debounce
+    }
+
+    window.updateM2L1MvoSolver = function() {
+        const form = document.querySelector('input[name="mvoFormulation"]:checked').value;
+        
+        // Toggle control fields
+        document.getElementById('mvoTargetReturnRow').style.display = (form === 'minrisk' ? 'block' : 'none');
+        document.getElementById('mvoRiskBudgetRow').style.display = (form === 'maxret' ? 'block' : 'none');
+        document.getElementById('mvoLambdaRow').style.display = (form === 'utility' ? 'block' : 'none');
+
+        // Assets parameters (consistent with Two-Asset tab)
+        const muA = 0.12;
+        const sigA = 0.20;
+        const muB = 0.06;
+        const sigB = 0.10;
+        const rho = 0.20;
+
+        let wA = 0.5;
+
+        if (form === 'minrisk') {
+            const targetRet = parseFloat(document.getElementById('mvoTargetReturnSlider').value) / 100;
+            document.getElementById('mvoTargetReturnVal').innerText = (targetRet * 100).toFixed(1) + '%';
+            
+            // Formula representation text
+            document.getElementById('mvoFormulaCard').innerHTML = `
+                <strong>Active Formulation:</strong>
+                <div style="font-size: 1rem; margin-top: 0.5rem; color: var(--text-color);">
+                    $$\\min_{\\mathbf{w}} \\mathbf{w}^{\\mathrm{T}} \\mathbf{\\Sigma} \\mathbf{w} \\quad \\text{subject to} \\quad w_A(12.0\\%) + w_B(6.0\\%) = ${(targetRet*100).toFixed(1)}\\%$$
+                </div>
+            `;
+
+            // wA * muA + (1 - wA) * muB = targetRet
+            // wA(muA - muB) = targetRet - muB
+            wA = (targetRet - muB) / (muA - muB);
+        } 
+        else if (form === 'maxret') {
+            const volBudget = parseFloat(document.getElementById('mvoRiskBudgetSlider').value) / 100;
+            document.getElementById('mvoRiskBudgetVal').innerText = (volBudget * 100).toFixed(1) + '%';
+            
+            document.getElementById('mvoFormulaCard').innerHTML = `
+                <strong>Active Formulation:</strong>
+                <div style="font-size: 1rem; margin-top: 0.5rem; color: var(--text-color);">
+                    $$\\max_{\\mathbf{w}} (w_A(12.0\\%) + w_B(6.0\\%)) \\quad \\text{subject to} \\quad \\sigma_{\\Pi} = ${(volBudget*100).toFixed(1)}\\%$$
+                </div>
+            `;
+
+            // Solve quadratic equation: wA^2*sigA^2 + (1-wA)^2*sigB^2 + 2*rho*wA*(1-wA)*sigA*sigB = volBudget^2
+            // Rearranges to A*wA^2 + B*wA + C = 0
+            const A = sigA*sigA + sigB*sigB - 2*rho*sigA*sigB;
+            const B = 2*sigB*(rho*sigA - sigB);
+            const C = sigB*sigB - volBudget*volBudget;
+
+            const disc = B*B - 4*A*C;
+            if (disc >= 0) {
+                // Return-maximizing solution (+ root)
+                wA = (-B + Math.sqrt(disc)) / (2*A);
+            } else {
+                wA = 0.5;
+            }
+        } 
+        else if (form === 'utility') {
+            const lambda = parseFloat(document.getElementById('mvoLambdaSlider').value);
+            document.getElementById('mvoLambdaVal').innerText = lambda.toFixed(1);
+
+            document.getElementById('mvoFormulaCard').innerHTML = `
+                <strong>Active Formulation:</strong>
+                <div style="font-size: 1rem; margin-top: 0.5rem; color: var(--text-color);">
+                    $$\\max_{\\mathbf{w}} \\left( \\mathbf{w}^{\\mathrm{T}} \\boldsymbol{\\mu} - \\frac{${lambda.toFixed(1)}}{2} \\mathbf{w}^{\\mathrm{T}} \\mathbf{\\Sigma} \\mathbf{w} \\right)$$
+                </div>
+            `;
+
+            // Maximize: wA*muA + (1-wA)*muB - (lambda/2)*(wA^2*sigA^2 + (1-wA)^2*sigB^2 + 2*rho*wA*(1-wA)*sigA*sigB)
+            // Take derivative wrt wA and set to 0:
+            // muA - muB - lambda * ( wA*sigA^2 - (1-wA)*sigB^2 + rho*sigA*sigB*(1 - 2*wA) ) = 0
+            // muA - muB - lambda * ( wA*(sigA^2 + sigB^2 - 2*rho*sigA*sigB) + sigB*(rho*sigA - sigB) ) = 0
+            const numVal = muA - muB - lambda * sigB * (rho * sigA - sigB);
+            const denVal = lambda * (sigA*sigA + sigB*sigB - 2 * rho * sigA * sigB);
+            if (denVal !== 0) {
+                wA = numVal / denVal;
+            }
+        }
+
+        // Clamp weight display to readable ranges
+        const wB = 1 - wA;
+        document.getElementById('mvoOutWeightA').innerText = (wA * 100).toFixed(1) + '%';
+        document.getElementById('mvoOutWeightB').innerText = (wB * 100).toFixed(1) + '%';
+
+        // Trigger debounced MathJax typeset updates
+        queueMvoTypeset();
+    };
+
+    // TAB 5: CAPM Risk decay plot
+    let m2l1CapmChartInstance = null;
+
+    function initM2L1CapmDecayPlot() {
+        const ctx = document.getElementById('m2l1CapmChart');
+        if (!ctx) return;
+
+        if (m2l1CapmChartInstance) {
+            updateM2L1CapmSimulation();
+            return;
+        }
+
+        m2l1CapmChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Total Volatility',
+                        data: [],
+                        borderColor: '#10b981',
+                        borderWidth: 2,
+                        fill: false,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Systematic Risk Floor',
+                        data: [],
+                        borderColor: 'var(--accent)',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        fill: false,
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: 'var(--text-color)' } }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Number of Portfolio Holdings (N)', color: 'var(--text-color)' },
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: { color: 'var(--text-color)' }
+                    },
+                    y: {
+                        title: { display: true, text: 'Portfolio Risk σ (%)', color: 'var(--text-color)' },
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: { color: 'var(--text-color)' }
+                    }
+                }
+            }
+        });
+
+        updateM2L1CapmSimulation();
+    }
+
+    window.updateM2L1CapmSimulation = function() {
+        const sigM = parseFloat(document.getElementById('m2l1SliderSigM').value) / 100;
+        const beta = parseFloat(document.getElementById('m2l1SliderBeta').value);
+        const residual = parseFloat(document.getElementById('m2l1SliderResidual').value) / 100;
+        const N = parseInt(document.getElementById('m2l1SliderN').value);
+
+        // Update labels
+        document.getElementById('m2l1ValSigM').innerText = (sigM * 100).toFixed(1) + '%';
+        document.getElementById('m2l1ValBeta').innerText = beta.toFixed(2);
+        document.getElementById('m2l1ValResidual').innerText = (residual * 100).toFixed(1) + '%';
+        document.getElementById('m2l1ValN').innerText = N;
+
+        // Calculate risk values for current N
+        const sysVariance = beta * beta * sigM * sigM;
+        const idioVariance = (residual * residual) / N;
+        const totalVol = Math.sqrt(sysVariance + idioVariance);
+
+        document.getElementById('m2l1OutSysRisk').innerText = (Math.sqrt(sysVariance) * 100).toFixed(1) + '%';
+        document.getElementById('m2l1OutIdioRisk').innerText = (Math.sqrt(idioVariance) * 100).toFixed(1) + '%';
+        document.getElementById('m2l1OutTotalVol').innerText = (totalVol * 100).toFixed(1) + '%';
+
+        // Populate decay curve data points
+        const labels = [];
+        const volData = [];
+        const sysFloor = [];
+
+        for (let i = 1; i <= 100; i += 2) {
+            labels.push(i);
+            const varTotal = sysVariance + (residual * residual) / i;
+            volData.push(Math.sqrt(varTotal) * 100);
+            sysFloor.push(Math.sqrt(sysVariance) * 100);
+        }
+
+        if (m2l1CapmChartInstance) {
+            m2l1CapmChartInstance.data.labels = labels;
+            m2l1CapmChartInstance.data.datasets[0].data = volData;
+            m2l1CapmChartInstance.data.datasets[1].data = sysFloor;
+            m2l1CapmChartInstance.update();
+        }
+    };
+
+    // TAB 6: Multi-Factor Model calculations
+    window.switchFactorModelRegime = function() {
+        const model = document.getElementById('factorModelSelect').value;
+
+        // Toggle factor sliders
+        document.getElementById('ff3SmbRow').style.display = (model !== 'capm' ? 'block' : 'none');
+        document.getElementById('ff3HmlRow').style.display = (model !== 'capm' ? 'block' : 'none');
+        document.getElementById('carhartMomRow').style.display = (model === 'carhart' ? 'block' : 'none');
+
+        updateM2L1FactorSimulation();
+    };
+
+    window.updateM2L1FactorSimulation = function() {
+        const Rf = parseFloat(document.getElementById('factSliderRf').value) / 100;
+        const betaMkt = parseFloat(document.getElementById('factSliderBetaMkt').value);
+        const betaSmb = parseFloat(document.getElementById('factSliderBetaSmb').value);
+        const betaHml = parseFloat(document.getElementById('factSliderBetaHml').value);
+        const betaMom = parseFloat(document.getElementById('factSliderBetaMom').value);
+
+        // Update labels
+        document.getElementById('factValRf').innerText = (Rf * 100).toFixed(1) + '%';
+        document.getElementById('factValBetaMkt').innerText = betaMkt.toFixed(2);
+        document.getElementById('factValBetaSmb').innerText = betaSmb.toFixed(2);
+        document.getElementById('factValBetaHml').innerText = betaHml.toFixed(2);
+        document.getElementById('factValBetaMom').innerText = betaMom.toFixed(2);
+
+        // Premium figures
+        const pMkt = 0.07;
+        const pSmb = 0.032;
+        const pHml = 0.048;
+        const pMom = 0.064;
+
+        const model = document.getElementById('factorModelSelect').value;
+        let expectedRet = Rf + betaMkt * pMkt;
+
+        if (model === 'capm') {
+            document.getElementById('factFormulaText').innerHTML = `
+                E[R_i] = R_F + \\beta_{\\text{mkt}}(E[R_{mkt}] - R_F) <br>
+                E[R_i] = ${(Rf*100).toFixed(1)}\\% + ${betaMkt.toFixed(2)} \\times 7.0\\%
+            `;
+        } else if (model === 'ff3') {
+            expectedRet += betaSmb * pSmb + betaHml * pHml;
+            document.getElementById('factFormulaText').innerHTML = `
+                E[R_i] = R_F + \\beta_{\\text{mkt}}E[R_{mkt}-R_F] + \\beta_{\\text{SMB}}E[SMB] + \\beta_{\\text{HML}}E[HML] <br>
+                E[R_i] = ${(Rf*100).toFixed(1)}\\% + ${betaMkt.toFixed(2)} \\times 7.0\\% + ${betaSmb.toFixed(2)} \\times 3.2\\% + ${betaHml.toFixed(2)} \\times 4.8\\%
+            `;
+        } else if (model === 'carhart') {
+            expectedRet += betaSmb * pSmb + betaHml * pHml + betaMom * pMom;
+            document.getElementById('factFormulaText').innerHTML = `
+                E[R_i] = R_F + \\beta_{\\text{mkt}}E[R_{mkt}-R_F] + \\beta_{\\text{SMB}}E[SMB] + \\beta_{\\text{HML}}E[HML] + \\beta_{\\text{MOM}}L_{MOM} <br>
+                E[R_i] = ${(Rf*100).toFixed(1)}\\% + ${betaMkt.toFixed(2)} \\times 7.0\\% + ${betaSmb.toFixed(2)} \\times 3.2\\% + ${betaHml.toFixed(2)} \\times 4.8\\% + ${betaMom.toFixed(2)} \\times 6.4\\%
+            `;
+        }
+
+        document.getElementById('factOutReturn').innerText = (expectedRet * 100).toFixed(2) + '%';
+    };
+
+    // TAB 7: Performance Evaluation Dashboard Calculations
+    window.updateM2L1PerformanceMetrics = function() {
+        const Rf = parseFloat(document.getElementById('perfInRf').value) / 100;
+        const ret = parseFloat(document.getElementById('perfInRet').value) / 100;
+        const vol = parseFloat(document.getElementById('perfInVol').value) / 100;
+        const beta = parseFloat(document.getElementById('perfInBeta').value);
+        const Rl = parseFloat(document.getElementById('perfInRl').value) / 100;
+        const TE = parseFloat(document.getElementById('perfInTe').value) / 100;
+
+        // Ratios
+        const sharpe = vol > 0 ? (ret - Rf) / vol : 0;
+        const treynor = beta !== 0 ? (ret - Rf) / beta : 0;
+        const safetyFirst = vol > 0 ? (ret - Rl) / vol : 0;
+        
+        // Jensen's alpha
+        const mktPremium = 0.07; // standard reference market premium
+        const alpha = ret - (Rf + beta * mktPremium);
+        const IR = TE > 0 ? alpha / TE : 0;
+
+        document.getElementById('perfOutSharpe').innerText = sharpe.toFixed(3);
+        document.getElementById('perfOutTreynor').innerText = treynor.toFixed(3);
+        document.getElementById('perfOutRoy').innerText = safetyFirst.toFixed(3);
+        document.getElementById('perfOutIR').innerText = IR.toFixed(3);
+    };
+
+    // Run initial calculations on loads
+    calculateM2L1Allocation();
+    updateM2L1PerformanceMetrics();
+
+</script>

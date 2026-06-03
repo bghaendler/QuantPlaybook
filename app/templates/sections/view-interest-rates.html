@@ -1,0 +1,227 @@
+<div id="view-interest-rates" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">Module 1.1: Interest Rates & Discount Bonds</h1>
+        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Core definitions, compounding frequencies, yield curves, the short rate, money market accounts, and discount factors.</div>
+    </header>
+
+    <div class="container" style="max-width: 1400px; grid-template-columns: 1fr; gap: 2.5rem; margin-bottom: 4rem;">
+        
+        <!-- INTRO AND CORE MATH CARDS -->
+        <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 2rem; border: 1px solid var(--card-border); background: var(--card-bg);">
+                <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin-bottom: 1rem;">1. Understading compounding frequencies</h2>
+                <p style="font-size: 1rem; line-height: 1.7; color: var(--text-color); opacity: 0.85; margin-bottom: 1.25rem;">
+                    Interest represents the rent paid by a borrower of money to a lender over a period of time $[t, T]$. With a principal loan of 1 unit at time $t$, the borrower pays back the principal plus an interest amount $R$ at maturity $T$. The compounding frequency determines how we annualize and quote this return:
+                </p>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0;">
+                    <div style="background: rgba(59, 130, 246, 0.04); padding: 1.25rem; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                        <h4 style="margin: 0 0 0.5rem 0; color: #1e3a8a; font-size: 1rem; font-weight: 700;">Simple Rate (LIBOR) $L(t, T)$</h4>
+                        <p style="margin: 0 0 0.75rem 0; font-size: 0.9rem; opacity: 0.85;">Quoted daily as a simple linear rate. Used extensively for interbank reference rates.</p>
+                        <div style="font-size: 1.1rem; font-weight: 700; text-align: center; color: #1e3a8a;">
+                            $$ 1 + R = 1 + (T - t)L(t, T) $$
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(239, 68, 68, 0.04); padding: 1.25rem; border-radius: 8px; border-left: 4px solid #ef4444;">
+                        <h4 style="margin: 0 0 0.5rem 0; color: #7f1d1d; font-size: 1rem; font-weight: 700;">Continuous Compounding (Yield) $y(t, T)$</h4>
+                        <p style="margin: 0 0 0.75rem 0; font-size: 0.9rem; opacity: 0.85;">Reinvested continuously at logarithmic rates. Standard for analytical interest rate models.</p>
+                        <div style="font-size: 1.1rem; font-weight: 700; text-align: center; color: #7f1d1d;">
+                            $$ 1 + R = e^{(T - t)y(t, T)} $$
+                        </div>
+                    </div>
+                </div>
+
+                <p style="font-size: 1rem; line-height: 1.7; color: var(--text-color); opacity: 0.85; margin: 0 0 1.25rem 0;">
+                    For any positive interest return ($R > 0$), <strong>simple compounding interest rates are mathematically higher than their continuously compounded yield counterparts</strong>: $L(t, T) > y(t, T)$.
+                </p>
+
+                <p style="font-size: 1rem; line-height: 1.7; color: var(--text-color); opacity: 0.85; margin: 1.25rem 0 0.5rem 0;">
+                    We also define the <strong>$n$-fold compounded interest rate $y_n(t, T)$</strong> corresponding to the lending period $[t, T]$ through:
+                </p>
+                
+                <div style="background: rgba(124, 58, 237, 0.04); padding: 1.25rem; border-radius: 8px; border-left: 4px solid #7c3aed; margin: 1rem 0; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 1.5rem; align-items: center;">
+                    <div>
+                        <h4 style="margin: 0 0 0.5rem 0; color: #5b21b6; font-size: 1rem; font-weight: 700;">$n$-Fold Compounded Rate $y_n(t, T)$</h4>
+                        <p style="margin: 0; font-size: 0.9rem; opacity: 0.85;">Compounded $n$ times per year (e.g., $n=2$ for semi-annual, $n=4$ for quarterly, $n=12$ for monthly).</p>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.05rem; font-weight: 700; text-align: center; color: #5b21b6;">
+                            $$ P(t, T) = \left( 1 + \frac{y_n(t, T)}{n} \right)^{-n(T-t)} $$
+                        </div>
+                    </div>
+                </div>
+
+                <p style="font-size: 1rem; line-height: 1.7; color: var(--text-color); opacity: 0.85; margin: 1.25rem 0 0.5rem 0;">
+                    Elementary calculus shows that as the compounding frequency $n$ approaches infinity, we obtain continuous compounding as the limit:
+                </p>
+                <div style="font-size: 1.15rem; font-weight: 700; text-align: center; color: var(--text-color); margin: 0.5rem 0;">
+                    $$ \lim_{n \to \infty} y_n(t, T) = y(t, T) $$
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 12px; padding: 2rem; color: #451a03;">
+                <h3 style="margin-top: 0; color: #b45309; font-size: 1.25rem; font-weight: 800; font-family: 'Inter', sans-serif;">EPFL Lecture Spotlight</h3>
+                <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; padding-left: 1.25rem; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                    <li><strong>Term Structure:</strong> Prevailing term structure is obtained by freezing $t$ and varying $T$. Economic fluctuations cause this curve to shift, twist, and bend.</li>
+                    <li><strong>Short Rate $r(t)$:</strong> At the short end, compounding frequencies coincide:
+                        <div style="text-align: center; margin: 0.5rem 0; font-weight: 700;">
+                            $$ \lim_{T \to t} L(t, T) = \lim_{T \to t} y(t, T) = r(t) $$
+                        </div>
+                        This is the rate earned on a loan over a short period $[t, t + dt]$.
+                    </li>
+                    <li><strong>Discount Bond:</strong> Zero-coupon bond pays 1 at maturity $T$. Its price curve represents the <strong>discount curve</strong>, typically smooth, decreasing, and satisfying $P(T, T) = 1$.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- INTERACTIVE TERM STRUCTURE CALCULATOR (CHART 1 & 2) -->
+        <div class="card" style="padding: 2rem; border: 1px solid var(--card-border); background: var(--card-bg);">
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin-bottom: 0.5rem;">Interactive Term Structure: Simple Rate vs Yield & ZCB Prices</h2>
+            <p style="font-size: 1rem; color: var(--text-color); opacity: 0.75; margin-bottom: 1.5rem;">
+                Adjust parameters to compare the simple rate curve $L(0, T)$ and continuous yield curve $y(0, T)$ side-by-side with the ZCB discount curve $P(0, T)$ up to 30 years maturity.
+            </p>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0; justify-content: space-between; align-items: stretch;">
+                <div style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 0.25rem;">
+                    <label for="irInitialSlider" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Base Short Rate $r(0)$: <span id="irInitialValue" style="color: #2563eb;">4.0%</span></label>
+                    <input id="irInitialSlider" max="0.15" min="0.005" step="0.005" style="width: 100%; cursor: pointer;" type="range" value="0.04"/>
+                </div>
+                
+                <div style="flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 0.25rem;">
+                    <label for="irCurveTypeSelect" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Term Structure Shape</label>
+                    <select id="irCurveTypeSelect" style="padding: 0.5rem; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-weight: 600; color: #334155; outline: none; cursor: pointer;">
+                        <option value="flat">Flat</option>
+                        <option value="upward">Upward Sloping (Normal)</option>
+                        <option value="downward">Downward Sloping (Inverted)</option>
+                        <option value="humped">Humped Curve</option>
+                    </select>
+                </div>
+
+                <div style="flex: 1 1 180px; min-width: 0; display: flex; flex-direction: column; gap: 0.25rem;">
+                    <label for="irFrequencySelect" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Compounding Freq ($n$)</label>
+                    <select id="irFrequencySelect" style="padding: 0.5rem; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-weight: 600; color: #334155; outline: none; cursor: pointer;">
+                        <option value="1">Annual (n = 1)</option>
+                        <option value="2" selected>Semi-Annual (n = 2)</option>
+                        <option value="4">Quarterly (n = 4)</option>
+                        <option value="12">Monthly (n = 12)</option>
+                        <option value="365">Daily (n = 365)</option>
+                    </select>
+                </div>
+                
+                <div style="flex: 1 1 200px; min-width: 0; background: rgba(59, 130, 246, 0.03); border: 1px solid rgba(59, 130, 246, 0.1); border-radius: 8px; padding: 0.75rem 1.25rem; display: flex; flex-direction: column; justify-content: center;">
+                    <div style="font-size: 0.8rem; color: #1e3a8a; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">10-Year Factors</div>
+                    <div style="font-size: 0.95rem; color: #334155; font-family: monospace; font-weight: 600;">
+                        Yield $y(10)$: <span id="irY10" style="color: #ef4444;">4.00%</span>
+                    </div>
+                    <div style="font-size: 0.95rem; color: #334155; font-family: monospace; font-weight: 600;">
+                        $n$-Comp $y_n(10)$: <span id="irYn10" style="color: #7c3aed;">4.08%</span>
+                    </div>
+                    <div style="font-size: 0.95rem; color: #334155; font-family: monospace; font-weight: 600;">
+                        Simple $L(10)$: <span id="irL10" style="color: #3b82f6;">4.20%</span>
+                    </div>
+                </div>
+                
+                <div style="flex: 1 1 150px; min-width: 0; background: rgba(16, 185, 129, 0.03); border: 1px solid rgba(16, 185, 129, 0.1); border-radius: 8px; padding: 0.75rem 1.25rem; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <div style="font-size: 0.8rem; color: #065f46; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem;">10-Y ZCB Price</div>
+                    <div id="irP10" style="font-size: 2rem; font-weight: 800; color: #10b981; font-family: monospace;">0.6703</div>
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+                <div class="chart-container" style="min-width: 0; height: 350px; background: rgba(0,0,0,0.01); border-radius: 8px; padding: 1rem; border: 1px dashed var(--card-border);">
+                    <canvas id="interestRatesChart"></canvas>
+                </div>
+                <div class="chart-container" style="min-width: 0; height: 350px; background: rgba(0,0,0,0.01); border-radius: 8px; padding: 1rem; border: 1px dashed var(--card-border);">
+                    <canvas id="discountCurveChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- MONEY MARKET ACCOUNT SIMULATOR (CHART 3) -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 2rem; border: 1px solid var(--card-border); background: var(--card-bg); display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-color); margin-bottom: 1rem;">2. The Money Market Account</h2>
+                    <p style="font-size: 1rem; line-height: 1.7; color: var(--text-color); opacity: 0.85; margin-bottom: 1.25rem;">
+                        Investing 1 unit of currency at the short rate $r(t)$, and continuously reinvesting it, grows into the <strong>money market account</strong> $B(t)$. 
+                    </p>
+                    <p style="font-size: 1rem; line-height: 1.7; color: var(--text-color); opacity: 0.85; margin-bottom: 1.25rem;">
+                        The local return is given by $B(t + dt) = B(t)(1 + r(t)dt)$. With normalization $B(0) = 1$, we obtain the continuous limit:
+                    </p>
+                    
+                    <div style="background: rgba(124, 58, 237, 0.04); padding: 1.25rem; border-radius: 8px; border-left: 4px solid #7c3aed; margin: 1.5rem 0;">
+                        <div style="font-size: 1.25rem; font-weight: 700; text-align: center; color: #6d28d9;">
+                            $$ B(t) = e^{\int_0^t r(s) ds} $$
+                        </div>
+                    </div>
+                    
+                    <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-color); opacity: 0.75; margin-bottom: 1.5rem;">
+                        The Money Market Account is a <strong>risk-free asset</strong> because its return over $[t, t+dt]$ is determined by $r(t)$ which is known at the beginning of the time interval (i.e. it is locally previsible and lacks local volatility).
+                    </p>
+                </div>
+                
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem;">
+                    <div style="font-size: 0.85rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 0.75rem;">Short Rate Path Selection</div>
+                    <div style="display: flex; gap: 0.5rem; width: 100%;">
+                        <button id="irMmaConstantBtn" style="flex: 1; padding: 0.6rem 0.5rem; font-size: 0.85rem; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; background: #e2e8f0; color: #334155; transition: all 0.2s;">Constant</button>
+                        <button id="irMmaSinusoidalBtn" style="flex: 1; padding: 0.6rem 0.5rem; font-size: 0.85rem; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; background: #e2e8f0; color: #334155; transition: all 0.2s;">Sinusoidal</button>
+                        <button id="irMmaStochasticBtn" style="flex: 1; padding: 0.6rem 0.5rem; font-size: 0.85rem; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; background: var(--primary-color); color: white; transition: all 0.2s;">Stochastic</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 2rem; border: 1px solid var(--card-border); background: var(--card-bg); display: flex; flex-direction: column; justify-content: space-between;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-color); margin: 0;">Interactive Short Rate &amp; MMA Path</h3>
+                    <div style="font-size: 0.9rem; color: #64748b; font-family: monospace; font-weight: 700;">
+                        MMA Final Value $B(10)$: <span id="irFinalMMA" style="color: #7c3aed; font-size: 1.1rem; font-weight: 800;">1.4921</span>
+                    </div>
+                </div>
+                
+                <div class="chart-container" style="min-width: 0; height: 350px; background: rgba(0,0,0,0.01); border-radius: 8px; padding: 1rem; border: 1px dashed var(--card-border);">
+                    <canvas id="moneyMarketChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRACTICE EXERCISE -->
+        <div class="card" style="background: #f0fdf4; border-left: 4px solid #22c55e; padding: 2rem;">
+            <h2 style="color: #166534; font-size: 1.5rem; font-weight: 800; margin-top: 0; margin-bottom: 0.5rem;">Practice Exercise: Simple Compounding vs continuous yield</h2>
+            <p style="color: #15803d; font-size: 1.05rem; font-weight: 600; line-height: 1.6; margin-bottom: 1.5rem;">
+                A financial institution borrows $100 face value on the interbank LIBOR market for a period of 6 months ($\tau = 0.5$ years). The quoted 6-month LIBOR simple rate is $L(t, T) = 6\%$. 
+                <br><strong>Calculate the discount bond price $P(t, T)$ and the corresponding continuously compounded yield $y(t, T)$.</strong>
+            </p>
+            
+            <details style="background: white; padding: 1.25rem; border-radius: 8px; border: 1px solid #bbf7d0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                <summary style="cursor: pointer; font-weight: 700; color: #15803d; list-style: none; display: flex; align-items: center;">
+                    <span style="margin-right: 0.5rem; font-size: 1.1rem;">👉</span> Show Step-by-Step Mathematical Solution
+                </summary>
+                <div style="margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid #e2e8f0; color: #334155; font-size: 1rem; line-height: 1.8;">
+                    <ol>
+                        <li style="margin-bottom: 1rem;">
+                            <strong>Calculate the Discount Factor (ZCB Price) $P(t, T)$:</strong>
+                            <p style="margin-top: 0.25rem; opacity: 0.9;">
+                                Using the simple compounding price relation:
+                                $$ P(t, T) = \frac{1}{1 + (T - t)L(t, T)} = \frac{1}{1 + 0.5 \times 0.06} = \frac{1}{1.03} \approx \mathbf{0.970874} $$
+                                Meaning the institution buys a discount bond paying 100 for a price of <strong>$97.09</strong>.
+                            </p>
+                        </li>
+                        <li>
+                            <strong>Calculate the Continuously Compounded Yield $y(t, T)$:</strong>
+                            <p style="margin-top: 0.25rem; opacity: 0.9;">
+                                Using the continuous compounding yield relation:
+                                $$ P(t, T) = e^{-(T - t)y(t, T)} \implies y(t, T) = -\frac{\ln P(t, T)}{T - t} $$
+                                $$ y(t, T) = -\frac{\ln(0.970874)}{0.5} = -\frac{-0.029559}{0.5} \approx 0.059118 \text{ (or } \mathbf{5.91\%}\text{)} $$
+                            </p>
+                        </li>
+                    </ol>
+                    <div style="background: rgba(34, 197, 94, 0.05); padding: 1rem; border-radius: 6px; border-left: 4px solid #22c55e; margin-top: 1rem; font-weight: 600;">
+                        Verification: Consistent with the mathematical inequality $L(t, T) > y(t, T)$, the simple rate is exactly $6.00\%$ while the continuously compounded yield is $5.91\%$.
+                    </div>
+                </div>
+            </details>
+        </div>
+
+    </div>
+</div>

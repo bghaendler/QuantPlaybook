@@ -1,0 +1,1022 @@
+<div id="view-cqf-m2-l6" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 02: Risk &amp; Return</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 06</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L6: Risk Regulation &amp; Basel III/IV</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Pillars of Basel, Balance Sheet Cushions, Bank Failures, Liquidity coverage (LCR/NSFR), ASRF Credit Models, and LVaR Calculations</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM2L6Foundations" onclick="switchM2L6Tab('foundations')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. Basel Framework</button>
+        <button id="tabM2L6Capital" onclick="switchM2L6Tab('capital')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Balance Sheets &amp; Capital</button>
+        <button id="tabM2L6Failures" onclick="switchM2L6Tab('failures')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Case Studies</button>
+        <button id="tabM2L6Credit" onclick="switchM2L6Tab('credit')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. ASRF Credit Model</button>
+        <button id="tabM2L6Liquidity" onclick="switchM2L6Tab('liquidity')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Liquidity Ratios</button>
+        <button id="tabM2L6Lab" onclick="switchM2L6Tab('lab')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Basel &amp; Risk Lab</button>
+    </div>
+
+    <!-- TAB 1: Basel Framework Foundations -->
+    <div id="secM2L6Foundations" style="display: block;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Origin and Nature of the Basel Accords</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6;">The Basel Framework is the primary global standard for the regulation of banks. Formulated by the <a href="https://www.bis.org/bcbs/" target="_blank" style="color: var(--accent); font-weight: 700; text-decoration: none; border-bottom: 1px dashed var(--accent); transition: all 0.2s;" onmouseover="this.style.color='var(--text-color)'" onmouseout="this.style.color='var(--accent)'">Basel Committee on Banking Supervision (BCBS)</a>, the framework is housed inside the <strong>Bank for International Settlements (BIS)</strong> in Basel, Switzerland—a historic city strategically situated at the intersection of Switzerland, France, and Germany. The BIS acts as the coordinate center for central banks worldwide.</p>
+                
+                <div style="background: rgba(139, 92, 246, 0.05); border-left: 3px solid #8b5cf6; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.85rem; margin-bottom: 1rem; line-height: 1.5;">
+                    📌 <strong>Important Distinction</strong>: The Basel Committee has no formal legislative authority or treaty mandate. Its guidelines are not legally binding laws; rather, they are highly influential regulatory recommendations. Member countries are expected to adapt and codify these rules into local statutory law (such as the Capital Requirements Regulation CRR/CRR2 in the European Union, or Dodd-Frank rules in the United States).
+                </div>
+
+                <p style="font-size: 0.9rem; line-height: 1.6;">A defining characteristic of financial regulation is its ever-increasing complexity. The first capital accord (Basel I, 1988) was approximately 30 pages long. The newest ruleset (Basel IV) exceeds <strong>1,900 pages</strong>, representing a massive expansion in administrative requirements:</p>
+
+                <blockquote style="margin: 1rem 0; border-left: 3px solid var(--accent); padding-left: 0.75rem; color: #4b5563; font-style: italic; font-size: 0.88rem; line-height: 1.6;">
+                    "European banks must observe approximately 40,000 legally binding requirements... No single banking supervisor or practitioner can fully explain all the rules and their consequences."
+                    <footer style="margin-top: 0.25rem; font-size: 0.8rem; font-weight: 600; color: #6b7280;">— Prof. Dr. Herman Schulte-Mathier, PwC Basel IV study</footer>
+                </blockquote>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.15rem; font-weight: 700; color: var(--accent);">Brief History of Regulation</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6;">Regulating financial operations is a historical cycle of speculative excesses followed by restrictive government response:</p>
+                    
+                    <ul style="padding-left: 1.2rem; line-height: 1.6; font-size: 0.82rem; margin-bottom: 0;">
+                        <li><strong>1610: Dutch Short-Selling Ban:</strong> The earliest recorded ban on short selling, enacted by Dutch authorities to protect speculative East India Company pricing, which did not prevent the subsequent Tulip Mania.</li>
+                        <li><strong>1933: Glass-Steagall Act:</strong> Enacted in the US after the 1929 stock market crash to legally separate commercial banks (which accept deposits) from investment banks (which underwriting/trade securities).</li>
+                        <li><strong>1999: Gramm-Leach-Bliley Act:</strong> Repealed Glass-Steagall's investment restrictions, paving the way for massive financial conglomerates, cited by many economists as a contributor to the 2007-08 global financial crisis.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Balance Sheets & Capital buffers -->
+    <div id="secM2L6Capital" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Bank Balance Sheets, Leverage, and Risk-Weights</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6;">Under the theoretical <strong>Modigliani-Miller Theorem (1958)</strong>, in frictionless markets (no taxes, default costs, or asymmetric information), a firm's value is completely independent of its capital structure. In the real world, however, leverage amplifies insolvency risk. Equity serves as the critical <strong>loss-absorbing buffer</strong> that stands between a bank and default.</p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; margin-top: 1rem; margin-bottom: 1.5rem;">
+                    <!-- JP Morgan Example -->
+                    <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 1rem;">Case Study: JP Morgan Balance Sheet (Approximate)</h4>
+                        <ul style="padding-left: 1.2rem; line-height: 1.6; font-size: 0.82rem; margin-bottom: 0.75rem;">
+                            <li><strong>Assets:</strong> ~$2.687 Trillion (principally Loans: ~$959 Billion)</li>
+                            <li><strong>Liabilities:</strong> ~$2.426 Trillion (principally Deposits)</li>
+                            <li><strong>Equity:</strong> ~$261 Billion</li>
+                        </ul>
+                        <div style="border-top: 1px solid var(--card-border); padding-top: 0.5rem; font-size: 0.85rem; font-weight: 700;">
+                            Simple Leverage Ratio: $\frac{\text{Equity}}{\text{Assets}} = \frac{261\text{B}}{2687\text{B}} \approx \mathbf{9.7\%}$
+                        </div>
+                    </div>
+
+                    <!-- Risk Weights explanation -->
+                    <div>
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 1rem;">The Transition to Risk-Weighted Assets (RWAs)</h4>
+                        <p style="font-size: 0.85rem; line-height: 1.5; margin-bottom: 0;">The Basel Committee argues that a simple leverage ratio is insufficient because it treats a safe cash asset the same as a speculative derivative. Basel requires banks to apply regulatory risk-weights to their assets to calculate <strong>Risk-Weighted Assets (RWAs)</strong>:</p>
+                        <ul style="padding-left: 1.2rem; line-height: 1.6; font-size: 0.8rem; margin-top: 0.5rem;">
+                            <li>Sovereign Sovereign Debt: <strong>0% weight</strong></li>
+                            <li>Residential Mortgages: <strong>35% weight</strong></li>
+                            <li>Corporate Loans: <strong>75% - 100% weight</strong></li>
+                            <li>High-risk Securitizations: <strong>1,200% weight</strong></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h4 style="font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Basel III Regulatory Capital Ratios &amp; Buffers</h4>
+                <p style="font-size: 0.9rem; line-height: 1.5; margin-bottom: 1rem;">The core capital ratio must exceed 8.0% of RWAs, composed of three tiers plus additional macroprudential buffers:</p>
+
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; font-family: var(--font-family-sans); margin-bottom: 1.5rem;">
+                    <div style="background: rgba(59, 130, 246, 0.05); padding: 0.85rem; border-radius: 6px; border: 1px solid rgba(59, 130, 246, 0.2);">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">CET1 (Common Equity)</div>
+                        <div style="font-size: 1.2rem; font-weight: 800; color: #2563eb;">&ge; 4.5%</div>
+                    </div>
+                    <div style="background: rgba(16, 185, 129, 0.05); padding: 0.85rem; border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.2);">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">Total Tier 1 Capital</div>
+                        <div style="font-size: 1.2rem; font-weight: 800; color: #059669;">&ge; 6.0%</div>
+                    </div>
+                    <div style="background: rgba(139, 92, 246, 0.05); padding: 0.85rem; border-radius: 6px; border: 1px solid rgba(139, 92, 246, 0.2);">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">Total Capital Buffer</div>
+                        <div style="font-size: 1.2rem; font-weight: 800; color: #7c3aed;">&ge; 8.0%</div>
+                    </div>
+                    <div style="background: rgba(245, 158, 11, 0.05); padding: 0.85rem; border-radius: 6px; border: 1px solid rgba(245, 158, 11, 0.2);">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">Conservation Buffer</div>
+                        <div style="font-size: 1.2rem; font-weight: 800; color: #d97706;">+ 2.5%</div>
+                    </div>
+                </div>
+
+                <h4 style="font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Pillar 1 RWA Allocation: Where is Bank Risk Concentrated?</h4>
+                <p style="font-size: 0.9rem; line-height: 1.6; margin: 0;">Under Pillar 1, risk-weighted assets are split among <strong>Credit Risk</strong>, <strong>Operational Risk</strong>, and <strong>Market Risk</strong>. In typical commercial banks, credit risk is by far the largest contributor, followed surprisingly by operational risk in second place, with market risk third. Operational risk captures a broad range of events including lawsuits, compliance fines, computer crashes, and internal/external fraud.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Case Studies -->
+    <div id="secM2L6Failures" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Historical Case Studies of Bank Failures</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6;">Understanding the diverse paths to collapse illustrates why multi-faceted regulatory standards (incorporating leverage, operational controls, market risks, and liquidity maturity profiles) are vital:</p>
+
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 1rem;">
+                    <!-- Continental Illinois -->
+                    <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 1rem;">1. Continental Illinois (1984)</h4>
+                        <p style="font-size: 0.8rem; margin: 0; line-height: 1.5;"><strong>Mechanism:</strong> Credit Defaults + Liquidity Run.<br>
+                        A rapid accumulation of bad commercial oil/gas loans severely compromised the bank's asset base. Once corporate depositors realized the scale of the loss, they initiated a massive electronic run, requiring a $5 billion US federal intervention. Coined the phrase "Too Big to Fail."</p>
+                    </div>
+
+                    <!-- Barings Bank -->
+                    <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 1rem;">2. Barings Bank (1995)</h4>
+                        <p style="font-size: 0.8rem; margin: 0; line-height: 1.5;"><strong>Mechanism:</strong> Operational Risk &amp; Rogue Trading.<br>
+                        Nick Leeson, a futures trader operating in Singapore, exploited internal control gaps to hide massive speculative losses in account `88888`. He bet on the Nikkei index recovering; after the Kobe earthquake hit, losses reached £827 million, bankrupting the historic 233-year-old bank, sold for £1.</p>
+                    </div>
+
+                    <!-- Lehman Brothers -->
+                    <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 1rem;">3. Lehman Brothers (2008)</h4>
+                        <p style="font-size: 0.8rem; margin: 0; line-height: 1.5;"><strong>Mechanism:</strong> Leverage + Mortgage Asset Writedowns.<br>
+                        Lehman operated with an extreme leverage ratio of <strong>31</strong> (meaning assets exceeded equity 31-fold). A small drop in their subprime-backed real estate assets wiped out their thin equity base, making them insolvent and incapable of answering overnight repo margin calls.</p>
+                    </div>
+
+                    <!-- SVB -->
+                    <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 1rem;">4. Silicon Valley Bank (2023)</h4>
+                        <p style="font-size: 0.8rem; margin: 0; line-height: 1.5;"><strong>Mechanism:</strong> Duration Risk + Social Media Run.<br>
+                        SVB parked tech deposits into long-term US Treasuries at ultra-low rates. When the Fed aggressively hiked rates, these bonds fell in value. After SVB announced a capital raise, venture capitalists triggered a viral, social-media-fueled depositor bank run.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: ASRF Credit Model -->
+    <div id="secM2L6Credit" style="display: none;">
+        <!-- Two Column Grid for Main Content -->
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 1.5rem; align-items: stretch; display: grid;">
+            
+            <!-- Left Side: Math Theory & Step-by-Step Derivations -->
+            <div class="card" style="margin-bottom: 0; display:flex; flex-direction:column; justify-content:space-between; padding: 1.5rem;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+                        <span>Credit Risk &amp; Vasicek's Asymptotic Single Risk Factor (ASRF)</span>
+                    </h3>
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563; margin-top: 0.5rem; margin-bottom: 1.25rem;">
+                        Under the Basel <strong>Internal Ratings-Based (IRB)</strong> approach, banks calculate required regulatory credit capital using formulas derived directly from Vasicek's ASRF model. The model assumes a highly diversified loan portfolio exposed to a single common systematic macroeconomic factor.
+                    </p>
+
+                    <!-- Rigorous Step-by-Step Academic Walkthrough -->
+                    <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1rem;">
+                        <div style="font-size:0.85rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--accent); display:flex; align-items:center; gap:0.4rem;">
+                            <span style="background: var(--accent); color:#ffffff; font-size:0.7rem; padding:1px 6px; border-radius:10px;">Step 1</span>
+                            <span>Asset Value Dynamics &amp; Latent Factor Model</span>
+                        </div>
+                        <p style="font-size: 0.8rem; line-height: 1.4; color: #4b5563; margin-bottom: 0.75rem;">
+                            Let the standardized asset value of borrower $i$ be driven by a systematic global macroeconomic factor $Z \sim N(0,1)$ and an independent idiosyncratic shock $Y_i \sim N(0,1)$:
+                        </p>
+                        $$X_i = \sqrt{\rho} Z + \sqrt{1 - \rho} Y_i$$
+                        <p style="font-size: 0.8rem; line-height: 1.4; color: #4b5563; margin-top: 0.75rem; margin-bottom: 0;">
+                            Here, $\rho \in (0,1)$ represents the <strong>Asset Correlation</strong> (the proportion of variance explained by the systemic macroeconomy). A borrower defaults if their asset value $X_i$ falls below an unconditional default threshold $\Phi^{-1}(p)$, where $p$ is the unconditional Expected Default Probability (PD).
+                        </p>
+                    </div>
+
+                    <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1rem;">
+                        <div style="font-size:0.85rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--accent); display:flex; align-items:center; gap:0.4rem;">
+                            <span style="background: var(--accent); color:#ffffff; font-size:0.7rem; padding:1px 6px; border-radius:10px;">Step 2</span>
+                            <span>Conditional Probability of Default $\tilde{p}(z)$</span>
+                        </div>
+                        <p style="font-size: 0.8rem; line-height: 1.4; color: #4b5563; margin-bottom: 0.75rem;">
+                            Conditioning on the realized macroeconomic state $Z = z$, the event of default becomes independent across borrowers. The conditional probability of default for borrower $i$ is:
+                        </p>
+                        $$\tilde{p}(z) = P(X_i < \Phi^{-1}(p) \mid Z = z) = \Phi\left( \frac{\Phi^{-1}(p) - \sqrt{\rho}z}{\sqrt{1 - \rho}} \right)$$
+                        <p style="font-size: 0.8rem; line-height: 1.4; color: #4b5563; margin-top: 0.75rem; margin-bottom: 0;">
+                            As the portfolio size $N \to \infty$, the Law of Large Numbers ensures idiosyncratic shocks $Y_i$ completely diversify away. The aggregate portfolio loss converges almost surely to the conditional default probability $\tilde{p}(Z)$, transforming the credit loss from a discrete binomial sum to a smooth continuous limiting distribution.
+                        </p>
+                    </div>
+
+                    <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                        <div style="font-size:0.85rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--accent); display:flex; align-items:center; gap:0.4rem;">
+                            <span style="background: var(--accent); color:#ffffff; font-size:0.7rem; padding:1px 6px; border-radius:10px;">Step 3</span>
+                            <span>Unconditional Loss Distribution (Vasicek CDF)</span>
+                        </div>
+                        <p style="font-size: 0.8rem; line-height: 1.4; color: #4b5563; margin-bottom: 0.75rem;">
+                            By mapping the monotonic relationship between $Z$ and the portfolio loss $x$, we derive the cumulative distribution function (CDF) of portfolio credit losses:
+                        </p>
+                        $$F(x) = \Phi\left( \frac{\sqrt{1 - \rho}\Phi^{-1}(x) - \Phi^{-1}(p)}{\sqrt{\rho}} \right)$$
+                        <p style="font-size: 0.8rem; line-height: 1.4; color: #4b5563; margin-top: 0.75rem; margin-bottom: 0;">
+                            To ensure solvency at a strict $99.9\%$ confidence interval, Basel evaluates the worst-case default rate (WCDR) under a severe systematic economic contraction ($Z = -\Phi^{-1}(0.999) \approx -3.090$):
+                        </p>
+                        $$PD_i^{99.9\%} = \Phi\left( \frac{\Phi^{-1}(p) + \sqrt{\rho}\Phi^{-1}(0.999)}{\sqrt{1 - \rho}} \right)$$
+                    </div>
+                </div>
+
+                <!-- Academic Note & Formula -->
+                <div style="background: rgba(139, 92, 246, 0.05); border-left: 3px solid #8b5cf6; padding: 0.85rem 1rem; border-radius: 6px; font-size: 0.8rem; line-height: 1.5; margin-top: 1rem;">
+                    <strong> Basel Capital Charge Calculation:</strong><br>
+                    Subtracting the Expected Loss ($p$) gives the unexpected loss cushion. Multiplying by Loss Given Default (LGD) and a Maturity Adjustment (MA) yields the formal regulatory capital charge:
+                    $$\text{Capital} = \left[ PD_i^{99.9\%} - p \right] \times \text{LGD} \times \text{MA}$$
+                </div>
+            </div>
+
+            <!-- Right Side: Interactive Sandbox & Real-Time Visualization -->
+            <div class="card" style="margin-bottom: 0; display:flex; flex-direction:column; justify-content:space-between; padding: 1.5rem;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Interactive IRB Credit Sandbox</h3>
+                    <p style="font-size: 0.8rem; color: #4b5563; margin-bottom: 1rem;">
+                        Select a Basel asset category or adjust parameters manually to observe how default rates, asset correlations, and macroeconomic shocks shift credit risk buffers:
+                    </p>
+
+                    <!-- Advanced Inputs & Selectors -->
+                    <div style="display:flex; flex-direction:column; gap:0.85rem; font-family:var(--font-family-sans); font-size:0.85rem; margin-bottom: 1rem;">
+                        
+                        <!-- Basel Asset Class Selector -->
+                        <div>
+                            <label style="font-weight:700; font-size:0.8rem; color:var(--text-color); margin-bottom:0.25rem; display:block;">Basel Asset Exposure Category:</label>
+                            <select id="selectM2L6AssetClass" onchange="onM2L6AssetClassChanged()" style="width:100%; padding:0.4rem; border-radius:6px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color); font-size:0.8rem; font-weight:600;">
+                                <option value="manual">(Custom / Manual Input)</option>
+                                <option value="corporate" selected>Corporate, Sovereign &amp; Bank (CSB) IRB</option>
+                                <option value="sme">Small-Medium Enterprises (SME) IRB</option>
+                                <option value="hvcre">High Volatility Commercial Real Estate (HVCRE)</option>
+                                <option value="mortgage">Residential Mortgages (Fixed 15% Correlation)</option>
+                                <option value="retail_revolving">Qualifying Revolving Retail (Credit Cards - Fixed 4%)</option>
+                                <option value="retail_other">Other Retail IRB Exposure</option>
+                            </select>
+                        </div>
+
+                        <!-- Expected Default Prob (PD / p) -->
+                        <div>
+                            <div style="display:flex; justify-content:space-between; font-weight:600; font-size:0.8rem; margin-bottom:0.2rem;">
+                                <span>Expected Default Probability ($p$ / PD):</span>
+                                <span id="valM2L6AsrfP" style="color:var(--accent); font-weight:700;">2.0%</span>
+                            </div>
+                            <input type="range" id="slideM2L6AsrfP" min="0.1" max="15.0" step="0.1" value="2.0" oninput="updateM2L6CreditModel()" style="width:100%;">
+                        </div>
+
+                        <!-- Asset Correlation (rho) -->
+                        <div>
+                            <div style="display:flex; justify-content:space-between; font-weight:600; font-size:0.8rem; margin-bottom:0.2rem;">
+                                <span>Asset Correlation ($\rho$):</span>
+                                <span id="valM2L6AsrfRho" style="color:var(--accent); font-weight:700;">10.0%</span>
+                            </div>
+                            <input type="range" id="slideM2L6AsrfRho" min="1.0" max="40.0" step="0.5" value="12.0" oninput="updateM2L6CreditModel()" style="width:100%;">
+                            <span id="labelM2L6AsrfRhoAuto" style="font-size:0.7rem; color:#6b7280; display:block; margin-top:0.15rem; font-style:italic;">* Auto-computed by Basel IRB formula based on PD</span>
+                        </div>
+
+                        <!-- Loss Given Default (LGD) -->
+                        <div>
+                            <div style="display:flex; justify-content:space-between; font-weight:600; font-size:0.8rem; margin-bottom:0.2rem;">
+                                <span>Loss Given Default (LGD):</span>
+                                <span id="valM2L6AsrfLgd" style="color:var(--accent); font-weight:700;">45.0%</span>
+                            </div>
+                            <input type="range" id="slideM2L6AsrfLgd" min="10.0" max="100.0" step="1.0" value="45.0" oninput="updateM2L6CreditModel()" style="width:100%;">
+                        </div>
+
+                        <!-- Interactive Systematic Shock (Z) Slider -->
+                        <div style="background: rgba(139, 92, 246, 0.03); border: 1px solid rgba(139, 92, 246, 0.15); padding: 0.65rem 0.85rem; border-radius: 8px;">
+                            <div style="display:flex; justify-content:space-between; font-weight:700; font-size:0.8rem; margin-bottom:0.2rem; color:#8b5cf6;">
+                                <span>Simulate Macroeconomic Shock ($Z$):</span>
+                                <span id="valM2L6AsrfZ" style="font-weight:800;">-1.5 SD (Recession)</span>
+                            </div>
+                            <input type="range" id="slideM2L6AsrfZ" min="-3.5" max="3.5" step="0.1" value="-1.5" oninput="updateM2L6CreditModel()" style="width:100%; accent-color:#8b5cf6;">
+                            <div style="display:flex; justify-content:space-between; font-size:0.68rem; color:#9ca3af; margin-top:0.15rem;">
+                                <span>Deep Recession (-3.5 SD)</span>
+                                <span>Neutral (0)</span>
+                                <span>Economic Boom (+3.5 SD)</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Dynamic Graph -->
+                    <div style="height: 160px; position: relative; margin-bottom: 0.5rem;">
+                        <canvas id="m2l6AsrfCreditChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Simulation Metrics Output Grid -->
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 0.75rem; border-top: 1px solid var(--card-border); padding-top: 0.75rem; font-family: var(--font-family-sans);">
+                    <div style="background: var(--metric-bg); padding: 0.4rem 0.5rem; border-radius: 6px; border: 1px solid var(--card-border); text-align:center;">
+                        <div style="font-size: 0.65rem; color: #6b7280; font-weight: 600; text-transform: uppercase;">99.9% WCDR</div>
+                        <div id="outM2L6AsrfWcdr" style="font-size: 0.95rem; font-weight: 800; color: var(--accent);">12.76%</div>
+                    </div>
+                    <div style="background: var(--metric-bg); padding: 0.4rem 0.5rem; border-radius: 6px; border: 1px solid var(--card-border); text-align:center;">
+                        <div style="font-size: 0.65rem; color: #6b7280; font-weight: 600; text-transform: uppercase;">Shock Def Rate</div>
+                        <div id="outM2L6AsrfCondPD" style="font-size: 0.95rem; font-weight: 800; color: #8b5cf6;">10.76%</div>
+                    </div>
+                    <div style="background: var(--metric-bg); padding: 0.4rem 0.5rem; border-radius: 6px; border: 1px solid var(--card-border); text-align:center;">
+                        <div style="font-size: 0.65rem; color: #6b7280; font-weight: 600; text-transform: uppercase;">Capital Buffer</div>
+                        <div id="outM2L6AsrfCapital" style="font-size: 0.95rem; font-weight: 800; color: var(--accent);">4.84%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: Liquidity Ratios -->
+    <div id="secM2L6Liquidity" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            
+            <!-- Left Side: Regulatory Math & Tiers -->
+            <div class="card" style="margin-bottom: 0; display:flex; flex-direction:column; justify-content:space-between; padding: 1.5rem;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Basel III Liquidity Standards</h3>
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563; margin-top: 0.5rem; margin-bottom: 1.25rem;">
+                        The 2007-2008 global financial crisis proved that capital buffers are insufficient if a bank experiences a sudden, acute drain on liquid cash. Basel III introduced two specific quantitative liquidity requirements to prevent systemic insolvency:
+                    </p>
+
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+                        
+                        <!-- LCR -->
+                        <div style="background: var(--metric-bg); padding: 1.15rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                            <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 1.05rem;">1. Liquidity Coverage Ratio (LCR)</h4>
+                            <p style="font-size: 0.82rem; line-height: 1.5; margin-bottom: 0.5rem;">
+                                <strong>Horizon:</strong> 30 calendar days.<br>
+                                Ensures a bank has enough High-Quality Liquid Assets (HQLA) to survive an acute stress scenario.
+                            </p>
+                            <div style="text-align: center; padding: 0.4rem 0; border: 1px dashed var(--accent); border-radius: 6px; margin-bottom: 0.75rem; background: var(--bg-color);">
+                                $$\text{LCR} = \frac{\text{Stock of HQLA}}{\text{Net cash outflows over 30 days}} \ge 100\%$$
+                            </div>
+                            <ul style="padding-left: 1.2rem; line-height: 1.6; font-size: 0.78rem; margin: 0; color: #4b5563;">
+                                <li><strong>Level 1 HQLA (0% Haircut, No Cap):</strong> Central bank reserves, cash, sovereign debt.</li>
+                                <li><strong>Level 2A HQLA (15% Haircut, Max 40% of HQLA):</strong> Highly rated corporate/covered bonds.</li>
+                                <li><strong>Level 2B HQLA (50% Haircut, Max 15% of HQLA):</strong> Speculative equities, lower-rated corporate debt.</li>
+                            </ul>
+                        </div>
+
+                        <!-- NSFR -->
+                        <div style="background: var(--metric-bg); padding: 1.15rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                            <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 1.05rem;">2. Net Stable Funding Ratio (NSFR)</h4>
+                            <p style="font-size: 0.82rem; line-height: 1.5; margin-bottom: 0.5rem;">
+                                <strong>Horizon:</strong> 1 year.<br>
+                                Ensures a bank funds long-term assets (like mortgages and commercial loans) using stable, long-term liabilities.
+                            </p>
+                            <div style="text-align: center; padding: 0.4rem 0; border: 1px dashed var(--accent); border-radius: 6px; margin-bottom: 0.75rem; background: var(--bg-color);">
+                                $$\text{NSFR} = \frac{\text{Available Stable Funding (ASF)}}{\text{Required Stable Funding (RSF)}} \ge 100\%$$
+                            </div>
+                            <p style="font-size: 0.78rem; line-height: 1.4; margin: 0; color: #4b5563;">
+                                <strong>ASF Tiers:</strong> Regulatory capital and Tier 1 equity count at 100%. Customer retail deposits count at 90-95%. Wholesale deposits count at 0-50%.<br>
+                                <strong>RSF Tiers:</strong> Long-term loans (>1yr) require 100% stable funding. Residential mortgages require 65%. Highly liquid cash requires 0%.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Real-World Case Study -->
+                <div style="background: rgba(139, 92, 246, 0.05); border-left: 3px solid #8b5cf6; padding: 0.85rem 1rem; border-radius: 6px; font-size: 0.8rem; line-height: 1.5; margin-top: 1rem;">
+                    <strong>Real-World Liquidity Example (Barclays plc):</strong><br>
+                    Barclays reports fully compliant and conservative liquidity indicators, demonstrating the practical application of Basel standards. In its recent disclosures, Barclays maintains a <strong>Liquidity Coverage Ratio (LCR) of approximately 150%</strong> (comfortably exceeding the 100% regulatory floor) and a <strong>Net Stable Funding Ratio (NSFR) of approximately 121%</strong>, signaling highly robust short-term cash reserves and stable, long-term asset funding coverage.
+                </div>
+            </div>
+
+            <!-- Right Side: Interactive Sandbox Calculator -->
+            <div class="card" style="margin-bottom: 0; display:flex; flex-direction:column; justify-content:space-between; padding: 1.5rem;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Liquidity &amp; Funding Sandbox</h3>
+                    <p style="font-size: 0.8rem; color: #4b5563; margin-bottom: 1.25rem;">
+                        Adjust the HQLA portfolio, stress outflows, and stable funding profiles to dynamically evaluate the bank's liquidity ratios:
+                    </p>
+
+                    <!-- Calculator Inputs -->
+                    <div style="display:flex; flex-direction:column; gap:0.85rem; font-family:var(--font-family-sans); font-size:0.85rem;">
+                        
+                        <!-- HQLA Tiers -->
+                        <div style="border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 6px; background: rgba(139, 92, 246, 0.02);">
+                            <div style="font-weight:700; color:var(--accent); font-size:0.8rem; margin-bottom:0.5rem;">HQLA Assets ($ Billions)</div>
+                            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; font-size: 0.75rem;">
+                                <div>
+                                    <span style="font-weight:600; display:block; margin-bottom:0.15rem;">Level 1 Cash:</span>
+                                    <input type="number" id="inputM2L6LiqLevel1" value="120" step="5" min="0" oninput="updateM2L6LiquiditySandbox()" style="width:100%; padding:0.25rem; border-radius:4px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color);">
+                                </div>
+                                <div>
+                                    <span style="font-weight:600; display:block; margin-bottom:0.15rem;">Level 2A (15% h/c):</span>
+                                    <input type="number" id="inputM2L6LiqLevel2a" value="50" step="5" min="0" oninput="updateM2L6LiquiditySandbox()" style="width:100%; padding:0.25rem; border-radius:4px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color);">
+                                </div>
+                                <div>
+                                    <span style="font-weight:600; display:block; margin-bottom:0.15rem;">Level 2B (50% h/c):</span>
+                                    <input type="number" id="inputM2L6LiqLevel2b" value="15" step="5" min="0" oninput="updateM2L6LiquiditySandbox()" style="width:100%; padding:0.25rem; border-radius:4px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color);">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 30-Day Outflow & Inflow -->
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
+                            <div>
+                                <div style="display:flex; justify-content:space-between; font-weight:600; font-size:0.8rem; margin-bottom:0.25rem;">
+                                    <span>30d Outflows ($B):</span>
+                                    <span id="valM2L6Outflows" style="color:var(--accent);">110B</span>
+                                </div>
+                                <input type="range" id="slideM2L6Outflows" min="50" max="250" step="5" value="110" oninput="updateM2L6LiquiditySandbox()" style="width:100%;">
+                            </div>
+                            <div>
+                                <div style="display:flex; justify-content:space-between; font-weight:600; font-size:0.8rem; margin-bottom:0.25rem;">
+                                    <span>30d Inflows ($B):</span>
+                                    <span id="valM2L6Inflows" style="color:var(--accent);">30B</span>
+                                </div>
+                                <input type="range" id="slideM2L6Inflows" min="0" max="150" step="5" value="30" oninput="updateM2L6LiquiditySandbox()" style="width:100%;">
+                            </div>
+                        </div>
+
+                        <!-- ASF vs RSF -->
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem; border-top: 1px solid var(--card-border); padding-top:0.75rem;">
+                            <div>
+                                <div style="display:flex; justify-content:space-between; font-weight:600; font-size:0.8rem; margin-bottom:0.25rem;">
+                                    <span>Stable Funding (ASF):</span>
+                                    <span id="valM2L6ASF" style="color:var(--accent);">160B</span>
+                                </div>
+                                <input type="range" id="slideM2L6ASF" min="50" max="300" step="5" value="160" oninput="updateM2L6LiquiditySandbox()" style="width:100%;">
+                            </div>
+                            <div>
+                                <div style="display:flex; justify-content:space-between; font-weight:600; font-size:0.8rem; margin-bottom:0.25rem;">
+                                    <span>Req Funding (RSF):</span>
+                                    <span id="valM2L6RSF" style="color:var(--accent);">130B</span>
+                                </div>
+                                <input type="range" id="slideM2L6RSF" min="50" max="300" step="5" value="130" oninput="updateM2L6LiquiditySandbox()" style="width:100%;">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Simulation Output Panel -->
+                <div style="border-top: 1px solid var(--card-border); padding-top: 1rem; margin-top:1.25rem; font-family: var(--font-family-sans);">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+                        <div style="background: var(--metric-bg); padding: 0.65rem; border-radius: 6px; border: 1px solid var(--card-border); text-align: center;">
+                            <div style="font-size: 0.68rem; color: #6b7280; font-weight: 600; text-transform: uppercase; margin-bottom:0.25rem;">Liquidity Coverage (LCR)</div>
+                            <div id="outM2L6LcrRatio" style="font-size: 1.35rem; font-weight: 800; color: var(--accent);">150.0%</div>
+                            <span id="badgeM2L6LcrStatus" style="font-size: 0.62rem; font-weight: 700; padding: 2px 6px; border-radius: 10px; display: inline-block; margin-top: 0.25rem; border: 1px solid;">LCR OK</span>
+                        </div>
+                        <div style="background: var(--metric-bg); padding: 0.65rem; border-radius: 6px; border: 1px solid var(--card-border); text-align: center;">
+                            <div style="font-size: 0.68rem; color: #6b7280; font-weight: 600; text-transform: uppercase; margin-bottom:0.25rem;">Net Stable Funding (NSFR)</div>
+                            <div id="outM2L6NsfrRatio" style="font-size: 1.35rem; font-weight: 800; color: var(--accent);">123.1%</div>
+                            <span id="badgeM2L6NsfrStatus" style="font-size: 0.62rem; font-weight: 700; padding: 2px 6px; border-radius: 10px; display: inline-block; margin-top: 0.25rem; border: 1px solid;">NSFR OK</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Basel & Risk Lab -->
+    <div id="secM2L6Lab" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <!-- Interactive Bank Balance Sheet Sandbox -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between; grid-column: span 2;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">1. Interactive Bank Capital Ratio &amp; Buffer Sandbox</h3>
+                    <p style="font-size: 0.85rem; color: #4b5563; margin-bottom: 1.25rem;">Adjust the simplified bank balance sheet and risk profiles to dynamically compute capital ratios and verify if the bank meets fully loaded Basel III buffer limits:</p>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 2rem;">
+                        <!-- Balance Sheet Settings -->
+                        <div style="display:flex; flex-direction:column; gap:1rem; font-family:var(--font-family-sans); font-size:0.85rem;">
+                            <!-- Assets Slider -->
+                            <div>
+                                <div style="display:flex; justify-content:space-between; font-weight:600;">
+                                    <span>Total Assets ($B):</span>
+                                    <span id="valM2L6Assets" style="color:var(--accent);">100B</span>
+                                </div>
+                                <input type="range" id="slideM2L6Assets" min="50" max="200" step="5" value="100" oninput="updateM2L6Sandbox()" style="width:100%;">
+                            </div>
+                            <!-- Liabilities Slider -->
+                            <div>
+                                <div style="display:flex; justify-content:space-between; font-weight:600;">
+                                    <span>Total Liabilities ($B):</span>
+                                    <span id="valM2L6Liabilities" style="color:var(--accent);">90B</span>
+                                </div>
+                                <input type="range" id="slideM2L6Liabilities" min="40" max="180" step="5" value="90" oninput="updateM2L6Sandbox()" style="width:100%;">
+                            </div>
+                            <!-- Risk-Weighted Allocations -->
+                            <div style="border-top:1px solid var(--card-border); padding-top:0.75rem;">
+                                <div style="font-weight:700; color:var(--accent); margin-bottom:0.5rem;">Asset Risk Allocation ($B)</div>
+                                <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:0.5rem; font-size:0.75rem;">
+                                    <div>
+                                        <span style="font-weight:600;">Credit RWA ($B):</span>
+                                        <input type="number" id="inputM2L6CreditRwa" value="30" step="1" style="width:100%; padding:0.25rem; border-radius:4px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color);">
+                                    </div>
+                                    <div>
+                                        <span style="font-weight:600;">Market RWA ($B):</span>
+                                        <input type="number" id="inputM2L6MarketRwa" value="15" step="1" style="width:100%; padding:0.25rem; border-radius:4px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color);">
+                                    </div>
+                                    <div>
+                                        <span style="font-weight:600;">Ops RWA ($B):</span>
+                                        <input type="number" id="inputM2L6OpsRwa" value="5" step="1" style="width:100%; padding:0.25rem; border-radius:4px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color);">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Outputs and Buffers Check -->
+                        <div style="background:var(--metric-bg); border:1px solid var(--card-border); padding:1rem; border-radius:8px; font-family:var(--font-family-sans); font-size:0.85rem; display:flex; flex-direction:column; justify-content:space-between;">
+                            <div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                                    <span>Calculated Equity (Tier 1 Buffer):</span>
+                                    <strong id="outM2L6Equity" style="color:var(--accent);">$10 Billion</strong>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                                    <span>Total Risk-Weighted Assets (RWAs):</span>
+                                    <strong id="outM2L6TotalRwa">$50 Billion</strong>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; border-top:1px dashed var(--card-border); padding-top:0.5rem; margin-bottom:0.5rem;">
+                                    <span>Calculated Bank Capital Ratio:</span>
+                                    <strong id="outM2L6CapitalRatio" style="font-size:1.1rem; color:var(--accent);">20.00%</strong>
+                                </div>
+                            </div>
+
+                            <div style="border-top:1px solid var(--card-border); padding-top:0.75rem;">
+                                <div style="font-weight:700; margin-bottom:0.35rem; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.05em; color:#6b7280;">Basel III Buffer Compliance Status:</div>
+                                <div style="display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; font-weight:700;">
+                                    <span id="badgeM2L6Status" style="padding:0.25rem 0.6rem; border-radius:12px; background:rgba(16, 185, 129, 0.1); color:#10b981; border:1px solid #10b981;">COMPLIANT (Ratio &ge; 10.5%)</span>
+                                </div>
+                                <p style="font-size:0.75rem; color:#6b7280; margin:0.35rem 0 0 0; line-height:1.4;">
+                                    *Basel III fully loaded limits enforce an 8.0% minimum capital ratio plus a 2.5% Capital Conservation Buffer (CCB), totaling <strong>10.5%</strong> required CET1 level.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculator 2: LVaR -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">2. Liquidity-Adjusted VaR (LVaR)</h3>
+                    <p style="font-size: 0.8rem; color: #4b5563; margin-bottom: 1rem;">Calculates 1D analytical VaR adjusted for the bid-ask spread under standard normal parameters:</p>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem; font-family: var(--font-family-sans); font-size: 0.85rem;">
+                        <div>
+                            <span style="font-weight:600;">Portfolio Value ($V$ - Million USD):</span>
+                            <input type="number" id="inputM2L6LvarV" value="16.0" step="0.5" style="width:100%; padding:0.35rem; border-radius:6px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color);">
+                        </div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                            <div>
+                                <span style="font-weight:600;">Daily Mean Return ($\mu$ %):</span>
+                                <input type="number" id="inputM2L6LvarMu" value="1.0" step="0.1" style="width:100%; padding:0.35rem; border-radius:6px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color);">
+                            </div>
+                            <div>
+                                <span style="font-weight:600;">Daily Return Vol ($\sigma$ %):</span>
+                                <input type="number" id="inputM2L6LvarSig" value="3.0" step="0.1" style="width:100%; padding:0.35rem; border-radius:6px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color);">
+                            </div>
+                        </div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                            <div>
+                                <span style="font-weight:600;">Mean Spread ($\mu_{\text{Sp}}$ bps):</span>
+                                <input type="number" id="inputM2L6LvarMuSp" value="35.0" step="5" style="width:100%; padding:0.35rem; border-radius:6px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color);">
+                            </div>
+                            <div>
+                                <span style="font-weight:600;">Spread Vol ($\sigma_{\text{Sp}}$ bps):</span>
+                                <input type="number" id="inputM2L6LvarSigSp" value="150.0" step="5" style="width:100%; padding:0.35rem; border-radius:6px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color);">
+                            </div>
+                        </div>
+                        <div>
+                            <span style="font-weight:600;">Confidence Level:</span>
+                            <select id="selectM2L6LvarConf" style="width:100%; padding:0.35rem; border-radius:6px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color);">
+                                <option value="99">99.0% Confidence (factor = 2.326)</option>
+                                <option value="95">95.0% Confidence (factor = 1.645)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: var(--metric-bg); padding: 1rem; border-radius: 6px; border: 1px solid var(--card-border); margin-top: 1.25rem; font-family: var(--font-family-sans);">
+                    <div style="font-size: 0.8rem; color:#6b7280; font-weight:600;">Calculated LVaR Result:</div>
+                    <div id="outM2L6LvarValue" style="font-size:1.35rem; font-weight:800; color:var(--accent); margin:0.25rem 0;">$1,263,809</div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#4b5563; margin-top:0.5rem; border-top:1px solid var(--card-border); padding-top:0.5rem;">
+                        <span>Classic VaR: <strong id="outM2L6LvarClassicPct">75.7%</strong></span>
+                        <span>Spread Adjustment: <strong id="outM2L6LvarSpreadPct">24.3%</strong></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:center; align-items:center; background:rgba(139,92,246,0.02); border:1px dashed var(--card-border);">
+                <div style="text-align:center; font-family:var(--font-family-sans); padding:2rem;">
+                    <div style="font-size:2.5rem; margin-bottom:0.5rem;">📊</div>
+                    <h4 style="margin:0 0 0.5rem 0; font-weight:700; color:var(--accent);">ASRF Credit Risk Model Moved</h4>
+                    <p style="font-size:0.8rem; color:#6b7280; max-width:260px; margin:0 auto; line-height:1.4;">
+                        The interactive ASRF Credit Loss simulator and real-time CDF graph are now integrated directly inside <strong>Tab 4 (ASRF Credit Model)</strong> alongside the formulas for a unified learning experience!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching logic for CQF M2 L6
+    window.switchM2L6Tab = function(tab) {
+        const tabs = ['foundations', 'capital', 'failures', 'credit', 'liquidity', 'lab'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM2L6' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM2L6' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) sec.style.display = (t === tab ? 'block' : 'none');
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        // Trigger safe typesetting on MathJax math blocks inside newly shown sections
+        if (typeof window.safeTypeset === 'function') {
+            // Scoped typesetting handled by parent index.html router.
+        }
+
+        // Specific loaders
+        if (tab === 'lab') {
+            setTimeout(updateM2L6Sandbox, 100);
+        } else if (tab === 'credit') {
+            setTimeout(updateM2L6CreditModel, 100);
+        } else if (tab === 'liquidity') {
+            setTimeout(updateM2L6LiquiditySandbox, 100);
+        }
+    };
+
+    // LAB Calculators
+    let m2l6AsrfChartInstance = null;
+
+    // Normal inverse CDF approximation (Beasley-Springer-Moro algorithm)
+    function normInv(p) {
+        if (p <= 0.0 || p >= 1.0) return 0.0;
+        const a = [2.50662823884, -18.61500062529, 41.39119773534, -28.44120361287];
+        const b = [-8.47351082858, 23.08336743743, -21.06224101826, 3.13082909833];
+        const c = [0.3374754822726147, 0.976169013223269, 0.1607979714918209, 0.0276438810916503, 0.0038405729373609, 0.000395189343119, 0.0000321767881768, 0.0000002888167364, 0.0000003960315187];
+        
+        let y = p - 0.5;
+        if (Math.abs(y) < 0.42) {
+            let r = y * y;
+            let num = (((a[3]*r + a[2])*r + a[1])*r + a[0]) * y;
+            let den = (((b[3]*r + b[2])*r + b[1])*r + 1.0);
+            return num / den;
+        } else {
+            let r = p;
+            if (y > 0) r = 1.0 - p;
+            let z = Math.log(-Math.log(r));
+            let num = (((((((c[8]*z + c[7])*z + c[6])*z + c[5])*z + c[4])*z + c[3])*z + c[2])*z + c[1])*z + c[0];
+            let ans = num;
+            if (y < 0) return -ans;
+            return ans;
+        }
+    }
+
+    // Normal CDF approximation
+    function normCdf(x) {
+        const b1 =  0.319381530;
+        const b2 = -0.356563782;
+        const b3 =  1.781477937;
+        const b4 = -1.821255978;
+        const b5 =  1.330274429;
+        const p  =  0.2316419;
+        const c  =  0.39894228;
+
+        if (x >= 0.0) {
+            let k = 1.0 / (1.0 + p * x);
+            return 1.0 - c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        } else {
+            let k = 1.0 / (1.0 - p * x);
+            return c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        }
+    }
+
+    // TAB 4: Core ASRF Credit Model Interactive calculations
+    window.onM2L6AssetClassChanged = function() {
+        const assetClass = document.getElementById('selectM2L6AssetClass').value;
+        const rhoSlider = document.getElementById('slideM2L6AsrfRho');
+        const autoLabel = document.getElementById('labelM2L6AsrfRhoAuto');
+        
+        if (assetClass === 'manual') {
+            rhoSlider.disabled = false;
+            if (autoLabel) autoLabel.style.display = 'none';
+        } else {
+            rhoSlider.disabled = true;
+            if (autoLabel) autoLabel.style.display = 'block';
+        }
+        updateM2L6CreditModel();
+    };
+
+    window.updateM2L6CreditModel = function() {
+        const pVal = parseFloat(document.getElementById('slideM2L6AsrfP').value) / 100;
+        const lgdVal = parseFloat(document.getElementById('slideM2L6AsrfLgd').value) / 100;
+        const zVal = parseFloat(document.getElementById('slideM2L6AsrfZ').value);
+        const assetClass = document.getElementById('selectM2L6AssetClass').value;
+        const rhoSlider = document.getElementById('slideM2L6AsrfRho');
+
+        let rhoVal = parseFloat(rhoSlider.value) / 100;
+
+        if (assetClass !== 'manual') {
+            // Official Basel IRB correlation formulas
+            const exp50 = (1 - Math.exp(-50 * pVal)) / (1 - Math.exp(-50));
+            const exp35 = (1 - Math.exp(-35 * pVal)) / (1 - Math.exp(-35));
+            
+            if (assetClass === 'corporate') {
+                rhoVal = 0.12 * exp50 + 0.24 * (1 - exp50);
+            } else if (assetClass === 'sme') {
+                // Adjust for size, assuming standard medium firm size (S = 25M sales)
+                rhoVal = 0.12 * exp50 + 0.24 * (1 - exp50) - 0.04 * (1 - (25 - 5) / 45);
+            } else if (assetClass === 'hvcre') {
+                rhoVal = 0.12 * exp50 + 0.30 * (1 - exp50);
+            } else if (assetClass === 'mortgage') {
+                rhoVal = 0.15;
+            } else if (assetClass === 'retail_revolving') {
+                rhoVal = 0.04;
+            } else if (assetClass === 'retail_other') {
+                rhoVal = 0.03 * exp35 + 0.16 * (1 - exp35);
+            }
+            
+            // Sync computed value to slider visually without triggering infinite loop
+            rhoSlider.value = (rhoVal * 100).toFixed(1);
+        }
+
+        // Update labels
+        document.getElementById('valM2L6AsrfP').innerText = (pVal * 100).toFixed(1) + "%";
+        document.getElementById('valM2L6AsrfRho').innerText = (rhoVal * 100).toFixed(1) + "%";
+        document.getElementById('valM2L6AsrfLgd').innerText = (lgdVal * 100).toFixed(1) + "%";
+        
+        // Dynamic macroeconomic state description
+        let zDesc = zVal.toFixed(1) + " SD ";
+        if (zVal < -2.5) zDesc += " (Severe Crisis)";
+        else if (zVal < -1.5) zDesc += " (Deep Recession)";
+        else if (zVal < -0.5) zDesc += " (Mild Recession)";
+        else if (zVal <= 0.5) zDesc += " (Neutral)";
+        else if (zVal <= 1.5) zDesc += " (Growth)";
+        else if (zVal <= 2.5) zDesc += " (Strong Expansion)";
+        else zDesc += " (Macro Boom)";
+        document.getElementById('valM2L6AsrfZ').innerText = zDesc;
+
+        const c = normInv(pVal);
+
+        // 99.9% Worst-Case Default Rate (WCDR)
+        const term999_1 = c + Math.sqrt(rhoVal) * normInv(0.999);
+        const term999_2 = Math.sqrt(1.0 - rhoVal);
+        const wcdr = normCdf(term999_1 / term999_2);
+
+        // Conditional default rate given simulated macroeconomic state Z
+        const condPD = normCdf((c - Math.sqrt(rhoVal) * zVal) / Math.sqrt(1.0 - rhoVal));
+
+        // Capital Buffer = unexpected loss (UL = WCDR - p) * LGD
+        const ul = Math.max(0, wcdr - pVal);
+        const capitalCharge = ul * lgdVal;
+
+        // Update output metrics
+        document.getElementById('outM2L6AsrfWcdr').innerText = (wcdr * 100).toFixed(2) + "%";
+        document.getElementById('outM2L6AsrfCondPD').innerText = (condPD * 100).toFixed(2) + "%";
+        document.getElementById('outM2L6AsrfCapital').innerText = (capitalCharge * 100).toFixed(2) + "%";
+
+        // Generate Chart data
+        const chartLosses = [];
+        const chartCDFs = [];
+        for (let i = 0.5; i <= 35; i += 0.5) {
+            const lossPct = i / 100;
+            const numer = Math.sqrt(1.0 - rhoVal) * normInv(lossPct) - c;
+            const cdfVal = normCdf(numer / Math.sqrt(rhoVal));
+            chartLosses.push(i);
+            chartCDFs.push(cdfVal);
+        }
+
+        renderM2L6CreditChart(chartLosses, chartCDFs, condPD * 100);
+    };
+
+    function renderM2L6CreditChart(losses, cdfValues, activeCondPDPercent) {
+        const ctx = document.getElementById('m2l6AsrfCreditChart');
+        if (!ctx) return;
+
+        // Prepare conditional stress indicator line/dataset
+        const stressIndicatorData = losses.map(l => {
+            // Return active conditional default probability line at that level or null
+            return (Math.abs(l - activeCondPDPercent) < 0.35) ? 0.95 : null;
+        });
+
+        if (m2l6AsrfChartInstance) {
+            m2l6AsrfChartInstance.data.labels = losses;
+            m2l6AsrfChartInstance.data.datasets[0].data = cdfValues;
+            m2l6AsrfChartInstance.data.datasets[1].data = losses.map(l => {
+                // Plot a point/marker exactly on the CDF curve where loss level matches condPD
+                return (Math.abs(l - activeCondPDPercent) < 0.35) ? cdfValues[losses.indexOf(l)] : null;
+            });
+            m2l6AsrfChartInstance.update();
+            return;
+        }
+
+        m2l6AsrfChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: losses,
+                datasets: [
+                    {
+                        label: 'Portfolio Loss CDF F(x)',
+                        data: cdfValues,
+                        borderColor: 'var(--accent)',
+                        backgroundColor: 'var(--accent-glow)',
+                        borderWidth: 2.5,
+                        fill: true,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Active Macro Stress State',
+                        data: losses.map(l => (Math.abs(l - activeCondPDPercent) < 0.35) ? cdfValues[losses.indexOf(l)] : null),
+                        borderColor: '#8b5cf6',
+                        backgroundColor: '#8b5cf6',
+                        borderWidth: 0,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
+                        showLine: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Portfolio Loss Level / Default Rate (%)', font: { size: 9, weight: 'bold' } },
+                        ticks: { font: { size: 8 } }
+                    },
+                    y: {
+                        min: 0,
+                        max: 1.0,
+                        title: { display: true, text: 'Cumulative Probability', font: { size: 9, weight: 'bold' } },
+                        ticks: { font: { size: 8 } }
+                    }
+                }
+            }
+        });
+    }
+
+    // TAB 6: Bank Capital Sandbox Calculations
+    window.updateM2L6Sandbox = function() {
+        const assets = parseFloat(document.getElementById('slideM2L6Assets').value);
+        const liabilities = parseFloat(document.getElementById('slideM2L6Liabilities').value);
+        
+        const creditRwa = parseFloat(document.getElementById('inputM2L6CreditRwa').value) || 0;
+        const marketRwa = parseFloat(document.getElementById('inputM2L6MarketRwa').value) || 0;
+        const opsRwa = parseFloat(document.getElementById('inputM2L6OpsRwa').value) || 0;
+
+        // Sliders values output
+        document.getElementById('valM2L6Assets').innerText = assets + "B";
+        document.getElementById('valM2L6Liabilities').innerText = liabilities + "B";
+
+        // Calculated Equity = Assets - Liabilities
+        const equity = assets - liabilities;
+        document.getElementById('outM2L6Equity').innerText = "$" + equity + " Billion";
+
+        // Total RWAs
+        const totalRwa = creditRwa + marketRwa + opsRwa;
+        document.getElementById('outM2L6TotalRwa').innerText = "$" + totalRwa + " Billion";
+
+        // Capital Ratio
+        let capitalRatio = 0.0;
+        if (totalRwa > 0) {
+            capitalRatio = (equity / totalRwa) * 100;
+        }
+        document.getElementById('outM2L6CapitalRatio').innerText = capitalRatio.toFixed(2) + "%";
+
+        // Status Badge update
+        const statusBadge = document.getElementById('badgeM2L6Status');
+        if (capitalRatio >= 10.5) {
+            statusBadge.innerText = "COMPLIANT (Ratio \u2265 10.5%)";
+            statusBadge.style.background = "rgba(16, 185, 129, 0.1)";
+            statusBadge.style.color = "#10b981";
+            statusBadge.style.borderColor = "#10b981";
+        } else if (capitalRatio >= 8.0) {
+            statusBadge.innerText = "WARNING: CCB CONSTRAINED (8.0% - 10.5%)";
+            statusBadge.style.background = "rgba(245, 158, 11, 0.1)";
+            statusBadge.style.color = "#d97706";
+            statusBadge.style.borderColor = "#d97706";
+        } else {
+            statusBadge.innerText = "NON-COMPLIANT (Ratio < 8.0%)";
+            statusBadge.style.background = "rgba(239, 68, 68, 0.1)";
+            statusBadge.style.color = "#ef4444";
+            statusBadge.style.borderColor = "#ef4444";
+        }
+
+        // Auto trigger input listeners
+        const rwaInputs = ['inputM2L6CreditRwa', 'inputM2L6MarketRwa', 'inputM2L6OpsRwa'];
+        rwaInputs.forEach(id => {
+            const el = document.getElementById(id);
+            if (el && !el.oninput) el.oninput = updateM2L6Sandbox;
+        });
+
+        // --- 2. LVaR Calculation ---
+        const V = parseFloat(document.getElementById('inputM2L6LvarV').value) * 1000000;
+        const mu = parseFloat(document.getElementById('inputM2L6LvarMu').value) / 100;
+        const sig = parseFloat(document.getElementById('inputM2L6LvarSig').value) / 100;
+        const muSp = parseFloat(document.getElementById('inputM2L6LvarMuSp').value) / 10000;
+        const sigSp = parseFloat(document.getElementById('inputM2L6LvarSigSp').value) / 10000;
+        const conf = document.getElementById('selectM2L6LvarConf').value;
+
+        const factor = (conf === '99') ? 2.32634787 : 1.64485363;
+
+        const classicVaRPct = -mu + factor * sig;
+        const liquidityAdjPct = 0.5 * (muSp + factor * sigSp);
+        const totalLvarPct = classicVaRPct + liquidityAdjPct;
+
+        const totalLvar = V * totalLvarPct;
+        
+        document.getElementById('outM2L6LvarValue').innerText = "$" + Math.round(totalLvar).toLocaleString();
+        document.getElementById('outM2L6LvarClassicPct').innerText = (classicVaRPct / totalLvarPct * 100).toFixed(1) + "%";
+        document.getElementById('outM2L6LvarSpreadPct').innerText = (liquidityAdjPct / totalLvarPct * 100).toFixed(1) + "%";
+
+        const lvarInputs = ['inputM2L6LvarV', 'inputM2L6LvarMu', 'inputM2L6LvarSig', 'inputM2L6LvarMuSp', 'inputM2L6LvarSigSp', 'selectM2L6LvarConf'];
+        lvarInputs.forEach(id => {
+            const el = document.getElementById(id);
+            if (el && !el.oninput) {
+                el.oninput = updateM2L6Sandbox;
+                if (el.tagName === 'SELECT') el.onchange = updateM2L6Sandbox;
+            }
+        });
+    };
+
+    // TAB 5: Liquidity Coverage & Stable Funding Sandbox
+    window.updateM2L6LiquiditySandbox = function() {
+        const valL1 = parseFloat(document.getElementById('inputM2L6LiqLevel1').value) || 0;
+        const valL2a = parseFloat(document.getElementById('inputM2L6LiqLevel2a').value) || 0;
+        const valL2b = parseFloat(document.getElementById('inputM2L6LiqLevel2b').value) || 0;
+        
+        const outflowsVal = parseFloat(document.getElementById('slideM2L6Outflows').value);
+        const inflowsVal = parseFloat(document.getElementById('slideM2L6Inflows').value);
+        const asfVal = parseFloat(document.getElementById('slideM2L6ASF').value);
+        const rsfVal = parseFloat(document.getElementById('slideM2L6RSF').value);
+
+        // Update slider labels
+        document.getElementById('valM2L6Outflows').innerText = outflowsVal + "B";
+        document.getElementById('valM2L6Inflows').innerText = inflowsVal + "B";
+        document.getElementById('valM2L6ASF').innerText = asfVal + "B";
+        document.getElementById('valM2L6RSF').innerText = rsfVal + "B";
+
+        // --- 1. LCR Calculation with Basel Regulatory Caps ---
+        // Applying regulatory haircuts:
+        const L1 = valL1;                  // Level 1: 0% haircut
+        const L2A = valL2a * 0.85;         // Level 2A: 15% haircut
+        const L2B = valL2b * 0.50;         // Level 2B: 50% haircut
+
+        // Cap Adjustments:
+        // Level 2B can comprise at most 15% of total HQLA
+        const adj2B = Math.max(0, L2B - (15 / 85) * (L1 + L2A));
+        // Total Level 2 (2A + 2B) can comprise at most 40% of total HQLA
+        const adj2 = Math.max(0, L2A + L2B - adj2B - (40 / 60) * L1);
+
+        // Final Cap-adjusted HQLA
+        const hqla = Math.max(0, L1 + L2A + L2B - adj2B - adj2);
+
+        // Capping inflows at 75% of outflows:
+        const cappedInflows = Math.min(inflowsVal, outflowsVal * 0.75);
+        const netOutflows = Math.max(1, outflowsVal - cappedInflows);
+
+        const lcr = (hqla / netOutflows) * 100;
+
+        // --- 2. NSFR Calculation ---
+        const nsfr = (asfVal / rsfVal) * 100;
+
+        // Update dynamic outputs
+        document.getElementById('outM2L6LcrRatio').innerText = lcr.toFixed(1) + "%";
+        document.getElementById('outM2L6NsfrRatio').innerText = nsfr.toFixed(1) + "%";
+
+        // LCR Badge styling
+        const lcrBadge = document.getElementById('badgeM2L6LcrStatus');
+        if (lcr >= 100) {
+            lcrBadge.innerText = "COMPLIANT (LCR \u2265 100%)";
+            lcrBadge.style.background = "rgba(16, 185, 129, 0.1)";
+            lcrBadge.style.color = "#10b981";
+            lcrBadge.style.borderColor = "#10b981";
+        } else {
+            lcrBadge.innerText = "DEFICIT (LCR < 100%)";
+            lcrBadge.style.background = "rgba(239, 68, 68, 0.1)";
+            lcrBadge.style.color = "#ef4444";
+            lcrBadge.style.borderColor = "#ef4444";
+        }
+
+        // NSFR Badge styling
+        const nsfrBadge = document.getElementById('badgeM2L6NsfrStatus');
+        if (nsfr >= 100) {
+            nsfrBadge.innerText = "COMPLIANT (NSFR \u2265 100%)";
+            nsfrBadge.style.background = "rgba(16, 185, 129, 0.1)";
+            nsfrBadge.style.color = "#10b981";
+            nsfrBadge.style.borderColor = "#10b981";
+        } else {
+            nsfrBadge.innerText = "DEFICIT (NSFR < 100%)";
+            nsfrBadge.style.background = "rgba(239, 68, 68, 0.1)";
+            nsfrBadge.style.color = "#ef4444";
+            nsfrBadge.style.borderColor = "#ef4444";
+        }
+
+        // Attach listeners dynamically
+        const liqInputs = ['inputM2L6LiqLevel1', 'inputM2L6LiqLevel2a', 'inputM2L6LiqLevel2b', 'slideM2L6Outflows', 'slideM2L6Inflows', 'slideM2L6ASF', 'slideM2L6RSF'];
+        liqInputs.forEach(id => {
+            const el = document.getElementById(id);
+            if (el && !el.oninput) {
+                el.oninput = updateM2L6LiquiditySandbox;
+            }
+        });
+    };
+</script>

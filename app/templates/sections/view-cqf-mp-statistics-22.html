@@ -1,0 +1,255 @@
+<div id="view-cqf-mp-statistics-22" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">2.2 Maximum Likelihood (MLE)</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">2.2 Maximum Likelihood Estimation (MLE)</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Concept and definition of likelihood/log-likelihood, parameter fitting, and Normal distribution derivations.</div>
+    </header>
+
+    <!-- Core MLE Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">2.2.1 The Concept of Likelihood</h3>
+        <p>The Maximum Likelihood Estimation (MLE) is a statistical method used for fitting data to a model (Data analysis).</p>
+        <p>We are asking the question: <strong>"Given the set of data, what model parameters are most likely to give this data?"</strong></p>
+        <p><strong>Note:</strong> When using the MLE model we must first assume a distribution, i.e. a parametric model, after which we can try to determine the model parameters.</p>
+    </div>
+
+    <!-- Motivating example -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">2.2.2 Motivating Example: Binomial Distribution Parameter $p_0$</h3>
+        <p>Consider data from a Binomial distribution with random variable $X$ and parameters $n = 10$ and $p = p_0$. The parameter $p_0$ is fixed and unknown to us. That is:</p>
+        <p style="text-align: center;">$$f(x; p_0) = P(X = x) = \binom{10}{x} p_0^x (1 - p_0)^{10-x}$$</p>
+        <p>Now suppose we observe some data <strong>$X = 3$</strong>. Our goal is to estimate the actual parameter value $p_0$ based on this single data observation.</p>
+
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color); margin-top: 1rem;">
+            <strong>Thought Experiments:</strong>
+            <ul style="padding-left: 1.2rem; margin-top: 0.5rem;">
+                <li>Assume $p_0 = 0.5$:
+                    $$f(3; 0.5) = P(X = 3) = \binom{10}{3} (0.5)^3 (0.5)^7 \approx 0.117 \quad (\text{Not very high!})$$
+                </li>
+                <li style="margin-top: 0.5rem;">Assume $p_0 = 0.4$:
+                    $$f(3; 0.4) = P(X = 3) = \binom{10}{3} (0.4)^3 (0.6)^7 \approx 0.215 \quad (\text{Better...})$$
+                </li>
+            </ul>
+
+            <strong style="display: block; margin-top: 1rem;">General Formulation &amp; Log Maximization:</strong>
+            <p style="margin: 0.5rem 0;">Let us define the Likelihood function $\ell(p; 3) = f(3; p) = \binom{10}{3} p^3 (1-p)^7$. We want to find the parameter $p$ that maximizes this probability. Taking the natural logarithm to form the Log-Likelihood function $L(p; 3) = \log \ell(p; 3)$:</p>
+            $$L(p; 3) = 3 \log p + 7 \log(1 - p) + \log \binom{10}{3}$$
+            <p style="margin: 0.5rem 0;">To maximize, we set the derivative to zero:</p>
+            $$\frac{dL}{dp} = \frac{3}{p} - \frac{7}{1 - p} = 0 \implies 3(1 - p) - 7p = 0 \implies 3 - 10p = 0$$
+            <p style="color: #10b981; font-weight: bold; margin-top: 0.25rem;">$$p = \frac{3}{10}$$</p>
+            <p style="margin: 0.25rem 0;">Thus, the value of $p_0$ that maximizes the observed data probability is $p = \frac{3}{10}$ (or 0.3).</p>
+        </div>
+    </div>
+
+    <!-- General Framework -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">2.2.3 In General</h3>
+        <p>If we have $n$ pieces of <strong>iid</strong> data $x_1, x_2, x_3, \dots, x_n$ with probability density (or mass) function $f(x_1, x_2, x_3, \dots, x_n; \theta)$, where $\theta$ are the unknown parameter(s). Then the Maximum likelihood function is defined as:</p>
+        <p style="text-align: center;">$$\ell(\theta; x_1, x_2, x_3, \dots, x_n) = f(x_1, x_2, x_3, \dots, x_n; \theta)$$</p>
+        <p>and the log-likelihood function can be defined as:</p>
+        <p style="text-align: center;">$$L(\theta; x_1, x_2, x_3, \dots, x_n) = \log \ell(\theta; x_1, x_2, x_3, \dots, x_n)$$</p>
+        <p>Where the maximum likelihood estimate of the parameter(s) $\theta_0$ can be obtained by maximising $L(\theta; x_1, x_2, x_3, \dots, x_n)$.</p>
+    </div>
+
+    <!-- normal parameter derivation -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">2.2.4 Normal Distribution Derivation</h3>
+        <p>Consider a random variable $X$ such that $X \sim N(\mu, \sigma^2)$ with iid observations $x_1, x_2, \dots, x_n$. The joint density is:</p>
+        <p style="text-align: center;">$$\ell(\mu, \sigma; x_1, \dots, x_n) = \prod_{i=1}^n f(x_i; \mu, \sigma) = \prod_{i=1}^{n} \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{(x_i - \mu)^2}{2\sigma^2}}$$</p>
+        
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color); margin-top: 1rem;">
+            <strong>Step 1: Write the log-likelihood function</strong>
+            $$L(\mu, \sigma; x_1, \dots, x_n) = \sum_{i=1}^{n} \log f(x_i; \mu, \sigma)$$
+            $$= \log \left[ \prod_{i=1}^{n} \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{(x_i - \mu)^2}{2\sigma^2}} \right]$$
+            $$= -\frac{n}{2} \log(2\pi) - n \log(\sigma) - \frac{1}{2\sigma^2} \sum_{i=1}^{n} (x_i - \mu)^2$$
+
+            <strong style="display: block; margin-top: 1rem;">Step 2: Differentiate partially and solve</strong>
+            <p style="margin: 0.5rem 0;">To maximize we differentiate partially with respect to $\mu$ and $\sigma$, set the derivatives to zero and solve. Doing so yields:</p>
+            <p style="color: #10b981; font-weight: bold; margin-top: 0.25rem;">$$\mu = \frac{1}{n} \sum_{i=1}^{n} x_i$$</p>
+            <p style="color: #10b981; font-weight: bold; margin-top: 0.25rem;">$$\sigma^2 = \frac{1}{n} \sum_{i=1}^{n} (x_i - \mu)^2$$</p>
+        </div>
+    </div>
+
+    <!-- Interactive MLE Curve visualizer -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">2.2.5 Interactive Log-Likelihood Hill-Climbing sandbox</h3>
+        <p>Observe how shifting the parameter values directly modifies the log-likelihood score of our observed points. Drag the sliders to fit the normal distribution curve onto the observed data points. The hill-climbing chart below plots the log-likelihood curve over the mean parameter space.</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls -->
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Mean parameter ($\mu$):</label>
+                    <input type="range" id="stats22MeanSlider" min="-15" max="15" value="-5" step="0.2" oninput="runStats22Simulation()" style="width: 100%; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: -0.75rem; margin-bottom: 1.25rem; color: #6b7280;">
+                        <span>-15</span>
+                        <span id="stats22MeanVal" style="font-weight: bold; color: var(--accent);">mu = -5</span>
+                        <span>15</span>
+                    </div>
+
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Standard deviation ($\sigma$):</label>
+                    <input type="range" id="stats22StdSlider" min="1" max="10" value="4.0" step="0.1" oninput="runStats22Simulation()" style="width: 100%; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: -0.75rem; margin-bottom: 1.25rem; color: #6b7280;">
+                        <span>1.0</span>
+                        <span id="stats22StdVal" style="font-weight: bold; color: var(--accent);">sigma = 4.0</span>
+                        <span>10.0</span>
+                    </div>
+
+                    <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border);">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">LOG-LIKELIHOOD SCORE</div>
+                        <div id="stats22ScoreReadout" style="font-size: 1.4rem; font-weight: 800; color: #10b981; margin-top: 0.25rem;">--</div>
+                    </div>
+                </div>
+
+                <!-- Custom 2D Hill Climbing Plot -->
+                <div style="background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 1rem; position: relative;">
+                    <canvas id="stats22Canvas" width="320" height="200" style="width: 100%; height: 200px; display: block;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            // Observed sample dataset
+            const observedData = [2.1, 1.8, 3.4, 0.9, 2.5, 3.1, 1.2, 2.8];
+            
+            // True MLE parameters for this dataset
+            let trueMean = 0;
+            let sumVal = 0;
+            observedData.forEach(d => sumVal += d);
+            trueMean = sumVal / observedData.length;
+
+            window.runStats22Simulation = function() {
+                const mu = parseFloat(document.getElementById('stats22MeanSlider').value);
+                const sigma = parseFloat(document.getElementById('stats22StdSlider').value);
+                document.getElementById('stats22MeanVal').innerText = `mu = ${mu.toFixed(1)}`;
+                document.getElementById('stats22StdVal').innerText = `sigma = ${sigma.toFixed(1)}`;
+
+                // Compute log-likelihood
+                const n = observedData.length;
+                let sumSqDev = 0;
+                observedData.forEach(x => {
+                    sumSqDev += Math.pow(x - mu, 2);
+                });
+
+                const logLikelihood = - (n/2)*Math.log(2*Math.PI) - (n)*Math.log(sigma) - (sumSqDev) / (2 * Math.pow(sigma, 2));
+                document.getElementById('stats22ScoreReadout').innerText = logLikelihood.toFixed(4);
+
+                drawMLEGraph(mu, sigma, logLikelihood);
+
+                const parent = document.getElementById('view-cqf-mp-statistics-22');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawMLEGraph(activeMu, activeSigma, activeL) {
+                const canvas = document.getElementById('stats22Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const margin = 25;
+                const topMargin = 25;
+                const bottomMargin = 25;
+                const width = canvas.width - 2 * margin;
+                const height = canvas.height - topMargin - bottomMargin;
+
+                // We want to plot the Log-Likelihood curve over parameter mu (X-axis from -15 to 15)
+                // Y-axis will show log likelihood.
+                const minMu = -15;
+                const maxMu = 15;
+
+                // Function to get log likelihood for any mu
+                function getL(mu) {
+                    const n = observedData.length;
+                    let sumSqDev = 0;
+                    observedData.forEach(x => {
+                        sumSqDev += Math.pow(x - mu, 2);
+                    });
+                    return - (n/2)*Math.log(2*Math.PI) - (n)*Math.log(activeSigma) - (sumSqDev) / (2 * Math.pow(activeSigma, 2));
+                }
+
+                // Auto-scale Y based on the range of mu
+                const yVals = [];
+                for (let xMu = minMu; xMu <= maxMu; xMu += 0.5) {
+                    yVals.push(getL(xMu));
+                }
+                const maxL = Math.max(...yVals);
+                const minL = Math.min(...yVals);
+                const lRange = maxL - minL;
+
+                function getCanvasX(mu) {
+                    return margin + ((mu - minMu) / (maxMu - minMu)) * width;
+                }
+
+                function getCanvasY(lVal) {
+                    return canvas.height - bottomMargin - ((lVal - minL) / lRange) * height;
+                }
+
+                // Draw background grid lines
+                ctx.strokeStyle = '#222';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(margin, canvas.height - bottomMargin);
+                ctx.lineTo(canvas.width - margin, canvas.height - bottomMargin);
+                ctx.stroke();
+
+                // Draw Likelihood Curve
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                for (let xMu = minMu; xMu <= maxMu; xMu += 0.25) {
+                    const cx = getCanvasX(xMu);
+                    const cy = getCanvasY(getL(xMu));
+                    if (xMu === minMu) {
+                        ctx.moveTo(cx, cy);
+                    } else {
+                        ctx.lineTo(cx, cy);
+                    }
+                }
+                ctx.stroke();
+
+                // Draw current tracker point
+                const currentCX = getCanvasX(activeMu);
+                const currentCY = getCanvasY(activeL);
+
+                ctx.fillStyle = '#ff9800';
+                ctx.beginPath();
+                ctx.arc(currentCX, currentCY, 6, 0, 2 * Math.PI);
+                ctx.fill();
+
+                // Draw vertical indicator line
+                ctx.strokeStyle = 'rgba(255, 152, 0, 0.4)';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([3, 3]);
+                ctx.beginPath();
+                ctx.moveTo(currentCX, topMargin);
+                ctx.lineTo(currentCX, canvas.height - bottomMargin);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Draw axis labels
+                ctx.fillStyle = '#888';
+                ctx.font = '9px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('-15', margin, canvas.height - 10);
+                ctx.fillText('0', margin + width/2, canvas.height - 10);
+                ctx.fillText('15', canvas.width - margin, canvas.height - 10);
+
+                ctx.fillText('Log-Likelihood Curve over Mean (\u03bc)', canvas.width / 2, topMargin - 10);
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('stats22MeanSlider')) runStats22Simulation();
+            }, 100);
+        })();
+    </script>
+</div>

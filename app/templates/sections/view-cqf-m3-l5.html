@@ -1,0 +1,711 @@
+<div id="view-cqf-m3-l5" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 03: Equities &amp; Currencies</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 05</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L5: Further Numerical Methods — Master Study Guide</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Advanced Finite Difference Systems, Crank-Nicolson, Thomas LU Factorization, and Successive Over-Relaxation</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM3L5Implicit" onclick="switchM3L5Tab('implicit')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. Fully Implicit Method</button>
+        <button id="tabM3L5CrankNic" onclick="switchM3L5Tab('crankNic')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Crank-Nicolson Scheme</button>
+        <button id="tabM3L5Algebra" onclick="switchM3L5Tab('algebra')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Direct &amp; Iterative Solvers</button>
+        <button id="tabM3L5Advanced" onclick="switchM3L5Tab('advanced')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. Advanced &amp; Two-Factor</button>
+        <button id="tabM3L5Guide" onclick="switchM3L5Tab('guide')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Master Study Guide</button>
+        <button id="tabM3L5Sandbox" onclick="switchM3L5Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Advanced FDM Sandbox</button>
+    </div>
+
+    <!-- TAB 1: Fully Implicit Method -->
+    <div id="secM3L5Implicit" style="display: block;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">The Fully Implicit Finite Difference Method</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        Unlike the explicit scheme (where three known option prices at time step $k$ resolve to one price at step $k+1$), the **Fully Implicit Method** reverses the relationship: a single known option price at step $k$ relates to three unknown option prices at the next backward step $k+1$.
+                    </p>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        This is achieved by evaluating all spatial derivative approximations (Delta and Gamma) at the advanced, unknown time step $k+1$ rather than the current time step $k$. This produces a linear system of simultaneous equations.
+                    </p>
+
+                    <div style="background: var(--metric-bg); padding: 1.15rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 0.5rem;">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Unconditional Stability</h4>
+                        <p style="font-size: 0.8rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                            The fully implicit scheme is accurate to first order in time and second order in space: $\mathcal{O}(\delta t, \delta S^2)$. Crucially, the scheme is **unconditionally stable**, meaning that error perturbations decay exponentially regardless of the grid spacing step sizes $\delta t$ and $\delta S$. No Von Neumann stability constraints exist!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Implicit Matrix Formulation</h3>
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563; margin-bottom: 1rem;">
+                        Collecting the coefficients of the unknown option prices at step $k+1$ results in a linear system of equations:
+                        $$a_i^{k+1} V_{i-1}^{k+1} + (1 + B_i^{k+1}) V_i^{k+1} + C_i^{k+1} V_{i+1}^{k+1} = V_i^k$$
+                    </p>
+
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 0;">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.9rem; text-align:center;">Tridiagonal Coefficient Matrix</h4>
+                        <p style="font-size: 0.78rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                            The simultaneous system forms a **tridiagonal matrix** $\mathbf{A} \mathbf{v}^{k+1} = \mathbf{v}^k$:
+                            $$A = \begin{pmatrix} 
+                            b_0 & c_0 & 0 & \dots & 0 \\ 
+                            a_1 & b_1 & c_1 & & \vdots \\ 
+                            0 & \ddots & \ddots & \ddots & 0 \\ 
+                            \vdots & & a_{n-1} & b_{n-1} & c_{n-1} \\ 
+                            0 & \dots & 0 & a_n & b_n 
+                            \end{pmatrix}$$
+                            Because non-zero coefficients exist only on the diagonal, super-diagonal, and sub-diagonal, we can solve this system extremely quickly without performing direct matrix inversions.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Crank-Nicolson Scheme -->
+    <div id="secM3L5CrankNic" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Crank-Nicolson Method</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1.25rem;">
+                    Developed by John Crank and Phyllis Nicolson, this method takes an **equally weighted average** of the explicit and fully implicit schemes, effectively evaluating spatial derivatives at the half time step $k + 1/2$. It uses three known option prices at step $k$ and three unknown prices at step $k+1$ simultaneously:
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-family:var(--font-family-sans); margin-bottom:1.5rem;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Crank-Nicolson Discrete Formulation</h4>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color:#4b5563; text-align:center;">
+                        $$\frac{V_i^k - V_i^{k+1}}{\delta t} + \frac{a_i^{k+1}}{2} \Delta^2 V_i^{k+1} + \frac{a_i^k}{2} \Delta^2 V_i^k + \frac{b_i^{k+1}}{2} \Delta V_i^{k+1} + \frac{b_i^k}{2} \Delta V_i^k + \frac{c_i^{k+1}}{2} V_i^{k+1} + \frac{c_i^k}{2} V_i^k = 0$$
+                        where $\Delta^2 V_i$ is the second-order central difference and $\Delta V_i$ is the first-order spatial difference.
+                    </p>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; font-size:0.85rem; line-height:1.6; color:#4b5563;">
+                    <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Second-Order Accuracy</h4>
+                        <p style="font-size: 0.8rem; margin: 0; line-height: 1.5;">
+                            Because of its symmetric temporal centering, Crank-Nicolson achieves **second-order accuracy in both variables**: $\mathcal{O}(\delta t^2, \delta S^2)$. This is a significant improvement over the first-order temporal accuracy of both the explicit and fully implicit schemes.
+                        </p>
+                    </div>
+                    <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Stability &amp; Solvers</h4>
+                        <p style="font-size: 0.8rem; margin: 0; line-height: 1.5;">
+                            Crank-Nicolson is **unconditionally stable** (no step constraints). Like the implicit method, it produces a tridiagonal matrix system $\mathbf{M}_L \mathbf{v}^{k+1} = \mathbf{M}_R \mathbf{v}^k$ at each marching step, which must be solved using specialized linear algebra.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Direct & Iterative Solvers -->
+    <div id="secM3L5Algebra" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">1. LU Factorization: Direct Thomas Algorithm</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.5rem;">
+                        To solve the tridiagonal matrix equation $\mathbf{M}\mathbf{v} = \mathbf{q}$, computing the inverse $\mathbf{M}^{-1}$ is highly inefficient and should never be done in practice. Instead, we use **LU Decomposition** (Thomas Algorithm), factoring $\mathbf{M} = \mathbf{L}\mathbf{U}$ into lower bidiagonal $\mathbf{L}$ (unit diagonal) and upper bidiagonal $\mathbf{U}$:
+                    </p>
+
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border); font-family:var(--font-family-sans); margin-bottom:1rem; font-size: 0.82rem; line-height: 1.5;">
+                        <strong>Thomas Algorithm Factorization Steps:</strong>
+                        <br>
+                        - First, set the starting diagonal element: $d_1 = 1 + B_1$.
+                        <br>
+                        - For $2 \le i \le I-1$, compute bidiagonal values recursively:
+                        $$l_i = \frac{A_i}{d_{i-1}}, \quad u_{i-1} = C_{i-1}, \quad d_i = 1 + B_i - l_i u_{i-1}$$
+                        Once $\mathbf{L}$ and $\mathbf{U}$ are resolved, we solve $\mathbf{L}\mathbf{U}\mathbf{v} = \mathbf{q}$ in two fast sweeps:
+                        <br>
+                        1. **Forward Substitution** (solve $\mathbf{L}\mathbf{w} = \mathbf{q}$):
+                           $$w_1 = q_1, \quad w_i = q_i - l_i w_{i-1}$$
+                        2. **Backward Substitution** (solve $\mathbf{U}\mathbf{v} = \mathbf{w}$):
+                           $$v_{I-1} = \frac{w_{I-1}}{d_{I-1}}, \quad v_i = \frac{w_i - u_i v_{i+1}}{d_i}$$
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">2. Successive Over-Relaxation (SOR)</h3>
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.5rem;">
+                        SOR is an indirect iterative technique that accelerates convergence. It builds upon two foundational iterative methods:
+                        <br><br>
+                        - **Jacobi Method**: Each new iteration uses exclusively the values from the previous iteration step $n$.
+                        <br>
+                        - **Gauss-Seidel Method**: Incorporates recently updated values from the current iteration $n+1$ as they become available.
+                    </p>
+
+                    <div style="background: var(--metric-bg); padding: 0.85rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 0.5rem; font-size: 0.78rem; line-height: 1.4;">
+                        <strong>Strict Diagonal Dominance (SDD)</strong>:
+                        <br>
+                        Gauss-Seidel is guaranteed to converge to the exact solution if the matrix is strictly diagonally dominant: $|M_{ii}| > \sum_{j \neq i} |M_{ij}|$ for all rows.
+                    </div>
+
+                    <p style="font-size: 0.8rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                        <strong>SOR Parameter $\omega$</strong>:
+                        SOR accelerates Gauss-Seidel using a relaxation parameter $\omega$:
+                        $$v_i^{n+1} = (1-\omega)v_i^n + \frac{\omega}{M_{ii}} \left( q_i - \sum_{j < i} M_{ij} v_j^{n+1} - \sum_{j > i} M_{ij} v_j^n \right)$$
+                        - $0 < \omega < 1$: Under-relaxation (stabilizes unstable systems).
+                        - $1 < \omega < 2$: Over-relaxation (accelerates convergence).
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Advanced & Two-Factor -->
+    <div id="secM3L5Advanced" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Advanced Time-Stepping Schemes</h3>
+                    <p style="font-size: 0.85rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        The general **$\theta$-method** represents time-stepping as a weighted average between the explicit and fully implicit schemes using parameter $\theta \in [0, 1]$:
+                    </p>
+                    
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1rem; text-align:center;">
+                        $$\frac{V_i^{k+1} - V_i^k}{\delta t} = \theta \Delta^2 V_i^{k+1} + (1-\theta) \Delta^2 V_i^k$$
+                    </div>
+
+                    <ul style="padding-left: 1.2rem; line-height: 1.6; font-size: 0.82rem; color: #4b5563; margin-bottom: 1rem;">
+                        <li><strong>$\theta = 0$</strong>: Recovers the Explicit Scheme (conditionally stable).</li>
+                        <li><strong>$\theta = 1/2$</strong>: Recovers the Crank-Nicolson Scheme (unconditionally stable, $\mathcal{O}(\delta t^2)$).</li>
+                        <li><strong>$\theta = 1$</strong>: Recovers the Fully Implicit Scheme (unconditionally stable, $\mathcal{O}(\delta t)$).</li>
+                    </ul>
+
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                        **Douglas Schemes**: By choosing a specific $\theta$ weight, Douglas schemes achieve fourth-order accuracy in space and second-order in time ($\mathcal{O}(\delta S^4, \delta t^2)$) for the exact same computational effort as Crank-Nicolson.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Two-Factor Pricing Models</h3>
+                    <p style="font-size: 0.85rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        When options are exposed to both a stochastic stock price $S$ and a stochastic interest rate $r$ (e.g. convertible bonds), the pricing equation expands to a 3D grid surface ($S, r, t$):
+                    </p>
+
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1rem;">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.9rem; text-align:center;">Mixed Derivatives 9-Point Stencil</h4>
+                        <p style="font-size: 0.78rem; line-height: 1.4; color: #4b5563; margin: 0;">
+                            The mixed partial derivative term is approximated using central differences in both directions:
+                            $$\frac{\partial^2 V}{\partial S \partial r} \approx \frac{V_{i+1, j+1}^k - V_{i+1, j-1}^k - V_{i-1, j+1}^k + V_{i-1, j-1}^k}{4 \delta S \delta r}$$
+                            This requires a **9-point grid stencil** rather than the standard 3-point or 5-point stencils. If correlation is zero, this mixed term vanishes, reducing the grid stencil requirements back to 5 points.
+                        </p>
+                    </div>
+
+                    <p style="font-size: 0.8rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                        Stochastic interest rates in this multi-factor framework are typically modeled using the **Vasicek** or **Cox-Ingersoll-Ross (CIR)** models.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: Master Study Guide -->
+    <div id="secM3L5Guide" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 1.5rem;">Further Numerical Methods Master Study Guide</h3>
+
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <!-- Problem 1.1 Q1 -->
+                    <details style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden;">
+                        <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
+                            Problem 1.1 Q1: Crout and Doolittle LU Decompositions
+                        </summary>
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                            <strong>Question:</strong><br>
+                            Solve the system $A\mathbf{x} = \mathbf{b}$ using Crout and Doolittle LU decompositions:
+                            $$A = \begin{pmatrix} 2 & 3 & 4 \\ 4 & -5 & -10 \\ 1 & 2 & 3 \end{pmatrix}; \quad \mathbf{b} = \begin{pmatrix} 2 \\ 4 \\ 1 \end{pmatrix}$$
+                            <hr style="border:0; border-top:1px solid var(--card-border); margin:1rem 0;">
+                            <strong>Detailed Solution:</strong><br>
+                            <p><strong>Doolittle Decomposition ($L$ has unit diagonal)</strong>:
+                            $$L = \begin{pmatrix} 1 & 0 & 0 \\ 2 & 1 & 0 \\ \frac{1}{2} & -\frac{1}{22} & 1 \end{pmatrix}; \quad U = \begin{pmatrix} 2 & 3 & 4 \\ 0 & -11 & -18 \\ 0 & 0 & \frac{2}{11} \end{pmatrix}$$
+                            Solve $L\mathbf{w} = \mathbf{b}$:
+                            $$w_1 = 2, \quad w_2 = 4 - 2(2) = 0, \quad w_3 = 1 - 0.5(2) - (-1/22)(0) = 0$$
+                            Solve $U\mathbf{x} = \mathbf{w}$:
+                            $$z = 0, \quad y = 0, \quad x = 1 \implies \mathbf{x} = \begin{pmatrix} 1 \\ 0 \\ 0 \end{pmatrix}$$
+                            </p>
+                            <p><strong>Crout Decomposition ($U$ has unit diagonal)</strong>:
+                            $$L = \begin{pmatrix} 2 & 0 & 0 \\ 4 & -11 & 0 \\ 1 & 0.5 & \frac{2}{11} \end{pmatrix}; \quad U = \begin{pmatrix} 1 & 1.5 & 2 \\ 0 & 1 & \frac{18}{11} \\ 0 & 0 & 1 \end{pmatrix}$$
+                            Following forward substitution $L\mathbf{w} = \mathbf{b}$ and backward substitution $U\mathbf{x} = \mathbf{w}$ yields:
+                            $$\mathbf{x} = \begin{pmatrix} 1 \\ 0 \\ 0 \end{pmatrix}$$
+                            </p>
+                        </div>
+                    </details>
+
+                    <!-- Problem 1.1 Q3 -->
+                    <details style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden;">
+                        <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
+                            Problem 1.1 Q3: Jacobi vs. Gauss-Seidel Iterative Convergence
+                        </summary>
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                            <strong>Question:</strong><br>
+                            Solve using the Gauss-Seidel method correct to 3 decimal places with initial guess $\mathbf{x}^{(0)} = (0, 0, 0)^T$:
+                            $$\begin{pmatrix} 8 & -1 & 1 \\ 2 & 10 & -1 \\ -1 & -1 & 5 \end{pmatrix} \begin{pmatrix} x \\ y \\ z \end{pmatrix} = \begin{pmatrix} 1 \\ 4 \\ -3 \end{pmatrix}$$
+                            Verify strict diagonal dominance (SDD) and calculate the infinite norm error ratio.
+                            <hr style="border:0; border-top:1px solid var(--card-border); margin:1rem 0;">
+                            <strong>Detailed Solution:</strong><br>
+                            Gauss-Seidel equations:
+                            $$x^{(k+1)} = \frac{1}{8} \left( 1 + y^{(k)} - z^{(k)} \right), \quad y^{(k+1)} = \frac{1}{10} \left( 4 - 2x^{(k+1)} + z^{(k)} \right), \quad z^{(k+1)} = \frac{1}{5} \left( -3 + x^{(k+1)} + y^{(k+1)} \right)$$
+                            - Iteration 1: $x = 0.125, \, y = 0.375, \, z = -0.500$
+                            <br>
+                            - Iteration 2: $x = 0.234, \, y = 0.303, \, z = -0.492$
+                            <br>
+                            - Iteration 3: $x = 0.224, \, y = 0.306, \, z = -0.494$
+                            <br>
+                            - Iteration 4: $x = 0.225, \, y = 0.306, \, z = -0.494$
+                            <br>
+                            **SDD Verification**:
+                            Row 1: $|8| > |-1| + |1| = 2$ (SDD). Row 2: $|10| > |2| + |-1| = 3$ (SDD). Row 3: $|5| > |-1| + |-1| = 2$ (SDD).
+                            The matrix is strictly diagonally dominant, guaranteeing convergence.
+                            <br>
+                            **Infinite Norm Error Ratio (It 3 to 4)**:
+                            $$\frac{\|\mathbf{x}^{(4)} - \mathbf{x}^{(3)}\|_{\infty}}{\|\mathbf{x}^{(3)}\|_{\infty}} = \frac{\|(0.001, 0, 0)\|_{\infty}}{\|0.494\|_{\infty}} = \frac{0.001}{0.494} \approx 0.00202$$
+                        </div>
+                    </details>
+
+                    <!-- Problem 1.2 Q1 -->
+                    <details style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden;">
+                        <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
+                            Problem 1.2 Q1: Fully Implicit Difference Scheme &amp; Doolittle Solver
+                        </summary>
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                            <strong>Question:</strong><br>
+                            1. Derive the fully implicit difference scheme $a_n V_{n-1}^{m+1} + b_n V_n^{m+1} + c_n V_{n+1}^{m+1} = V_n^m$ for the Black-Scholes PDE.
+                            2. Solve $A\mathbf{x} = \mathbf{b}$ using Doolittle's method:
+                               $$A = \begin{pmatrix} 2 & 1 & -2 \\ 3 & 2 & 2 \\ 5 & 4 & 3 \end{pmatrix}; \quad \mathbf{b} = \begin{pmatrix} 10 \\ 1 \\ 4 \end{pmatrix}$$
+                            <hr style="border:0; border-top:1px solid var(--card-border); margin:1rem 0;">
+                            <strong>Detailed Solution:</strong><br>
+                            <p><strong>Part 1: Implicit Difference Derivation</strong>:
+                            Substituting backward marching derivatives evaluated at step $m+1$:
+                            $$\frac{V_n^m - V_n^{m+1}}{\delta t} + \frac{1}{2}\sigma^2 n^2 (V_{n-1}^{m+1} - 2V_n^{m+1} + V_{n+1}^{m+1}) + \frac{(r-D)n}{2}(V_{n+1}^{m+1} - V_{n-1}^{m+1}) - rV_n^{m+1} = 0$$
+                            Multiplying by $\delta t$ and isolating $V_n^m$ gives:
+                            $$a_n = -\frac{1}{2}\left( \sigma^2 n^2 - n(r-D) \right)\delta t, \quad b_n = 1 + \left( \sigma^2 n^2 + r \right)\delta t, \quad c_n = -\frac{1}{2}\left( \sigma^2 n^2 + n(r-D) \right)\delta t$$
+                            </p>
+                            <p><strong>Part 2: Doolittle Method</strong>:
+                            Factoring $A = LU$:
+                            $$L = \begin{pmatrix} 1 & 0 & 0 \\ 1.5 & 1 & 0 \\ 2.5 & 3 & 1 \end{pmatrix}; \quad U = \begin{pmatrix} 2 & 1 & -2 \\ 0 & 0.5 & 5 \\ 0 & 0 & -7 \end{pmatrix}$$
+                            Solve $L\mathbf{w} = \mathbf{b}$ via forward substitution:
+                            $$w_1 = 10, \quad w_2 = 1 - 1.5(10) = -14, \quad w_3 = 4 - 2.5(10) - 3(-14) = 21$$
+                            Solve $U\mathbf{x} = \mathbf{w}$ via backward substitution:
+                            $$x_3 = \frac{21}{-7} = -3, \quad 0.5 x_2 + 5(-3) = -14 \implies x_2 = 2$$
+                            $$2x_1 + 2 - 2(-3) = 10 \implies x_1 = 1 \implies \mathbf{x} = \begin{pmatrix} 1 \\ 2 \\ -3 \end{pmatrix}$$
+                            </p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Advanced FDM Sandbox -->
+    <div id="secM3L5Sandbox" style="display: none;">
+        <div class="container" style="grid-template-columns: 320px 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <!-- Inputs Panel -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem; font-family: var(--font-family-sans); font-size: 0.85rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom:1rem;">Inputs</h3>
+                
+                <div style="display:flex; flex-direction:column; gap:1.1rem;">
+                    <!-- Stock Price -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Stock Price ($S_0$):</span>
+                            <span id="valM3L5Stock" style="color:var(--accent);">100</span>
+                        </div>
+                        <input id="slideM3L5Stock" type="range" min="40" max="160" step="5" value="100" style="width:100%; cursor:pointer;" oninput="updateM3L5Sandbox()">
+                    </div>
+
+                    <!-- Strike Price -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Strike Price ($E$):</span>
+                            <span id="valM3L5Strike" style="color:var(--accent);">100</span>
+                        </div>
+                        <input id="slideM3L5Strike" type="range" min="40" max="160" step="5" value="100" style="width:100%; cursor:pointer;" oninput="updateM3L5Sandbox()">
+                    </div>
+
+                    <!-- Volatility -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Volatility ($\sigma$):</span>
+                            <span id="valM3L5Vol" style="color:var(--accent);">20%</span>
+                        </div>
+                        <input id="slideM3L5Vol" type="range" min="5" max="80" step="5" value="20" style="width:100%; cursor:pointer;" oninput="updateM3L5Sandbox()">
+                    </div>
+
+                    <!-- Time to Expiry -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Time to Expiry ($T$):</span>
+                            <span id="valM3L5Time" style="color:var(--accent);">1.0 Year</span>
+                        </div>
+                        <input id="slideM3L5Time" type="range" min="0.25" max="2.0" step="0.25" value="1.0" style="width:100%; cursor:pointer;" oninput="updateM3L5Sandbox()">
+                    </div>
+
+                    <!-- Rate -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Risk-Free Rate ($r$):</span>
+                            <span id="valM3L5Rate" style="color:var(--accent);">5.0%</span>
+                        </div>
+                        <input id="slideM3L5Rate" type="range" min="0" max="12" step="0.5" value="5" style="width:100%; cursor:pointer;" oninput="updateM3L5Sandbox()">
+                    </div>
+
+                    <!-- Spatial Grid Nodes -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Spatial Grid Nodes ($N$):</span>
+                            <span id="valM3L5Nodes" style="color:var(--accent);">40</span>
+                        </div>
+                        <input id="slideM3L5Nodes" type="range" min="20" max="60" step="5" value="40" style="width:100%; cursor:pointer;" oninput="updateM3L5Sandbox()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visualization Canvas -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Advanced PDE Solvers Comparison</h3>
+                    <div style="height: 180px; position: relative; margin-bottom: 0.5rem;">
+                        <canvas id="m3l5GridChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Pricing Results Grid -->
+                <div style="background: var(--metric-bg); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); display:grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; text-align:center; font-size:0.8rem;">
+                    <div>
+                        <div style="font-size: 0.6rem; color:#6b7280; font-weight:700; text-transform:uppercase;">BS Analytical:</div>
+                        <div id="outM3L5BsPrice" style="font-size:1rem; font-weight:800; color:#10b981;">0.00</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.6rem; color:#6b7280; font-weight:700; text-transform:uppercase;">Explicit FDM:</div>
+                        <div id="outM3L5Explicit" style="font-size:1rem; font-weight:800; color:var(--text-color);">0.00</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.6rem; color:#6b7280; font-weight:700; text-transform:uppercase;">Fully Implicit:</div>
+                        <div id="outM3L5Implicit" style="font-size:1rem; font-weight:800; color:var(--accent);">0.00</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.6rem; color:#6b7280; font-weight:700; text-transform:uppercase;">Crank-Nicolson:</div>
+                        <div id="outM3L5CrankNic" style="font-size:1rem; font-weight:800; color:#8b5cf6;">0.00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching logic for CQF M3 L5
+    window.switchM3L5Tab = function(tab) {
+        const tabs = ['implicit', 'crankNic', 'algebra', 'advanced', 'guide', 'sandbox'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM3L5' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM3L5' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) {
+                sec.style.display = (t === tab ? 'block' : 'none');
+                if (t === tab && !sec.dataset.typeset) {
+                    if (typeof window.safeTypeset === 'function') {
+                        window.safeTypeset([sec]);
+                        sec.dataset.typeset = 'true';
+                    }
+                }
+            }
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        if (tab === 'sandbox') {
+            setTimeout(updateM3L5Sandbox, 100);
+        }
+    };
+
+    let m3l5GridChartInstance = null;
+
+    // Normal Cumulative Distribution Function
+    function m3l5NormCdf(x) {
+        const b1 =  0.319381530;
+        const b2 = -0.356563782;
+        const b3 =  1.781477937;
+        const b4 = -1.821255978;
+        const b5 =  1.330274429;
+        const p  =  0.2316419;
+        const c  =  0.39894228;
+
+        if (x >= 0.0) {
+            let k = 1.0 / (1.0 + p * x);
+            return 1.0 - c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        } else {
+            let k = 1.0 / (1.0 - p * x);
+            return c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        }
+    }
+
+    // Thomas Tridiagonal Solver LU algorithm in JS
+    // Solves system M * v = q, where M coefficients are: sub-diag 'a', diag 'b', super-diag 'c'
+    function solveTridiagonalThomas(a, b, c, q, I) {
+        let d = Array(I).fill(0);
+        let l = Array(I).fill(0);
+        let u = Array(I).fill(0);
+        
+        // Forward Sweep to decompose bidiagonal coefficients
+        d[1] = b[1];
+        for (let i = 2; i < I; i++) {
+            l[i] = a[i] / d[i-1];
+            u[i-1] = c[i-1];
+            d[i] = b[i] - l[i] * u[i-1];
+        }
+
+        // Forward Substitution LW = Q
+        let w = Array(I).fill(0);
+        w[1] = q[1];
+        for (let i = 2; i < I; i++) {
+            w[i] = q[i] - l[i] * w[i-1];
+        }
+
+        // Backward Substitution UV = W
+        let v = Array(I).fill(0);
+        v[I-1] = w[I-1] / d[I-1];
+        for (let i = I - 2; i >= 1; i--) {
+            v[i] = (w[i] - u[i] * v[i+1]) / d[i];
+        }
+
+        return v;
+    }
+
+    window.updateM3L5Sandbox = function() {
+        const S0 = parseFloat(document.getElementById('slideM3L5Stock').value);
+        const E = parseFloat(document.getElementById('slideM3L5Strike').value);
+        const vol = parseFloat(document.getElementById('slideM3L5Vol').value) / 100;
+        const T = parseFloat(document.getElementById('slideM3L5Time').value);
+        const r = parseFloat(document.getElementById('slideM3L5Rate').value) / 100;
+        const N = parseInt(document.getElementById('slideM3L5Nodes').value);
+
+        // Labels
+        document.getElementById('valM3L5Stock').innerText = S0.toFixed(0);
+        document.getElementById('valM3L5Strike').innerText = E.toFixed(0);
+        document.getElementById('valM3L5Vol').innerText = (vol * 100).toFixed(0) + "%";
+        document.getElementById('valM3L5Time').innerText = T.toFixed(2) + (T === 1 ? " Year" : " Years");
+        document.getElementById('valM3L5Rate').innerText = (r * 100).toFixed(1) + "%";
+        document.getElementById('valM3L5Nodes').innerText = N;
+
+        // BS Analytical
+        const d1 = (Math.log(S0 / E) + (r + 0.5 * vol * vol) * T) / (vol * Math.sqrt(T));
+        const d2 = d1 - vol * Math.sqrt(T);
+        const bsPrice = S0 * m3l5NormCdf(d1) - E * Math.exp(-r * T) * m3l5NormCdf(d2);
+        document.getElementById('outM3L5BsPrice').innerText = "$" + bsPrice.toFixed(2);
+
+        // Grid specifications
+        const S_max = 200;
+        const dS = S_max / N;
+
+        // Dynamic M_steps to guarantee explicit stability limit
+        const stableDt = 0.9 / (vol * vol * N * N);
+        let M_steps = Math.ceil(T / stableDt);
+        if (M_steps < 40) M_steps = 40; // minimum steps
+        const dt = T / M_steps;
+
+        // --- 1. Explicit Solver ---
+        let expGrid = [];
+        for (let i = 0; i <= N; i++) expGrid[i] = Math.max(i * dS - E, 0); // terminals
+        for (let k = 1; k <= M_steps; k++) {
+            let nextGrid = [];
+            nextGrid[0] = (1 - r * dt) * expGrid[0];
+            for (let i = 1; i < N; i++) {
+                const alpha = 0.5 * (vol * vol * i * i - i * r) * dt;
+                const beta = 1 - (vol * vol * i * i + r) * dt;
+                const gamma = 0.5 * (vol * vol * i * i + i * r) * dt;
+                nextGrid[i] = alpha * expGrid[i-1] + beta * expGrid[i] + gamma * expGrid[i+1];
+            }
+            nextGrid[N] = 2 * nextGrid[N-1] - nextGrid[N-2];
+            expGrid = nextGrid;
+        }
+
+        // --- 2. Fully Implicit Solver ---
+        let impGrid = [];
+        for (let i = 0; i <= N; i++) impGrid[i] = Math.max(i * dS - E, 0); // terminals
+        for (let k = 1; k <= M_steps; k++) {
+            // Setup Tridiagonal vectors
+            let a = Array(N + 1).fill(0);
+            let b = Array(N + 1).fill(0);
+            let c = Array(N + 1).fill(0);
+            let q = Array(N + 1).fill(0);
+
+            for (let i = 1; i < N; i++) {
+                a[i] = -0.5 * (vol * vol * i * i - i * r) * dt;
+                b[i] = 1 + (vol * vol * i * i + r) * dt;
+                c[i] = -0.5 * (vol * vol * i * i + i * r) * dt;
+                q[i] = impGrid[i];
+            }
+
+            // Boundary condition injection
+            impGrid[0] = impGrid[0] / (1 + r * dt);
+            q[1] -= a[1] * impGrid[0];
+
+            // vanishing gamma boundary condition S_max
+            // V[N] = 2*V[N-1] - V[N-2]. Substitute this inside row N-1 equation:
+            // a*V[N-2] + b*V[N-1] + c*(2*V[N-1] - V[N-2]) = q
+            // (a - c)*V[N-2] + (b + 2c)*V[N-1] = q
+            a[N-1] -= c[N-1];
+            b[N-1] += 2 * c[N-1];
+
+            // Solve using Thomas Algorithm
+            const solvedV = solveTridiagonalThomas(a, b, c, q, N);
+            
+            // Populate grid
+            for (let i = 1; i < N; i++) {
+                impGrid[i] = solvedV[i];
+            }
+            impGrid[N] = 2 * impGrid[N-1] - impGrid[N-2];
+        }
+
+        // --- 3. Crank-Nicolson Solver ---
+        let cnGrid = [];
+        for (let i = 0; i <= N; i++) cnGrid[i] = Math.max(i * dS - E, 0); // terminals
+        for (let k = 1; k <= M_steps; k++) {
+            let a = Array(N + 1).fill(0);
+            let b = Array(N + 1).fill(0);
+            let c = Array(N + 1).fill(0);
+            let q = Array(N + 1).fill(0);
+
+            for (let i = 1; i < N; i++) {
+                // Left Hand Side (Implicit matrix coefficients)
+                a[i] = -0.25 * (vol * vol * i * i - i * r) * dt;
+                b[i] = 1 + 0.5 * (vol * vol * i * i + r) * dt;
+                c[i] = -0.25 * (vol * vol * i * i + i * r) * dt;
+
+                // Right Hand Side (Explicit matrix coefficients times current grid)
+                const alpha_ex = 0.25 * (vol * vol * i * i - i * r) * dt;
+                const beta_ex = 1 - 0.5 * (vol * vol * i * i + r) * dt;
+                const gamma_ex = 0.25 * (vol * vol * i * i + i * r) * dt;
+
+                q[i] = alpha_ex * cnGrid[i-1] + beta_ex * cnGrid[i] + gamma_ex * cnGrid[i+1];
+            }
+
+            // Boundary conditions
+            const cnGrid_0_next = cnGrid[0] * (1 - 0.5 * r * dt) / (1 + 0.5 * r * dt);
+            q[1] -= a[1] * cnGrid_0_next;
+
+            // vanishing gamma boundary
+            a[N-1] -= c[N-1];
+            b[N-1] += 2 * c[N-1];
+
+            // Solve Crank-Nicolson Tridiagonal
+            const solvedV = solveTridiagonalThomas(a, b, c, q, N);
+
+            cnGrid[0] = cnGrid_0_next;
+            for (let i = 1; i < N; i++) {
+                cnGrid[i] = solvedV[i];
+            }
+            cnGrid[N] = 2 * cnGrid[N-1] - cnGrid[N-2];
+        }
+
+        // Interpolate Spot Prices
+        const S0_idx = S0 / dS;
+        const low = Math.floor(S0_idx);
+        const high = Math.ceil(S0_idx);
+        const lerp = (lowPrice, highPrice) => lowPrice + (S0_idx - low) * (highPrice - lowPrice);
+
+        document.getElementById('outM3L5Explicit').innerText = "$" + lerp(expGrid[low], expGrid[high]).toFixed(2);
+        document.getElementById('outM3L5Implicit').innerText = "$" + lerp(impGrid[low], impGrid[high]).toFixed(2);
+        document.getElementById('outM3L5CrankNic').innerText = "$" + lerp(cnGrid[low], cnGrid[high]).toFixed(2);
+
+        // Generate Plot points to display asset profile
+        let spots = [];
+        let expData = [];
+        let impData = [];
+        let cnData = [];
+        
+        for (let i = 0; i <= N; i++) {
+            spots.push(i * dS);
+            expData.push(expGrid[i]);
+            impData.push(impGrid[i]);
+            cnData.push(cnGrid[i]);
+        }
+
+        renderM3L5GridPlot(spots, expData, impData, cnData);
+    };
+
+    function renderM3L5GridPlot(spots, explicitData, implicitData, cnData) {
+        const ctx = document.getElementById('m3l5GridChart');
+        if (!ctx) return;
+
+        const spotLabels = spots.map(s => s.toFixed(0));
+
+        const datasets = [
+            {
+                label: 'Explicit FDM',
+                data: explicitData,
+                borderColor: 'var(--text-color)',
+                borderWidth: 1.5,
+                fill: false,
+                pointRadius: 0
+            },
+            {
+                label: 'Fully Implicit FDM',
+                data: implicitData,
+                borderColor: 'var(--accent)',
+                borderWidth: 2,
+                fill: false,
+                pointRadius: 0
+            },
+            {
+                label: 'Crank-Nicolson FDM',
+                data: cnData,
+                borderColor: '#8b5cf6',
+                borderWidth: 2,
+                fill: false,
+                pointRadius: 0
+            }
+        ];
+
+        if (m3l5GridChartInstance) {
+            m3l5GridChartInstance.data.labels = spotLabels;
+            m3l5GridChartInstance.data.datasets = datasets;
+            m3l5GridChartInstance.update();
+            return;
+        }
+
+        m3l5GridChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: spotLabels,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true, position: 'bottom', labels: { boxWidth: 10, font: { size: 8 } } }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Stock Price ($)', font: { size: 9 } },
+                        ticks: { font: { size: 8 } }
+                    },
+                    y: {
+                        title: { display: true, text: 'Option Value ($)', font: { size: 9 } },
+                        ticks: { font: { size: 8 } }
+                    }
+                }
+            }
+        });
+    }
+</script>

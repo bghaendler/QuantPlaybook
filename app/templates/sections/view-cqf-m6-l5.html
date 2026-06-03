@@ -1,0 +1,552 @@
+<div id="view-cqf-m6-l5" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 06: Fixed Income &amp; Credit</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 05</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L5: Heath, Jarrow &amp; Morton (HJM) Model</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Modeling the Entire Forward Curve, Multi-Factor Dynamics, and Jacobi PCA Diagonalization</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM6L5Foundations" onclick="switchM6L5Tab('foundations')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. HJM Foundations</button>
+        <button id="tabM6L5Dynamics" onclick="switchM6L5Tab('dynamics')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Single-Factor SDE</button>
+        <button id="tabM6L5Drift" onclick="switchM6L5Tab('drift')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. HJM Drift Condition</button>
+        <button id="tabM6L5Musiela" onclick="switchM6L5Tab('musiela')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. Musiela &amp; Multi-Factor</button>
+        <button id="tabM6L5Exercises" onclick="switchM6L5Tab('exercises')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Solved Exercises</button>
+        <button id="tabM6L5Sandbox" onclick="switchM6L5Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Interactive Quant Labs</button>
+    </div>
+
+    <!-- TAB 1: HJM Foundations -->
+    <div id="secM6L5Foundations" style="display: block;">
+        <div class="container" style="grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; margin-bottom: 2rem; display: grid; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Modeling the Entire Yield Curve</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        The Heath, Jarrow, and Morton (HJM) framework models the yield curve as a whole by focusing on the evolution of the entire forward rate curve rather than a single short-rate point. Instantaneous forward rates $f(t, T)$ are continuously compounded rates contracted today for borrowing/lending over an infinitesimal period starting at a future maturity date $T$.
+                    </p>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        <strong>Discount Factors &amp; Forward Rates:</strong> Zero-coupon bond prices are linked to the instantaneous forward rate curve via:
+                        $$Z(t, T) = \exp\left( -\int_t^T f(t, s) \, \mathrm{d}s \right) \implies f(t, T) = -\frac{\partial}{\partial T} \log Z(t, T)$$
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Derivation Methods</h3>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                        The instantaneous forward rate is formally derived through three consistent mathematical methods:
+                        <ul style="padding-left:1.15rem; margin-top:0.25rem; margin-bottom:0;">
+                            <li><strong>Integral over Forward Curve:</strong> Directly differentiating log ZCB prices.</li>
+                            <li><strong>Present Value of Forward Investment:</strong> Taking the limit of discrete-tenor forward contracts.</li>
+                            <li><strong>Self-Financing Arbitrage Portfolio:</strong> Formulating an arbitrage portfolio of bonds that matures at $T$ and $T+\delta t$.</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Single-Factor SDE -->
+    <div id="secM6L5Dynamics" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Zero-Coupon Bond Price Dynamics</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    We assume the ZCB price follows a generic lognormal SDE under the physical measure $\mathbb{P}$:
+                    $$\frac{\mathrm{d}Z(t, T)}{Z(t, T)} = \mu(t, T)\mathrm{d}t + \sigma(t, T)\mathrm{d}W_t$$
+                    By constructing a self-financing risk-free portfolio hedging two bonds of different maturities, we isolate the <strong>market price of interest rate risk</strong> $\lambda(r, t)$:
+                    $$\frac{\mu(t, T) - r(t)}{\sigma(t, T)} = \lambda(r, t) \implies \mu(t, T) = r(t) + \lambda(r, t)\sigma(t, T)$$
+                    Under the risk-neutral measure $\mathbb{Q}$, setting $\lambda = 0$ simplifies the drift to the short rate $r(t)$:
+                    $$\frac{\mathrm{d}Z(t, T)}{Z(t, T)} = r(t)\mathrm{d}t + \sigma(t, T)\mathrm{d}W_t^{\mathbb{Q}}$$
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Differentiating log ZCB Prices (Itô's Lemma)</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        Applying Itô's Lemma to $F = \log Z(t,T)$:
+                        $$\mathrm{d}(\log Z(t, T)) = \left( r(t) - \frac{1}{2}\sigma^2(t, T) \right) \mathrm{d}t + \sigma(t, T) \mathrm{d}W_t^{\mathbb{Q}}$$
+                        By differentiating partially w.r.t maturity $T$ and applying the definition of $f(t,T)$:
+                        $$\mathrm{d}f(t, T) = -\frac{\partial}{\partial T} \left( \mathrm{d}\log Z(t,T) \right) = \frac{\partial}{\partial T}\left[ \frac{1}{2}\sigma^2(t, T) - r(t) \right] \mathrm{d}t - \frac{\partial \sigma(t, T)}{\partial T} \mathrm{d}W_t^{\mathbb{Q}}$$
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: HJM Drift Condition -->
+    <div id="secM6L5Drift" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">No-Arbitrage Drift Constraint</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    Since the spot rate $r(t)$ is independent of maturity $T$, its derivative vanishes ($\frac{\partial r}{\partial T} = 0$). By defining the forward rate volatility as $\nu(t, T) \equiv -\frac{\partial \sigma(t, T)}{\partial T}$, we obtain:
+                    $$\sigma(t, T) = -\int_t^T \nu(t, s) \, \mathrm{d}s$$
+                    Substituting this back yields the **HJM Drift Condition SDE** under $\mathbb{Q}$:
+                    $$\mathrm{d}f(t, T) = \left( \nu(t, T)\int_t^T \nu(t, s)\mathrm{d}s \right) \mathrm{d}t + \nu(t, T)\mathrm{d}W_t^{\mathbb{Q}}$$
+                    This is a critical result: **in an arbitrage-free model, the drift of the forward rate is completely determined by its volatility structure.**
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">The Non-Markovian Nature of HJM</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        Because the spot rate is $r(t) = f(t, t)$, integrating the forward SDE yields a drift that contains the history of volatility and Brownian movements from the initial time $t^*$ to the current time $t$:
+                        $$\mathrm{d}r(t) = \left[ \frac{\partial f(t^*, t)}{\partial t} - \frac{\partial \mu(t, s)}{\partial s}\Big|_{s=t} + \int_{t^*}^t \left( \sigma(s, t)\frac{\partial^2 \sigma(s, t)}{\partial t^2} + \left(\frac{\partial \sigma(s, t)}{\partial t}\right)^2 \right)\mathrm{d}s - \int_{t^*}^t \frac{\partial^2 \sigma(s, t)}{\partial t^2}\mathrm{d}W_s \right]\mathrm{d}t - \frac{\partial \sigma(t, s)}{\partial s}\Big|_{s=t} \mathrm{d}W_t$$
+                        This structural "memory" means the spot rate is non-Markovian. A system shock cannot be undone by an equal and opposite shock. Binomial trees grow exponentially ("bushy"), making finite differences unfeasible and requiring **Monte Carlo simulation** for pricing exotics.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Musiela & Multi-Factor -->
+    <div id="secM6L5Musiela" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Musiela Parameterization (Constant Tenor)</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    In calendar time $T$, the maturity date is constant, so the modeled rate represents a shorter-term asset every day. The **Musiela Parameterization** shifts maturity to constant tenor (time-to-maturity) $\tau = T - t$. Using the multi-variable chain rule:
+                    $$\mathrm{d}\bar{f}(t, \tau) = \left( \bar{\nu}(t, \tau)\int_0^\tau \bar{\nu}(t, s) \, \mathrm{d}s + \frac{\partial \bar{f}(t, \tau)}{\partial \tau} \right) \mathrm{d}t + \bar{\nu}(t, \tau) \mathrm{d}W_t^{\mathbb{Q}}$$
+                    The term $\frac{\partial \bar{f}}{\partial \tau}$ represents the slope of the yield curve, correcting for "rolling down the curve" as calendar time passes.
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6; margin-bottom: 1rem;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Multi-Factor Yield Curve Modeling</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        To capture complex curve twists and bending, HJM is extended to $k$ independent Brownian motions $W_{i,t}$:
+                        $$\mathrm{d}\bar{f}(t, \tau) = \left( \sum_{i=1}^k \bar{\nu}_i(t, \tau) \int_0^\tau \bar{\nu}_i(t, s) \, \mathrm{d}s + \frac{\partial \bar{f}(t, \tau)}{\partial \tau} \right) \mathrm{d}t + \sum_{i=1}^k \bar{\nu}_i(t, \tau) \mathrm{d}W_{i, t}$$
+                        Principal Component Analysis (PCA) decomposes historical yield curve movements, revealing that three factors (PC1 Level Shift, PC2 Slope Twist, PC3 Curvature Bend) explain over $95\%$ of yield curve variations.
+                    </p>
+                </div>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Special Case: The Ho &amp; Lee Model</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        The SDE of the Ho &amp; Lee short-rate model maps directly into the HJM framework by setting $\nu(t,T) = c$ (constant forward rate volatility):
+                        $$\mathrm{d}f(t, T) = c^2(T-t)\mathrm{d}t + c \, \mathrm{d}W_t^{\mathbb{Q}}$$
+                        This demonstrates that traditional affine models are nested as specific, restricted parameterizations within the general Heath-Jarrow-Morton framework.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: Solved Practice Exercises -->
+    <div id="secM6L5Exercises" style="display: none; max-height: 600px; overflow-y: auto; padding-right: 0.5rem;">
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Exercise 1. The Jacobi Rotation Angle Derivation</h3>
+            <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563;">
+                <strong>Question:</strong> Prove that the rotation angle $\phi$ required to cancel the off-diagonal element $a_{p, q}$ in a symmetric matrix $\mathbf{A}$ satisfies $\tan(2\phi) = \frac{2 a_{p, q}}{a_{q, q} - a_{p, p}}$.
+            </p>
+            <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color:#374151;">
+                <strong>Solution:</strong><br>
+                Under rotation matrix $\mathbf{P_{p, q}}$, the transformed element is:
+                $$a'_{p, q} = a_{p, q}(\cos^2 \phi - \sin^2 \phi) + (a_{p, p} - a_{q, q})\sin \phi \cos \phi = 0$$
+                Using the trigonometric identities $\cos^2 \phi - \sin^2 \phi = \cos(2\phi)$ and $2\sin \phi \cos \phi = \sin(2\phi)$:
+                $$a'_{p, q} = a_{p, q}\cos(2\phi) + \frac{1}{2}(a_{p, p} - a_{q, q})\sin(2\phi) = 0$$
+                Rearranging the terms:
+                $$\frac{1}{2}(a_{q, q} - a_{p, p})\sin(2\phi) = a_{p, q}\cos(2\phi)$$
+                Dividing both sides by $\cos(2\phi)$ and $\frac{1}{2}(a_{q, q} - a_{p, p})$:
+                $$\frac{\sin(2\phi)}{\cos(2\phi)} = \frac{2 a_{p, q}}{a_{q, q} - a_{p, p}} \implies \tan(2\phi) = \frac{2 a_{p, q}}{a_{q, q} - a_{p, p}}$$
+                This proves the Jacobi rotation angle.
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Exercise 2. Jacobi Off-Diagonal Sum Decay</h3>
+            <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563;">
+                <strong>Question:</strong> Show that each Jacobi rotation reduces the sum of squares of the off-diagonal elements by exactly $2a_{p, q}^2$: $S(\mathbf{A'}) = S(\mathbf{A}) - 2a_{p, q}^2$.
+            </p>
+            <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color:#374151;">
+                <strong>Solution:</strong><br>
+                For any orthogonal transformation, the Frobenius norm (total sum of squares of all elements) is invariant:
+                $$\sum_{i, j} (a'_{i, j})^2 = \sum_{i, j} a_{i, j}^2$$
+                Splitting this sum into diagonal and off-diagonal terms:
+                $$\sum_{i=1}^n (a'_{i, i})^2 + S(\mathbf{A'}) = \sum_{i=1}^n a_{i, i}^2 + S(\mathbf{A})$$
+                The rotation only affects elements in rows and columns $p$ and $q$. For the diagonal terms, algebraic expansion reveals:
+                $$(a'_{p, p})^2 + (a'_{q, q})^2 = a_{p, p}^2 + a_{q, q}^2 + 2 a_{p, q}^2$$
+                Substituting this back into the norm invariance equation:
+                $$\sum_{i \neq p, q} a_{i, i}^2 + a_{p, p}^2 + a_{q, q}^2 + 2 a_{p, q}^2 + S(\mathbf{A'}) = \sum_{i \neq p, q} a_{i, i}^2 + a_{p, p}^2 + a_{q, q}^2 + S(\mathbf{A})$$
+                Canceling the identical diagonal terms:
+                $$2 a_{p, q}^2 + S(\mathbf{A'}) = S(\mathbf{A}) \implies S(\mathbf{A'}) = S(\mathbf{A}) - 2a_{p, q}^2$$
+                This proves the off-diagonal sum decay.
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Interactive Quant Labs -->
+    <div id="secM6L5Sandbox" style="display: none;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <!-- LAB A: HJM Yield Curve Forward Simulator -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab A: HJM Forward Curve Simulator</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Vol Factor 1 (Level):</label>
+                        <input id="numM6L5Vol1" type="number" value="0.015" step="0.005" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L5CurveLab()">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Vol Factor 2 (Twist):</label>
+                        <input id="numM6L5Vol2" type="number" value="0.008" step="0.002" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L5CurveLab()">
+                    </div>
+                </div>
+                <div style="height: 140px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m6l5CurveChart"></canvas>
+                </div>
+                <div id="outM6L5Curve" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Simulating the forward curve dynamics...
+                </div>
+            </div>
+
+            <!-- LAB B: Jacobi PCA Matrix Diagonalizer -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab B: Jacobi PCA Diagonalizer</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Jacobi Iterations:</label>
+                        <input id="numM6L5Jacobi" type="number" value="3" min="1" max="15" step="1" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L5JacobiLab()">
+                    </div>
+                    <div style="display:flex; align-items:flex-end;">
+                        <button class="btn" style="width:100%; background:var(--accent); color:#ffffff; font-weight:700; border:none; padding:0.2rem; border-radius:4px; cursor:pointer;" onclick="runM6L5JacobiLab()">Run Rotations</button>
+                    </div>
+                </div>
+                <div style="height: 140px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m6l5JacobiChart"></canvas>
+                </div>
+                <div id="outM6L5Jacobi" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Diagonalizing matrix...
+                </div>
+            </div>
+
+            <!-- LAB C: HJM Monte Carlo ZCB Price Convergence -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem; grid-column: span 2;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab C: HJM Path-Dependent ZCB Pricing Convergence</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Maturity ($T$):</label>
+                        <input id="numM6L5ConvT" type="number" value="3.0" step="0.5" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L5ConvLab()">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">HJM Simulations ($N$):</label>
+                        <input id="numM6L5ConvN" type="number" value="1000" min="100" max="10000" step="100" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L5ConvLab()">
+                    </div>
+                    <div style="display:flex; align-items:flex-end;">
+                        <button class="btn" style="width:100%; background:var(--accent); color:#ffffff; font-weight:700; border:none; padding:0.2rem; border-radius:4px; cursor:pointer;" onclick="runM6L5ConvLab()">Run HJM Monte Carlo</button>
+                    </div>
+                </div>
+                <div style="height: 160px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m6l5ConvChart"></canvas>
+                </div>
+                <div id="outM6L5Conv" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Evaluating convergence profiles...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching logic for CQF M6 L5
+    window.switchM6L5Tab = function(tab) {
+        const tabs = ['foundations', 'dynamics', 'drift', 'musiela', 'exercises', 'sandbox'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM6L5' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM6L5' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) {
+                sec.style.display = (t === tab ? 'block' : 'none');
+                if (t === tab && !sec.dataset.typeset) {
+                    if (typeof window.safeTypeset === 'function') {
+                        window.safeTypeset([sec]);
+                        sec.dataset.typeset = 'true';
+                    }
+                }
+            }
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        if (tab === 'sandbox') {
+            setTimeout(initM6L5Labs, 100);
+        }
+    };
+
+    let m6l5CurveChartInstance = null;
+    let m6l5JacobiChartInstance = null;
+    let m6l5ConvChartInstance = null;
+
+    // Normal Random Box-Muller generator
+    function m6l5RandomNormal() {
+        let u = 0, v = 0;
+        while(u === 0) u = Math.random();
+        while(v === 0) v = Math.random();
+        return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    }
+
+    window.initM6L5Labs = function() {
+        runM6L5CurveLab();
+        runM6L5JacobiLab();
+        runM6L5ConvLab();
+    };
+
+    window.runM6L5CurveLab = function() {
+        const vol1 = parseFloat(document.getElementById('numM6L5Vol1').value);
+        const vol2 = parseFloat(document.getElementById('numM6L5Vol2').value);
+
+        let tenors = [0.5, 1.0, 2.0, 3.0, 5.0, 7.0, 10.0];
+        // Standard starting upward sloping curve
+        let initialCurve = [2.00, 2.20, 2.50, 2.80, 3.10, 3.30, 3.50];
+        let simulatedCurve = [];
+
+        tenors.forEach((tau, idx) => {
+            const rand1 = m6l5RandomNormal();
+            const rand2 = m6l5RandomNormal();
+
+            // Multi-factor shift: level shift + slope twist
+            const shift1 = vol1 * Math.sqrt(tau) * rand1;
+            const shift2 = vol2 * (tau - 3) * rand2;
+            simulatedCurve.push(initialCurve[idx] + (shift1 + shift2) * 100);
+        });
+
+        const outEl = document.getElementById('outM6L5Curve');
+        outEl.innerHTML = `
+            Level Vol: <strong>${(vol1*100).toFixed(2)}%</strong>. Twist Vol: <strong>${(vol2*100).toFixed(2)}%</strong>.<br>
+            - **HJM Multi-Factor Evolution:** Level shift (PC1) shifts the entire curve upward/downward, while Twist shift (PC2) changes the yield curve slope, demonstrating full-curve modeling consistency.
+        `;
+        if (typeof window.safeTypeset === 'function') {
+            window.safeTypeset([outEl]);
+        }
+
+        const ctx = document.getElementById('m6l5CurveChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m6l5CurveChartInstance) m6l5CurveChartInstance.destroy();
+
+        m6l5CurveChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: tenors.map(t => t + 'Y'),
+                datasets: [
+                    { label: 'Initial Forward Curve (%)', data: initialCurve, borderColor: '#10b981', borderWidth: 2, fill: false },
+                    { label: 'Simulated HJM Curve (%)', data: simulatedCurve, borderColor: '#ef4444', borderWidth: 1.5, fill: false, pointRadius: 4 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, labels: { font: { size: 8 }, color: tickColor } } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { title: { display: true, text: 'Forward Rate (%)', font: { size: 8 }, color: tickColor }, ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+
+    window.runM6L5JacobiLab = function() {
+        const iter = parseInt(document.getElementById('numM6L5Jacobi').value);
+
+        // Small 3x3 mock symmetric covariance matrix of interest rate changes
+        let A = [
+            [4.0, 1.2, 0.5],
+            [1.2, 3.0, 0.8],
+            [0.5, 0.8, 2.0]
+        ];
+
+        let decay = [];
+        let s_init = 1.2*1.2 + 0.5*0.5 + 0.8*0.8 + 1.2*1.2 + 0.5*0.5 + 0.8*0.8;
+        decay.push(s_init);
+
+        let currentA = JSON.parse(JSON.stringify(A));
+        for (let step = 1; step <= iter; step++) {
+            // Find largest off-diagonal element
+            let p = 0, q = 1, maxVal = Math.abs(currentA[0][1]);
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    if (i !== j && Math.abs(currentA[i][j]) > maxVal) {
+                        maxVal = Math.abs(currentA[i][j]);
+                        p = i;
+                        q = j;
+                    }
+                }
+            }
+
+            // Calculate rotation angle phi
+            const diff = currentA[q][q] - currentA[p][p];
+            let phi = 0;
+            if (Math.abs(diff) < 1e-9) {
+                phi = Math.PI / 4.0;
+            } else {
+                phi = 0.5 * Math.atan((2.0 * currentA[p][q]) / diff);
+            }
+
+            // Build rotation rotation
+            const cos = Math.cos(phi);
+            const sin = Math.sin(phi);
+
+            let nextA = JSON.parse(JSON.stringify(currentA));
+            nextA[p][p] = cos*cos*currentA[p][p] + sin*sin*currentA[q][q] - 2*sin*cos*currentA[p][q];
+            nextA[q][q] = sin*sin*currentA[p][p] + cos*cos*currentA[q][q] + 2*sin*cos*currentA[p][q];
+            nextA[p][q] = 0;
+            nextA[q][p] = 0;
+
+            for (let i = 0; i < 3; i++) {
+                if (i !== p && i !== q) {
+                    nextA[i][p] = cos*currentA[i][p] - sin*currentA[i][q];
+                    nextA[p][i] = nextA[i][p];
+                    nextA[i][q] = sin*currentA[i][p] + cos*currentA[i][q];
+                    nextA[q][i] = nextA[i][q];
+                }
+            }
+
+            currentA = nextA;
+            
+            // Calculate off-diagonal sum of squares
+            let s_step = 0;
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    if (i !== j) s_step += currentA[i][j] * currentA[i][j];
+                }
+            }
+            decay.push(s_step);
+        }
+
+        const eigenvalues = [currentA[0][0], currentA[1][1], currentA[2][2]].map(x => x.toFixed(4));
+
+        const outEl = document.getElementById('outM6L5Jacobi');
+        outEl.innerHTML = `
+            Rotations Completed: <strong>${iter}</strong>.<br>
+            - **Extracted Eigenvalues (Diagonal):** $\\lambda_i = [${eigenvalues.join(', ')}]$.<br>
+            - **Convergence Proof:** The off-diagonal sum of squares decays rapidly toward **0.00**, confirming that Jacobi rotations diagonalize the symmetric covariance matrix.
+        `;
+        if (typeof window.safeTypeset === 'function') {
+            window.safeTypeset([outEl]);
+        }
+
+        const ctx = document.getElementById('m6l5JacobiChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m6l5JacobiChartInstance) m6l5JacobiChartInstance.destroy();
+
+        m6l5JacobiChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: decay.length}, (_, i) => 'Rot ' + i),
+                datasets: [{
+                    label: 'Off-Diagonal Sum of Squares',
+                    data: decay,
+                    borderColor: 'var(--accent)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { title: { display: true, text: 'Sum of Squares', font: { size: 8 }, color: tickColor }, ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+
+    window.runM6L5ConvLab = function() {
+        const T = parseFloat(document.getElementById('numM6L5ConvT').value);
+        const N = parseInt(document.getElementById('numM6L5ConvN').value);
+
+        const r0 = 0.05;
+        const vol = 0.025; // Continuous forward rate volatility
+
+        let currentSum = 0;
+        let runningEstimates = [];
+
+        // Direct analytical integration of initial curve
+        const analyticalZcb = Math.exp(-r0 * T);
+
+        for (let j = 1; j <= N; j++) {
+            const rand = m6l5RandomNormal();
+            
+            // Path integration of simulated spot rate: r(s) = r0 + vol * Ws
+            // Int(r(s) ds) ~ r0 * T + vol * Int(Ws ds)
+            // The integral of Brownian motion is normally distributed: N(0, T^3 / 3)
+            const simulatedIntegral = r0 * T + vol * Math.sqrt((T*T*T)/3.0) * rand;
+            const payoff = Math.exp(-simulatedIntegral);
+            
+            currentSum += payoff;
+            runningEstimates.push(currentSum / j);
+        }
+
+        const mcZcb = runningEstimates[N - 1];
+
+        const outEl = document.getElementById('outM6L5Conv');
+        outEl.innerHTML = `
+            Maturity ($T$): <strong>${T.toFixed(1)}Y</strong>. Simulations ($N$): <strong>${N}</strong>.<br>
+            - **Analytical ZCB Price:** <strong>${analyticalZcb.toFixed(5)}</strong>.<br>
+            - **HJM Monte Carlo Price:** <strong>${mcZcb.toFixed(5)}</strong>.<br>
+            - **Convergence:** The running average (Red line) converges cleanly to the analytical price as paths increase.
+        `;
+        if (typeof window.safeTypeset === 'function') {
+            window.safeTypeset([outEl]);
+        }
+
+        const ctx = document.getElementById('m6l5ConvChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m6l5ConvChartInstance) m6l5ConvChartInstance.destroy();
+
+        // Sample indices for clean plotting
+        let plotIndices = [];
+        let plotData = [];
+        const step = Math.max(1, Math.floor(N / 100));
+        for (let i = 0; i < N; i += step) {
+            plotIndices.push(i);
+            plotData.push(runningEstimates[i]);
+        }
+
+        m6l5ConvChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: plotIndices,
+                datasets: [
+                    { label: 'HJM Monte Carlo ZCB Price', data: plotData, borderColor: '#ef4444', borderWidth: 2, fill: false, pointRadius: 0 },
+                    { label: 'Analytical ZCB Price', data: Array(plotIndices.length).fill(analyticalZcb), borderColor: '#10b981', borderWidth: 1.5, borderDash: [4, 4], fill: false, pointRadius: 0 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, labels: { font: { size: 8 }, color: tickColor } } },
+                scales: {
+                    x: { title: { display: true, text: 'Simulation step', font: { size: 8 }, color: tickColor }, ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { title: { display: true, text: 'ZCB Price', font: { size: 8 }, color: tickColor }, ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+</script>

@@ -1,0 +1,641 @@
+<div id="view-cqf-m3-l8" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 03: Equities &amp; Currencies</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 08</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L8: Things They Don't Teach You in School</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Jensen's Inequality, the Kelly Criterion, Prospect Theory, Discrete Hedging Errors, and Leland Non-linear Costs</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM3L8Jensen" onclick="switchM3L8Tab('jensen')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. Jensen's Inequality</button>
+        <button id="tabM3L8Kelly" onclick="switchM3L8Tab('kelly')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. The Kelly Criterion</button>
+        <button id="tabM3L8Prospect" onclick="switchM3L8Tab('prospect')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Happiness &amp; Prospect Theory</button>
+        <button id="tabM3L8Discrete" onclick="switchM3L8Tab('discrete')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. Discrete Hedging &amp; Leland</button>
+        <button id="tabM3L8Extreme" onclick="switchM3L8Tab('extreme')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Extreme Markets &amp; Crashes</button>
+        <button id="tabM3L8Sandbox" onclick="switchM3L8Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Interactive Quant Labs</button>
+    </div>
+
+    <!-- TAB 1: Jensen's Inequality -->
+    <div id="secM3L8Jensen" style="display: block;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; display: grid; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Jensen's Inequality &amp; Convexity</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        Jensen's Inequality states that for any convex function $f(\cdot)$ and random variable $x$:
+                        $$E[f(x)] \ge f(E[x])$$
+                        This mathematical principle explains the fundamental value of options. If stock price $S_T$ at expiry is random, and we have an option with a convex payoff function $P(S)$, Jensen's inequality guarantees that options have value strictly above the function of their expected stock price:
+                        $$E[P(S_T)] \ge P(E[S_T])$$
+                    </p>
+
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 0;">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.9rem; text-align:center;">Taylor Series Proof (Convexity Adjustment)</h4>
+                        <p style="font-size: 0.78rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                            Let $S = E[S] + \epsilon$, where $E[\epsilon] = 0$. Expanding $f(S)$ about $E[S]$:
+                            $$E[f(S)] \approx E\left[ f(E[S]) + \epsilon f'(E[S]) + \frac{1}{2}\epsilon^2 f''(E[S]) \right] = f(E[S]) + \frac{1}{2} f''(E[S]) E[\epsilon^2]$$
+                            The expected value of the function is greater than the function of the expected value by the **convexity adjustment**:
+                            $$\text{Convexity Adjustment} \approx \frac{1}{2} f''(E[S]) \sigma^2$$
+                            This is the origin of the $\frac{1}{2}\sigma^2 S^2 \Gamma$ term in the Black-Scholes PDE!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Discrete Die-Rolling Example</h3>
+                    <p style="font-size: 0.85rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        Consider a game where you roll a fair 6-sided die, square the spots rolled, and receive that payout:
+                        <ul>
+                            <li><strong>Convex function</strong>: $f(x) = x^2$</li>
+                            <li><strong>Expected Roll</strong>: $E[x] = \frac{1+2+3+4+5+6}{6} = 3.5$</li>
+                            <li><strong>Function of Expected Roll</strong>: $f(E[x]) = (3.5)^2 = 12.25$</li>
+                            <li><strong>Expected Payout</strong>: 
+                                $$E[f(x)] = \frac{1^2 + 2^2 + 3^2 + 4^2 + 5^2 + 6^2}{6} = \frac{91}{6} \approx 15.167$$
+                            </li>
+                        </ul>
+                    </p>
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; border-left:3px solid var(--accent); font-size:0.8rem; font-weight:600; text-align:center;">
+                        Jensen's Gap: $15.167 > 12.25$<br>
+                        The fair price of the game is $\$15\frac{1}{6}$, not $\$12\frac{1}{4}$!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: The Kelly Criterion -->
+    <div id="secM3L8Kelly" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Kelly Criterion (Optimal Bet Sizing)</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    Formulated by John Kelly Jr. in the context of information theory, the **Kelly Criterion** solves the question: *what fraction of wealth should be wagered repeatedly to maximize long-term geometric wealth growth?*
+                    It contrasts with Markowitz's static modern portfolio theory by prioritizing repeated compounding growth over one-period risk/reward.
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); margin-bottom:1.25rem; font-size:0.85rem; line-height:1.6;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Geometric Wealth Growth SDE</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        If you bet a fraction $f$ of your wealth repeatedly on returns $\psi$ over step $\tau$ ($\mu \tau$ mean, $\sigma \sqrt{\tau}$ volatility), your wealth grows geometrically:
+                        $$E[\ln(W_N)] \approx N E[\ln(1 + f\psi)] \approx N \tau \left( f\mu - \frac{f^2\sigma^2}{2} \right)$$
+                        To find the growth rate maximizer, we differentiate with respect to fraction $f$ and set to zero:
+                        $$\frac{d}{df} \left( f\mu - \frac{f^2\sigma^2}{2} \right) = \mu - f\sigma^2 = 0 \implies f^* = \frac{\mu}{\sigma^2}$$
+                        At the optimal bet fraction $f^*$, the maximum geometric growth rate is:
+                        $$\text{Max Geometric Growth Rate} = \frac{\mu^2}{2\sigma^2}$$
+                        *This rate is directly proportional to the square of the Sharpe Ratio!*
+                    </p>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; font-size:0.85rem; line-height:1.5; color:#4b5563;">
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong style="color:var(--accent);">Geometric Drag &amp; Asymmetry</strong>
+                        <p style="margin:0.25rem 0 0 0; font-size:0.8rem;">
+                            If you bet too much (even with favorable odds), you will lose money. The asymmetry of percentages dictates that a $10\%$ gain followed by a $10\%$ loss leaves you with $99\%$ of your starting capital ($1.1 \times 0.9 = 0.99$). Over-betting ($f > 2f^*$) leads to eventual geometric bankruptcy.
+                        </p>
+                    </div>
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong style="color:var(--accent);">"Half-Kelly" Risk Reduction</strong>
+                        <p style="margin:0.25rem 0 0 0; font-size:0.8rem;">
+                            Because parameters $\mu$ and $\sigma$ are highly uncertain, many quant practitioners implement the **"Half-Kelly"** strategy: betting exactly half of the Kelly optimal fraction ($f = 0.5 f^*$). This retains $75\%$ of the optimal geometric growth rate while dramatically reducing volatility by $50\%$.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Happiness & Prospect Theory -->
+    <div id="secM3L8Prospect" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; display: grid; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Behavioral Happiness &amp; Prospect Theory</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        Kahneman &amp; Tversky's foundational Prospect Theory demonstrates that the human response to gains and losses is highly asymmetric: **losses are felt approximately twice as strongly as equivalent gains** ($\alpha = 2$ pain-aversion coefficient).
+                    </p>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        If we define daily or monthly happiness $H(R)$ as $R$ (for gains $R>0$) and $\alpha R$ (for losses $R<0$), evaluating the expected happiness over a viewing interval $\tau$ yields the closed-form integral solution:
+                        $$E[H] = \sigma \sqrt{\tau} \left( \bar{\lambda} + (\alpha - 1)\left( \bar{\lambda}(1 - \Phi(\bar{\lambda})) - \frac{1}{\sqrt{2\pi}}e^{-\bar{\lambda}^2 / 2} \right) \right)$$
+                        where $\bar{\lambda} = \frac{\mu\sqrt{\tau}}{\sigma}$ is the time-scaled Sharpe Ratio.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Misery of High-Frequency Viewing</h3>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                        Because short-term noise dominates over the drift on short time horizons, **investors who observe their portfolios at high frequency (daily/weekly) will on average be unhappy**, even when the portfolio generates positive annual returns!
+                    </p>
+                    <div style="background:var(--metric-bg); padding:0.85rem; border-radius:6px; border-left:3px solid var(--accent); font-size:0.75rem; line-height:1.4; color:#374151;">
+                        For typical S&amp;P 500 parameters ($\mu = 8\%$, $\sigma = 15\%$), a positive expected happiness requires:
+                        $$\tau > 0.27 \text{ years (approx. 3 months)}$$
+                        * **Key Rule**: A typical investor should only look at their P&L **quarterly** to remain emotionally positive. If they insist on viewing **monthly**, the portfolio Sharpe Ratio must exceed **$0.97$**!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Discrete Hedging & Leland -->
+    <div id="secM3L8Discrete" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Discrete Hedging Errors &amp; Transaction Costs</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    In a real-world setting, continuous rebalancing is impossible, forcing hedging to occur at discrete steps $\delta t$. Under discrete steps, the stock move is $\delta S = \sigma S \phi \sqrt{\delta t}$. The difference between the actual realized Gamma profit $\frac{1}{2}\delta S^2 \Gamma$ and the expected Black-Scholes profit $\frac{1}{2}\sigma^2 S^2 \Gamma \delta t$ creates the **discrete hedging error**:
+                    $$\text{Error} \approx \frac{1}{2}\sigma^2 S^2 \Gamma \delta t (\phi^2 - 1) \quad \text{where } \phi \sim \mathcal{N}(0, 1)$$
+                    Since $E[\phi^2] = 1$, the Black-Scholes model **works on average**, but the error is stochastic at any single step.
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); margin-bottom:1.25rem; font-size:0.85rem; line-height:1.6;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Leland's Non-linear Transaction Costs PDE</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        If rehedging at steps $\delta t$ incurs proportional stock transaction costs $\kappa |\nu| S$ (where $\kappa$ is cost percent), subtracting these costs from the expected portfolio change yields **Leland's Non-linear PDE**:
+                        $$\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} - \kappa \sigma S^2 \sqrt{\frac{2}{\pi \delta t}} \left| \frac{\partial^2 V}{\partial S^2} \right| + rS\frac{\partial V}{\partial S} - rV = 0$$
+                        For a single-signed Gamma book, this non-linear term can be internalized by using a **modified Leland Volatility**:
+                        $$\check{\sigma}^2 = \sigma^2 \left( 1 - 2 K \text{ sgn}(\Gamma) \sqrt{\frac{2}{\pi}} \right) \quad \text{where } K = \frac{\kappa}{\sigma\sqrt{\delta t}}$$
+                        - **Long Gamma ($\Gamma > 0$)**: Leland Volatility is **lower** ($\check{\sigma} < \sigma$), option value is **reduced**.
+                        - **Short Gamma ($\Gamma < 0$)**: Leland Volatility is **higher** ($\hat{\sigma} > \sigma$), option value is **increased** (compensation for transaction costs).
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: Extreme Markets & Crashes -->
+    <div id="secM3L8Extreme" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Extreme Markets &amp; The Crash Coefficient</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    During severe market events and crashes, traditional portfolio diversification models fail completely. Two core behaviors characterize extreme markets:
+                </p>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
+                    <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">1. Correlation Convergence</h4>
+                        <p style="font-size: 0.8rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                            Asset correlations rapidly approach $1$ during a crash. Under extreme panic, all individual multi-factor asset exposures collapse, and the entire diversified portfolio behaves as if it were exposed to a single underlying index factor.
+                        </p>
+                    </div>
+                    <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: #8b5cf6; font-size: 0.95rem; text-align:center;">2. Linear Benchmark Relationships</h4>
+                        <p style="font-size: 0.8rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                            The relationship between individual asset returns and index returns becomes strictly linear in the tails. We define the **crash coefficient** ($\kappa_i$) to measure individual movements:
+                            $$\text{If index moves by } x\%, \text{ the } i\text{-th asset moves by } \kappa_i x\%.$$
+                        </p>
+                    </div>
+                </div>
+
+                <div style="background: var(--metric-bg); padding: 1.15rem; border-radius: 8px; border: 1px solid var(--card-border); font-size: 0.82rem; line-height: 1.5; color: #4b5563;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Collapse of Dimensions</h4>
+                    In normal markets, the portfolio value is a function of multiple independent variables:
+                    $$\Pi_{\text{Normal}} = F(x_1, x_2, \dots, x_N)$$
+                    In extreme markets, this collapses to a function of a **single variable** $x$ (index return) weighted by crash coefficients:
+                    $$\Pi_{\text{Crash}} = \bar{F}(x; \kappa_1, \kappa_2, \dots, \kappa_N)$$
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Interactive Quant Labs -->
+    <div id="secM3L8Sandbox" style="display: none;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <!-- LAB 1: Prospect Theory expected happiness -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab A: Prospect Theory expected happiness</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Expected Return ($\mu$):</label>
+                        <input id="numM3L8Mu" type="number" value="0.08" step="0.01" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L8HappinessLab()">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Volatility ($\sigma$):</label>
+                        <input id="numM3L8Sig" type="number" value="0.15" step="0.01" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L8HappinessLab()">
+                    </div>
+                </div>
+                <div style="height: 140px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m3l8HappinessChart"></canvas>
+                </div>
+                <div id="outM3L8Happiness" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Loading happiness metrics...
+                </div>
+            </div>
+
+            <!-- LAB 2: Kelly Criterion wealth accumulator -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab B: Kelly Criterion Wealth Accumulator</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Option Bet Fraction:</label>
+                        <select id="selectM3L8KellyFraction" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L8KellyLab()">
+                            <option value="0.5">Half-Kelly (50% Leverage)</option>
+                            <option value="1.0" selected>Full-Kelly (100% Leverage)</option>
+                            <option value="1.5">Over-bet (150% Leverage)</option>
+                            <option value="2.5">Hyper-bet (250% Leverage)</option>
+                        </select>
+                    </div>
+                    <div style="display:flex; align-items:flex-end;">
+                        <button class="btn" style="width:100%; background:var(--accent); color:#ffffff; font-weight:700; border:none; padding:0.2rem; border-radius:4px; cursor:pointer;" onclick="runM3L8KellyLab()">RunMC Paths</button>
+                    </div>
+                </div>
+                <div style="height: 140px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m3l8KellyChart"></canvas>
+                </div>
+                <div id="outM3L8Kelly" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Loading wealth metrics...
+                </div>
+            </div>
+
+            <!-- LAB 3: Discrete Hedging error distribution -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem; grid-column: span 2;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab C: Discrete Hedging Error Profile</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Hedge Step Size ($\delta t$):</label>
+                        <select id="selectM3L8HedgeStep" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L8HedgeLab()">
+                            <option value="1">Daily Hedging</option>
+                            <option value="5" selected>Weekly Hedging</option>
+                            <option value="20">Monthly Hedging</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Underlying Price ($S_0$):</label>
+                        <input id="numM3L8HedgeS" type="number" value="100" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L8HedgeLab()">
+                    </div>
+                    <div style="display:flex; align-items:flex-end;">
+                        <button class="btn" style="width:100%; background:var(--accent); color:#ffffff; font-weight:700; border:none; padding:0.2rem; border-radius:4px; cursor:pointer;" onclick="runM3L8HedgeLab()">Re-Simulate Error</button>
+                    </div>
+                </div>
+                <div style="height: 160px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m3l8HedgeChart"></canvas>
+                </div>
+                <div id="outM3L8Hedge" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Loading hedging statistics...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching logic for CQF M3 L8
+    window.switchM3L8Tab = function(tab) {
+        const tabs = ['jensen', 'kelly', 'prospect', 'discrete', 'extreme', 'sandbox'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM3L8' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM3L8' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) {
+                sec.style.display = (t === tab ? 'block' : 'none');
+                if (t === tab && !sec.dataset.typeset) {
+                    if (typeof window.safeTypeset === 'function') {
+                        window.safeTypeset([sec]);
+                        sec.dataset.typeset = 'true';
+                    }
+                }
+            }
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        if (tab === 'sandbox') {
+            setTimeout(initM3L8Labs, 100);
+        }
+    };
+
+    let m3l8HappinessChartInstance = null;
+    let m3l8KellyChartInstance = null;
+    let m3l8HedgeChartInstance = null;
+
+    // Normal Cumulative Distribution Function
+    function m3l8NormCdf(x) {
+        const b1 =  0.319381530;
+        const b2 = -0.356563782;
+        const b3 =  1.781477937;
+        const b4 = -1.821255978;
+        const b5 =  1.330274429;
+        const p  =  0.2316419;
+        const c  =  0.39894228;
+
+        if (x >= 0.0) {
+            let k = 1.0 / (1.0 + p * x);
+            return 1.0 - c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        } else {
+            let k = 1.0 / (1.0 - p * x);
+            return c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        }
+    }
+
+    // Normal probability density function
+    function m3l8NormPdf(x) {
+        return (1 / Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * x * x);
+    }
+
+    // Box-Muller transform for normal distribution
+    function m3l8RandomNormal() {
+        let u = 0, v = 0;
+        while(u === 0) u = Math.random(); 
+        while(v === 0) v = Math.random();
+        return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    }
+
+    window.initM3L8Labs = function() {
+        runM3L8HappinessLab();
+        runM3L8KellyLab();
+        runM3L8HedgeLab();
+    };
+
+    window.runM3L8HappinessLab = function() {
+        const mu = parseFloat(document.getElementById('numM3L8Mu').value);
+        const sig = parseFloat(document.getElementById('numM3L8Sig').value);
+        const alpha = 2.0; // Pain-aversion coefficient
+
+        let periods = [];
+        let happiness = [];
+        const steps = 40;
+        const maxTau = 1.5;
+
+        for (let i = 1; i <= steps; i++) {
+            const tau = (i / steps) * maxTau;
+            const lambda = (mu * Math.sqrt(tau)) / sig;
+            
+            // Expected happiness evaluation
+            const eH = sig * Math.sqrt(tau) * (lambda + (alpha - 1) * (lambda * (1 - m3l8NormCdf(lambda)) - m3l8NormPdf(lambda)));
+            periods.push(tau);
+            happiness.push(eH * 100); // Scale as percentage returns
+        }
+
+        // Required tau for positive happiness
+        const reqTau = (0.28 * 0.28 * sig * sig) / (mu * mu);
+
+        document.getElementById('outM3L8Happiness').innerHTML = `
+            Expected annual return: <strong>${(mu*100).toFixed(1)}%</strong>, Volatility: <strong>${(sig*100).toFixed(1)}%</strong>.<br>
+            Time threshold for happiness: <strong>${(reqTau*12).toFixed(1)} months</strong> (or <strong>${reqTau.toFixed(2)} years</strong>).<br>
+            If you look more frequently than this threshold, expected emotional happiness is <strong style="color:#ef4444;">negative</strong>!
+        `;
+
+        const ctx = document.getElementById('m3l8HappinessChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m3l8HappinessChartInstance) m3l8HappinessChartInstance.destroy();
+
+        m3l8HappinessChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: periods.map(t => t.toFixed(2)),
+                datasets: [{
+                    label: 'Expected Happiness (Utility %)',
+                    data: happiness,
+                    borderColor: 'var(--accent)',
+                    borderWidth: 2.5,
+                    fill: false,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Observation Frequency (Years)', font: { size: 9 }, color: tickColor },
+                        ticks: { color: tickColor, font: { size: 8 } },
+                        grid: { color: gridColor }
+                    },
+                    y: {
+                        title: { display: true, text: 'Expected Happiness', font: { size: 9 }, color: tickColor },
+                        ticks: { color: tickColor, font: { size: 8 } },
+                        grid: { color: gridColor }
+                    }
+                }
+            }
+        });
+    };
+
+    window.runM3L8KellyLab = function() {
+        const fractionMult = parseFloat(document.getElementById('selectM3L8KellyFraction').value);
+        const mu = 0.10;
+        const sig = 0.20;
+        const kellyOpt = mu / (sig * sig);
+        const f = kellyOpt * fractionMult; // Betting fraction
+
+        const N_wagers = 100;
+        const N_paths = 8;
+        const dt = 0.05;
+
+        let datasets = [];
+        let timeSteps = [];
+        for (let j = 0; j <= N_wagers; j++) timeSteps.push(j);
+
+        for (let p = 0; p < N_paths; p++) {
+            let path = [100]; // Starting wealth 100
+            let wealth = 100;
+            for (let j = 1; j <= N_wagers; j++) {
+                const rand = m3l8RandomNormal();
+                const wagerReturn = mu * dt + sig * Math.sqrt(dt) * rand;
+                
+                // Wealth compounding
+                wealth = wealth * (1 + f * wagerReturn);
+                if (wealth < 1e-3) wealth = 0; // ruin limit
+                path.push(wealth);
+            }
+            datasets.push({
+                label: 'Path ' + (p+1),
+                data: path,
+                borderColor: fractionMult > 1.2 ? 'rgba(239, 68, 68, 0.4)' : 'rgba(16, 185, 129, 0.4)',
+                borderWidth: 1.5,
+                showLine: true,
+                pointRadius: 0,
+                fill: false
+            });
+        }
+
+        const expGrowth = f * mu - 0.5 * f * f * sig * sig;
+        const outKellyEl = document.getElementById('outM3L8Kelly');
+        outKellyEl.innerHTML = `
+            Optimal Kelly bet fraction ($f^*$): <strong>${(kellyOpt*100).toFixed(1)}%</strong>. 
+            Your bet fraction ($f$): <strong>${(f*100).toFixed(1)}%</strong>.<br>
+            Theoretical expected geometric growth rate per step: <strong>${(expGrowth*100).toFixed(2)}%</strong>.<br>
+            If bet fraction exceeds $2f^*$ (${(kellyOpt*200).toFixed(1)}%), expected geometric growth is <strong style="color:#ef4444;">negative (bankruptcy)</strong>!
+        `;
+        if (typeof window.safeTypeset === 'function') {
+            window.safeTypeset([outKellyEl]);
+        }
+
+        const ctx = document.getElementById('m3l8KellyChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m3l8KellyChartInstance) m3l8KellyChartInstance.destroy();
+
+        m3l8KellyChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: timeSteps,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Number of Wagers', font: { size: 9 }, color: tickColor },
+                        ticks: { color: tickColor, font: { size: 8 } },
+                        grid: { color: gridColor }
+                    },
+                    y: {
+                        type: 'logarithmic',
+                        title: { display: true, text: 'Wealth ($)', font: { size: 9 }, color: tickColor },
+                        ticks: { color: tickColor, font: { size: 8 } },
+                        grid: { color: gridColor }
+                    }
+                }
+            }
+        });
+    };
+
+    // Black-Scholes call option price
+    function m3l8BsCall(S, E, T, r, vol) {
+        if (T <= 0) return Math.max(S - E, 0);
+        const d1 = (Math.log(S / E) + (r + 0.5 * vol * vol) * T) / (vol * Math.sqrt(T));
+        const d2 = d1 - vol * Math.sqrt(T);
+        return S * m3l8NormCdf(d1) - E * Math.exp(-r * T) * m3l8NormCdf(d2);
+    }
+
+    // Black-Scholes call option delta
+    function m3l8BsDelta(S, E, T, r, vol) {
+        if (T <= 0) return S > E ? 1 : 0;
+        const d1 = (Math.log(S / E) + (r + 0.5 * vol * vol) * T) / (vol * Math.sqrt(T));
+        return m3l8NormCdf(d1);
+    }
+
+    window.runM3L8HedgeLab = function() {
+        const stepSize = parseInt(document.getElementById('selectM3L8HedgeStep').value); // 1 = daily, 5 = weekly, 20 = monthly
+        const S0 = parseFloat(document.getElementById('numM3L8HedgeS').value);
+        const E = 100;
+        const vol = 0.20;
+        const r = 0.05;
+        const T = 0.5; // 6 months to expiry
+
+        const N_paths = 150;
+        const totalSteps = 100;
+        const dt = T / totalSteps;
+        const stepsPerHedge = stepSize; // Rehedge every stepsPerHedge steps
+
+        let finalErrors = [];
+
+        for (let p = 0; p < N_paths; p++) {
+            let S = S0;
+            // Replicate delta hedge
+            let currentDelta = m3l8BsDelta(S0, E, T, r, vol);
+            let cash = -m3l8BsCall(S0, E, T, r, vol) + currentDelta * S0;
+
+            for (let j = 1; j <= totalSteps; j++) {
+                const t = j * dt;
+                const t_remain = T - t;
+                const rand = m3l8RandomNormal();
+                S = S * Math.exp((r - 0.5 * vol * vol) * dt + vol * Math.sqrt(dt) * rand);
+
+                // Accumulate bank interest
+                cash = cash * (1 + r * dt);
+
+                // Rehedge discretely
+                if (j % stepsPerHedge === 0 && j < totalSteps) {
+                    const nextDelta = m3l8BsDelta(S, E, t_remain, r, vol);
+                    cash += (nextDelta - currentDelta) * S;
+                    currentDelta = nextDelta;
+                }
+            }
+
+            // Expiry cash portfolio value
+            const finalOptionValue = Math.max(S - E, 0);
+            const portVal = finalOptionValue + cash - currentDelta * S;
+            finalErrors.push(portVal);
+        }
+
+        // Generate histogram counts
+        const binWidth = 0.5;
+        let bins = {};
+        finalErrors.forEach(err => {
+            const b = Math.round(err / binWidth) * binWidth;
+            bins[b] = (bins[b] || 0) + 1;
+        });
+
+        let sortedKeys = Object.keys(bins).map(Number).sort((a,b)=>a-b);
+        let labels = sortedKeys.map(k => k.toFixed(1));
+        let data = sortedKeys.map(k => bins[k]);
+
+        // Mean and standard deviation of errors
+        const meanErr = finalErrors.reduce((a,b)=>a+b, 0) / N_paths;
+        const varErr = finalErrors.reduce((a,b)=>a+(b-meanErr)*(b-meanErr), 0) / N_paths;
+        const stdErr = Math.sqrt(varErr);
+
+        document.getElementById('outM3L8Hedge').innerHTML = `
+            Average Hedging Error: <strong>$${meanErr.toFixed(3)}</strong> (should be close to $0.00).<br>
+            Standard Deviation of Hedging Error: <strong>$${stdErr.toFixed(2)}</strong>.<br>
+            Notice that the error is centered on zero (meaning Black-Scholes works <em>on average</em>), but higher hedging frequencies (daily) produce much tighter error distributions than lower frequencies (monthly).
+        `;
+
+        const ctx = document.getElementById('m3l8HedgeChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m3l8HedgeChartInstance) m3l8HedgeChartInstance.destroy();
+
+        m3l8HedgeChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Discrete Hedging Error Distribution',
+                    data: data,
+                    backgroundColor: 'rgba(139, 92, 246, 0.65)',
+                    borderColor: '#8b5cf6',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Hedge Error ($)', font: { size: 9 }, color: tickColor },
+                        ticks: { color: tickColor, font: { size: 8 } },
+                        grid: { color: gridColor }
+                    },
+                    y: {
+                        title: { display: true, text: 'Occurrences', font: { size: 9 }, color: tickColor },
+                        ticks: { color: tickColor, font: { size: 8 } },
+                        grid: { color: gridColor }
+                    }
+                }
+            }
+        });
+    };
+</script>

@@ -1,0 +1,309 @@
+<div id="view-cqf-mp-calculus-14" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9; font-family: var(--font-family-sans);">1.4 Exponentials &amp; Limits</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.4 Exponentials, Logarithms &amp; Limit Rules</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Exponential growth, inverse logarithms, limits of continuous compounding, and L'Hôpital's Rule.</div>
+    </header>
+
+    <!-- Core Theory Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1.4.1 Exponentials &amp; Continuous Compounding</h3>
+        <p>The transcendental number $e$ is defined as the continuous limit: $e = \lim_{n \to \infty} (1 + 1/n)^n \approx 2.718281828$. This constant describes continuous rate compounding in assets: $S_t = S_0 e^{rt}$.</p>
+        <p>The natural logarithm $\ln(x)$ is the inverse of $e^x$, satisfying $\ln(e^x) = e^{\ln(x)} = x$. Key algebraic identities include:</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; background: var(--metric-bg); padding: 0.8rem; border-radius: 8px; font-size: 0.88rem; font-family: monospace; margin: 0.5rem 0;">
+            <div>e<sup>x</sup>e<sup>y</sup> = e<sup>x+y</sup>, e⁰ = 1<br>log(xy) = log x + log y</div>
+            <div>log(x/y) = log x - log y<br>log(1/x) = -log x</div>
+        </div>
+        <p style="margin-top: 1rem;"><strong>Limits and Continuity:</strong> A function $f(x)$ is continuous at $x_0$ if the limit as $x \to x_0$ exists and is equal to $f(x_0)$. The limit exists if and only if left-hand and right-hand limits are identical:
+        $$\lim_{x \to x_0^-} f(x) = \lim_{x \to x_0^+} f(x) = l$$
+        If the limit evaluates to an indeterminate form (such as $\frac{0}{0}$ or $\frac{\infty}{\infty}$), **L'Hôpital's Rule** can be applied recursively:
+        $$\lim_{x \to a} \frac{f(x)}{g(x)} = \lim_{x \to a} \frac{f'(x)}{g'(x)}$$
+        </p>
+    </div>
+
+    <!-- Always Visible Interactive Limit Laboratory and Graph -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1.4.2 Interactive Limit &amp; Discontinuity Visualizer</h3>
+        <p>Evaluate limits, trace functional curves, and diagnose step/jump discontinuities in real-time:</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; margin-top: 1rem;">
+            <!-- Inputs Column -->
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); display: flex; flex-direction: column; gap: 1rem;">
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Select Function $f(x)$:</label>
+                    <select id="limitFuncSelect" onchange="calculateInteractiveLimit()" style="width: 100%; padding: 0.35rem 0.5rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600; outline: none; cursor: pointer;">
+                        <option value="sin_x_x">Sinc Curve: sin(x) / x</option>
+                        <option value="exp_limit">Continuous Compounding: (1 + x)^(1/x)</option>
+                        <option value="mod_x_x">Modulus Discontinuity: |x| / x</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Target Point $x_0$:</label>
+                    <input id="limitTargetX" type="number" value="0" step="0.1" oninput="calculateInteractiveLimit()" style="width: 100%; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
+                </div>
+                
+                <div style="font-size: 0.88rem; line-height: 1.6; color: var(--text-color); background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid #f59e0b;">
+                    <div id="limitOutputLeft"><strong>Left-hand Limit ($x \to x_0^-$):</strong> 1.0000</div>
+                    <div id="limitOutputRight" style="margin-top: 0.25rem;"><strong>Right-hand Limit ($x \to x_0^+$):</strong> 1.0000</div>
+                    <div id="limitOutputStatus" style="font-weight: 700; color: #10b981; margin-top: 0.5rem;">Status: Limit exists, continuous at x₀</div>
+                </div>
+            </div>
+
+            <!-- Graph Column -->
+            <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; position: relative;">
+                <canvas id="calc14Canvas" width="400" height="210" style="width: 100%; height: 210px; background: #000; border-radius: 6px;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Worked Solutions Card -->
+    <div class="card" style="padding: 1.5rem; margin-bottom: 2rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Worked Solutions: Limit Proofs</h3>
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1rem;">
+            <!-- Problem 1 -->
+            <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6;">
+                <strong>Exercise 1: L'Hôpital's Rule Indeterminate Form</strong>
+                <p style="margin-bottom: 0.5rem;">Evaluate the limit $\lim_{x \to 0} \frac{\cos x + 2x - 1}{3x}$ using L'Hôpital's Rule.</p>
+                <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                    <li style="margin-bottom: 0.5rem;">
+                        <strong>Indeterminate form check:</strong> Substituting $x = 0$ yields:
+                        $$\text{Numerator: } \cos(0) + 2(0) - 1 = 0 \quad , \quad \text{Denominator: } 3(0) = 0$$
+                        This results in the indeterminate form $\frac{0}{0}$. L'Hôpital is applicable!
+                    </li>
+                    <li style="margin-bottom: 0.5rem;">
+                        <strong>Differentiate:</strong> Let $f(x) = \cos x + 2x - 1 \implies f'(x) = -\sin x + 2$. Let $g(x) = 3x \implies g'(x) = 3$.
+                    </li>
+                    <li style="margin: 0;">
+                        <strong>Evaluate the Limit:</strong>
+                        $$\lim_{x \to 0} \frac{f'(x)}{g'(x)} = \lim_{x \to 0} \frac{-\sin x + 2}{3} = \frac{2}{3}$$
+                    </li>
+                </ol>
+            </div>
+
+            <!-- Problem 2 -->
+            <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6;">
+                <strong>Exercise 2: Derivation of Continuous Compounding Limit</strong>
+                <p style="margin-bottom: 0.5rem;">Prove that the continuous compounding limit holds: $\lim_{n \to \infty} P \left(1 + \frac{r}{n}\right)^{nt} = P e^{rt}$ using logarithmic limits.</p>
+                <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                    <li style="margin-bottom: 0.5rem;">
+                        Let $L = \lim_{n \to \infty} \left(1 + \frac{r}{n}\right)^{nt}$. Take natural logarithm:
+                        $$\ln(L) = \lim_{n \to \infty} nt \ln\left(1 + \frac{r}{n}\right)$$
+                    </li>
+                    <li style="margin-bottom: 0.5rem;">
+                        Substitute $x = 1/n \implies x \to 0$ as $n \to \infty$:
+                        $$\ln(L) = \lim_{x \to 0} \frac{t \ln(1 + rx)}{x}$$
+                        Plugging in $x = 0$ yields $\frac{0}{0}$. Differentiate numerator and denominator:
+                        $$\ln(L) = \lim_{x \to 0} \frac{\frac{tr}{1+rx}}{1} = tr$$
+                    </li>
+                    <li style="margin: 0;">
+                        Apply exponential inverse to yield $L = e^{rt}$, proving: $P e^{rt}$. $\blacksquare$
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.calculateInteractiveLimit = function() {
+                const fn = document.getElementById('limitFuncSelect').value;
+                const x0 = parseFloat(document.getElementById('limitTargetX').value);
+                const elL = document.getElementById('limitOutputLeft');
+                const elR = document.getElementById('limitOutputRight');
+                const elS = document.getElementById('limitOutputStatus');
+
+                if (isNaN(x0)) {
+                    elL.innerHTML = "Please input a valid target point!";
+                    elR.innerHTML = "";
+                    elS.innerText = "Status: Awaiting input";
+                    elS.style.color = "#ea580c";
+                    return;
+                }
+
+                const eps = 1e-7;
+
+                const evalFn = (x) => {
+                    if (fn === 'sin_x_x') {
+                        if (Math.abs(x) < 1e-9) return 1.0;
+                        return Math.sin(x) / x;
+                    }
+                    if (fn === 'exp_limit') {
+                        if (Math.abs(x) < 1e-9) return Math.E;
+                        if (1 + x <= 0) return NaN;
+                        return Math.pow(1 + x, 1 / x);
+                    }
+                    if (fn === 'mod_x_x') {
+                        if (Math.abs(x) < 1e-9) return NaN;
+                        return Math.abs(x) / x;
+                    }
+                    return 0;
+                };
+
+                const valLeft = evalFn(x0 - eps);
+                const valRight = evalFn(x0 + eps);
+
+                if (isNaN(valLeft) || isNaN(valRight)) {
+                    elL.innerHTML = `<strong>Left-hand Limit ($x \\to ${x0.toFixed(2)}^-$):</strong> Undefined (Out of domain)`;
+                    elR.innerHTML = `<strong>Right-hand Limit ($x \\to ${x0.toFixed(2)}^+$):</strong> Undefined (Out of domain)`;
+                    elS.innerText = "Status: Limit does not exist (Domain boundary exceeded)";
+                    elS.style.color = "#ef4444";
+                    drawLimitGraph();
+                    return;
+                }
+
+                elL.innerHTML = `<strong>Left-hand Limit ($x \\to ${x0.toFixed(2)}^-$):</strong> ${valLeft.toFixed(6)}`;
+                elR.innerHTML = `<strong>Right-hand Limit ($x \\to ${x0.toFixed(2)}^+$):</strong> ${valRight.toFixed(6)}`;
+
+                const diff = Math.abs(valLeft - valRight);
+                if (diff < 1e-4) {
+                    elS.innerText = `Status: Limit exists and is equal to ${((valLeft + valRight) / 2).toFixed(4)}`;
+                    elS.style.color = "#10b981";
+                } else {
+                    elS.innerText = `Status: Limit does not exist! Jump discontinuity detected (Left/Right differ by ${diff.toFixed(2)})`;
+                    elS.style.color = "#ef4444";
+                }
+
+                drawLimitGraph();
+
+                const parent = document.getElementById('view-cqf-mp-calculus-14');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            window.drawLimitGraph = function() {
+                const canvas = document.getElementById('calc14Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const fn = document.getElementById('limitFuncSelect').value;
+                const x0 = parseFloat(document.getElementById('limitTargetX').value);
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Grid lines & axes
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= canvas.width; i += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, canvas.height);
+                    ctx.stroke();
+                }
+                for (let i = 0; i <= canvas.height; i += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(canvas.width, i);
+                    ctx.stroke();
+                }
+
+                // Coordinates Mapping
+                // Let's set custom scales per function to maximize visibility
+                let xMin = -4.0, xMax = 4.0;
+                let yMin = -2.0, yMax = 4.0;
+
+                if (fn === 'sin_x_x') {
+                    xMin = -10.0; xMax = 10.0;
+                    yMin = -0.5; yMax = 1.5;
+                } else if (fn === 'exp_limit') {
+                    xMin = -0.9; xMax = 3.0;
+                    yMin = 1.0; yMax = 4.0;
+                } else if (fn === 'mod_x_x') {
+                    xMin = -3.0; xMax = 3.0;
+                    yMin = -1.5; yMax = 1.5;
+                }
+
+                const toCanvasX = (x) => ((x - xMin) / (xMax - xMin)) * canvas.width;
+                const toCanvasY = (y) => canvas.height - ((y - yMin) / (yMax - yMin)) * canvas.height;
+
+                // Draw X and Y Axes
+                ctx.strokeStyle = '#52525b';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(0, toCanvasY(0));
+                ctx.lineTo(canvas.width, toCanvasY(0));
+                ctx.moveTo(toCanvasX(0), 0);
+                ctx.lineTo(toCanvasX(0), canvas.height);
+                ctx.stroke();
+
+                const evalFn = (x) => {
+                    if (fn === 'sin_x_x') {
+                        if (Math.abs(x) < 1e-9) return 1.0;
+                        return Math.sin(x) / x;
+                    }
+                    if (fn === 'exp_limit') {
+                        if (Math.abs(x) < 1e-9) return Math.E;
+                        if (1 + x <= 0) return NaN;
+                        return Math.pow(1 + x, 1 / x);
+                    }
+                    if (fn === 'mod_x_x') {
+                        if (Math.abs(x) < 1e-9) return NaN;
+                        return Math.abs(x) / x;
+                    }
+                    return 0;
+                };
+
+                // Draw Function (Orange / Gold)
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                let started = false;
+
+                for (let px = 0; px <= canvas.width; px++) {
+                    const x = xMin + (px / canvas.width) * (xMax - xMin);
+                    const y = evalFn(x);
+                    if (isNaN(y) || y < yMin || y > yMax) {
+                        started = false;
+                        continue;
+                    }
+                    if (!started) {
+                        ctx.moveTo(px, toCanvasY(y));
+                        started = true;
+                    } else {
+                        ctx.lineTo(px, toCanvasY(y));
+                    }
+                }
+                ctx.stroke();
+
+                // Draw Vertical Target Reference Line at x0 (dashed violet)
+                if (!isNaN(x0) && x0 >= xMin && x0 <= xMax) {
+                    ctx.strokeStyle = '#8b5cf6';
+                    ctx.lineWidth = 1.25;
+                    ctx.setLineDash([3, 3]);
+                    ctx.beginPath();
+                    ctx.moveTo(toCanvasX(x0), 0);
+                    ctx.lineTo(toCanvasX(x0), canvas.height);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    // Highlight Left limit point and Right limit point
+                    const eps = 1e-4;
+                    const yLeft = evalFn(x0 - eps);
+                    const yRight = evalFn(x0 + eps);
+
+                    if (!isNaN(yLeft) && yLeft >= yMin && yLeft <= yMax) {
+                        ctx.fillStyle = '#10b981'; // Green
+                        ctx.beginPath();
+                        ctx.arc(toCanvasX(x0), toCanvasY(yLeft), 5, 0, 2 * Math.PI);
+                        ctx.fill();
+                    }
+                    if (!isNaN(yRight) && yRight >= yMin && yRight <= yMax) {
+                        ctx.fillStyle = '#38bdf8'; // Cyan
+                        ctx.beginPath();
+                        ctx.arc(toCanvasX(x0), toCanvasY(yRight), 5, 0, 2 * Math.PI);
+                        ctx.fill();
+                    }
+                }
+            };
+
+            setTimeout(() => {
+                if (document.getElementById('limitFuncSelect')) calculateInteractiveLimit();
+            }, 100);
+        })();
+    </script>
+</div>

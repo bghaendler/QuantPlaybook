@@ -1,0 +1,471 @@
+<div id="view-cqf-mp-calculus-19" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9; font-family: var(--font-family-sans);">1.9 Taylor &amp; Parabolic Shock</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.9 Taylor Series, Parabolic Fit &amp; Binomial Theorem</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Local approximations, linear tangents, parabolic fits, and financial shock modeling.</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
+        <button id="tabCalc19Theory" onclick="switchCalc19Tab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Theory</button>
+        <button id="tabCalc19Sandbox" onclick="switchCalc19Tab('sandbox')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Taylor Sandbox Visualizer</button>
+        <button id="tabCalc19Exercises" onclick="switchCalc19Tab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Solutions</button>
+    </div>
+
+    <!-- Tab: Core Theory -->
+    <div id="secCalc19Theory" style="display: block;">
+        <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.9.1 Taylor Polynomials &amp; Shock Fits</h3>
+            <p>The Taylor series constructs a local polynomial approximation of $f(x)$ centered around $x_0$ using its infinite sequence of derivatives:</p>
+            <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6; margin: 0.5rem 0;">
+                <li><strong>Linear Approximation (Tangent/Delta):</strong> $f(x) \approx f(x_0) + (x-x_0)f'(x_0)$</li>
+                <li><strong>Quadratic Parabolic Fit (Delta-Gamma):</strong> $f(x) \approx f(x_0) + (x-x_0)f'(x_0) + \frac{1}{2}(x-x_0)^2 f''(x_0)$ (matches curvature).</li>
+            </ul>
+            <p><strong>The Binomial Theorem:</strong> Maclaurin expansion of $(1+x)^n$ for any real power $n$:</p>
+            <p style="text-align: center; font-size: 0.95rem; font-weight: 700; margin: 0.5rem 0;">
+                $$(1+x)^n = 1 + nx + \frac{n(n-1)}{2!}x^2 + \frac{n(n-1)(n-2)}{3!}x^3 + \dots$$
+            </p>
+            <p>For fractional exponents (e.g. $(1+x)^{-1} = 1 - x + x^2 - x^3 + \dots$), this expansion represents an infinite series and converges strictly inside the radius of convergence $|x| < 1$.</p>
+        </div>
+
+        <!-- Interactive Taylor Shock Laboratory -->
+        <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.9.2 Interactive Taylor Parabolic Shock Laboratory</h3>
+            <p>Approximate asset curve changes dynamically after pricing shocks $\delta x$ and visualize exact, linear, and parabolic curves side-by-side:</p>
+
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start;">
+                    <!-- Left: Inputs & Numeric Results -->
+                    <div>
+                        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
+                            <div>
+                                <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Select $f(x)$:</label>
+                                <select id="calc19ShockSelect" onchange="calculateInteractiveShock()" style="padding: 0.35rem 0.5rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600; outline: none; cursor: pointer;">
+                                    <option value="exp">Exponential Asset Curve: e^x</option>
+                                    <option value="ln">Log Asset Curve: ln(1+x)</option>
+                                    <option value="cos">Oscillatory Curve: cos(x)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Baseline $x_0$:</label>
+                                <input id="calc19InputX0" type="number" value="0.0" step="0.1" min="-1.5" max="1.5" oninput="calculateInteractiveShock()" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Shock $\delta x$:</label>
+                                <input id="calc19InputDx" type="number" value="0.8" step="0.1" min="-2.0" max="2.0" oninput="calculateInteractiveShock()" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
+                            </div>
+                        </div>
+                        <div style="font-size: 0.85rem; line-height: 1.6; color: var(--text-color); background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid #10b981;">
+                            <div id="calc19OutputExact"><strong>Exact Value $f(x_0 + \delta x)$:</strong> Evaluating...</div>
+                            <div id="calc19OutputLinear" style="margin-top: 0.25rem;"><strong>Linear (Delta) Fit:</strong> Evaluating...</div>
+                            <div id="calc19OutputParabolic" style="margin-top: 0.25rem;"><strong>Parabolic (Delta-Gamma) Fit:</strong> Evaluating...</div>
+                        </div>
+                        <p style="font-size: 0.76rem; color: #6b7280; margin: 0.4rem 0 0 0;">
+                            * Note how the quadratic parabolic fit captures curvature (Gamma) for large shocks $\delta x$.
+                        </p>
+                    </div>
+
+                    <!-- Right: Canvas Graph -->
+                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
+                        <canvas id="calc19ShockCanvas" width="400" height="240" style="width: 100%; height: 240px; background: #000; border-radius: 6px;"></canvas>
+                        <div style="position: absolute; bottom: 8px; right: 12px; font-size: 0.68rem; color: #a1a1aa; display: flex; gap: 0.5rem; flex-wrap: wrap; background: rgba(0,0,0,0.8); padding: 2px 6px; border-radius: 4px;">
+                            <span><span style="color: #0ea5e9;">■</span> Exact</span>
+                            <span><span style="color: #f59e0b;">■</span> Tangent</span>
+                            <span><span style="color: #8b5cf6;">■</span> Parabolic</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab: Taylor Sandbox Visualizer -->
+    <div id="secCalc19Sandbox" style="display: none;">
+        <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.9.3 Taylor Expansion Convergence Visualizer</h3>
+            <p>Drag the degree slider to see how increasing polynomial orders allows the local approximation to fit the transcendental curve perfectly:</p>
+            
+            <div style="display: grid; grid-template-columns: 260px 1fr; gap: 1.5rem; align-items: start;">
+                <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 1rem; font-family: var(--font-family-sans);">
+                    <div>
+                        <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Target Function $f(x)$:</label>
+                        <select id="calc19SandFunc" onchange="drawTaylorSandbox()" style="width: 100%; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600;">
+                            <option value="exp">e^x</option>
+                            <option value="sin">sin(x)</option>
+                            <option value="cos">cos(x)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Polynomial Degree ($N$): <span id="calc19SandDegreeVal" style="color: #10b981;">3</span></label>
+                        <input id="calc19SandDegree" type="range" min="1" max="6" step="1" value="3" oninput="drawTaylorSandbox()" style="width: 100%;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Center ($x_0$): <span id="calc19SandCenterVal" style="color: #10b981;">0.0</span></label>
+                        <input id="calc19SandCenter" type="range" min="-1.5" max="1.5" step="0.2" value="0" oninput="drawTaylorSandbox()" style="width: 100%;">
+                    </div>
+                </div>
+                <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; position: relative;">
+                    <canvas id="calc19Canvas" width="400" height="250" style="width: 100%; height: 250px; background: #000; border-radius: 6px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab: Worked Solutions Sheet -->
+    <div id="secCalc19Exercises" style="display: none;">
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="card" style="padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Exercise 1: Ln(1+x) Approximation</h3>
+                <p>Derive the Maclaurin expansion of $f(x) = \ln(1+x)$ up to the third order around $x_0 = 0$.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6;">
+                    <strong>Step-by-Step Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Calculate derivatives:</strong>
+                            $$f(x) = \ln(1+x) \implies f(0) = 0$$
+                            $$f'(x) = \frac{1}{1+x} \implies f'(0) = 1$$
+                            $$f''(x) = -\frac{1}{(1+x)^2} \implies f''(0) = -1$$
+                            $$f'''(x) = \frac{2}{(1+x)^3} \implies f'''(0) = 2$$
+                        </li>
+                        <li style="margin: 0;">
+                            <strong>Substitute into expansion:</strong>
+                            $$\ln(1+x) \approx f(0) + f'(0)x + \frac{f''(0)}{2!}x^2 + \frac{f'''(0)}{3!}x^3$$
+                            $$\ln(1+x) \approx x - \frac{x^2}{2} + \frac{x^3}{3}$$
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.switchCalc19Tab = function(tab) {
+                const tabTheo = document.getElementById('tabCalc19Theory');
+                const tabSand = document.getElementById('tabCalc19Sandbox');
+                const tabExer = document.getElementById('tabCalc19Exercises');
+                
+                const secTheo = document.getElementById('secCalc19Theory');
+                const secSand = document.getElementById('secCalc19Sandbox');
+                const secExer = document.getElementById('secCalc19Exercises');
+
+                if (tab === 'theory') {
+                    tabTheo.style.color = '#10b981';
+                    tabTheo.style.borderBottomColor = '#10b981';
+                    tabSand.style.color = tabExer.style.color = '#6b7280';
+                    tabSand.style.borderBottomColor = tabExer.style.borderBottomColor = 'transparent';
+                    secTheo.style.display = 'block';
+                    secSand.style.display = secExer.style.display = 'none';
+                    setTimeout(() => { calculateInteractiveShock(); }, 20);
+                } else if (tab === 'sandbox') {
+                    tabSand.style.color = '#10b981';
+                    tabSand.style.borderBottomColor = '#10b981';
+                    tabTheo.style.color = tabExer.style.color = '#6b7280';
+                    tabTheo.style.borderBottomColor = tabExer.style.borderBottomColor = 'transparent';
+                    secSand.style.display = 'block';
+                    secTheo.style.display = secExer.style.display = 'none';
+                    setTimeout(() => { drawTaylorSandbox(); }, 20);
+                } else {
+                    tabExer.style.color = '#10b981';
+                    tabExer.style.borderBottomColor = '#10b981';
+                    tabTheo.style.color = tabSand.style.color = '#6b7280';
+                    tabTheo.style.borderBottomColor = tabSand.style.borderBottomColor = 'transparent';
+                    secExer.style.display = 'block';
+                    secTheo.style.display = secSand.style.display = 'none';
+                }
+            };
+
+            window.calculateInteractiveShock = function() {
+                const fn = document.getElementById('calc19ShockSelect').value;
+                const x0 = parseFloat(document.getElementById('calc19InputX0').value);
+                const dx = parseFloat(document.getElementById('calc19InputDx').value);
+
+                const elExact = document.getElementById('calc19OutputExact');
+                const elLinear = document.getElementById('calc19OutputLinear');
+                const elParabolic = document.getElementById('calc19OutputParabolic');
+
+                if (isNaN(x0) || isNaN(dx)) {
+                    return;
+                }
+
+                let f = 0, df = 0, ddf = 0, exact = 0;
+
+                if (fn === 'exp') {
+                    exact = Math.exp(x0 + dx);
+                    f = Math.exp(x0);
+                    df = f;
+                    ddf = f;
+                } else if (fn === 'ln') {
+                    if (x0 + dx + 1 <= 0 || x0 + 1 <= 0) {
+                        elExact.innerHTML = "Shock leads to invalid log domain!";
+                        elLinear.innerHTML = "";
+                        elParabolic.innerHTML = "";
+                        return;
+                    }
+                    exact = Math.log(1 + x0 + dx);
+                    f = Math.log(1 + x0);
+                    df = 1 / (1 + x0);
+                    ddf = -1 / Math.pow(1 + x0, 2);
+                } else if (fn === 'cos') {
+                    exact = Math.cos(x0 + dx);
+                    f = Math.cos(x0);
+                    df = -Math.sin(x0);
+                    ddf = -f;
+                }
+
+                const linearVal = f + dx * df;
+                const parabolicVal = f + dx * df + 0.5 * dx * dx * ddf;
+
+                const errL = ((linearVal - exact) / exact) * 100;
+                const errP = ((parabolicVal - exact) / exact) * 100;
+
+                elExact.innerHTML = `<strong>Exact Value $f(x_0 + \\delta x)$:</strong> ${exact.toFixed(6)}`;
+                elLinear.innerHTML = `<strong>Linear (Delta) Fit:</strong> ${linearVal.toFixed(6)} (Error: ${errL.toFixed(2)}%)`;
+                elParabolic.innerHTML = `<strong>Parabolic (Delta-Gamma) Fit:</strong> ${parabolicVal.toFixed(6)} (Error: ${errP.toFixed(2)}%)`;
+
+                drawShockGraph(fn, x0, dx, f, df, ddf);
+
+                const parent = document.getElementById('view-cqf-mp-calculus-19');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            window.drawShockGraph = function(fn, x0, dx, f, df, ddf) {
+                const canvas = document.getElementById('calc19ShockCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Grid
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= canvas.width; i += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, canvas.height);
+                    ctx.stroke();
+                }
+                for (let i = 0; i <= canvas.height; i += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(canvas.width, i);
+                    ctx.stroke();
+                }
+
+                const xMin = -3.0, xMax = 3.0;
+                const yMin = -2.0, yMax = 4.0;
+
+                const toCanvasX = (x) => ((x - xMin) / (xMax - xMin)) * canvas.width;
+                const toCanvasY = (y) => canvas.height - ((y - yMin) / (yMax - yMin)) * canvas.height;
+
+                // Axes
+                ctx.strokeStyle = '#52525b';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(0, toCanvasY(0));
+                ctx.lineTo(canvas.width, toCanvasY(0));
+                ctx.moveTo(toCanvasX(0), 0);
+                ctx.lineTo(toCanvasX(0), canvas.height);
+                ctx.stroke();
+
+                // Exact Curve (Cyan)
+                ctx.strokeStyle = '#0ea5e9';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                let first = true;
+                for (let px = 0; px <= canvas.width; px++) {
+                    const x = xMin + (px / canvas.width) * (xMax - xMin);
+                    let y = 0;
+                    if (fn === 'exp') y = Math.exp(x);
+                    else if (fn === 'ln') {
+                        if (x + 1 <= 0) continue;
+                        y = Math.log(1 + x);
+                    }
+                    else if (fn === 'cos') y = Math.cos(x);
+
+                    if (first) {
+                        ctx.moveTo(px, toCanvasY(y));
+                        first = false;
+                    } else {
+                        ctx.lineTo(px, toCanvasY(y));
+                    }
+                }
+                ctx.stroke();
+
+                // Linear Approximation Curve (Yellow)
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([2, 2]);
+                ctx.beginPath();
+                ctx.moveTo(toCanvasX(xMin), toCanvasY(f + (xMin - x0) * df));
+                ctx.lineTo(toCanvasX(xMax), toCanvasY(f + (xMax - x0) * df));
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Parabolic Approximation Curve (Purple)
+                ctx.strokeStyle = '#8b5cf6';
+                ctx.lineWidth = 2.0;
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath();
+                first = true;
+                for (let px = 0; px <= canvas.width; px++) {
+                    const x = xMin + (px / canvas.width) * (xMax - xMin);
+                    const y = f + (x - x0) * df + 0.5 * Math.pow(x - x0, 2) * ddf;
+                    if (first) {
+                        ctx.moveTo(px, toCanvasY(y));
+                        first = false;
+                    } else {
+                        ctx.lineTo(px, toCanvasY(y));
+                    }
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Highlight baseline point (Yellow dot)
+                ctx.fillStyle = '#f59e0b';
+                ctx.beginPath();
+                ctx.arc(toCanvasX(x0), toCanvasY(f), 5.5, 0, 2 * Math.PI);
+                ctx.fill();
+
+                // Highlight shocked point (Purple dot)
+                ctx.fillStyle = '#ec4899';
+                ctx.beginPath();
+                ctx.arc(toCanvasX(x0 + dx), toCanvasY(f + dx * df + 0.5 * dx * dx * ddf), 5.5, 0, 2 * Math.PI);
+                ctx.fill();
+            };
+
+
+            window.drawTaylorSandbox = function() {
+                const canvas = document.getElementById('calc19Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const func = document.getElementById('calc19SandFunc').value;
+                const degree = parseInt(document.getElementById('calc19SandDegree').value);
+                const center = parseFloat(document.getElementById('calc19SandCenter').value);
+
+                document.getElementById('calc19SandDegreeVal').innerText = degree;
+                document.getElementById('calc19SandCenterVal').innerText = center.toFixed(1);
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Grid lines & axes
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= canvas.width; i += 50) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, canvas.height);
+                    ctx.stroke();
+                }
+                for (let i = 0; i <= canvas.height; i += 50) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(canvas.width, i);
+                    ctx.stroke();
+                }
+
+                // Transform mapping
+                const xMin = -3.0, xMax = 3.0;
+                const yMin = -2.0, yMax = 4.0;
+
+                const toCanvasX = (x) => ((x - xMin) / (xMax - xMin)) * canvas.width;
+                const toCanvasY = (y) => canvas.height - ((y - yMin) / (yMax - yMin)) * canvas.height;
+
+                // Draw X and Y Axes
+                ctx.strokeStyle = '#52525b';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(0, toCanvasY(0));
+                ctx.lineTo(canvas.width, toCanvasY(0));
+                ctx.moveTo(toCanvasX(0), 0);
+                ctx.lineTo(toCanvasX(0), canvas.height);
+                ctx.stroke();
+
+                // Functions
+                const evalExact = (x) => {
+                    if (func === 'exp') return Math.exp(x);
+                    if (func === 'sin') return Math.sin(x);
+                    if (func === 'cos') return Math.cos(x);
+                    return 0;
+                };
+
+                const getDerivs = (x0) => {
+                    if (func === 'exp') return Array(7).fill(Math.exp(x0));
+                    if (func === 'sin') {
+                        return [
+                            Math.sin(x0), Math.cos(x0), -Math.sin(x0), -Math.cos(x0),
+                            Math.sin(x0), Math.cos(x0), -Math.sin(x0)
+                        ];
+                    }
+                    if (func === 'cos') {
+                        return [
+                            Math.cos(x0), -Math.sin(x0), -Math.cos(x0), Math.sin(x0),
+                            Math.cos(x0), -Math.sin(x0), -Math.cos(x0)
+                        ];
+                    }
+                    return Array(7).fill(0);
+                };
+
+                const derivs = getDerivs(center);
+                const factorial = (k) => {
+                    if (k <= 1) return 1;
+                    let res = 1;
+                    for (let i = 2; i <= k; i++) res *= i;
+                    return res;
+                };
+
+                const evalTaylor = (x) => {
+                    let sum = 0;
+                    for (let k = 0; k <= degree; k++) {
+                        sum += (derivs[k] / factorial(k)) * Math.pow(x - center, k);
+                    }
+                    return sum;
+                };
+
+                // Draw Exact Curve (Green)
+                ctx.strokeStyle = '#059669';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                for (let px = 0; px <= canvas.width; px++) {
+                    const x = xMin + (px / canvas.width) * (xMax - xMin);
+                    const y = evalExact(x);
+                    if (px === 0) ctx.moveTo(px, toCanvasY(y));
+                    else ctx.lineTo(px, toCanvasY(y));
+                }
+                ctx.stroke();
+
+                // Draw Taylor Series (Violet)
+                ctx.strokeStyle = '#a78bfa';
+                ctx.lineWidth = 2.5;
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath();
+                for (let px = 0; px <= canvas.width; px++) {
+                    const x = xMin + (px / canvas.width) * (xMax - xMin);
+                    const y = evalTaylor(x);
+                    if (px === 0) ctx.moveTo(px, toCanvasY(y));
+                    else ctx.lineTo(px, toCanvasY(y));
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Draw Expansion Center Point (Yellow dot)
+                ctx.fillStyle = '#f59e0b';
+                ctx.beginPath();
+                ctx.arc(toCanvasX(center), toCanvasY(evalExact(center)), 6, 0, 2 * Math.PI);
+                ctx.fill();
+            };
+
+            setTimeout(() => {
+                if (document.getElementById('calc19ShockSelect')) calculateInteractiveShock();
+            }, 100);
+        })();
+    </script>
+</div>

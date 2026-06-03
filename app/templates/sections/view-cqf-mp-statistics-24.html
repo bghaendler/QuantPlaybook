@@ -1,0 +1,243 @@
+<div id="view-cqf-mp-statistics-24" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">2.4 Time Series Analysis</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">2.4 Time Series Analysis</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Moving averages (SMA, EMA), alpha multiplier derivations, and autoregressive models AR(1), AR(2), AR(infinity).</div>
+    </header>
+
+    <!-- Moving Average Models (SMA vs EMA) -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">2.4.1 Moving Average Models (SMA vs. EMA)</h3>
+        <p>A time series is a sequence of data points, typically measured at successive times spaced at uniform time intervals. Moving averages smooth price data to form trend-following indicators by filtering high-frequency noise.</p>
+        
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li><strong>Simple Moving Average (SMA):</strong> Formed by computing the average over a specific number of periods. As new data becomes available, the oldest data point is dropped:
+                $$SMA_t = \frac{1}{n} \sum_{i=0}^{n-1} P_{t-i}$$
+            </li>
+            <li style="margin-top: 0.75rem;"><strong>Exponential Moving Average (EMA):</strong> Reduces the lag by applying more weight to recent prices. The recursive definition is:
+                $$E_{i+1} = \alpha (P_{i+1} - E_i) + E_i$$
+                <p style="font-style: italic; font-size: 0.88rem; color: #6b7280; margin-top: 0.25rem;">Note: In textbook notations, this is mathematically equivalent to $E_{i+1} = 2^{-(n+1)}(P_{i+1} - E_i) + E_i$ where the derived multiplier maps to standard periods.</p>
+            </li>
+        </ul>
+
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color); margin-top: 1rem;">
+            <strong>Smoothing Weight Multiplier ($\alpha$) and Period Lag Equivalents:</strong>
+            <p style="margin: 0.5rem 0;">The weighting applied to the most recent price depends on the number of periods in the moving average:</p>
+            $$\text{Weight } \alpha = \frac{2}{n+1}$$
+            <ul style="padding-left: 1.2rem; margin-top: 0.5rem;">
+                <li>A 10-period exponential moving average applies an <strong>18.18%</strong> weighting to the most recent price: $\alpha = \frac{2}{10+1} \approx 0.1818$.</li>
+                <li>A 20-period EMA applies a <strong>9.52%</strong> weighting to the most recent price: $\alpha = \frac{2}{20+1} \approx 0.0952$.</li>
+            </ul>
+            <p style="margin-top: 0.5rem; font-size: 0.88rem; color: #6b7280;">The weighting for a shorter time period is greater than the weighting for a longer time period. The weighting drops by half every time the moving average period doubles.</p>
+        </div>
+    </div>
+
+    <!-- Autoregressive Models (AR) -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">2.4.2 Autoregressive (AR) Models</h3>
+        <p>Autoregressive models describe random processes (denoted here as $e_t$) by a weighted sum of their previous values and a white noise error $u_t$:</p>
+        
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li><strong>First-Order Autoregressive Process, AR(1):</strong> Only the immediately previous value has a direct effect on the current value:
+                $$e_t = r e_{t-1} + u_t$$
+                <p style="font-size: 0.85rem; color: #6b7280; margin: 0.25rem 0;">where $r$ is a constant with an absolute value less than one ($|r| < 1$), and $u_t$ is a white noise process drawn from a distribution with mean zero and finite variance.</p>
+            </li>
+            <li style="margin-top: 0.75rem;"><strong>Second-Order Autoregressive Process, AR(2):</strong> Values depend on the last two observations:
+                $$e_t = r_1 e_{t-1} + r_2 e_{t-2} + u_t$$
+            </li>
+            <li style="margin-top: 0.75rem;"><strong>Autoregressive Process of Order Infinity, AR($\infty$):</strong> Modelled across an infinite lag hierarchy:
+                $$e_t = \sum_{i=1}^{\infty} r_i e_{t-i} + u_t$$
+            </li>
+        </ul>
+    </div>
+
+    <!-- Time Series Filter Sandbox Laboratory -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">2.4.3 Interactive Moving Average smoothing simulator</h3>
+        <p>Slide parameters to compare the smoothing and lag profile of SMA vs. EMA filters in real-time over simulated random asset price actions:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls -->
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Filter Window period ($n$):</label>
+                    <input type="range" id="stats24WindowSlider" min="5" max="30" value="12" step="1" oninput="runStats24Simulation()" style="width: 100%; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: -0.75rem; margin-bottom: 1.25rem; color: #6b7280;">
+                        <span>5 periods</span>
+                        <span id="stats24WindowVal" style="font-weight: bold; color: var(--accent);">n = 12</span>
+                        <span>30 periods</span>
+                    </div>
+
+                    <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); margin-bottom: 1rem;">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">DERIVED EMA WEIGHT (&alpha;)</div>
+                        <div id="stats24AlphaReadout" style="font-size: 1.25rem; font-weight: 800; color: #10b981; margin-top: 0.25rem;">0.1538</div>
+                    </div>
+
+                    <button onclick="regeneratePriceSeries()" style="background: #10b981; color: #fff; border: none; padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%;">Generate New Asset Path</button>
+                </div>
+
+                <!-- Custom 2D Line Chart Canvas -->
+                <div style="background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 1rem; position: relative;">
+                    <canvas id="stats24Canvas" width="320" height="200" style="width: 100%; height: 200px; display: block;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            // Simulated pricing database
+            let priceSeries = [];
+
+            window.regeneratePriceSeries = function() {
+                priceSeries = [];
+                let currentPrice = 100;
+                for (let i = 0; i < 60; i++) {
+                    currentPrice += (Math.random() - 0.5) * 5 + 0.1;
+                    priceSeries.push(currentPrice);
+                }
+                runStats24Simulation();
+            };
+
+            window.runStats24Simulation = function() {
+                const n = parseInt(document.getElementById('stats24WindowSlider').value);
+                document.getElementById('stats24WindowVal').innerText = `n = ${n}`;
+
+                const alpha = 2 / (n + 1);
+                document.getElementById('stats24AlphaReadout').innerText = alpha.toFixed(4);
+
+                if (priceSeries.length === 0) {
+                    regeneratePriceSeries();
+                    return;
+                }
+
+                // Compute filters
+                const smaSeries = [];
+                const emaSeries = [];
+
+                // Simple Moving Average
+                for (let t = 0; t < priceSeries.length; t++) {
+                    if (t < n - 1) {
+                        smaSeries.push(null);
+                    } else {
+                        let sum = 0;
+                        for (let j = 0; j < n; j++) {
+                            sum += priceSeries[t - j];
+                        }
+                        smaSeries.push(sum / n);
+                    }
+                }
+
+                // Exponential Moving Average
+                let currentEma = priceSeries[0];
+                emaSeries.push(currentEma);
+                for (let t = 1; t < priceSeries.length; t++) {
+                    currentEma = alpha * priceSeries[t] + (1 - alpha) * currentEma;
+                    emaSeries.push(currentEma);
+                }
+
+                drawFiltersGraph(smaSeries, emaSeries);
+
+                const parent = document.getElementById('view-cqf-mp-statistics-24');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawFiltersGraph(sma, ema) {
+                const canvas = document.getElementById('stats24Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const margin = 20;
+                const topMargin = 20;
+                const bottomMargin = 20;
+                const width = canvas.width - 2 * margin;
+                const height = canvas.height - topMargin - bottomMargin;
+
+                const minPrice = Math.min(...priceSeries) - 2;
+                const maxPrice = Math.max(...priceSeries) + 2;
+                const pRange = maxPrice - minPrice;
+
+                function getCX(t) {
+                    return margin + (t / (priceSeries.length - 1)) * width;
+                }
+
+                function getCY(val) {
+                    return canvas.height - bottomMargin - ((val - minPrice) / pRange) * height;
+                }
+
+                // Draw background grid lines
+                ctx.strokeStyle = '#222';
+                ctx.lineWidth = 1;
+                for (let i = 1; i <= 3; i++) {
+                    const y = topMargin + (height / 3) * i;
+                    ctx.beginPath();
+                    ctx.moveTo(margin, y);
+                    ctx.lineTo(canvas.width - margin, y);
+                    ctx.stroke();
+                }
+
+                // Plot raw prices
+                ctx.strokeStyle = '#555';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(getCX(0), getCY(priceSeries[0]));
+                for (let t = 1; t < priceSeries.length; t++) {
+                    ctx.lineTo(getCX(t), getCY(priceSeries[t]));
+                }
+                ctx.stroke();
+
+                // Plot SMA (Blue)
+                ctx.strokeStyle = '#2563eb';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                let startedSma = false;
+                for (let t = 0; t < priceSeries.length; t++) {
+                    if (sma[t] !== null) {
+                        const cx = getCX(t);
+                        const cy = getCY(sma[t]);
+                        if (!startedSma) {
+                            ctx.moveTo(cx, cy);
+                            startedSma = true;
+                        } else {
+                            ctx.lineTo(cx, cy);
+                        }
+                    }
+                }
+                ctx.stroke();
+
+                // Plot EMA (Green)
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(getCX(0), getCY(ema[0]));
+                for (let t = 1; t < priceSeries.length; t++) {
+                    ctx.lineTo(getCX(t), getCY(ema[t]));
+                }
+                ctx.stroke();
+
+                // Legend
+                ctx.fillStyle = '#888';
+                ctx.font = '8px sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText('Raw Price', margin + 10, topMargin);
+                ctx.fillStyle = '#2563eb';
+                ctx.fillText(`SMA (${document.getElementById('stats24WindowSlider').value})`, margin + 65, topMargin);
+                ctx.fillStyle = '#10b981';
+                ctx.fillText('EMA', margin + 125, topMargin);
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('stats24WindowSlider')) runStats24Simulation();
+            }, 100);
+        })();
+    </script>
+</div>

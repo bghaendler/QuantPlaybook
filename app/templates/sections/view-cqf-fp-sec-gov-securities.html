@@ -1,0 +1,225 @@
+<div id="view-cqf-fp-sec-gov-securities" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #4f46e5;">Finance Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9;">Securities</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Government Bills, Notes &amp; Bonds</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Deconstruct sovereign debt markets: from zero-coupon short-term T-bills traded at a discount, to coupon-bearing medium-term Treasury notes and long-term bonds.</p>
+    </header>
+
+    <!-- Row 1: T-Bill Primary Auction & Secondary Market Transfer Lifecycle -->
+    <div class="card" style="margin-bottom: 1.5rem; border-left: 4px solid var(--accent);">
+        <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            T-Bill Discount Auction &amp; Secondary Transfer Simulator
+        </h3>
+        <p style="font-size: 0.88rem; color: #64748b;">Treasury Bills are short-term (<12m) debt issued at a discount to par. Step through the T-Bill lifecycle from primary dealer auction to transfer 1 week later:</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem;">
+            
+            <!-- Phase 1: Primary Auction -->
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <span style="background: var(--accent); color: white; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 0.7rem; text-transform: uppercase;">Phase 1: Primary Auction (30 Days)</span>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem; color: #94a3b8;">Primary Dealers bid at auction based on Central Bank interest rate expectations over the T-bill's 30-day life.</p>
+                    
+                    <label style="font-size: 0.8rem; font-weight: 700; display: flex; justify-content: space-between; margin-top: 0.75rem;">
+                        <span>Required Auction Yield:</span>
+                        <span id="auctionYieldVal" style="color: var(--accent); font-weight: 800;">4.40%</span>
+                    </label>
+                    <input type="range" id="auctionYieldSlider" min="2" max="6" step="0.05" value="4.40" style="width: 100%; cursor: pointer;" oninput="updateTBillSim()">
+                </div>
+                <div style="margin-top: 1rem; border-top: 1px solid var(--card-border); padding-top: 0.75rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                        <span>Auction Bid Price:</span>
+                        <strong id="auctionBidPrice" style="color: var(--text-color);">99.63</strong>
+                    </div>
+                    <span style="font-size: 0.72rem; color: #64748b; font-family: monospace;">Formula: 100 / (1 + Yield × 30/360)</span>
+                </div>
+            </div>
+
+            <!-- Phase 2: Secondary Market Transfer -->
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <span style="background: #10b981; color: white; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 0.7rem; text-transform: uppercase;">Phase 2: Transfer 1 Week Later (23 Days left)</span>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem; color: #94a3b8;">Expectations shift (e.g. rate cut fears disappear). The dealer sells the bill to an Asset Manager at the new market rate.</p>
+                    
+                    <label style="font-size: 0.8rem; font-weight: 700; display: flex; justify-content: space-between; margin-top: 0.75rem;">
+                        <span>New Market Yield (23D remaining):</span>
+                        <span id="transferYieldVal" style="color: #10b981; font-weight: 800;">4.51%</span>
+                    </label>
+                    <input type="range" id="transferYieldSlider" min="2" max="6" step="0.05" value="4.51" style="width: 100%; cursor: pointer;" oninput="updateTBillSim()">
+                </div>
+                <div style="margin-top: 1rem; border-top: 1px solid var(--card-border); padding-top: 0.75rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                        <span>Secondary Sell Price:</span>
+                        <strong id="transferPrice" style="color: var(--text-color);">99.71</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #10b981; font-weight: 700; margin-top: 0.25rem;">
+                        <span>Dealer Profit (Carry &amp; Rate shift):</span>
+                        <span id="dealerProfit">+€800</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 2: Treasury Notes & Bonds Cash Flow Map -->
+    <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+        
+        <!-- Parameters Control Card -->
+        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    Treasury Notes &amp; Bonds Pricing
+                </h3>
+                <p style="font-size: 0.88rem; color: #64748b; line-height: 1.5;">Treasury Notes (up to 10Y) and Bonds (10Y+) make regular periodic coupon payments (semi-annual coupon is most common). Adjust controls below to see the price and coupon stream:</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 1rem;">
+                    <div>
+                        <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Coupon Rate (% p.a.)</label>
+                        <input type="number" id="tbCoupon" value="4.50" step="0.10" style="width: 100%; padding: 0.35rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calcTNote()">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Maturity (Years)</label>
+                        <select id="tbMaturity" onchange="calcTNote()" style="width: 100%; padding: 0.35rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);">
+                            <option value="1">1 Year</option>
+                            <option value="2">2 Years</option>
+                            <option value="3" selected>3 Years</option>
+                            <option value="5">5 Years</option>
+                            <option value="10">10 Years</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Coupon Frequency</label>
+                        <select id="tbFreq" onchange="calcTNote()" style="width: 100%; padding: 0.35rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);">
+                            <option value="1">Annual</option>
+                            <option value="2" selected>Semi-Annual (S/A)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Yield-to-Maturity (YTM %)</label>
+                        <input type="number" id="tbYtm" value="4.57" step="0.05" style="width: 100%; padding: 0.35rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calcTNote()">
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; text-align: center;">
+                <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Treasury Note Price (per 100 nominal)</span>
+                <div id="tbPriceResult" style="font-size: 1.6rem; font-weight: 900; color: var(--accent); margin-top: 0.25rem;">99.80</div>
+                <span id="tbPriceStatus" style="font-size: 0.75rem; color: #94a3b8; font-weight: 700;">Trading at a Discount</span>
+            </div>
+        </div>
+
+        <!-- Cash Flow stream visualizer -->
+        <div class="card" style="display: flex; flex-direction: column;">
+            <h4 style="margin: 0 0 0.75rem 0; font-size: 1rem; color: var(--text-color);">Bond Cash Flow Timeline Map:</h4>
+            <div id="tbTimeline" style="display: flex; flex-direction: column; gap: 0.4rem; overflow-y: auto; flex: 1; padding-right: 4px; max-height: 260px;">
+                <!-- filled dynamically -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// T-Bill Calculations
+function updateTBillSim() {
+    const auctionYield = parseFloat(document.getElementById('auctionYieldSlider').value) || 0;
+    const transferYield = parseFloat(document.getElementById('transferYieldSlider').value) || 0;
+    
+    document.getElementById('auctionYieldVal').innerText = auctionYield.toFixed(2) + '%';
+    document.getElementById('transferYieldVal').innerText = transferYield.toFixed(2) + '%';
+    
+    // Phase 1 price: 100 / (1 + (Yield/100) * 30/360)
+    const auctionPrice = 100 / (1 + (auctionYield / 100) * 30 / 360);
+    // Phase 2 price: 100 / (1 + (Yield/100) * 23/360)
+    const transPrice = 100 / (1 + (transferYield / 100) * 23 / 360);
+    
+    // Profit per €1,000,000 face value nominal
+    const nominal = 1000000;
+    const priceDiff = transPrice - auctionPrice;
+    const profit = (priceDiff / 100) * nominal;
+    
+    document.getElementById('auctionBidPrice').innerText = auctionPrice.toFixed(4);
+    document.getElementById('transferPrice').innerText = transPrice.toFixed(4);
+    
+    const profitEl = document.getElementById('dealerProfit');
+    profitEl.innerText = (profit >= 0 ? '+' : '-') + '€' + Math.abs(Math.round(profit)).toLocaleString();
+    profitEl.style.color = profit >= 0 ? '#10b981' : '#ef4444';
+}
+
+// Treasury Note Pricing and Cash Flow Visualizer
+function calcTNote() {
+    const couponRate = (parseFloat(document.getElementById('tbCoupon').value) || 0) / 100;
+    const maturityYrs = parseInt(document.getElementById('tbMaturity').value) || 1;
+    const freq = parseInt(document.getElementById('tbFreq').value) || 1;
+    const ytm = (parseFloat(document.getElementById('tbYtm').value) || 0) / 100;
+    
+    const periods = maturityYrs * freq;
+    const periodCoupon = (100 * couponRate) / freq;
+    const periodYTM = ytm / freq;
+    
+    let price = 0;
+    const timelineEl = document.getElementById('tbTimeline');
+    timelineEl.innerHTML = '';
+    
+    for (let i = 1; i <= periods; i++) {
+        const time = i / freq;
+        const discountFactor = 1 / Math.pow(1 + periodYTM, i);
+        let cash = periodCoupon;
+        let isFinal = false;
+        
+        if (i === periods) {
+            cash += 100;
+            isFinal = true;
+        }
+        
+        price += cash * discountFactor;
+        
+        // Add item to timeline
+        const div = document.createElement('div');
+        div.style.background = isFinal ? 'var(--accent-glow)' : 'var(--metric-bg)';
+        div.style.border = '1px solid ' + (isFinal ? 'var(--accent)' : 'var(--card-border)');
+        div.style.borderRadius = '6px';
+        div.style.padding = '0.5rem 0.75rem';
+        div.style.display = 'flex';
+        div.style.justifyContent = 'space-between';
+        div.style.alignItems = 'center';
+        div.style.fontSize = '0.8rem';
+        
+        div.innerHTML = `
+            <div>
+                <span style="font-weight:700; color:${isFinal ? 'var(--accent)' : 'var(--text-color)'};">Month ${(time*12).toFixed(0)}</span>
+                <span style="color:#64748b; margin-left:0.5rem;">(t = ${time.toFixed(1)} yr)</span>
+            </div>
+            <div style="font-weight:700; font-family:monospace;">
+                €${cash.toFixed(2)} 
+                <span style="font-weight:400; color:#64748b; font-size:0.75rem; margin-left:0.25rem;">(PV: €${(cash*discountFactor).toFixed(2)})</span>
+            </div>
+        `;
+        timelineEl.appendChild(div);
+    }
+    
+    document.getElementById('tbPriceResult').innerText = price.toFixed(4);
+    
+    const statusEl = document.getElementById('tbPriceStatus');
+    if (Math.abs(price - 100) < 0.01) {
+        statusEl.innerText = 'Trading at Par';
+        statusEl.style.color = 'var(--text-color)';
+    } else if (price > 100) {
+        statusEl.innerText = 'Trading at a Premium';
+        statusEl.style.color = '#10b981';
+    } else {
+        statusEl.innerText = 'Trading at a Discount';
+        statusEl.style.color = '#ef4444';
+    }
+}
+
+// Initialize on page load
+setTimeout(() => {
+    updateTBillSim();
+    calcTNote();
+}, 200);
+</script>

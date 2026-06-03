@@ -1,0 +1,255 @@
+<div id="view-cqf-fp-deriv-intro" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <span class="badge" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #4f46e5;">Finance Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9;">Derivatives</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.5rem; font-weight: 800; border-bottom: none; padding-bottom: 0; background: linear-gradient(135deg, var(--text-color), #4f46e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Derivatives: Introduction</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1.05rem;">An Analogy to Bets, Long vs. Short Positions, and Exchange vs. OTC Venues.</div>
+    </header>
+
+    <!-- SECTION 1: The Racehorse Analogy -->
+    <div class="card" style="margin-bottom: 2rem; border-left: 4px solid #4f46e5;">
+        <h3 style="margin-top:0; color: #4f46e5; display:flex; align-items:center; gap:0.5rem;">
+            <svg style="width:20px; height:20px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+            What are Derivatives? The Racehorse Analogy
+        </h3>
+        <p style="font-size:0.9rem; line-height:1.5;">
+            Derivatives are financial instruments that derive their value from an underlying asset (equities, bonds, commodities, currencies). Neil Graham illustrates this with a simple sports betting analogy:
+        </p>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-top:1.5rem;">
+            <!-- Panel 1: Racehorse -->
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🐎</div>
+                <h4 style="margin: 0 0 0.5rem 0; color: var(--accent);">The Sports Bet</h4>
+                <p style="font-size: 0.8rem; line-height: 1.4; color: var(--text-color); margin: 0;">
+                    You like the look of a racehorse and bet on its performance. Instead of buying the physical horse, you place a bet with a bookmaker. Neither the horse nor its owner have anything to do with your bet, and there is <strong>no limit</strong> to the number of bets that can be placed on a single race.
+                </p>
+            </div>
+
+            <!-- Panel 2: Financial Derivative -->
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; text-align: center;">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📈</div>
+                <h4 style="margin: 0 0 0.5rem 0; color: #10b981;">The Derivative Contract</h4>
+                <p style="font-size: 0.8rem; line-height: 1.4; color: var(--text-color); margin: 0;">
+                    You like the look of Vodafone stock and expect it to rise. Instead of buying the physical shares, you enter into a <strong>Future, Option, or Swap</strong> contract. The derivative is an agreement solely between you and your counterparty. The corporation has nothing to do with it, and there is <strong>no limit</strong> to the number of contracts that can be written.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 2: Long vs. Short Position Sandbox -->
+    <div class="card" style="margin-bottom: 2rem; border-left: 4px solid #10b981;">
+        <h3 style="margin-top:0; color: #10b981; display:flex; align-items:center; gap:0.5rem;">
+            <svg style="width:20px; height:20px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 11l5-5m0 0l5 5m-5-5v12"></path></svg>
+            Interactive Long vs. Short Position Sandbox
+        </h3>
+        <p style="font-size: 0.9rem; line-height: 1.5;">
+            In derivatives, taking a **Long** position means you benefit when the underlying asset rises in value, while taking a **Short** position means you benefit when it falls. Select a direction and move the slider to see how different instruments deliver payouts:
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 2rem; align-items: start;">
+            <!-- Slider Controls and ledger -->
+            <div>
+                <!-- Position Switcher -->
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+                    <button class="nav-item pos-btn active" id="btn-long" onclick="togglePosition('long')" style="padding: 0.5rem 1.25rem; border-radius: 8px; font-weight:700; cursor:pointer; flex: 1; border: 1px solid #10b981; background: rgba(16,185,129,0.1); color: #10b981;">🟢 Long Position</button>
+                    <button class="nav-item pos-btn" id="btn-short" onclick="togglePosition('short')" style="padding: 0.5rem 1.25rem; border-radius: 8px; font-weight:700; cursor:pointer; flex: 1; border: 1px solid var(--card-border); background: var(--metric-bg); color: var(--text-color);">🔴 Short Position</button>
+                </div>
+
+                <!-- Price Slider -->
+                <div style="margin-bottom: 1.5rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+                        <label style="font-weight:700; font-size:0.88rem;">Vodafone Underlying Stock Price:</label>
+                        <span id="intro-price-val" style="font-size: 1.15rem; font-weight: 800; color: var(--accent);">100 GBX</span>
+                    </div>
+                    <input id="intro-price-slider" type="range" min="50" max="150" value="100" oninput="calcIntroPayoffs()" style="width: 100%;">
+                </div>
+
+                <!-- Instruments list based on direction -->
+                <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                    <h4 style="margin-top:0; color: var(--accent);" id="pos-title-header">How to achieve a Long Position:</h4>
+                    <ul id="pos-instruments-list" style="font-size: 0.85rem; line-height: 1.6; padding-left: 1.25rem; margin: 0;">
+                        <!-- Updated by JS -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Payoff visualization chart -->
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.5rem; border-radius: 12px;">
+                <h4 style="margin:0 0 1rem 0; font-size: 0.95rem; font-weight: 700; color: var(--text-color);">Selected Position Profit/Loss Path</h4>
+                <div style="position: relative; height: 180px; width: 100%;">
+                    <canvas id="introPayoffChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 3: Over-the-Counter (OTC) vs. Exchange-Traded (ETD) -->
+    <div class="card" style="margin-bottom: 2rem;">
+        <h3 style="margin-top:0; color: var(--text-color); display:flex; align-items:center; gap:0.5rem;">
+            <svg style="width:20px; height:20px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+            Market Structures: Over-the-Counter vs. Exchange-Traded
+        </h3>
+        <p style="font-size: 0.9rem; line-height: 1.5; color: var(--text-color); margin-bottom: 1.5rem;">
+            Derivatives are transacted in two fundamentally distinct environments. Their margin, settlement, and contract flexibility models are mapped below:
+        </p>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+            <!-- OTC Card -->
+            <div style="background: rgba(139, 92, 246, 0.03); border: 1px solid rgba(139, 92, 246, 0.2); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #8b5cf6;">
+                <h4 style="margin-top: 0; color: #8b5cf6; font-size: 1.05rem; font-weight: 800; display:flex; align-items:center; gap:0.25rem;">
+                    ☁️ Over-the-Counter (OTC) Markets
+                </h4>
+                <ul style="font-size: 0.85rem; line-height: 1.6; padding-left: 1.25rem; margin: 0.5rem 0 0 0; color: var(--text-color);">
+                    <li><strong>Flexible Terms:</strong> Parameters (notionals, dates, strikes) are entirely bespoke and privately negotiated.</li>
+                    <li><strong>ISDA Documentation:</strong> Governed globally by standardized International Swaps and Derivatives Association (ISDA) templates.</li>
+                    <li><strong>Bilateral Counterparty Risk:</strong> Subject to default risks of the other party. The less creditworthy party commonly posts daily collateral (Credit Support Annex - CSA) to offset this exposure.</li>
+                </ul>
+            </div>
+
+            <!-- Exchange Traded Card -->
+            <div style="background: rgba(245, 158, 11, 0.03); border: 1px solid rgba(245, 158, 11, 0.2); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #f59e0b;">
+                <h4 style="margin-top: 0; color: #f59e0b; font-size: 1.05rem; font-weight: 800; display:flex; align-items:center; gap:0.25rem;">
+                    🏛️ Exchange-Traded Derivatives (ETD)
+                </h4>
+                <ul style="font-size: 0.85rem; line-height: 1.6; padding-left: 1.25rem; margin: 0.5rem 0 0 0; color: var(--text-color);">
+                    <li><strong>Rigid Standardization:</strong> Terms like sizing, expiries, and ticks are locked into exchange rules (e.g., standard lot contracts).</li>
+                    <li><strong>Zero Bilateral Credit Risk:</strong> A Central Clearinghouse sits between buyers and sellers, becoming the seller to every buyer and buyer to every seller.</li>
+                    <li><strong>Standardized Margin:</strong> Both parties must post initial collateral and daily variation margin with the clearinghouse to absorb price swings.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentPosition = 'long';
+let introPayoffChartInstance = null;
+
+function togglePosition(pos) {
+    currentPosition = pos;
+    
+    // Toggle active classes
+    document.querySelectorAll('.pos-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.background = 'var(--metric-bg)';
+        btn.style.borderColor = 'var(--card-border)';
+        btn.style.color = 'var(--text-color)';
+    });
+
+    const activeBtn = document.getElementById('btn-' + pos);
+    if (pos === 'long') {
+        activeBtn.style.borderColor = '#10b981';
+        activeBtn.style.background = 'rgba(16,185,129,0.1)';
+        activeBtn.style.color = '#10b981';
+    } else {
+        activeBtn.style.borderColor = '#ef4444';
+        activeBtn.style.background = 'rgba(239,68,68,0.1)';
+        activeBtn.style.color = '#ef4444';
+    }
+
+    calcIntroPayoffs();
+}
+
+function calcIntroPayoffs() {
+    const spot = parseFloat(document.getElementById('intro-price-slider').value);
+    document.getElementById('intro-price-val').innerText = spot.toFixed(0) + ' GBX';
+
+    const pTitle = document.getElementById('pos-title-header');
+    const pList = document.getElementById('pos-instruments-list');
+
+    if (currentPosition === 'long') {
+        pTitle.innerText = 'How to achieve a Long Position (Vodafone):';
+        pList.innerHTML = `
+            <li><strong>Purchase Physical Stock:</strong> Buy Vodafone shares at the current market spot rate.</li>
+            <li><strong>Buy Futures Contracts:</strong> Take a long futures position locking in a buy rate.</li>
+            <li><strong>Hold a Call Option:</strong> Pay premium upfront for the right to buy at strike $K$.</li>
+            <li><strong>Receive Equity Swap Flow:</strong> Pay fixed funding costs, receive Vodafone's total equity returns.</li>
+        `;
+    } else {
+        pTitle.innerText = 'How to achieve a Short Position (Vodafone):';
+        pList.innerHTML = `
+            <li><strong>Borrow &amp; Sell Physical Stock:</strong> Sell borrowed stock, aim to repurchase lower.</li>
+            <li><strong>Sell Futures Contracts:</strong> Lock in an upfront sell price in the future.</li>
+            <li><strong>Hold a Put Option:</strong> Pay premium for the right to sell Vodafone shares at strike $K$.</li>
+            <li><strong>Pay Equity Swap Flow:</strong> Pay Vodafone equity return returns, receive fixed funding rates.</li>
+        `;
+    }
+
+    drawIntroChart();
+}
+
+function drawIntroChart() {
+    const ctx = document.getElementById('introPayoffChart').getContext('2d');
+    if (introPayoffChartInstance) {
+        introPayoffChartInstance.destroy();
+    }
+
+    const currentSpot = parseFloat(document.getElementById('intro-price-slider').value);
+    const isDark = document.body.classList.contains('dark-theme');
+    const gridColor = isDark ? '#2c2c2c' : '#edece9';
+    const textColor = isDark ? '#e3e3e3' : '#37352f';
+
+    const spots = [50, 75, 100, 125, 150];
+    let profits = [];
+
+    if (currentPosition === 'long') {
+        profits = spots.map(s => s - 100);
+    } else {
+        profits = spots.map(s => 100 - s);
+    }
+
+    introPayoffChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: spots.map(s => s + ' GBX'),
+            datasets: [{
+                label: currentPosition === 'long' ? 'Long Payoff Profile' : 'Short Payoff Profile',
+                data: profits,
+                borderColor: currentPosition === 'long' ? '#10b981' : '#ef4444',
+                backgroundColor: currentPosition === 'long' ? 'rgba(16,185,129,0.05)' : 'rgba(239,68,68,0.05)',
+                borderWidth: 3,
+                fill: true,
+                pointRadius: 4,
+                pointHoverRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    grid: { color: gridColor },
+                    ticks: { color: textColor, font: { size: 8 } }
+                },
+                y: {
+                    grid: { color: gridColor },
+                    ticks: { color: textColor, font: { size: 8 } }
+                }
+            }
+        }
+    });
+}
+
+// Initialise everything
+setTimeout(() => {
+    togglePosition('long');
+}, 500);
+
+// Observer to handle chart scale adjustments on visibility change
+const optIntroObserver = new MutationObserver(() => {
+    if (document.getElementById('view-cqf-fp-deriv-intro').style.display === 'block') {
+        setTimeout(() => {
+            if (introPayoffChartInstance) {
+                introPayoffChartInstance.resize();
+            }
+        }, 100);
+    }
+});
+optIntroObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+</script>

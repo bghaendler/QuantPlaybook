@@ -1,0 +1,211 @@
+<div id="view-hjm" style="display: none;">
+    <header>
+        <h1>Module 3.3: Advanced Models</h1>
+        <div class="subtitle" style="color: #6b7280;">1. The Heath-Jarrow-Morton (HJM) Framework</div>
+    </header>
+
+    <div class="container" style="grid-template-columns: 1fr; gap: 3rem; max-width: 1400px;">
+        <!-- Theory Block -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+            <div class="card" style="margin-bottom: 0;">
+                <h2>1. Heath-Jarrow-Morton (HJM) Framework</h2>
+                <p>In short rate models (like Vasicek or CIR), we specify the dynamics of the instantaneous short rate $r(t)$ and deduce bond prices. The <strong>Heath-Jarrow-Morton (HJM) framework</strong> takes the opposite approach: it specifies the evolution of the <em>entire instantaneous forward curve</em> $f(t, T)$ directly.</p>
+                <p>As a key benefit, the initial forward curve $f(0, T)$ enters as an <strong>exogenous parameter</strong>. This guarantees an exact fit to the initial market term structure, eliminating the fitting difficulties encountered with standard short rate models.</p>
+                <p>The $\mathbb{Q}$-dynamics of the forward rates are specified for each maturity $T$ as an Itô process:</p>
+                <p style="text-align: center;">$$ df(t, T) = \alpha(t, T)dt + \sigma(t, T) dW^*(t) $$</p>
+                <p>where $W^*(t)$ is a $d$-dimensional risk-neutral Brownian motion, and the volatility $\sigma(t, T)$ is a $d$-dimensional row vector process:</p>
+                <p style="text-align: center;">$$ \sigma(t, T) = \left( \sigma_1(t, T), \dots, \sigma_d(t, T) \right) $$</p>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; background: #f0fdfa; border-left: 4px solid #0d9488; border-radius: 8px;">
+                <h3 style="margin-top:0; color: #0f766e; font-family: 'Inter', sans-serif;">The Famous HJM Drift Condition</h3>
+                <p style="font-family: 'Inter', sans-serif;">Arbitrage-free pricing implies that the expected return of any zero-coupon bond under the risk-neutral measure $\mathbb{Q}$ must equal the risk-free rate $r(t)$. This requirement completely determines the drift process $\alpha(t, T)$ in terms of the volatility $\sigma(t, T)$:</p>
+                <p style="text-align: center; font-weight: bold; font-size: 1.1rem;">$$ \alpha(t, T) = \sigma(t, T) \int_t^T \sigma(t, u)^T du $$</p>
+                <p style="font-family: 'Inter', sans-serif;">This is the <strong>HJM Drift Condition</strong>. In a risk-neutral world, once you choose the volatility structure $\sigma(t, T)$ of forward rates, the drift $\alpha(t, T)$ is completely locked in! There is no free choice for the drift.</p>
+                <div style="background: rgba(255, 255, 255, 0.7); padding: 0.75rem; border-radius: 6px; font-size: 0.9rem; border: 1px dashed #cbd5e1;">
+                    <strong>Intuition:</strong> A positive shock to a Brownian motion drives forward rates up, which causes bond prices to fall. The drift condition adds exactly the right amount of upward drift to compensate for this volatility risk and keep the expected bond return equal to $r(t)$.
+                </div>
+            </div>
+        </div>
+
+        <!-- Mathematical Derivation -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <h2>Step-by-Step Derivation of HJM</h2>
+            <p>Let's derive the HJM drift condition in three steps using Itô's lemma:</p>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 1.5rem;">
+                <div style="background: #f8fafc; padding: 1.25rem; border-radius: 6px; border: 1px solid #e2e8f0;">
+                    <h4 style="margin-top:0; color: #334155;">Step 1: Exponent Dynamics</h4>
+                    <p style="font-size: 0.9rem; line-height: 1.6;">A zero-coupon bond price is given by $P(t, T) = \exp\left(-\int_t^T f(t, u)du\right)$. Differentiating the exponent process $X(t, T) = -\int_t^T f(t, u)du$ under the integral sign gives:</p>
+                    <p style="font-size: 0.85rem; text-align: center;">$$ dX(t, T) = f(t, t)dt - \int_t^T df(t, u) du $$</p>
+                    <p style="font-size: 0.9rem; line-height: 1.6;">Substituting the forward rate dynamics and swapping integration order yields:</p>
+                    <p style="font-size: 0.85rem; text-align: center;">$$ dX = \left(r(t) - \int_t^T \alpha(t, u)du\right)dt + v(t, T)dW^*(t) $$</p>
+                    <p style="font-size: 0.9rem; line-height: 1.6;">where $v(t, T) = -\int_t^T \sigma(t, u)du$ represents the bond price volatility.</p>
+                </div>
+                <div style="background: #f8fafc; padding: 1.25rem; border-radius: 6px; border: 1px solid #e2e8f0;">
+                    <h4 style="margin-top:0; color: #334155;">Step 2: Bond Return Dynamics</h4>
+                    <p style="font-size: 0.9rem; line-height: 1.6;">We now apply Itô's formula to the exponential function $P(t, T) = e^{X(t, T)}$:</p>
+                    <p style="font-size: 0.85rem; text-align: center;">$$ \frac{dP(t, T)}{P(t, T)} = dX + \frac{1}{2}d\langle X \rangle $$</p>
+                    <p style="font-size: 0.9rem; line-height: 1.6;">Plugging in $dX$ and the quadratic variation $d\langle X \rangle = \|v(t, T)\|^2 dt$, we arrive at the return decomposition:</p>
+                    <p style="font-size: 0.85rem; text-align: center; font-weight: 600;">$$ \frac{dP(t, T)}{P(t, T)} = \left(r(t) - \int_t^T \alpha(t, u)du + \frac{1}{2}\|v(t, T)\|^2\right)dt + v(t, T)dW^*(t) $$</p>
+                </div>
+                <div style="background: #f8fafc; padding: 1.25rem; border-radius: 6px; border: 1px solid #e2e8f0;">
+                    <h4 style="margin-top:0; color: #334155;">Step 3: Drift Condition</h4>
+                    <p style="font-size: 0.9rem; line-height: 1.6;">No arbitrage requires the risk-neutral expected bond return to be exactly $r(t)dt$. Therefore, the drift term must satisfy:</p>
+                    <p style="font-size: 0.85rem; text-align: center;">$$ -\int_t^T \alpha(t, u)du + \frac{1}{2}\|v(t, T)\|^2 = 0 $$</p>
+                    <p style="font-size: 0.9rem; line-height: 1.6;">Differentiating both sides with respect to maturity $T$ gives:</p>
+                    <p style="font-size: 0.85rem; text-align: center; font-weight: 600;">$$ -\alpha(t, T) + v(t, T) \frac{\partial v(t, T)^T}{\partial T} = 0 $$</p>
+                    <p style="font-size: 0.9rem; line-height: 1.6;">Since $v(t, T) = -\int_t^T \sigma(t, u)du$, its derivative is $\frac{\partial v(t, T)}{\partial T} = -\sigma(t, T)$. Substituting these back gives the drift condition.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- HJM & Vasicek Short Rate Correspondence -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+            <div class="card" style="margin-bottom: 0;">
+                <h2>Short Rate Model Correspondence</h2>
+                <p>The HJM framework is exceptionally broad: <strong>every short rate model driven by a finite number of Brownian motions can be mapped to an equivalent HJM representation</strong>.</p>
+                <p>To see this, let's identify which forward volatility structure $\sigma(t, T)$ corresponds to the classic <strong>Vasicek short rate model</strong>:</p>
+                <p style="text-align: center;">$$ dr(t) = \kappa(\theta - r(t))dt + \sigma_V dW^*(t) $$</p>
+                <p>In the Vasicek model, bond prices are affine, which implies forward rates are affine functions of the short rate:</p>
+                <p style="text-align: center;">$$ f(t, T) = A'(T-t) + B'(T-t)r(t) $$</p>
+                <p>where $B(T-t) = \frac{1 - e^{-\kappa(T-t)}}{\kappa}$, so its derivative is $B'(T-t) = e^{-\kappa(T-t)}$.</p>
+                <p>Applying Itô's formula to $f(t, T)$ allows us to find its diffusion coefficient (martingale part):</p>
+                <p style="text-align: center;">$$ df(t, T) = (\dots)dt + B'(T-t)\sigma_V dW^*(t) $$</p>
+                <p>Matching this to the HJM specification shows that the Vasicek short rate model corresponds to the HJM volatility structure:</p>
+                <p style="text-align: center; font-size: 1.15rem; font-weight: bold; color: var(--accent);">$$ \sigma(t, T) = e^{-\kappa(T-t)}\sigma_V $$</p>
+                <p>This reveals that the Vasicek model is an HJM model with an <strong>exponentially decaying forward rate volatility</strong>.</p>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; background: #eff6ff; border-left: 4px solid var(--accent); border-radius: 8px;">
+                <h3 style="margin-top:0; color: var(--accent); font-family: 'Inter', sans-serif;">Comparing Volatility Structures</h3>
+                <p style="font-family: 'Inter', sans-serif;">Let's compare the two simplest HJM models: <strong>Ho-Lee</strong> and <strong>Vasicek</strong>.</p>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; font-family: 'Inter', sans-serif; font-size: 0.9rem;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #cbd5e1; text-align: left;">
+                            <th style="padding: 0.5rem;">Feature</th>
+                            <th style="padding: 0.5rem; color: #b45309;">Ho-Lee (Constant Vol)</th>
+                            <th style="padding: 0.5rem; color: var(--accent);">Vasicek (Decaying Vol)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 0.75rem; font-weight: 600;">Volatility $\sigma(t, T)$</td>
+                            <td style="padding: 0.75rem;">$\sigma_0$</td>
+                            <td style="padding: 0.75rem;">$\sigma_0 e^{-\kappa(T-t)}$</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 0.75rem; font-weight: 600;">HJM Drift $\alpha(t, T)$</td>
+                            <td style="padding: 0.75rem;">$\sigma_0^2(T-t)$</td>
+                            <td style="padding: 0.75rem;">$\sigma_0^2 e^{-\kappa(T-t)} \frac{1 - e^{-\kappa(T-t)}}{\kappa}$</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 0.75rem; font-weight: 600;">Bond Volatility $v(t, T)$</td>
+                            <td style="padding: 0.75rem;">$-\sigma_0(T-t)$</td>
+                            <td style="padding: 0.75rem;">$-\sigma_0 \frac{1 - e^{-\kappa(T-t)}}{\kappa}$</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem; font-weight: 600;">Interpretation</td>
+                            <td style="padding: 0.75rem; color: #475569;">All maturities have the same volatility; curves shift in parallel.</td>
+                            <td style="padding: 0.75rem; color: #475569;">Short-term rates fluctuate more than long-term rates (damped curve shifts).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Interactive HJM Simulator -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <h2>Interactive HJM Simulator: Forward Curve Evolution</h2>
+            <p style="margin-bottom: 1.5rem;">Choose a volatility structure and observe how it dictates the HJM drift and deforms the entire forward curve over time. Select your model parameters and simulate a path to see the forward curve morph!</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <!-- Inputs Section -->
+                <div style="display: flex; flex-direction: column; gap: 1rem; grid-column: span 2;">
+                    <div style="display: flex; gap: 1rem;">
+                        <div style="flex: 1;">
+                            <label for="hjmModelSelect" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Model Volatility Type</label>
+                            <select id="hjmModelSelect" style="width: 100%; padding: 0.4rem; border-radius: 4px; border: 1px solid #cbd5e1; background: white; font-family: 'Inter', sans-serif;">
+                                <option value="vasicek">Vasicek (Decaying: \(\sigma e^{-\kappa(T-t)}\))</option>
+                                <option value="holee">Ho-Lee (Constant: \(\sigma\))</option>
+                            </select>
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="hjmCurveSelect" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Initial Forward Curve \(f(0, T)\)</label>
+                            <select id="hjmCurveSelect" style="width: 100%; padding: 0.4rem; border-radius: 4px; border: 1px solid #cbd5e1; background: white; font-family: 'Inter', sans-serif;">
+                                <option value="flat">Flat Curve (4.0%)</option>
+                                <option value="upward">Upward Sloping (2.0% to 6.0%)</option>
+                                <option value="humped">Humped Curve (2.0% -> peak -> 3.5%)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <div style="flex: 1;">
+                            <label for="hjmSigmaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Volatility (\(\sigma_0\)): <span id="hjmSigmaValue">0.02</span></label>
+                            <input id="hjmSigmaSlider" max="0.08" min="0.005" step="0.005" style="width: 100%;" type="range" value="0.02"/>
+                        </div>
+                        <div style="flex: 1;" id="hjmKappaGroup">
+                            <label for="hjmKappaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Mean Reversion (\(\kappa\)): <span id="hjmKappaValue">0.50</span></label>
+                            <input id="hjmKappaSlider" max="2.0" min="0.05" step="0.05" style="width: 100%;" type="range" value="0.5"/>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Info Section -->
+                <div style="border-left: 2px solid #cbd5e1; padding-left: 1.5rem; display: flex; flex-direction: column; justify-content: center; grid-column: span 1;">
+                    <div style="font-size: 0.85rem; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 0.3rem;">Model Drift Formula</div>
+                    <div style="font-size: 0.95rem; font-weight: 700; color: #334155; font-family: 'Inter', sans-serif;" id="hjmDriftInfo">
+                        \(\alpha(t,T) = \sigma^2 e^{-\kappa(T-t)}\frac{1-e^{-\kappa(T-t)}}{\kappa}\)
+                    </div>
+                </div>
+
+                <!-- Run Button -->
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; grid-column: span 1;">
+                    <button id="resimulateHjmBtn" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%;">Simulate Path</button>
+                </div>
+            </div>
+
+            <!-- Charts container -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1.5rem;">
+                <div>
+                    <h3 style="text-align: center; font-size: 1rem; color: #475569; margin-bottom: 0.5rem;">Volatility & Implied Drift (T-t)</h3>
+                    <div class="chart-container" style="height: 320px;">
+                        <canvas id="hjmVolDriftChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="text-align: center; font-size: 1rem; color: #475569; margin-bottom: 0.5rem;">Forward Curve Evolution \(f(t, T)\)</h3>
+                    <div class="chart-container" style="height: 320px;">
+                        <canvas id="hjmEvolutionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Practice Exercise / Quiz -->
+        <div class="card" style="background: #fdf2f8; border-left: 4px solid #db2777;">
+            <h2 style="color: #9d174d;">Practice Exercise: The HJM Drift Condition</h2>
+            <p style="color: #9d174d; font-weight: 500;">Assume the volatility of the instantaneous forward rate is constant: $\sigma(t, T) = 0.02$ (2%). Under the risk-neutral measure $\mathbb{Q}$, what is the drift of the forward rate dynamics for a maturity 5 years from now (i.e. $T - t = 5$)?</p>
+            
+            <details style="background: white; padding: 1rem; border-radius: 6px; border: 1px solid #fbcfe8;">
+                <summary style="cursor: pointer; font-weight: 600; color: #be185d; list-style: none; display: flex; align-items: center;">
+                    <span style="margin-right: 0.5rem;">👉</span> Show Step-by-Step Solution
+                </summary>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; color: #334155;">
+                    <ol style="line-height: 1.8;">
+                        <li>This model corresponds to the <strong>Ho-Lee volatility structure</strong>, where $\sigma(t, T) = \sigma_0 = 0.02$ is constant.</li>
+                        <li>According to the HJM drift condition:
+                            <div style="text-align: center; margin: 0.5rem 0;">$$ \alpha(t, T) = \sigma(t, T) \int_t^T \sigma(t, u) du $$</div>
+                        </li>
+                        <li>Since $\sigma(t, T)$ is constant, we can simplify this integral:
+                            <div style="text-align: center; margin: 0.5rem 0;">$$ \alpha(t, T) = \sigma_0 \times \left( \sigma_0 \times (T - t) \right) = \sigma_0^2 (T - t) $$</div>
+                        </li>
+                        <li>We are given $T - t = 5$ years and $\sigma_0 = 0.02$. Plug in the numbers:
+                            <div style="text-align: center; margin: 0.5rem 0;">$$ \alpha(t, T) = (0.02)^2 \times 5 = 0.0004 \times 5 = 0.0020 \text{ (or } 0.20\% \text{ per year}^2) $$</div>
+                        </li>
+                    </ol>
+                    <p><strong>Answer:</strong> The risk-neutral drift of the forward rate $\alpha(t, T)$ is <strong>0.0020 per year (or 0.20%)</strong>. Note that this positive drift is required to ensure that the expected return of the 5-year zero-coupon bond matches the risk-free rate, offsetting the volatility risk.</p>
+                </div>
+            </details>
+        </div>
+    </div>
+</div>

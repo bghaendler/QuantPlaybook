@@ -1,0 +1,181 @@
+<div id="view-cqf-mp-linalg-eigen" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(236, 72, 153, 0.1); color: #ec4899; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #ec4899; font-family: var(--font-family-sans);">2.6 Eigenvalues &amp; Eigenvectors</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Eigenvalues and Eigenvectors</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">The characteristic equation, diagonalisation of symmetric matrices, invertibility criteria, and strict diagonal dominance.</div>
+    </header>
+
+    <!-- Eigen problem definition -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1. The Eigenvalue Problem</h3>
+        <p>If $\mathbf{A}$ is an $N \times N$ square matrix, the eigenvalue problem is to find a scalar $\lambda$ (**eigenvalue**) and a non-trivial vector $\underline{v}$ (**eigenvector**) such that:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$\mathbf{A}\underline{v} = \lambda\underline{v} \quad \implies \quad (\mathbf{A} - \lambda\mathbf{I})\underline{v} = \underline{0}$$</p>
+        <p>A non-trivial solution exists if and only if the determinant of $(\mathbf{A} - \lambda\mathbf{I})$ is zero, which is the **characteristic equation**:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold; color: var(--accent);">$$\det(\mathbf{A} - \lambda\mathbf{I}) = 0$$</p>
+    </div>
+
+    <!-- Real Symmetric Properties -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">2. Properties of Real Symmetric Matrices</h3>
+        <p>Real symmetric matrices ($\mathbf{A} = \mathbf{A}^{\mathrm{T}}$) possess extremely powerful algebraic properties that are heavily leveraged in quantitative asset pricing and covariance structures:</p>
+        <ol style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li>All eigenvalues of a real symmetric matrix are guaranteed to be real.</li>
+            <li>Eigenvectors corresponding to distinct eigenvalues are mutually **orthogonal**.</li>
+            <li>The matrix can be **diagonalised** using an orthogonal matrix $\mathbf{P}$ (formed by placing the normalized eigenvectors of $\mathbf{A}$ as columns):
+                $$\mathbf{A} = \mathbf{P}\mathbf{D}\mathbf{P}^{\mathrm{T}} \quad \text{or} \quad \mathbf{P}^{\mathrm{T}}\mathbf{A}\mathbf{P} = \mathbf{D}$$
+                where $\mathbf{D}$ is the diagonal eigenvalue matrix:
+                $$\mathbf{D} = \begin{pmatrix} \lambda_1 & 0 & \dots & 0 \\ 0 & \lambda_2 & \dots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \dots & \lambda_n \end{pmatrix}$$
+            </li>
+        </ol>
+    </div>
+
+    <!-- Criteria for Invertibility -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">3. Criteria for Invertibility &amp; Diagonal Dominance</h3>
+        <p>A system of linear equations $\mathbf{A}\underline{x} = \underline{b}$ is uniquely solvable if and only if $\mathbf{A}$ is invertible. A square matrix $\mathbf{A}$ is invertible if:</p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li>The determinant is non-zero ($|\mathbf{A}| \neq 0$).</li>
+            <li>All eigenvalues are non-zero ($\lambda_i \neq 0$ for all $i$).</li>
+            <li>It is **strictly diagonally dominant** (s.d.d.).</li>
+        </ul>
+
+        <h4 style="color: var(--accent); margin-top: 1.5rem; margin-bottom: 0.5rem;">Strict Diagonal Dominance (s.d.d.):</h4>
+        <p>A matrix $\mathbf{A}$ with entries $A_{ij}$ is strictly diagonally dominant if the absolute value of each diagonal element is strictly greater than the sum of the absolute values of the remaining elements in that row:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold; color: var(--accent);">$$|A_{ii}| > \sum_{j \neq i} |A_{ij}| \quad \text{for all } i$$</p>
+    </div>
+
+    <!-- Interactive Eigendecomposition Explorer Sandbox -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">4. Interactive Eigendecomposition Explorer Sandbox</h3>
+        <p>Configure a symmetric $2 \times 2$ matrix to compute its determinant, trace, eigenvalues, and eigenvectors in real-time:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 260px 1fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls Column -->
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div>
+                        <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Symmetric Matrix entries:</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem;">
+                            <!-- a11 -->
+                            <input id="linalgEigA11" type="number" value="3" style="padding: 0.35rem;" oninput="runLinAlgEigenSimulation()">
+                            <!-- a12/a21 (symmetric mirror) -->
+                            <input id="linalgEigA12" type="number" value="1" style="padding: 0.35rem;" oninput="runLinAlgEigenSimulation()">
+                            <!-- a21 value is read/mirrored from a12 for symmetry -->
+                            <div style="padding: 0.35rem; font-family: monospace; font-size: 0.85rem; background: var(--card-bg); border: 1px dashed var(--input-border); border-radius: 4px; text-align: center; line-height: 1.6;" id="linalgEigMirror">1</div>
+                            <!-- a22 -->
+                            <input id="linalgEigA22" type="number" value="3" style="padding: 0.35rem;" oninput="runLinAlgEigenSimulation()">
+                        </div>
+                    </div>
+
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px; padding: 0.75rem; font-size: 0.85rem; line-height: 1.6;">
+                        <div><strong>Det |A|:</strong> <span id="linalgEigDet">8.00</span></div>
+                        <div><strong>Eigenvalue \lambda_1:</strong> <span id="linalgEigL1">4.00</span></div>
+                        <div><strong>Eigenvalue \lambda_2:</strong> <span id="linalgEigL2">2.00</span></div>
+                        <div><strong>Invertible:</strong> <span id="linalgEigInvertible" style="color:#10b981; font-weight:bold;">Yes</span></div>
+                    </div>
+                </div>
+
+                <!-- Custom 2D Line Chart Canvas -->
+                <div style="background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 1rem;">
+                    <canvas id="linalgEigCanvas" width="320" height="200" style="width: 100%; height: 200px; display: block;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.runLinAlgEigenSimulation = function() {
+                const a11 = parseFloat(document.getElementById('linalgEigA11').value) || 0;
+                const a12 = parseFloat(document.getElementById('linalgEigA12').value) || 0;
+                const a22 = parseFloat(document.getElementById('linalgEigA22').value) || 0;
+
+                // Sync symmetric mirror visual
+                document.getElementById('linalgEigMirror').innerText = a12;
+
+                const det = a11 * a22 - a12 * a12;
+                const trace = a11 + a22;
+
+                // Characteristic polynomial roots
+                const disc = trace * trace - 4 * det;
+                let lambda1 = 0;
+                let lambda2 = 0;
+
+                if (disc >= 0) {
+                    lambda1 = (trace + Math.sqrt(disc)) / 2;
+                    lambda2 = (trace - Math.sqrt(disc)) / 2;
+                }
+
+                document.getElementById('linalgEigDet').innerText = det.toFixed(2);
+                document.getElementById('linalgEigL1').innerText = lambda1.toFixed(2);
+                document.getElementById('linalgEigL2').innerText = lambda2.toFixed(2);
+
+                const isInvertible = Math.abs(det) > 0.0001;
+                document.getElementById('linalgEigInvertible').innerText = isInvertible ? 'Yes' : 'No';
+                document.getElementById('linalgEigInvertible').style.color = isInvertible ? '#10b981' : '#ef4444';
+
+                drawEigenGraph(a11, a12, a22);
+
+                const parent = document.getElementById('view-cqf-mp-linalg-eigen');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawEigenGraph(a11, a12, a22) {
+                const canvas = document.getElementById('linalgEigCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const originX = canvas.width / 2;
+                const originY = canvas.height / 2;
+
+                // Grid lines
+                ctx.strokeStyle = '#222';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(0, originY);
+                ctx.lineTo(canvas.width, originY);
+                ctx.moveTo(originX, 0);
+                ctx.lineTo(originX, canvas.height);
+                ctx.stroke();
+
+                // Plot transformed unit ellipse representing stretching by A
+                ctx.strokeStyle = '#ea580c';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                let started = false;
+                for (let theta = 0; theta <= 2 * Math.PI + 0.05; theta += 0.05) {
+                    const cx = Math.cos(theta);
+                    const cy = Math.sin(theta);
+                    // Matrix multiplication
+                    const tx = a11 * cx + a12 * cy;
+                    const ty = a12 * cx + a22 * cy;
+
+                    const scale = 20; // 1 unit = 20px
+                    const ex = originX + tx * scale;
+                    const ey = originY - ty * scale;
+
+                    if (!started) {
+                        ctx.moveTo(ex, ey);
+                        started = true;
+                    } else {
+                        ctx.lineTo(ex, ey);
+                    }
+                }
+                ctx.stroke();
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('linalgEigA11')) runLinAlgEigenSimulation();
+            }, 100);
+        })();
+    </script>
+</div>

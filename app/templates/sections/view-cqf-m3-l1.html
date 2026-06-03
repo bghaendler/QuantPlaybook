@@ -1,0 +1,816 @@
+<div id="view-cqf-m3-l1" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 03: Equities &amp; Currencies</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 01</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L1: The Black-Scholes Option Pricing Framework</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Assumptions, Rigorous PDE Derivations, Heat Equation Transformation, Greeks Formulas, and Options Sandbox</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM3L1Assumptions" onclick="switchM3L1Tab('assumptions')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. Model Assumptions</button>
+        <button id="tabM3L1Derivation" onclick="switchM3L1Tab('derivation')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. PDE Derivation</button>
+        <button id="tabM3L1Transformation" onclick="switchM3L1Tab('transformation')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Heat Equation Transformation</button>
+        <button id="tabM3L1Formulas" onclick="switchM3L1Tab('formulas')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. Pricing Formulas</button>
+        <button id="tabM3L1Greeks" onclick="switchM3L1Tab('greeks')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. The Greeks</button>
+        <button id="tabM3L1Sandbox" onclick="switchM3L1Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Interactive Sandbox</button>
+        <button id="tabM3L1Exercises" onclick="switchM3L1Tab('exercises')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">7. Exercises &amp; Solutions</button>
+    </div>
+
+    <!-- TAB 1: Assumptions -->
+    <div id="secM3L1Assumptions" style="display: block;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Black-Scholes Foundations</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563;">
+                        Published in their seminal 1973 paper, <em>"The Pricing of Options and Corporate Liabilities"</em>, Fisher Black and Myron Scholes (with essential insights from Robert C. Merton) revolutionized derivative valuation. By demonstrating that options can be dynamically replicated using the underlying stock and risk-free cash, they derived a unique, preference-free pricing framework.
+                    </p>
+                    
+                    <h4 style="font-family: var(--font-family-sans); font-size: 1.05rem; font-weight: 700; margin-top: 1.25rem; margin-bottom: 0.5rem; color: var(--accent);">Idealized Market Assumptions</h4>
+                    <ul style="padding-left: 1.2rem; line-height: 1.7; font-size: 0.85rem; color: #4b5563; margin-bottom: 0;">
+                        <li><strong>1. Geometric Brownian Motion (GBM):</strong> Stock prices $S$ follow a continuous lognormal random walk with constant (or deterministic) volatility $\sigma$ and constant drift $\mu$.</li>
+                        <li><strong>2. Constant Risk-Free Rate:</strong> The short-term risk-free interest rate $r$ is constant, and borrowing/lending rates are equal.</li>
+                        <li><strong>3. Zero Dividend Yield:</strong> The underlying asset pays no dividends (this assumption can be relaxed to a continuous constant dividend yield $D$).</li>
+                        <li><strong>4. Continuous Rebalancing:</strong> Rebalancing of the delta-hedged replicating portfolio is performed continuously.</li>
+                        <li><strong>5. Frictionless Markets:</strong> No transaction costs, brokerage fees, taxes, or constraints on short-selling. Fractional trading is permitted.</li>
+                        <li><strong>6. Absence of Arbitrage:</strong> The market is completely free of arbitrage opportunities.</li>
+                        <li><strong>7. European-Style Exercise:</strong> The option can only be exercised at the pre-specified maturity date $T$.</li>
+                    </ul>
+                </div>
+                <div style="background: rgba(139, 92, 246, 0.05); border-left: 3px solid #8b5cf6; padding: 0.85rem 1rem; border-radius: 6px; font-size: 0.8rem; line-height: 1.5; margin-top: 1.25rem;">
+                    💡 <strong>Academic Insights:</strong> Under these assumptions, option prices are completely independent of investors' risk preferences (the drift parameter $\mu$ disappears entirely). The Nobel Prize in Economics was awarded to Myron Scholes and Robert Merton in 1997 (Fischer Black passed away in 1995).
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Key Option Variables &amp; Parameters</h3>
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563; margin-bottom: 1.25rem;">
+                        The model defines the derivative price $V(S, t)$ using the following variables and parameters:
+                    </p>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem; font-family: var(--font-family-sans); font-size: 0.82rem;">
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--card-border); padding-bottom:0.35rem;">
+                            <strong>Underlying Price ($S$)</strong>
+                            <span style="color:var(--accent);">Spot Variable</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--card-border); padding-bottom:0.35rem;">
+                            <strong>Current Time ($t$)</strong>
+                            <span style="color:var(--accent);">Time Variable</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--card-border); padding-bottom:0.35rem;">
+                            <strong>Strike Price ($E$ or $K$)</strong>
+                            <span style="color:var(--accent);">Contract Parameter</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--card-border); padding-bottom:0.35rem;">
+                            <strong>Maturity Date ($T$)</strong>
+                            <span style="color:var(--accent);">Contract Parameter</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--card-border); padding-bottom:0.35rem;">
+                            <strong>Asset Volatility ($\sigma$)</strong>
+                            <span style="color:var(--accent);">Market Parameter</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--card-border); padding-bottom:0.35rem;">
+                            <strong>Risk-Free Rate ($r$)</strong>
+                            <span style="color:var(--accent);">Market Parameter</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; padding-bottom:0.35rem;">
+                            <strong>Dividend Yield ($D$)</strong>
+                            <span style="color:var(--accent);">Asset Parameter</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: PDE Derivation -->
+    <div id="secM3L1Derivation" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Derivation of the pricing equation</h3>
+                
+                <div style="display:flex; flex-direction:column; gap:1.15rem; font-size:0.85rem; line-height:1.6; color:#4b5563;">
+                    <div>
+                        <strong>1. Replicating Re-hedged Portfolio</strong><br>
+                        We assume the asset price $S$ follows a Geometric Brownian Motion:
+                        $$dS = \mu S dt + \sigma S dW$$
+                        Construct a self-financing replicating portfolio $\Pi$ consisting of one long position in the option $V(S, t)$ and a short position in a quantity $\Delta$ of the underlying stock $S$:
+                        $$\Pi = V(S, t) - \Delta S$$
+                    </div>
+
+                    <div>
+                        <strong>2. Stochastic Portfolio Dynamics</strong><br>
+                        Over an infinitesimal time step $dt$, holding the quantity $\Delta$ fixed, the change in portfolio value is:
+                        $$d\Pi = dV - \Delta dS$$
+                        Applying Itô's lemma to expand $dV$:
+                        $$dV = \left( \frac{\partial V}{\partial t} + \mu S \frac{\partial V}{\partial S} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} \right) dt + \sigma S \frac{\partial V}{\partial S} dW$$
+                        Substituting both SDEs into $d\Pi$:
+                        $$d\Pi = \left( \frac{\partial V}{\partial t} + \mu S \frac{\partial V}{\partial S} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} - \Delta \mu S \right) dt + \sigma S \left( \frac{\partial V}{\partial S} - \Delta \right) dW$$
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div style="font-size:0.85rem; line-height:1.6; color:#4b5563;">
+                    <div>
+                        <strong>3. Dynamic Delta Hedging</strong><br>
+                        To remove all systemic risk from the portfolio, we eliminate the stochastic $dW$ term by setting:
+                        $$\Delta = \frac{\partial V}{\partial S}$$
+                        Substituting this definition of delta simplifies the portfolio dynamics to a completely risk-free, deterministic SDE:
+                        $$d\Pi = \left( \frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} \right) dt$$
+                    </div>
+
+                    <div style="margin-top:1rem;">
+                        <strong>4. Solvency and No-Arbitrage</strong><br>
+                        By no-arbitrage, a completely risk-free portfolio must grow at the risk-free cash deposit rate $r$:
+                        $$d\Pi = r \Pi dt = r \left( V - S \frac{\partial V}{\partial S} \right) dt$$
+                        Equating the two expressions for $d\Pi$:
+                        $$\left( \frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} \right) dt = r \left( V - S \frac{\partial V}{\partial S} \right) dt$$
+                        Dividing by $dt$ and rearranging yields the legendary <strong>Black-Scholes Partial Differential Equation</strong>:
+                        $$\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} + r S \frac{\partial V}{\partial S} - r V = 0$$
+                    </div>
+                </div>
+                
+                <div style="background: rgba(16, 185, 129, 0.05); border-left: 3px solid #10b981; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.8rem; line-height: 1.5; margin-top: 1rem;">
+                    💡 <strong>Crucial Observation:</strong> The asset drift parameter $\mu$ has completely vanished from the equation! Option pricing depends entirely on volatility $\sigma$, not on expected stock returns.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Transformation -->
+    <div id="secM3L1Transformation" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Transforming the Black-Scholes PDE to the Heat Equation</h3>
+                <p style="font-size: 0.88rem; line-height: 1.5; color:#4b5563; margin-bottom:1.5rem;">
+                    The Black-Scholes PDE is a variable-coefficient, backward parabolic PDE. We can transform it step-by-step into a standard constant-coefficient 1D <strong>Heat Equation</strong>:
+                </p>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; font-size:0.82rem; line-height:1.6; color:#4b5563;">
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong>Step 1: Future Value Transformation</strong><br>
+                        To remove the $-rV$ term, let $V(S, t) = e^{-r(T-t)} U(S, t)$. Differentiating and substituting into the PDE yields:
+                        $$\frac{\partial U}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 U}{\partial S^2} + r S \frac{\partial U}{\partial S} = 0$$
+                    </div>
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong>Step 2: Time to Expiry Variable</strong><br>
+                        Since option pricing is a backward-in-time problem from expiry $T$, define the time-to-expiry variable $\tau = T-t$. Using the chain rule:
+                        $$\frac{\partial U}{\partial \tau} = \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 U}{\partial S^2} + r S \frac{\partial U}{\partial S}$$
+                    </div>
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong>Step 3: Logarithmic Coordinate Space</strong><br>
+                        To eliminate the variable coefficients $S$ and $S^2$, let $\xi = \log S$. Substituting the partial spatial derivatives:
+                        $$\frac{\partial U}{\partial \tau} = \frac{1}{2}\sigma^2 \frac{\partial^2 U}{\partial \xi^2} + \left( r - \frac{1}{2}\sigma^2 \right) \frac{\partial U}{\partial \xi}$$
+                    </div>
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong>Step 4: Translated Moving Coordinates</strong><br>
+                        To eliminate the remaining first-order convective term, translate the spatial coordinate:
+                        $$x = \xi + \left( r - \frac{1}{2}\sigma^2 \right)\tau$$
+                        Writing $W(x, \tau) = U(S, t)$ transforms the PDE into the classic <strong>1D Diffusion/Heat Equation</strong>:
+                        $$\frac{\partial W}{\partial \tau} = \frac{1}{2}\sigma^2 \frac{\partial^2 W}{\partial x^2}$$
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem; padding-top: 1rem; border-top:1px solid var(--card-border); font-size:0.85rem; line-height:1.6; color:#4b5563;">
+                    <h4>Fundamental Solution &amp; Transition Density</h4>
+                    The heat equation has a known fundamental solution representing the transition density (Green's function):
+                    $$W_f(x, \tau; x') = \frac{1}{\sigma \sqrt{2 \pi \tau}} \exp\left( -\frac{(x - x')^2}{2 \sigma^2 \tau} \right)$$
+                    In the limit as $\tau \to 0$ (at expiry), this distribution converges to the Dirac delta function:
+                    $$\lim_{\tau \to 0} W_f(x, \tau; x') = \delta(x' - x)$$
+                    This elegant probabilistic mapping confirms that the option price is the <strong>discounted expected payoff under a risk-neutral random walk</strong> where the drift is replaced by the risk-free rate $r$:
+                    $$V(S, t) = e^{-r(T-t)} \mathbb{E}^{\mathbb{Q}}\left[ \text{Payoff}(S_T) \mid S_t = S \right]$$
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Pricing Formulas -->
+    <div id="secM3L1Formulas" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Black-Scholes closed-form solutions</h3>
+                <p style="font-size:0.85rem; line-height:1.5; color:#4b5563; margin-bottom:1rem;">
+                    For an underlying asset paying a constant continuous dividend yield $D$, the closed-form solutions are:
+                </p>
+
+                <div style="display:flex; flex-direction:column; gap:1rem; font-size:0.82rem; line-height:1.6; color:#4b5563;">
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong>1. European Call Option Value</strong>
+                        $$C(S, t) = S e^{-D(T-t)} N(d_1) - E e^{-r(T-t)} N(d_2)$$
+                    </div>
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong>2. European Put Option Value</strong>
+                        $$P(S, t) = -S e^{-D(T-t)} N(-d_1) + E e^{-r(T-t)} N(-d_2)$$
+                    </div>
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong>Option Variable Terms ($d_1$ and $d_2$)</strong>
+                        $$d_1 = \frac{\log(S/E) + \left( r - D + \frac{1}{2}\sigma^2 \right)(T-t)}{\sigma \sqrt{T-t}}$$
+                        $$d_2 = d_1 - \sigma \sqrt{T-t} = \frac{\log(S/E) + \left( r - D - \frac{1}{2}\sigma^2 \right)(T-t)}{\sigma \sqrt{T-t}}$$
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div style="font-size:0.85rem; line-height:1.6; color:#4b5563;">
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Digital &amp; Approximations</h3>
+                    
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border); margin-bottom:1rem;">
+                        <strong>3. Binary (Digital) Options</strong><br>
+                        Digital contracts pay exactly \$1 if the option expires in-the-money:
+                        $$\text{Binary Call} = e^{-r(T-t)} N(d_2)$$
+                        $$\text{Binary Put} = e^{-r(T-t)} (1 - N(d_2))$$
+                    </div>
+
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong>4. At-The-Money Forward (ATMF) Linear Approximation</strong><br>
+                        When strike equals the forward price $E = S e^{(r-D)(T-t)}$, there is a simple linear approximation:
+                        $$\text{Call} \approx \text{Put} \approx 0.4 \times S e^{-D(T-t)} \sigma \sqrt{T-t}$$
+                    </div>
+                </div>
+                
+                <div style="background: rgba(139, 92, 246, 0.05); border-left: 3px solid #8b5cf6; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.8rem; line-height: 1.5; margin-top: 1rem;">
+                    💡 <strong>Binary Interpretation:</strong> Under risk-neutral pricing, the factor $N(d_2)$ represents the <strong>probability</strong> that the stock price expires above the strike price $E$. Hence, a digital option price is simply the discounted risk-neutral probability of expiring in-the-money.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: The Greeks -->
+    <div id="secM3L1Greeks" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Option Price Sensitivities: The Greeks</h3>
+                <p style="font-size:0.85rem; line-height:1.5; color:#4b5563; margin-bottom:1.5rem;">
+                    The Greeks represent the partial derivatives of the option value with respect to parameters and underlying state variables. Let $N'(x) = \frac{1}{\sqrt{2\pi}} e^{-\frac{1}{2} x^2}$ denote the standard normal PDF.
+                </p>
+
+                <!-- Greeks Table -->
+                <div style="overflow-x: auto; margin-bottom: 1.5rem;">
+                    <table style="width: 100%; border-collapse: collapse; font-family: var(--font-family-sans); font-size: 0.82rem; text-align: left;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--card-border); color: var(--accent); font-weight: 700;">
+                                <th style="padding: 0.75rem 0.5rem;">Greek Symbol</th>
+                                <th style="padding: 0.75rem 0.5rem;">Formula Definition</th>
+                                <th style="padding: 0.75rem 0.5rem;">Call Option (Continuous $D$)</th>
+                                <th style="padding: 0.75rem 0.5rem;">Put Option (Continuous $D$)</th>
+                                <th style="padding: 0.75rem 0.5rem;">Binary Call</th>
+                            </tr>
+                        </thead>
+                        <tbody style="color: #4b5563;">
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.75rem 0.5rem;"><strong>Delta ($\Delta$)</strong></td>
+                                <td style="padding: 0.75rem 0.5rem;">$\frac{\partial V}{\partial S}$</td>
+                                <td style="padding: 0.75rem 0.5rem;">$e^{-D(T-t)} N(d_1)$</td>
+                                <td style="padding: 0.75rem 0.5rem;">$e^{-D(T-t)} (N(d_1) - 1)$</td>
+                                <td style="padding: 0.75rem 0.5rem;">$\frac{e^{-r(T-t)} N'(d_2)}{\sigma S \sqrt{T-t}}$</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.75rem 0.5rem;"><strong>Gamma ($\Gamma$)</strong></td>
+                                <td style="padding: 0.75rem 0.5rem;">$\frac{\partial^2 V}{\partial S^2}$</td>
+                                <td style="padding: 0.75rem 0.5rem;" colspan="2">$\frac{e^{-D(T-t)} N'(d_1)}{\sigma S \sqrt{T-t}}$</td>
+                                <td style="padding: 0.75rem 0.5rem;">$-\frac{e^{-r(T-t)} d_1 N'(d_2)}{\sigma^2 S^2 (T-t)}$</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.75rem 0.5rem;"><strong>Theta ($\Theta$)</strong></td>
+                                <td style="padding: 0.75rem 0.5rem;">$\frac{\partial V}{\partial t}$</td>
+                                <td style="padding: 0.75rem 0.5rem;">$-\frac{\sigma S e^{-D} N'(d_1)}{2 \sqrt{T-t}} + D S N(d_1) e^{-D} - r E e^{-r} N(d_2)$</td>
+                                <td style="padding: 0.75rem 0.5rem;">$-\frac{\sigma S e^{-D} N'(d_1)}{2 \sqrt{T-t}} - D S N(-d_1) e^{-D} + r E e^{-r} N(-d_2)$</td>
+                                <td style="padding: 0.75rem 0.5rem;">$r e^{-r} N(d_2) + e^{-r} N'(d_2) \left[ \frac{d_1}{2(T-t)} - \frac{r-D}{\sigma \sqrt{T-t}} \right]$</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.75rem 0.5rem;"><strong>Vega ($\nu$)</strong></td>
+                                <td style="padding: 0.75rem 0.5rem;">$\frac{\partial V}{\partial \sigma}$</td>
+                                <td style="padding: 0.75rem 0.5rem;" colspan="2">$S \sqrt{T-t} e^{-D(T-t)} N'(d_1)$</td>
+                                <td style="padding: 0.75rem 0.5rem;">$-e^{-r(T-t)} N'(d_2) \left( \sqrt{T-t} + \frac{d_2}{\sigma} \right)$</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.75rem 0.5rem;"><strong>Rho ($\rho$)</strong></td>
+                                <td style="padding: 0.75rem 0.5rem;">$\frac{\partial V}{\partial r}$</td>
+                                <td style="padding: 0.75rem 0.5rem;">$E (T-t) e^{-r(T-t)} N(d_2)$</td>
+                                <td style="padding: 0.75rem 0.5rem;">$-E (T-t) e^{-r(T-t)} N(-d_2)$</td>
+                                <td style="padding: 0.75rem 0.5rem;">$-(T-t) e^{-r} N(d_2) + \frac{\sqrt{T-t}}{\sigma} e^{-r} N'(d_2)$</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem 0.5rem;"><strong>Psi ($\Psi$)</strong></td>
+                                <td style="padding: 0.75rem 0.5rem;">$\frac{\partial V}{\partial D}$</td>
+                                <td style="padding: 0.75rem 0.5rem;">$-(T-t) S e^{-D(T-t)} N(d_1)$</td>
+                                <td style="padding: 0.75rem 0.5rem;">$(T-t) S e^{-D(T-t)} N(-d_1)$</td>
+                                <td style="padding: 0.75rem 0.5rem;">$-\frac{\sqrt{T-t}}{\sigma} e^{-r(T-t)} N'(d_2)$</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Interactive Sandbox -->
+    <div id="secM3L1Sandbox" style="display: none;">
+        <div class="container" style="grid-template-columns: 340px 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            
+            <!-- Sliders Panel -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; font-family: var(--font-family-sans); font-size: 0.85rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.15rem; font-weight: 700; color: var(--accent); margin-bottom:1rem;">Inputs</h3>
+                
+                <div style="display:flex; flex-direction:column; gap:1.15rem;">
+                    <!-- Option Type Selector -->
+                    <div>
+                        <span style="font-weight:700; display:block; margin-bottom:0.25rem;">Option Style</span>
+                        <select id="selectM3L1OptType" onchange="updateM3L1Sandbox()" style="width:100%; padding:0.4rem; border-radius:6px; border:1px solid var(--card-border); background:var(--bg-color); color:var(--text-color); font-weight:600;">
+                            <option value="call">European Call</option>
+                            <option value="put">European Put</option>
+                            <option value="binary_call">Binary (Digital) Call</option>
+                            <option value="binary_put">Binary (Digital) Put</option>
+                        </select>
+                    </div>
+
+                    <!-- Slider Stock Price -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Stock Price ($S$):</span>
+                            <span id="valM3L1Stock" style="color:var(--accent);">100.00</span>
+                        </div>
+                        <input id="slideM3L1Stock" type="range" min="10" max="200" step="1" value="100" style="width:100%; cursor:pointer;" oninput="updateM3L1Sandbox()">
+                    </div>
+
+                    <!-- Slider Strike Price -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Strike Price ($E$):</span>
+                            <span id="valM3L1Strike" style="color:var(--accent);">100.00</span>
+                        </div>
+                        <input id="slideM3L1Strike" type="range" min="10" max="200" step="1" value="100" style="width:100%; cursor:pointer;" oninput="updateM3L1Sandbox()">
+                    </div>
+
+                    <!-- Slider Volatility -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Volatility ($\sigma$):</span>
+                            <span id="valM3L1Vol" style="color:var(--accent);">20.0%</span>
+                        </div>
+                        <input id="slideM3L1Vol" type="range" min="5" max="100" step="1" value="20" style="width:100%; cursor:pointer;" oninput="updateM3L1Sandbox()">
+                    </div>
+
+                    <!-- Slider Time to Expiry -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Time to Expiration ($T$):</span>
+                            <span id="valM3L1Time" style="color:var(--accent);">1.00 Year</span>
+                        </div>
+                        <input id="slideM3L1Time" type="range" min="0.05" max="3.0" step="0.05" value="1.0" style="width:100%; cursor:pointer;" oninput="updateM3L1Sandbox()">
+                    </div>
+
+                    <!-- Slider Interest Rate -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Risk-Free Rate ($r$):</span>
+                            <span id="valM3L1Rate" style="color:var(--accent);">5.0%</span>
+                        </div>
+                        <input id="slideM3L1Rate" type="range" min="0.0" max="15.0" step="0.5" value="5.0" style="width:100%; cursor:pointer;" oninput="updateM3L1Sandbox()">
+                    </div>
+
+                    <!-- Slider Dividend Yield -->
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-weight:600;">
+                            <span>Dividend Yield ($D$):</span>
+                            <span id="valM3L1Div" style="color:var(--accent);">0.0%</span>
+                        </div>
+                        <input id="slideM3L1Div" type="range" min="0.0" max="10.0" step="0.5" value="0.0" style="width:100%; cursor:pointer;" oninput="updateM3L1Sandbox()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Outputs & Visualization -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Black-Scholes Options Calculator</h3>
+                    <p style="font-size:0.8rem; color:#4b5563; margin-bottom:1rem;">Observe pricing sensitivities and payoffs in real-time as parameters shift:</p>
+
+                    <!-- Greeks Grid Outputs -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 1.25rem; font-family: var(--font-family-sans);">
+                        <div style="background:var(--metric-bg); border:1px solid var(--card-border); padding:0.5rem; border-radius:6px; text-align:center;">
+                            <div style="font-size:0.62rem; text-transform:uppercase; color:#6b7280; font-weight:700;">Option Value ($V$)</div>
+                            <strong id="outM3L1Price" style="font-size:1.15rem; color:var(--accent); font-family:monospace;">$10.45</strong>
+                        </div>
+                        <div style="background:var(--metric-bg); border:1px solid var(--card-border); padding:0.5rem; border-radius:6px; text-align:center;">
+                            <div style="font-size:0.62rem; text-transform:uppercase; color:#6b7280; font-weight:700;">Delta ($\Delta$)</div>
+                            <strong id="outM3L1Delta" style="font-size:1.15rem; color:var(--text-color); font-family:monospace;">0.636</strong>
+                        </div>
+                        <div style="background:var(--metric-bg); border:1px solid var(--card-border); padding:0.5rem; border-radius:6px; text-align:center;">
+                            <div style="font-size:0.62rem; text-transform:uppercase; color:#6b7280; font-weight:700;">Gamma ($\Gamma$)</div>
+                            <strong id="outM3L1Gamma" style="font-size:1.15rem; color:var(--text-color); font-family:monospace;">0.019</strong>
+                        </div>
+                        <div style="background:var(--metric-bg); border:1px solid var(--card-border); padding:0.5rem; border-radius:6px; text-align:center;">
+                            <div style="font-size:0.62rem; text-transform:uppercase; color:#6b7280; font-weight:700;">Theta ($\Theta$/day)</div>
+                            <strong id="outM3L1Theta" style="font-size:1.15rem; color:var(--text-color); font-family:monospace;">-0.017</strong>
+                        </div>
+                        <div style="background:var(--metric-bg); border:1px solid var(--card-border); padding:0.5rem; border-radius:6px; text-align:center;">
+                            <div style="font-size:0.62rem; text-transform:uppercase; color:#6b7280; font-weight:700;">Vega ($\mathcal{V}$/1% $\sigma$)</div>
+                            <strong id="outM3L1Vega" style="font-size:1.15rem; color:var(--text-color); font-family:monospace;">0.375</strong>
+                        </div>
+                        <div style="background:var(--metric-bg); border:1px solid var(--card-border); padding:0.5rem; border-radius:6px; text-align:center;">
+                            <div style="font-size:0.62rem; text-transform:uppercase; color:#6b7280; font-weight:700;">Rho ($\rho$/1% $r$)</div>
+                            <strong id="outM3L1Rho" style="font-size:1.15rem; color:var(--text-color); font-family:monospace;">0.521</strong>
+                        </div>
+                    </div>
+
+                    <!-- Option Payoff Chart -->
+                    <div style="height: 180px; position: relative;">
+                        <canvas id="m3l1PayoffChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 7: Exercises & Solutions -->
+    <div id="secM3L1Exercises" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent);">Black-Scholes Exercises &amp; Solutions</h3>
+                <p style="font-size: 0.88rem; line-height: 1.5; color: #4b5563; margin-bottom: 1.5rem;">
+                    Test your understanding of the Black-Scholes framework with these mathematical and stochastic exercises:
+                </p>
+
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    
+                    <!-- Exercise 1 -->
+                    <details style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden;">
+                        <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
+                            Exercise 1: Call Option Delta and Vega Derivation
+                        </summary>
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                            <strong>Problem:</strong><br>
+                            Differentiate the European call option pricing formula:
+                            $$C(S, t) = S e^{-D(T-t)} N(d_1) - E e^{-r(T-t)} N(d_2)$$
+                            to show that:
+                            $$\Delta = e^{-D(T-t)} N(d_1) \quad \text{and} \quad \nu = S e^{-D(T-t)} \sqrt{\frac{T-t}{2\pi}} e^{-\frac{1}{2} d_1^2}$$
+                            using the identity:
+                            $$S e^{-D(T-t)} N'(d_1) = E e^{-r(T-t)} N'(d_2)$$
+                            <hr style="border:0; border-top:1px solid var(--card-border); margin:1rem 0;">
+                            <strong>Detailed Solution:</strong><br>
+                            <p><strong>Part A: Delta Derivation</strong><br>
+                            Differentiating $C$ with respect to $S$:
+                            $$\Delta = \frac{\partial C}{\partial S} = e^{-D(T-t)} N(d_1) + S e^{-D(T-t)} N'(d_1)\frac{\partial d_1}{\partial S} - E e^{-r(T-t)} N'(d_2)\frac{\partial d_2}{\partial S}$$
+                            Since $\frac{\partial d_1}{\partial S} = \frac{\partial d_2}{\partial S} = \frac{1}{S \sigma \sqrt{T-t}}$, we can group terms:
+                            $$\Delta = e^{-D(T-t)} N(d_1) + \frac{\partial d_1}{\partial S}\left( S e^{-D(T-t)} N'(d_1) - E e^{-r(T-t)} N'(d_2) \right)$$
+                            Using the given identity, the bracketed term is exactly $0$. Thus:
+                            $$\Delta = e^{-D(T-t)} N(d_1)$$
+                            </p>
+                            <p><strong>Part B: Vega Derivation</strong><br>
+                            Differentiating $C$ with respect to $\sigma$:
+                            $$\nu = \frac{\partial C}{\partial \sigma} = S e^{-D(T-t)} N'(d_1)\frac{\partial d_1}{\partial \sigma} - E e^{-r(T-t)} N'(d_2)\frac{\partial d_2}{\partial \sigma}$$
+                            Substitute $\frac{\partial d_2}{\partial \sigma} = \frac{\partial d_1}{\partial \sigma} - \sqrt{T-t}$ into the equation:
+                            $$\nu = S e^{-D(T-t)} N'(d_1)\frac{\partial d_1}{\partial \sigma} - E e^{-r(T-t)} N'(d_2)\left( \frac{\partial d_1}{\partial \sigma} - \sqrt{T-t} \right)$$
+                            $$\nu = \frac{\partial d_1}{\partial \sigma}\left( S e^{-D(T-t)} N'(d_1) - E e^{-r(T-t)} N'(d_2) \right) + E e^{-r(T-t)} N'(d_2) \sqrt{T-t}$$
+                            The first term is zero. Applying the identity $E e^{-r(T-t)} N'(d_2) = S e^{-D(T-t)} N'(d_1)$ yields:
+                            $$\nu = S e^{-D(T-t)} N'(d_1) \sqrt{T-t} = \sqrt{\frac{T-t}{2\pi}} S e^{-D(T-t)} e^{-\frac{1}{2} d_1^2}$$
+                            </p>
+                        </div>
+                    </details>
+
+                    <!-- Exercise 2 -->
+                    <details style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden;">
+                        <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
+                            Exercise 2: Option Value SDE and Substitution Solution
+                        </summary>
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                            <strong>Problem:</strong><br>
+                            Given that the asset price $S$ evolves according to: $dS = a(S, t) dt + b(S, t) dW$:<br>
+                            1. Apply Itô's Lemma to show $dV = \left( \frac{\partial V}{\partial t} + a \frac{\partial V}{\partial S} + \frac{1}{2} b^2 \frac{\partial^2 V}{\partial S^2} \right) dt + b \frac{\partial V}{\partial S} dW$.<br>
+                            2. Show by substitution that $V(S, t) = e^{-\alpha t} S^2$ is a solution to the customized PDE provided $b^2 = (\alpha - r) S^2$.
+                            <hr style="border:0; border-top:1px solid var(--card-border); margin:1rem 0;">
+                            <strong>Detailed Solution:</strong><br>
+                            <p><strong>Part 1: SDE Expansion</strong><br>
+                            Using Itô's Lemma:
+                            $$dV = \frac{\partial V}{\partial t} dt + \frac{\partial V}{\partial S} dS + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} (dS)^2$$
+                            Since $(dS)^2 = b^2 dt$, substitute $dS$:
+                            $$dV = \left( \frac{\partial V}{\partial t} + a\frac{\partial V}{\partial S} + \frac{1}{2} b^2 \frac{\partial^2 V}{\partial S^2} \right) dt + b\frac{\partial V}{\partial S} dW$$
+                            </p>
+                            <p><strong>Part 2: Verification by Substitution</strong><br>
+                            Let $V(S, t) = e^{-\alpha t} S^2$. Calculate the partial derivatives:
+                            $$\frac{\partial V}{\partial t} = -\alpha e^{-\alpha t} S^2 \quad , \quad \frac{\partial V}{\partial S} = 2 S e^{-\alpha t} \quad , \quad \frac{\partial^2 V}{\partial S^2} = 2 e^{-\alpha t}$$
+                            Substitute these into the customized Black-Scholes PDE:
+                            $$\frac{\partial V}{\partial t} + \frac{1}{2}b^2 \frac{\partial^2 V}{\partial S^2} = r \left( V - S \frac{\partial V}{\partial S} \right)$$
+                            $$\text{LHS} = -\alpha e^{-\alpha t} S^2 + \frac{1}{2}b^2(2 e^{-\alpha t}) = e^{-\alpha t} (b^2 - \alpha S^2)$$
+                            $$\text{RHS} = r \left( e^{-\alpha t} S^2 - S (2 S e^{-\alpha t}) \right) = -r e^{-\alpha t} S^2$$
+                            Equating LHS and RHS gives:
+                            $$b^2 - \alpha S^2 = -r S^2 \implies b^2 = (\alpha - r)S^2$$
+                            </p>
+                        </div>
+                    </details>
+
+                    <!-- Exercise 3 -->
+                    <details style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden;">
+                        <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
+                            Exercise 3: Analytical Limits of the Black-Scholes Formula
+                        </summary>
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                            <strong>Problem:</strong><br>
+                            Find the value of the European call option in the following mathematical limits:<br>
+                            Limit (a): Time $t \to T^-$ (with $\sigma > 0$)<br>
+                            Limit (b): Volatility $\sigma \to 0^+$ (with $t < T$)
+                            <hr style="border:0; border-top:1px solid var(--card-border); margin:1rem 0;">
+                            <strong>Detailed Solution:</strong><br>
+                            <p><strong>Part A: Limit as $t \to T^-$</strong><br>
+                            Let $\tau = T - t \to 0$. The limits of $d_1$ and $d_2$ are:
+                            $$d_{1,2} \approx \frac{\log(S/E)}{\sigma \sqrt{\tau}} \to \begin{cases} +\infty & \text{if } S > E \\ -\infty & \text{if } S < E \\ 0 & \text{if } S = E \end{cases}$$
+                            This maps the cumulative distribution function limits:
+                            * If $S > E$: $N(d_{1,2}) \to 1 \implies C(S, t) \to S - E$.
+                            * If $S < E$: $N(d_{1,2}) \to 0 \implies C(S, t) \to 0$.
+                            * If $S = E$: $N(d_{1,2}) \to 1/2 \implies C(S, t) \to 0$.
+                            Thus, at expiry, the option converges to its standard intrinsic payoff: $\max(S-E, 0)$.
+                            </p>
+                            <p><strong>Part B: Limit as volatility $\sigma \to 0^+$</strong><br>
+                            $$\lim_{\sigma \to 0^+} d_{1,2} = \frac{\log\left( \frac{S e^{-D(T-t)}}{E e^{-r(T-t)}} \right)}{\sigma \sqrt{T-t}} \to \begin{cases} +\infty & \text{if } S e^{-D(T-t)} > E e^{-r(T-t)} \\ -\infty & \text{if } S e^{-D(T-t)} < E e^{-r(T-t)} \end{cases}$$
+                            * If the discounted spot exceeds the discounted strike, the call option converges to: $S e^{-D(T-t)} - E e^{-r(T-t)}$.
+                            * Otherwise, it converges to $0$.
+                            Thus, as volatility goes to zero, the call option converges to its discounted intrinsic value: $\max\left( S e^{-D(T-t)} - E e^{-r(T-t)}, 0 \right)$.
+                            </p>
+                        </div>
+                    </details>
+
+                    <!-- Exercise 4 -->
+                    <details style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden;">
+                        <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
+                            Exercise 4: Backward Kolmogorov SDE for Option Value
+                        </summary>
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                            <strong>Problem:</strong><br>
+                            Write the option value in the form $V(S, t) = \exp(-r(T-t)) \, q(S, t)$ and show that $q(S, t)$ satisfies the backward Kolmogorov equation:
+                            $$\frac{\partial q}{\partial t} + \frac{1}{2} \sigma^2 S^2 \frac{\partial^2 q}{\partial S^2} + (r - D) S \frac{\partial q}{\partial S} = 0$$
+                            <hr style="border:0; border-top:1px solid var(--card-border); margin:1rem 0;">
+                            <strong>Detailed Solution:</strong><br>
+                            Differentiate $V(S, t) = e^{-r(T-t)} q(S, t)$ with respect to all variables:
+                            $$\frac{\partial V}{\partial t} = r e^{-r(T-t)} q + e^{-r(T-t)} \frac{\partial q}{\partial t} = r V + e^{-r(T-t)}\frac{\partial q}{\partial t}$$
+                            $$\frac{\partial V}{\partial S} = e^{-r(T-t)} \frac{\partial q}{\partial S} \quad , \quad \frac{\partial^2 V}{\partial S^2} = e^{-r(T-t)} \frac{\partial^2 q}{\partial S^2}$$
+                            Substitute these back into the standard Black-Scholes PDE:
+                            $$\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} + (r - D) S \frac{\partial V}{\partial S} - r V = 0$$
+                            $$r V + e^{-r(T-t)}\frac{\partial q}{\partial t} + \frac{1}{2}\sigma^2 S^2 e^{-r(T-t)} \frac{\partial^2 q}{\partial S^2} + (r - D) S e^{-r(T-t)} \frac{\partial q}{\partial S} - r V = 0$$
+                            The $rV$ terms cancel out. Dividing the entire equation by the non-zero discount factor $e^{-r(T-t)}$ yields:
+                            $$\frac{\partial q}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 q}{\partial S^2} + (r - D) S \frac{\partial q}{\partial S} = 0$$
+                            Which is the exact Backward Kolmogorov SDE representing the risk-neutral probability density progression.
+                        </div>
+                    </details>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    window.switchM3L1Tab = function(tab) {
+        const tabs = ['assumptions', 'derivation', 'transformation', 'formulas', 'greeks', 'sandbox', 'exercises'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM3L1' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM3L1' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) {
+                sec.style.display = (t === tab ? 'block' : 'none');
+                if (t === tab && !sec.dataset.typeset) {
+                    if (typeof window.safeTypeset === 'function') {
+                        window.safeTypeset([sec]);
+                        sec.dataset.typeset = 'true';
+                    }
+                }
+            }
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        if (tab === 'sandbox') {
+            setTimeout(updateM3L1Sandbox, 100);
+        }
+    };
+
+    let m3l1PayoffChartInstance = null;
+
+    // Normal Cumulative Distribution Function (normCdf approximation)
+    function m3l1NormCdf(x) {
+        const b1 =  0.319381530;
+        const b2 = -0.356563782;
+        const b3 =  1.781477937;
+        const b4 = -1.821255978;
+        const b5 =  1.330274429;
+        const p  =  0.2316419;
+        const c  =  0.39894228;
+
+        if (x >= 0.0) {
+            let k = 1.0 / (1.0 + p * x);
+            return 1.0 - c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        } else {
+            let k = 1.0 / (1.0 - p * x);
+            return c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        }
+    }
+
+    // Normal PDF
+    function m3l1NormPdf(x) {
+        return (1 / Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * x * x);
+    }
+
+    // Normal Inverse CDF approximation
+    function m3l1NormInv(p) {
+        if (p <= 0.0 || p >= 1.0) return 0.0;
+        const a = [2.50662823884, -18.61500062529, 41.39119773534, -28.44120361287];
+        const b = [-8.47351082858, 23.08336743743, -21.06224101826, 3.13082909833];
+        const c = [0.3374754822726147, 0.976169013223269, 0.1607979714918209, 0.0276438810916503, 0.0038405729373609, 0.000395189343119, 0.0000321767881768, 0.0000002888167364, 0.0000003960315187];
+        
+        let y = p - 0.5;
+        if (Math.abs(y) < 0.42) {
+            let r = y * y;
+            let num = (((a[3]*r + a[2])*r + a[1])*r + a[0]) * y;
+            let den = (((b[3]*r + b[2])*r + b[1])*r + 1.0);
+            return num / den;
+        } else {
+            let r = p;
+            if (y > 0) r = 1.0 - p;
+            let z = Math.log(-Math.log(r));
+            let num = (((((((c[8]*z + c[7])*z + c[6])*z + c[5])*z + c[4])*z + c[3])*z + c[2])*z + c[1])*z + c[0];
+            let ans = num;
+            if (y < 0) return -ans;
+            return ans;
+        }
+    }
+
+    // Core Black-Scholes pricing calculations
+    window.updateM3L1Sandbox = function() {
+        const S = parseFloat(document.getElementById('slideM3L1Stock').value);
+        const E = parseFloat(document.getElementById('slideM3L1Strike').value);
+        const vol = parseFloat(document.getElementById('slideM3L1Vol').value) / 100;
+        const T = parseFloat(document.getElementById('slideM3L1Time').value);
+        const r = parseFloat(document.getElementById('slideM3L1Rate').value) / 100;
+        const D = parseFloat(document.getElementById('slideM3L1Div').value) / 100;
+        const optType = document.getElementById('selectM3L1OptType').value;
+
+        // Update Labels
+        document.getElementById('valM3L1Stock').innerText = S.toFixed(2);
+        document.getElementById('valM3L1Strike').innerText = E.toFixed(2);
+        document.getElementById('valM3L1Vol').innerText = (vol * 100).toFixed(1) + "%";
+        document.getElementById('valM3L1Time').innerText = T.toFixed(2) + (T === 1 ? " Year" : " Years");
+        document.getElementById('valM3L1Rate').innerText = (r * 100).toFixed(1) + "%";
+        document.getElementById('valM3L1Div').innerText = (D * 100).toFixed(1) + "%";
+
+        // Math Terms d1 and d2
+        const d1 = (Math.log(S / E) + (r - D + 0.5 * vol * vol) * T) / (vol * Math.sqrt(T));
+        const d2 = d1 - vol * Math.sqrt(T);
+
+        let price = 0;
+        let delta = 0;
+        let gamma = m3l1NormPdf(d1) * Math.exp(-D * T) / (S * vol * Math.sqrt(T));
+        let theta = 0;
+        let vega = S * Math.sqrt(T) * Math.exp(-D * T) * m3l1NormPdf(d1);
+        let rho = 0;
+
+        if (optType === 'call') {
+            price = S * Math.exp(-D * T) * m3l1NormCdf(d1) - E * Math.exp(-r * T) * m3l1NormCdf(d2);
+            delta = Math.exp(-D * T) * m3l1NormCdf(d1);
+            theta = -(S * vol * Math.exp(-D * T) * m3l1NormPdf(d1)) / (2 * Math.sqrt(T)) + D * S * m3l1NormCdf(d1) * Math.exp(-D * T) - r * E * Math.exp(-r * T) * m3l1NormCdf(d2);
+            rho = E * T * Math.exp(-r * T) * m3l1NormCdf(d2);
+        } else if (optType === 'put') {
+            price = E * Math.exp(-r * T) * m3l1NormCdf(-d2) - S * Math.exp(-D * T) * m3l1NormCdf(-d1);
+            delta = Math.exp(-D * T) * (m3l1NormCdf(d1) - 1);
+            theta = -(S * vol * Math.exp(-D * T) * m3l1NormPdf(d1)) / (2 * Math.sqrt(T)) - D * S * m3l1NormCdf(-d1) * Math.exp(-D * T) + r * E * Math.exp(-r * T) * m3l1NormCdf(-d2);
+            rho = -E * T * Math.exp(-r * T) * m3l1NormCdf(-d2);
+        } else if (optType === 'binary_call') {
+            price = Math.exp(-r * T) * m3l1NormCdf(d2);
+            delta = Math.exp(-r * T) * m3l1NormPdf(d2) / (S * vol * Math.sqrt(T));
+            gamma = -Math.exp(-r * T) * d1 * m3l1NormPdf(d2) / (S * S * vol * vol * T);
+            theta = r * Math.exp(-r * T) * m3l1NormCdf(d2) + Math.exp(-r * T) * m3l1NormPdf(d2) * (d1 / (2 * T) - (r - D) / (vol * Math.sqrt(T)));
+            vega = -Math.exp(-r * T) * m3l1NormPdf(d2) * (Math.sqrt(T) + d2 / vol);
+            rho = -T * Math.exp(-r * T) * m3l1NormCdf(d2) + (Math.sqrt(T) / vol) * Math.exp(-r * T) * m3l1NormPdf(d2);
+        } else if (optType === 'binary_put') {
+            price = Math.exp(-r * T) * (1 - m3l1NormCdf(d2));
+            delta = -Math.exp(-r * T) * m3l1NormPdf(d2) / (S * vol * Math.sqrt(T));
+            gamma = Math.exp(-r * T) * d1 * m3l1NormPdf(d2) / (S * S * vol * vol * T);
+            theta = r * Math.exp(-r * T) * (1 - m3l1NormCdf(d2)) - Math.exp(-r * T) * m3l1NormPdf(d2) * (d1 / (2 * T) - (r - D) / (vol * Math.sqrt(T)));
+            vega = Math.exp(-r * T) * m3l1NormPdf(d2) * (Math.sqrt(T) + d2 / vol);
+            rho = -T * Math.exp(-r * T) * (1 - m3l1NormCdf(d2)) - (Math.sqrt(T) / vol) * Math.exp(-r * T) * m3l1NormPdf(d2);
+        }
+
+        // Update Output fields
+        document.getElementById('outM3L1Price').innerText = "$" + price.toFixed(2);
+        document.getElementById('outM3L1Delta').innerText = delta.toFixed(3);
+        document.getElementById('outM3L1Gamma').innerText = gamma.toFixed(4);
+        document.getElementById('outM3L1Theta').innerText = (theta / 365).toFixed(4); // Per-day theta
+        document.getElementById('outM3L1Vega').innerText = (vega / 100).toFixed(4);   // Per 1% vol change
+        document.getElementById('outM3L1Rho').innerText = (rho / 100).toFixed(4);     // Per 1% rate change
+
+        // Generate Plot points (X is spot price range, Y is option price and payoff)
+        const spots = [];
+        const prices = [];
+        const payoffs = [];
+
+        for (let s = 10; s <= 200; s += 2) {
+            spots.push(s);
+            // Payoff
+            let pay = 0;
+            if (optType === 'call') pay = Math.max(s - E, 0);
+            else if (optType === 'put') pay = Math.max(E - s, 0);
+            else if (optType === 'binary_call') pay = s >= E ? 1.0 : 0.0;
+            else if (optType === 'binary_put') pay = s < E ? 1.0 : 0.0;
+            payoffs.push(pay);
+
+            // Curve Price
+            let crv = 0;
+            const c_d1 = (Math.log(s / E) + (r - D + 0.5 * vol * vol) * T) / (vol * Math.sqrt(T));
+            const c_d2 = c_d1 - vol * Math.sqrt(T);
+            
+            if (optType === 'call') {
+                crv = s * Math.exp(-D * T) * m3l1NormCdf(c_d1) - E * Math.exp(-r * T) * m3l1NormCdf(c_d2);
+            } else if (optType === 'put') {
+                crv = E * Math.exp(-r * T) * m3l1NormCdf(-c_d2) - s * Math.exp(-D * T) * m3l1NormCdf(-c_d1);
+            } else if (optType === 'binary_call') {
+                crv = Math.exp(-r * T) * m3l1NormCdf(c_d2);
+            } else if (optType === 'binary_put') {
+                crv = Math.exp(-r * T) * (1 - m3l1NormCdf(c_d2));
+            }
+            prices.push(crv);
+        }
+
+        renderM3L1PayoffChart(spots, prices, payoffs, S, price);
+    };
+
+    function renderM3L1PayoffChart(spots, prices, payoffs, activeSpot, activePrice) {
+        const ctx = document.getElementById('m3l1PayoffChart');
+        if (!ctx) return;
+
+        if (m3l1PayoffChartInstance) {
+            m3l1PayoffChartInstance.data.labels = spots;
+            m3l1PayoffChartInstance.data.datasets[0].data = prices;
+            m3l1PayoffChartInstance.data.datasets[1].data = payoffs;
+            m3l1PayoffChartInstance.data.datasets[2].data = [{x: activeSpot, y: activePrice}];
+            m3l1PayoffChartInstance.update();
+            return;
+        }
+
+        m3l1PayoffChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: spots,
+                datasets: [
+                    {
+                        label: 'Option Price',
+                        data: prices,
+                        borderColor: 'var(--accent)',
+                        borderWidth: 2.5,
+                        fill: false,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Intrinsic Payoff',
+                        data: payoffs,
+                        borderColor: '#6b7280',
+                        borderWidth: 1.5,
+                        borderDash: [4, 4],
+                        fill: false,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Active Pricing Point',
+                        data: [{x: activeSpot, y: activePrice}],
+                        backgroundColor: '#8b5cf6',
+                        borderColor: '#8b5cf6',
+                        pointRadius: 6,
+                        type: 'scatter',
+                        showLine: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom',
+                        title: { display: true, text: 'Underlying Asset Spot Price ($)', font: { size: 9, weight: 'bold' } },
+                        ticks: { font: { size: 8 } }
+                    },
+                    y: {
+                        title: { display: true, text: 'Value ($)', font: { size: 9, weight: 'bold' } },
+                        ticks: { font: { size: 8 } }
+                    }
+                }
+            }
+        });
+    }
+</script>

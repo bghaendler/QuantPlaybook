@@ -1,0 +1,376 @@
+<div id="view-quiz-term-structure" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">Practice Assignment: Term Structure Estimation</h1>
+        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Practice assignment covering LIBOR bootstrapping, Eurodollar linear interpolation, underdetermined linear systems, Nelson-Siegel curves, and Principal Component Analysis.</div>
+    </header>
+
+    <div style="display: flex; flex-direction: column; gap: 2.5rem; max-width: 1400px; margin-bottom: 4rem;">
+        
+        <!-- QUESTION 1: LIBOR DF Calculation (Numeric) -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 1</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Input</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                1. Suppose the spot date $t_0$ is 1 October 2012. You observe a 3-month USD LIBOR deposit rate $L(t_0, S_3) = 0.36\%$ maturing on 3 January 2013, with an exact year fraction of $\delta(t_0, S_3) = \frac{94}{360}$ under the Actual/360 day-count convention. <br><br>
+                <strong>What is the corresponding zero-coupon bond discount factor price $P(t_0, S_3)$?</strong> Round your answer to 6 decimal places (e.g. write 0.999061).
+            </p>
+
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.75rem; max-width: 300px;">
+                <input type="text" id="term_q1_input" placeholder="e.g. 0.999061" style="flex: 1; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); font-size: 1.1rem; font-weight: 700; font-family: monospace;" />
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeTermQ1()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q1-term-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Step-by-Step Analytical Solution:</strong></p>
+                    <p>For standard deposit/simple money market instruments under Actual/360, ZCB discount factor prices are calculated using simple interest discounting:</p>
+                    $$ P(t_0, S_3) = \frac{1}{1 + \delta(t_0, S_3) \cdot L(t_0, S_3)} $$
+                    <p>Substituting the given values into the formula:</p>
+                    $$ L(t_0, S_3) = 0.36\% = 0.0036 $$
+                    $$ \delta(t_0, S_3) = \frac{94}{360} \approx 0.261111 $$
+                    $$ P(t_0, S_3) = \frac{1}{1 + \frac{94}{360} \cdot 0.0036} = \frac{1}{1 + 0.00094} = \frac{1}{1.00094} \approx \mathbf{0.99906088} $$
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: 0.999061</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 2: Futures Linear Interpolation (Numeric) -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 2</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Input</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                2. Due to the maturity overlap where $S_2 < T_1 < S_3$, we must linearly interpolate simple rates to find the boundary rate $L(t_0, T_1)$. <br><br>
+                Given: 1-month LIBOR rate $L(t_0, S_2) = 0.21\%$ (days=35) and 3-month LIBOR rate $L(t_0, S_3) = 0.36\%$ (days=94). The first futures reset date $T_1$ falls exactly 79 days from spot. <br><br>
+                <strong>What is the linearly interpolated boundary simple rate $L(t_0, T_1)$?</strong> Express your answer in percentage points (e.g. write 0.3219 for 0.3219%) and round to 4 decimal places.
+            </p>
+
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.75rem; max-width: 300px;">
+                <input type="text" id="term_q2_input" placeholder="e.g. 0.3219" style="flex: 1; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); font-size: 1.1rem; font-weight: 700; font-family: monospace;" />
+                <span style="font-size: 1rem; font-weight: 600; color: var(--text-color);">%</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeTermQ2()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q2-term-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Step-by-Step Analytical Solution:</strong></p>
+                    <p>The interpolation weight $q$ is defined by the day difference from the target date $T_1$ to the bounding dates $S_2$ and $S_3$:</p>
+                    $$ q = \frac{\delta(T_1, S_3)}{\delta(S_2, S_3)} = \frac{94 - 79}{94 - 35} = \frac{15}{59} \approx 0.254237 $$
+                    <p>Applying the linear interpolation of simple rates:</p>
+                    $$ L(t_0, T_1) = q \cdot L(t_0, S_2) + (1-q) \cdot L(t_0, S_3) $$
+                    $$ L(t_0, T_1) = \frac{15}{59} \cdot (0.21\%) + \left(1 - \frac{15}{59}\right) \cdot (0.36\%) $$
+                    $$ L(t_0, T_1) = \frac{15}{59} \cdot (0.21\%) + \frac{44}{59} \cdot (0.36\%) = \frac{3.15 + 15.84}{59}\% = \frac{18.99}{59}\% \approx \mathbf{0.321864\%} $$
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: 0.3219</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 3: Swap Inverted Bootstrap (Numeric) -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 3</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Input</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                3. Suppose you observe a 2-year spot starting annual swap rate $R_{\text{swap}}(t_0, U_2) = 2.0\%$ (coupons paid at year 1 and year 2, with year fraction $\delta \equiv 1.0$ year). <br><br>
+                You have already solved the 1-year discount factor $P(t_0, U_1) = 0.98$. <br><br>
+                <strong>What is the solved 2-year discount factor price $P(t_0, U_2)$ using the inverted swap bootstrap formula?</strong> Round your answer to 4 decimal places (e.g. write 0.9612).
+            </p>
+
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.75rem; max-width: 300px;">
+                <input type="text" id="term_q3_input" placeholder="e.g. 0.9612" style="flex: 1; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); font-size: 1.1rem; font-weight: 700; font-family: monospace;" />
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeTermQ3()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q3-term-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Step-by-Step Analytical Solution:</strong></p>
+                    <p>For a spot-starting swap, the swap rate is the fixed coupon rate that sets the initial swap value to zero. Inverting this relation yields the general bootstrapping formula:</p>
+                    $$ P(t_0, U_n) = \frac{1 - R_{\text{swap}} \sum_{i=1}^{n-1} \delta_i P(t_0, U_i)}{1 + R_{\text{swap}} \delta_n} $$
+                    <p>Substituting the given values into the formula for $n=2$:</p>
+                    $$ R_{\text{swap}} = 2.0\% = 0.02, \quad \delta_1 = \delta_2 = 1.0 $$
+                    $$ P(t_0, U_2) = \frac{1 - 0.02 \cdot (1.0 \cdot P(t_0, U_1))}{1 + 0.02 \cdot 1.0} $$
+                    $$ P(t_0, U_2) = \frac{1 - 0.02 \cdot 0.98}{1.02} = \frac{1 - 0.0196}{1.02} = \frac{0.9804}{1.02} \approx \mathbf{0.961176} $$
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: 0.9612</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 4: Matching Equation (Radio) -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 4</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                4. In underdetermined cash flow systems, we represent the discount factors in terms of the increments $\Delta$ as $d = M^{-1} \left( W^{-1} \Delta + (1, 0, \dots, 0)^\top \right)$. <br><br>
+                <strong>Which of the following equations represents the correct matching equation $C d = p$ expressed in terms of the increments vector $\Delta$?</strong>
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1.75rem;">
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="term_q4" value="A" style="accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; font-weight: 500; color: var(--text-color); font-family: monospace;">A) C M⁻¹ W⁻¹ Δ = p - C M⁻¹ (1, 0, ..., 0)ᵀ</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="term_q4" value="B" style="accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; font-weight: 500; color: var(--text-color); font-family: monospace;">B) C W⁻¹ M⁻¹ Δ = p - C M⁻¹ (1, 0, ..., 0)ᵀ</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="term_q4" value="C" style="accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; font-weight: 500; color: var(--text-color); font-family: monospace;">C) C M⁻¹ W⁻¹ Δ = p - C W⁻¹ (1, 0, ..., 0)ᵀ</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="term_q4" value="D" style="accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; font-weight: 500; color: var(--text-color); font-family: monospace;">D) C M⁻¹ W⁻¹ Δ = p + C M⁻¹ (1, 0, ..., 0)ᵀ</span>
+                </label>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeTermQ4()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q4-term-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Step-by-Step Analytical Solution:</strong></p>
+                    <p>Let's substitute the discount factor representation $d = M^{-1} \left( W^{-1} \Delta + (1, 0, \dots, 0)^\top \right)$ directly into the cash flow matching equation $C d = p$:</p>
+                    $$ C \left[ M^{-1} \left( W^{-1} \Delta + (1, 0, \dots, 0)^\top \right) \right] = p $$
+                    <p>Expanding the left-hand side:</p>
+                    $$ C M^{-1} W^{-1} \Delta + C M^{-1} (1, 0, \dots, 0)^\top = p $$
+                    <p>Subtracting the constant term $C M^{-1} (1, 0, \dots, 0)^\top$ from both sides yields the final matching equation:</p>
+                    $$ C M^{-1} W^{-1} \Delta = p - C M^{-1} (1, 0, \dots, 0)^\top $$
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Option: A.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 5: Nelson-Siegel Interpretation (Radio) -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 5</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                5. In the Nelson-Siegel parametric yield family: $y(T) = \beta_0 I_0(T) + \beta_1 I_1(T) + \beta_2 I_2(T)$, the coefficients have stable physical shapes. <br><br>
+                <strong>Which of the following physical interpretations of the parameters ($\beta_0, \beta_1, \beta_2$) is correct?</strong>
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1.75rem;">
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="term_q5" value="A" style="accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; font-weight: 500; color: var(--text-color);">A) β₀ is Curvature, β₁ is Level, β₂ is Slope</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="term_q5" value="B" style="accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; font-weight: 500; color: var(--text-color);">B) β₀ is Level, β₁ is Slope, β₂ is Curvature</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="term_q5" value="C" style="accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; font-weight: 500; color: var(--text-color);">C) β₀ is Slope, β₁ is Curvature, β₂ is Level</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='transparent'">
+                    <input type="radio" name="term_q5" value="D" style="accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; font-weight: 500; color: var(--text-color);">D) β₀ is Level, β₁ is Curvature, β₂ is Slope</span>
+                </label>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeTermQ5()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q5-term-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Step-by-Step Analytical Solution:</strong></p>
+                    <p>Let's check the basis functions $I_i(T)$ across maturities $T$ (Slide 7):</p>
+                    <ul>
+                        <li><strong>Level factor ($\beta_0$):</strong> The basis $I_0(T) = 1.0$ is constant for all maturities $T$.</li>
+                        <li><strong>Slope factor ($\beta_1$):</strong> The basis $I_1(T) = \frac{1 - e^{-a T}}{a T}$ decays monotonically from 1.0 (at $T=0$) to 0.0 (as $T \to \infty$).</li>
+                        <li><strong>Curvature factor ($\beta_2$):</strong> The basis $I_2(T) = \frac{1 - e^{-a T}}{a T} - e^{-a T}$ starts at 0.0, humps in the medium-term, and decays back to 0.0.</li>
+                    </ul>
+                    <p>Therefore, the correct interpretation is that $\beta_0$ represents Level, $\beta_1$ represents Slope, and $\beta_2$ represents Curvature.</p>
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Option: B.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 6: PCA Explained Variance (Numeric) -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 6</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Input</span>
+            </div>
+            
+            <p style="font-size: 1.15rem; font-weight: 700; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                6. Suppose that you perform Principal Component Analysis (PCA) on Swiss Government yield changes. The sorted eigenvalues of the covariance matrix are: <br><br>
+                $\lambda_1 = 1.8058 \times 10^{-5}$<br>
+                $\lambda_2 = 3.3688 \times 10^{-6}$<br>
+                and the sum of all 8 eigenvalues is exactly $2.2662 \times 10^{-5}$. <br><br>
+                <strong>What is the proportion of total variability in yield changes explained by the first two principal components combined?</strong> Express your answer in percentage points (e.g. write 94.55 for 94.55%) and round to 2 decimal places.
+            </p>
+
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.75rem; max-width: 300px;">
+                <input type="text" id="term_q6_input" placeholder="e.g. 94.55" style="flex: 1; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--text-color); font-size: 1.1rem; font-weight: 700; font-family: monospace;" />
+                <span style="font-size: 1rem; font-weight: 600; color: var(--text-color);">%</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="gradeTermQ6()" style="background: var(--accent); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background 0.2s;">Submit Answer</button>
+                </div>
+                <div id="q6-term-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
+                    <p><strong>Step-by-Step Analytical Solution:</strong></p>
+                    <p>The proportion of variability in a random vector $X$ explained by the first $k$ principal components is the sum of the first $k$ eigenvalues divided by the sum of all eigenvalues:</p>
+                    $$ \text{Explained Ratio} = \frac{\sum_{i=1}^k \lambda_i}{\sum_{i=1}^n \lambda_i} $$
+                    <p>For $k=2$ using the given eigenvalues:</p>
+                    $$ \text{Sum of first 2} = \lambda_1 + \lambda_2 = 1.8058 \times 10^{-5} + 3.3688 \times 10^{-6} = 2.14268 \times 10^{-5} $$
+                    $$ \text{Total sum} = 2.2662 \times 10^{-5} $$
+                    $$ \text{Ratio} = \frac{2.14268 \times 10^{-5}}{2.2662 \times 10^{-5}} = \frac{2.14268}{2.2662} \approx 0.9454902 \quad (\text{or } \mathbf{94.55\%}) $$
+                    <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: 94.55</p>
+                </div>
+            </details>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // Section 2 Quiz: Self-Grading and Feedback
+    // ============================================================
+    function showTermFeedback(id, isCorrect, message) {
+        const div = document.getElementById(id);
+        if (!div) return;
+        div.style.display = 'block';
+        div.style.background = isCorrect ? '#f0fdf4' : '#fef2f2';
+        div.style.border = isCorrect ? '1px solid #bbf7d0' : '1px solid #fecaca';
+        div.style.borderLeft = isCorrect ? '4px solid #22c55e' : '4px solid #ef4444';
+        div.style.color = isCorrect ? '#166534' : '#991b1b';
+        div.innerHTML = message;
+    }
+
+    function gradeTermQ1() {
+        const val = parseFloat(document.getElementById('term_q1_input').value.trim());
+        if (isNaN(val)) {
+            showTermFeedback('q1-term-feedback', false, 'Please enter a valid decimal number.');
+            return;
+        }
+        const diff = Math.abs(val - 0.999061);
+        if (diff < 1e-5) {
+            showTermFeedback('q1-term-feedback', true, '<strong>Correct!</strong> Exactly 0.999061. You successfully applied the simple deposit discounting formula under Actual/360.');
+        } else {
+            showTermFeedback('q1-term-feedback', false, '<strong>Incorrect.</strong> Your answer differs from the correct value of 0.999061. Remember to convert 0.36% to 0.0036 and multiply by the fraction 94/360.');
+        }
+    }
+
+    function gradeTermQ2() {
+        const val = parseFloat(document.getElementById('term_q2_input').value.trim());
+        if (isNaN(val)) {
+            showTermFeedback('q2-term-feedback', false, 'Please enter a valid decimal number.');
+            return;
+        }
+        const diff = Math.abs(val - 0.3219);
+        if (diff < 2e-4) {
+            showTermFeedback('q2-term-feedback', true, '<strong>Correct!</strong> Exactly 0.3219%. You successfully completed the linear interpolation of simple rates using the boundary ratio 15/59.');
+        } else {
+            showTermFeedback('q2-term-feedback', false, '<strong>Incorrect.</strong> Your answer differs from 0.3219%. Double check your interpolation ratio q = 15/59 and calculate the weighted average: q * 0.21% + (1-q) * 0.36%.');
+        }
+    }
+
+    function gradeTermQ3() {
+        const val = parseFloat(document.getElementById('term_q3_input').value.trim());
+        if (isNaN(val)) {
+            showTermFeedback('q3-term-feedback', false, 'Please enter a valid decimal number.');
+            return;
+        }
+        const diff = Math.abs(val - 0.9612);
+        if (diff < 2e-4) {
+            showTermFeedback('q3-term-feedback', true, '<strong>Correct!</strong> Exactly 0.9612. You successfully applied the iterative inverted swap bootstrapping formula for year 2.');
+        } else {
+            showTermFeedback('q3-term-feedback', false, '<strong>Incorrect.</strong> Your answer differs from 0.9612. Make sure you use the formula: P(t₀, U₂) = (1 - R * δ₁ * P(t₀, U₁)) / (1 + R * δ₂), with R = 0.02 and P(t₀, U₁) = 0.98.');
+        }
+    }
+
+    function gradeTermQ4() {
+        const selected = document.querySelector('input[name="term_q4"]:checked');
+        if (!selected) {
+            showTermFeedback('q4-term-feedback', false, 'Please select one option.');
+            return;
+        }
+        if (selected.value === 'A') {
+            showTermFeedback('q4-term-feedback', true, '<strong>Correct!</strong> Option A is mathematically correct. Moving the cumulative integration constant C M⁻¹ (1, 0, ..., 0)ᵀ to the right hand side isolates the weighted increments vector.');
+        } else {
+            showTermFeedback('q4-term-feedback', false, '<strong>Incorrect.</strong> That is not the correct matching equation. Note that matrix multiplication is non-commutative, and the integration vector must be subtracted from both sides.');
+        }
+    }
+
+    function gradeTermQ5() {
+        const selected = document.querySelector('input[name="term_q5"]:checked');
+        if (!selected) {
+            showTermFeedback('q5-term-feedback', false, 'Please select one option.');
+            return;
+        }
+        if (selected.value === 'B') {
+            showTermFeedback('q5-term-feedback', true, '<strong>Correct!</strong> Option B is correct. β₀ represents Level (long-term yield limit), β₁ represents Slope (decays monotonically), and β₂ represents Curvature (humped shape).');
+        } else {
+            showTermFeedback('q5-term-feedback', false, '<strong>Incorrect.</strong> That is not the correct interpretation. Review the basis functions on Slide 7.');
+        }
+    }
+
+    function gradeTermQ6() {
+        const val = parseFloat(document.getElementById('term_q6_input').value.trim());
+        if (isNaN(val)) {
+            showTermFeedback('q6-term-feedback', false, 'Please enter a valid decimal number.');
+            return;
+        }
+        const diff = Math.abs(val - 94.55);
+        if (diff < 5e-2) {
+            showTermFeedback('q6-term-feedback', true, '<strong>Correct!</strong> Exactly 94.55%. First two principal components capture over 94% of total yield curve movement variance, proving that dimensionality reduction works exceptionally well.');
+        } else {
+            showTermFeedback('q6-term-feedback', false, '<strong>Incorrect.</strong> Your answer differs from 94.55%. Make sure you divide the sum of the first two eigenvalues by the total sum of all eigenvalues: (λ₁ + λ₂) / sum(λ).');
+        }
+    }
+</script>

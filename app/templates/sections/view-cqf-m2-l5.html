@@ -1,0 +1,501 @@
+<div id="view-cqf-m2-l5" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 02: Risk &amp; Return</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 05</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L5: Volatility Models &amp; The ARCH Framework</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Volatility SDEs, GARCH(1,1), Asymmetric GJR-GARCH, ARCH-M, Maximum Likelihood, and Interactive Forecasting</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM2L5Sde" onclick="switchM2L5Tab('sde')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. Volatility &amp; SDEs</button>
+        <button id="tabM2L5Garch" onclick="switchM2L5Tab('garch')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. GARCH(1, 1) Model</button>
+        <button id="tabM2L5Gjr" onclick="switchM2L5Tab('gjr')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Asymmetric GJR</button>
+        <button id="tabM2L5Archm" onclick="switchM2L5Tab('archm')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. ARCH-M Model</button>
+        <button id="tabM2L5Sandbox" onclick="switchM2L5Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Volatility Sandbox</button>
+        <button id="tabM2L5Mle" onclick="switchM2L5Tab('mle')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Maximum Likelihood Lab</button>
+    </div>
+
+    <!-- TAB 1: Volatility & SDEs -->
+    <div id="secM2L5Sde" style="display: block;">
+        <div class="container" style="grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Five Ways to Define Volatility</h3>
+                <p style="font-size: 0.9rem; line-height: 1.5;">Volatility is the variability of asset prices, defined generally as the standard deviation of returns. Depending on application, it is defined in five distinct ways:</p>
+                
+                <ul style="padding-left: 1.2rem; line-height: 1.7; font-size: 0.88rem; margin-bottom: 1rem;">
+                    <li><strong>1. Constant Parameter ($\sigma$):</strong> Appears in classic continuous-time models like Geometric Brownian Motion:
+                        $$dS_t = \mu S_t dt + \sigma S_t dW_t$$
+                    </li>
+                    <li><strong>2. Realized Volatility:</strong> Computed directly from historical return data over a specific window, such as:
+                        $$\hat{\sigma} = \sqrt{\frac{1}{N-1}\sum_{t=1}^N (r_t - \bar{r})^2}$$
+                        Typically estimated using 40-50 daily returns (~2 months).
+                    </li>
+                    <li><strong>3. Conditional Volatility ($\sqrt{h_t}$):</strong> A forward-looking, time-varying quantity dependent on a specified mathematical model and the asset return history $I_{t-1}$.
+                    </li>
+                    <li><strong>4. Stochastic Volatility:</strong> A continuous-time variable with its own stochastic differential equation:
+                        $$dv_t = \kappa(\theta - v_t)dt + \xi \sqrt{v_t} dW_t^v$$
+                    </li>
+                    <li><strong>5. Implied Volatility:</strong> The forward-looking market expectation of volatility solved backwards from options prices using Black-Scholes. Differs from real-world volatility due to risk premia.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Why Does Volatility Change?</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6;">While no complete unified theory exists, researchers identify several primary factors:</p>
+                    
+                    <ul style="padding-left: 1.2rem; line-height: 1.6; font-size: 0.85rem; margin-bottom: 1rem;">
+                        <li><strong>Macroeconomic &amp; Geopolitical Crises:</strong> Volatility surges during extreme episodes, including the Great Depression (1929), Watergate (1973-74), Black Monday 1987 Stock Crash (-20% in one day), the Global Financial Crisis (2008), and COVID-19 (2020).</li>
+                        <li><strong>Leverage Effect:</strong> When stock prices drop, debt-to-equity ratios increase. This makes equity riskier and amplifies volatility (although empirical index-level asymmetry is too strong to be explained by leverage alone).</li>
+                        <li><strong>Information Flow:</strong> The arrival rate of relevant economic, corporate, and political news directly impacts trading volume and price shifts.</li>
+                        <li><strong>Trading Volume Correlation:</strong> Volatility and volume are highly correlated, though it is inappropriate to assign causality; both are driven by the rate of information flow.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: GARCH(1, 1) Model -->
+    <div id="secM2L5Garch" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">The GARCH(1, 1) Framework</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6;">Generalized AutoRegressive Conditional Heteroskedasticity (Bollerslev, 1986) is the most popular credible model for volatility clustering. Let $r_t$ be daily continuously compounded returns:</p>
+
+                <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1.5rem; text-align: center;">
+                    <div style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--accent);">GARCH(1,1) Stochastic Equations</div>
+                    $$r_t \mid I_{t-1} \sim N(\mu, h_t)$$
+                    $$h_t = \omega + \alpha(r_{t-1} - \mu)^2 + \beta h_{t-1}$$
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 1.5rem;">
+                    <div style="background: rgba(59, 130, 246, 0.05); padding: 1rem; border-radius: 8px; border: 1px solid rgba(59, 130, 246, 0.2);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: #2563eb; font-size: 0.95rem;">Variance Positivity</h4>
+                        <p style="font-size: 0.8rem; margin: 0; line-height: 1.4;">To guarantee that the conditional variance $h_t$ is always positive, we require:
+                        $$\omega \ge 0, \quad \alpha \ge 0, \quad \beta \ge 0$$</p>
+                    </div>
+                    <div style="background: rgba(16, 185, 129, 0.05); padding: 1rem; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.2);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: #059669; font-size: 0.95rem;">Stationarity</h4>
+                        <p style="font-size: 0.8rem; margin: 0; line-height: 1.4;">For the covariance stationarity of returns, the sum of lag parameters must satisfy:
+                        $$\alpha + \beta < 1$$
+                        If $\alpha+\beta=1$, volatility is integrated (IGARCH).</p>
+                    </div>
+                    <div style="background: rgba(139, 92, 246, 0.05); padding: 1rem; border-radius: 8px; border: 1px solid rgba(139, 92, 246, 0.2);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: #7c3aed; font-size: 0.95rem;">Empirical Estimates</h4>
+                        <p style="font-size: 0.8rem; margin: 0; line-height: 1.4;">For daily asset returns:
+                        $$\alpha < 0.10 \quad \text{(weak daily shock response)}$$
+                        $$\alpha + \beta > 0.95 \quad \text{(highly persistent cluster decays)}$$</p>
+                    </div>
+                </div>
+
+                <h4 style="font-family: var(--font-family-sans); font-size: 1.05rem; font-weight: 700; margin-top: 1.5rem; color: var(--accent);">Key Properties &amp; Stylised Facts</h4>
+                <ul style="padding-left: 1.2rem; line-height: 1.7; font-size: 0.88rem; margin-bottom: 0;">
+                    <li><strong>Infinite Squared Lag Representation:</strong> Solving the recursive equation backward expresses the current conditional variance as an exponentially weighted moving average of all historical squared excess returns:
+                        $$h_t = \frac{\omega}{1-\beta} + \alpha \sum_{j=1}^{\infty} \beta^{j-1}(r_{t-j} - \mu)^2$$
+                    </li>
+                    <li><strong>Leptokurtic Tail Distribution:</strong> The unconditional returns in GARCH(1,1) have excess kurtosis, reproducing the fat-tailed return properties observed in real markets.</li>
+                    <li><strong>Uncorrelated Returns:</strong> Returns are linearly uncorrelated because the conditional mean is constant ($\mu$), conforming to the market efficiency stylized fact.</li>
+                    <li><strong>Squared Return Autocorrelations:</strong> The autocorrelations of squared returns $s_t = (r_t - \mu)^2$ exist (when kurtosis is finite) and match the decaying shape of an ARMA(1,1) process:
+                        $$\rho_{\tau, s^2} = C(\alpha + \beta)^\tau$$
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Asymmetric GJR -->
+    <div id="secM2L5Gjr" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Asymmetric Volatility &amp; GJR-GARCH(1, 1)</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6;">Standard GARCH has the limitation that positive and negative return residuals ($e_{t-1} = r_{t-1} - \mu$) of equal size have the identical impact on future volatility. In equity markets, volatility routinely increases much more after negative shocks than positive shocks.</p>
+                <p style="font-size: 0.9rem; line-height: 1.6;">The **GJR-GARCH(1, 1)** model (Glosten, Jagannathan &amp; Runkle, 1993) resolves this by incorporating a binary asymmetry dummy variable $S_{t-1}$:</p>
+
+                <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1.5rem; text-align: center;">
+                    $$h_t = \omega + (\alpha + \alpha^{-} S_{t-1})(r_{t-1} - \mu)^2 + \beta h_{t-1}$$
+                    $$S_{t-1} = 1 \quad \text{if } r_{t-1} - \mu < 0 \quad \text{(Negative Shock)}$$
+                    $$S_{t-1} = 0 \quad \text{if } r_{t-1} - \mu \ge 0 \quad \text{(Positive Shock)}$$
+                </div>
+
+                <ul style="padding-left: 1.2rem; line-height: 1.7; font-size: 0.88rem; margin-bottom: 0;">
+                    <li><strong>Asymmetric Multipliers:</strong>
+                        <ul>
+                            <li>Positive Shock multiplier: $\alpha$</li>
+                            <li>Negative Shock multiplier: $\alpha + \alpha^{-}$</li>
+                        </ul>
+                        For equity index returns, $\alpha^{-}$ is strongly positive.
+                    </li>
+                    <li><strong>GJR Persistence ($\phi$):</strong> Represents the rate of volatility decay back to the mean:
+                        $$\phi = \alpha + \frac{1}{2}\alpha^{-} + \beta$$
+                        Covariance stationarity requires $\phi < 1$. Unconditional variance is given by:
+                        $$V = \frac{\omega}{1 - \phi}$$
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.15rem; font-weight: 700; color: var(--accent);">Index vs. Firm Level Asymmetry</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6;">Stephen Taylor's lecture highlights a crucial empirical stylized fact regarding volatility asymmetry:</p>
+                    
+                    <blockquote style="margin: 0.75rem 0; border-left: 3px solid var(--accent); padding-left: 0.75rem; color: #64748b; font-style: italic; font-size: 0.85rem; line-height: 1.5;">
+                        "Asymmetry is structurally stronger at the stock index level than for individual firms."
+                    </blockquote>
+
+                    <ul style="padding-left: 1.2rem; line-height: 1.6; font-size: 0.82rem; margin-bottom: 0;">
+                        <li><strong>Mechanism:</strong> Individual firms show a higher baseline $\alpha$ and lower $\alpha^{-}$. Stock indices show $\alpha \approx 0$ and highly elevated $\alpha^{-}$ (e.g. FTSE 100 has $\alpha = 0.000$, $\alpha^{-} = 0.202$).</li>
+                        <li><strong>The Driver:</strong> Index volatility is heavily influenced by covariances between stock constituents. When the overall stock market declines, the correlations between firm returns increase dramatically, driving index volatility up, whereas positive days do not trigger such correlation changes.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: ARCH-M Model -->
+    <div id="secM2L5Archm" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">The ARCH-in-Mean (ARCH-M) Model</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6;">Modern portfolio theory states that investors should demand a premium (higher expected returns) for holding riskier assets. The **ARCH-M** framework models this risk compensation directly by placing a function of the conditional variance $h_t$ or conditional standard deviation $\sqrt{h_t}$ directly into the conditional mean equation.</p>
+                
+                <p style="font-size: 0.9rem; line-height: 1.6;">A popular specification includes an MA(1) term to capture short-term microstructure dependencies, and the risk premium parameter $\lambda$:</p>
+
+                <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1.5rem;">
+                    <div style="text-align: center; font-weight: 700; margin-bottom: 0.5rem; color: var(--accent);">ARCH-M Mathematical Formulation</div>
+                    $$r_t = \mu_t + e_t, \quad e_t = \sqrt{h_t} z_t \quad (z_t \sim i.i.d.)$$
+                    $$\mu_t = \mu + \lambda \sqrt{h_t} + \Theta e_{t-1}$$
+                    $$h_t = \omega + (\alpha + \alpha^{-} S_{t-1}) e_{t-1}^2 + \beta h_{t-1}$$
+                </div>
+
+                <h4 style="font-family: var(--font-family-sans); font-size: 1.05rem; font-weight: 700; color: var(--accent);">Empirical Textbook Findings (S&amp;P 100 Index, 1991-2000):</h4>
+                <ul style="padding-left: 1.2rem; line-height: 1.7; font-size: 0.88rem; margin-bottom: 0;">
+                    <li><strong>Risk-Premium Parameter ($\lambda$):</strong> Positive estimated value (around 0.1-0.2), indicating a weak but positive relation where higher market volatility demands higher average returns.</li>
+                    <li><strong>MA Coefficient ($\Theta$):</strong> Extremely near zero, meaning asset returns show negligible linear autocorrelation at daily levels.</li>
+                    <li><strong>Shock Coefficients:</strong> $\alpha = 0.011, \alpha^{-} = 0.087$. This represents a very powerful asymmetry: squared negative return shocks are multiplied by $\alpha + \alpha^{-} = 0.098$, which is **9 times** the multiplier for positive shocks ($\alpha = 0.011$).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: Interactive Sandbox -->
+    <div id="secM2L5Sandbox" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <!-- Sliders Panel -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Volatility Forecast Sandbox</h3>
+                    <p style="font-size: 0.85rem; color: #4b5563; margin-bottom: 1.25rem;">Adjust GJR-GARCH(1,1) model parameters to simulate dynamic volatility decay and convergence back to the unconditional level:</p>
+
+                    <!-- Sliders -->
+                    <div style="display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-family-sans);">
+                        <!-- Omega -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">
+                                <span>Omega ($\omega$ - baseline variance scale):</span>
+                                <span id="valM2L5Omega" style="color: var(--accent);">0.000010</span>
+                            </div>
+                            <input type="range" id="slideM2L5Omega" min="0.000001" max="0.0001" step="0.000001" value="0.00001" oninput="updateM2L5Forecast()" style="width: 100%;">
+                        </div>
+
+                        <!-- Alpha -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">
+                                <span>Alpha ($\alpha$ - positive shock reaction):</span>
+                                <span id="valM2L5Alpha" style="color: var(--accent);">0.030</span>
+                            </div>
+                            <input type="range" id="slideM2L5Alpha" min="0.0" max="0.2" step="0.005" value="0.03" oninput="updateM2L5Forecast()" style="width: 100%;">
+                        </div>
+
+                        <!-- Alpha Minus (Asymmetry) -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">
+                                <span>Alpha-Minus ($\alpha^{-}$ - asymmetric shift):</span>
+                                <span id="valM2L5AlphaMinus" style="color: var(--accent);">0.100</span>
+                            </div>
+                            <input type="range" id="slideM2L5AlphaMinus" min="0.0" max="0.4" step="0.01" value="0.10" oninput="updateM2L5Forecast()" style="width: 100%;">
+                        </div>
+
+                        <!-- Beta -->
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem;">
+                                <span>Beta ($\beta$ - lag variance persistence):</span>
+                                <span id="valM2L5Beta" style="color: var(--accent);">0.850</span>
+                            </div>
+                            <input type="range" id="slideM2L5Beta" min="0.5" max="0.98" step="0.01" value="0.85" oninput="updateM2L5Forecast()" style="width: 100%;">
+                        </div>
+
+                        <!-- Shock settings -->
+                        <div style="display: flex; gap: 1rem; align-items: center; margin-top: 0.5rem;">
+                            <span style="font-size: 0.85rem; font-weight: 600;">Shock at $t$:</span>
+                            <select id="selectM2L5Shock" onchange="updateM2L5Forecast()" style="padding: 0.35rem; border-radius: 6px; border: 1px solid var(--card-border); background: var(--bg-color); color: var(--text-color); font-size: 0.85rem; cursor: pointer;">
+                                <option value="neg">-5.0% Extreme Market Fall</option>
+                                <option value="neg2">-3.0% Negative Shock</option>
+                                <option value="pos">+3.0% Positive Shock</option>
+                                <option value="pos2">+5.0% Extreme Market Rally</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulation Metrics output -->
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1.5rem; border-top: 1px solid var(--card-border); padding-top: 1.25rem; font-family: var(--font-family-sans);">
+                    <div style="background: var(--metric-bg); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--card-border);">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Persistence ($\phi$)</div>
+                        <div id="metricM2L5Persistence" style="font-size: 1.25rem; font-weight: 800; color: var(--accent);">0.930</div>
+                    </div>
+                    <div style="background: var(--metric-bg); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--card-border);">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Half-Life ($H$)</div>
+                        <div id="metricM2L5HalfLife" style="font-size: 1.25rem; font-weight: 800; color: var(--accent);">10 Days</div>
+                    </div>
+                    <div style="background: var(--metric-bg); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--card-border); grid-column: span 2;">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Unconditional Annualised Volatility ($\sqrt{259V}$)</div>
+                        <div id="metricM2L5UncondVol" style="font-size: 1.25rem; font-weight: 800; color: var(--accent);">19.23%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projection Chart -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Volatility Convergence Path</h3>
+                    <p style="font-size: 0.85rem; color: #4b5563; margin-bottom: 1rem;">Annualised volatility forecast ($\sqrt{259h_{t+n}}$) projected over 100 trading days:</p>
+                </div>
+                <div style="height: 300px; position: relative;">
+                    <canvas id="m2l5ForecastChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Maximum Likelihood Lab -->
+    <div id="secM2L5Mle" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent);">Parameter Estimation via Maximum Likelihood</h3>
+                <p style="font-size: 0.9rem; line-height: 1.6;">ARCH and GARCH parameters are calculated by selecting the values of $\theta$ that maximize the joint probability density function (likelihood) evaluated at the observed data sample. For large datasets, maximum likelihood estimators (MLE) are asymptotically efficient and normally distributed.</p>
+                
+                <h4 style="font-family: var(--font-family-sans); font-size: 1.05rem; font-weight: 700; color: var(--accent);">Log-Likelihood Math Formulation</h4>
+                <p style="font-size: 0.88rem; line-height: 1.6;">Under the standard assumption that the conditional density is normal, the likelihood function $L(\theta)$ is:</p>
+                <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1rem; text-align: center;">
+                    $$L(\theta) = f(r_1 \mid \theta) \prod_{t=2}^{n} f(r_t \mid I_{t-1}, \theta)$$
+                    $$f(r_t \mid I_{t-1}, \theta) = \frac{1}{\sqrt{2\pi h_t(\theta)}} \exp\left(-\frac{1}{2}\frac{(r_t - \mu_t(\theta))^2}{h_t(\theta)}\right)$$
+                </div>
+
+                <p style="font-size: 0.88rem; line-height: 1.6;">Taking natural logs yields the **Log-Likelihood Function**: </p>
+                <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1.5rem; text-align: center;">
+                    $$\log L(\theta) = \sum_{t=1}^{n} l_t(\theta)$$
+                    $$l_t(\theta) = -\frac{1}{2} \left[ \log(2\pi) + \log(h_t(\theta)) + z_t^2(\theta) \right]$$
+                    $$z_t(\theta) = \frac{r_t - \mu_t(\theta)}{\sqrt{h_t(\theta)}} \quad \text{(i.i.d. Standardised Residuals)}$$
+                </div>
+
+                <h4 style="font-family: var(--font-family-sans); font-size: 1.05rem; font-weight: 700; color: var(--accent);">Step-by-Step Optimization Process (e.g. inside Excel or Python)</h4>
+                <ol style="padding-left: 1.2rem; line-height: 1.7; font-size: 0.88rem; margin-bottom: 1.5rem;">
+                    <li><strong>Initialization:</strong> Pick starting seeds for the parameter vector $\theta = (\mu, \omega, \alpha, \beta)$ and set initial values:
+                        <ul>
+                            <li>$\mu_1$: Sample mean of returns.</li>
+                            <li>$h_1$: Sample variance of returns.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Iterative Filtering:</strong> For each row (date $t=1 \dots n$):
+                        <ul>
+                            <li>Compute standardized residual: $z_t = (r_t - \mu_t)/\sqrt{h_t}$.</li>
+                            <li>Compute row likelihood log density: $l_t = -0.5 [\log(2\pi) + \log(h_t) + z_t^2]$.</li>
+                            <li>Calculate next step conditional variance recursive step: $h_{t+1} = \omega + \alpha(r_t - \mu)^2 + \beta h_t$.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Aggregate &amp; Solver:</strong> Sum all rows to obtain $\log L(\theta) = \sum l_t$, and run a numerical optimizer (such as GRG Non-Linear in Excel Solver, or BFGS in Python's `scipy.optimize`) to maximize $\log L(\theta)$ subject to constraints ($\omega \ge 0, \alpha \ge 0, \beta \ge 0, \alpha+\beta < 1$).</li>
+                </ol>
+
+                <h4 style="font-family: var(--font-family-sans); font-size: 1.05rem; font-weight: 700; color: var(--accent);">Statistical Hypothesis Testing</h4>
+                <ul style="padding-left: 1.2rem; line-height: 1.7; font-size: 0.88rem; margin-bottom: 0;">
+                    <li><strong>Is Volatility Asymmetric?</strong> Test $H_0: \alpha^{-} = 0$ against $H_1: \alpha^{-} > 0$ using a Likelihood Ratio test:
+                        $$LR = 2(L_{\text{GJR}} - L_{\text{GARCH}}) \sim \chi^2_1$$
+                    </li>
+                    <li><strong>Is the Distribution Normal?</strong> If standardized residuals $z_t$ are fat-tailed, we estimate using Student's t-distribution with degrees-of-freedom parameter $\nu$. Let $\zeta = 1/\nu$. Testing $H_0: \zeta = 0$ (normal) against $H_1: \zeta > 0$ (t-dist) routinely rejects normality at extreme statistical significance.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching logic for CQF M2 L5
+    window.switchM2L5Tab = function(tab) {
+        const tabs = ['sde', 'garch', 'gjr', 'archm', 'sandbox', 'mle'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM2L5' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM2L5' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) sec.style.display = (t === tab ? 'block' : 'none');
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+
+
+        // Specific loaders
+        if (tab === 'sandbox') {
+            setTimeout(updateM2L5Forecast, 100);
+        }
+    };
+
+    // TAB 5: Volatility Sandbox Calculations & Forecast Path
+    let m2l5ForecastChartInstance = null;
+
+    window.updateM2L5Forecast = function() {
+        const omega = parseFloat(document.getElementById('slideM2L5Omega').value);
+        const alpha = parseFloat(document.getElementById('slideM2L5Alpha').value);
+        const alphaMinus = parseFloat(document.getElementById('slideM2L5AlphaMinus').value);
+        const beta = parseFloat(document.getElementById('slideM2L5Beta').value);
+        const shockType = document.getElementById('selectM2L5Shock').value;
+
+        // Update slider values in display
+        document.getElementById('valM2L5Omega').innerText = omega.toFixed(6);
+        document.getElementById('valM2L5Alpha').innerText = alpha.toFixed(3);
+        document.getElementById('valM2L5AlphaMinus').innerText = alphaMinus.toFixed(3);
+        document.getElementById('valM2L5Beta').innerText = beta.toFixed(3);
+
+        // Calculate persistence (GJR persistence: phi = alpha + 0.5 * alphaMinus + beta)
+        const persistence = alpha + 0.5 * alphaMinus + beta;
+        document.getElementById('metricM2L5Persistence').innerText = persistence.toFixed(4);
+
+        // Style persistence box based on stability constraint
+        const persistBox = document.getElementById('metricM2L5Persistence');
+        if (persistence >= 1.0) {
+            persistBox.style.color = '#ef4444'; // Red for unstable
+        } else {
+            persistBox.style.color = 'var(--accent)';
+        }
+
+        // Calculate Unconditional Variance (V = omega / (1 - persistence))
+        let V = omega / (1 - Math.min(persistence, 0.9999));
+        let uncondVol = Math.sqrt(259 * V) * 100; // Annualised using 259 days
+        document.getElementById('metricM2L5UncondVol').innerText = uncondVol.toFixed(2) + "%";
+
+        // Calculate Half-life (H = ln(0.5) / ln(persistence))
+        let halfLifeText = "N/A";
+        if (persistence > 0 && persistence < 1.0) {
+            const H = Math.log(0.5) / Math.log(persistence);
+            halfLifeText = Math.round(H) + " Days";
+        } else if (persistence >= 1.0) {
+            halfLifeText = "Infinite";
+        }
+        document.getElementById('metricM2L5HalfLife').innerText = halfLifeText;
+
+        // Run simulation forecast projection path
+        // Assume shock at t=0
+        let shockVal = 0.0;
+        let dummyS = 0;
+
+        if (shockType === 'neg') {
+            shockVal = -0.05; // Extreme market fall
+            dummyS = 1;
+        } else if (shockType === 'neg2') {
+            shockVal = -0.03; // Standard negative shock
+            dummyS = 1;
+        } else if (shockType === 'pos') {
+            shockVal = 0.03; // Standard positive shock
+            dummyS = 0;
+        } else if (shockType === 'pos2') {
+            shockVal = 0.05; // Extreme positive shock
+            dummyS = 0;
+        }
+
+        // Compute conditional variance at t=1 immediately after shock at t=0
+        // h_1 = omega + (alpha + alphaMinus * S_0) * shock^2 + beta * V
+        const h_init = omega + (alpha + alphaMinus * dummyS) * Math.pow(shockVal, 2) + beta * V;
+
+        const horizon = 100;
+        const labels = [];
+        const forecastValues = [];
+        const unconditionalLine = [];
+
+        let currentH = h_init;
+        for (let n = 0; n <= horizon; n++) {
+            labels.push('t+' + n);
+            const annVol = Math.sqrt(259 * currentH) * 100;
+            forecastValues.push(annVol);
+            unconditionalLine.push(uncondVol);
+
+            // Forecast equation: E[h_{t+n}] = V + persistence^n * (h_t - V)
+            // or step recursive: h_{t+1} = omega + persistence * h_t
+            if (persistence < 1.0) {
+                currentH = V + Math.pow(persistence, n + 1) * (h_init - V);
+            } else {
+                // integrated/unstable recursive projection
+                currentH = omega + persistence * currentH;
+            }
+        }
+
+        // Render Chart.js
+        renderM2L5ForecastChart(labels, forecastValues, unconditionalLine);
+    };
+
+    function renderM2L5ForecastChart(labels, forecast, unconditional) {
+        const ctx = document.getElementById('m2l5ForecastChart');
+        if (!ctx) return;
+
+        if (m2l5ForecastChartInstance) {
+            m2l5ForecastChartInstance.data.labels = labels;
+            m2l5ForecastChartInstance.data.datasets[0].data = forecast;
+            m2l5ForecastChartInstance.data.datasets[1].data = unconditional;
+            m2l5ForecastChartInstance.update();
+            return;
+        }
+
+        m2l5ForecastChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Forecast Volatility path (Annualised %)',
+                        data: forecast,
+                        borderColor: 'var(--accent)',
+                        backgroundColor: 'rgba(139, 92, 246, 0.05)',
+                        borderWidth: 2.5,
+                        fill: false,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Unconditional baseline vol',
+                        data: unconditional,
+                        borderColor: '#6b7280',
+                        borderDash: [5, 5],
+                        borderWidth: 1.5,
+                        fill: false,
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true, position: 'bottom' }
+                },
+                scales: {
+                    x: {
+                        ticks: { maxTicksLimit: 10 }
+                    },
+                    y: {
+                        beginAtZero: false,
+                        title: { display: true, text: 'Volatility (Annualised %)' }
+                    }
+                }
+            }
+        });
+    }
+</script>

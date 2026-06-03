@@ -1,0 +1,705 @@
+<div id="view-quiz-interest-rates" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">Quiz: Interest Rates &amp; Discount Bonds</h1>
+        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Practice Assignment covering compounding frequencies, simple rates, continuously compounded yields, short rate limits, and risk-free money market accounts.</div>
+    </header>
+    
+    <div class="container" style="max-width: 900px; grid-template-columns: 1fr; gap: 2rem;">
+        <p style="margin-bottom: 2rem; font-size: 1.15rem; color: var(--text-color); opacity: 0.8; line-height: 1.7;">
+            Test your understanding of interest rates and discount bond pricing with these practice problems. Input or select your options, then click <strong>Submit Answer</strong> to get instant feedback. Expand the <strong>Show Mathematical Solution &amp; Derivation</strong> card at the bottom of each question to review the full step-by-step analytical proof.
+        </p>
+
+        <!-- QUESTION 1 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 1 (MMA Doubling Time)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Input</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                Suppose the short rate is constant over time and equals $r = 2\%$. If you invest in the money market account, how many years does it take to double your investment? Round your answer to the next full year.
+            </p>
+
+            <!-- Numeric Input Field -->
+            <div style="margin-bottom: 1.5rem;">
+                <input type="text" id="qir1_input" placeholder="e.g. 10" style="padding: 0.75rem 1rem; font-size: 1.1rem; font-family: monospace; font-weight: bold; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; width: 100%; max-width: 250px;" />
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQir1()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qir1-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Derivation:</strong></p>
+                    <p>The money market account value at time $t$ under a constant short rate $r$ is given by:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ B(t) = B(0)e^{\int_0^t r ds} = B(0)e^{r t} $$
+                    </div>
+                    <p>Without loss of generality, we set $B(0) = 1$. To find the time $t$ at which the investment doubles ($B(t) = 2$):</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ e^{0.02 t} = 2 $$
+                    </div>
+                    <p>Taking the natural logarithm on both sides yields:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ 0.02 t = \ln(2) \implies t = \frac{\ln(2)}{0.02} \approx \frac{0.693147}{0.02} = 34.657 \text{ years} $$
+                    </div>
+                    <p>The question requires us to <strong>"round your answer to the next full year"</strong>, which is the ceiling of $34.66$. Therefore:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ t_{\text{rounded}} = \lceil 34.657 \rceil = \mathbf{35} \text{ years} $$
+                    </div>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answer: 35</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 2 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 2 (Simple Rate to Yield)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Numeric Input</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                If the 5-year simple rate is 10%, what is the corresponding 5-year yield? Express your answer in percentage points and round to two decimal places.
+            </p>
+
+            <!-- Numeric Input Field -->
+            <div style="margin-bottom: 1.5rem;">
+                <input type="text" id="qir2_input" placeholder="e.g. 5.50" style="padding: 0.75rem 1rem; font-size: 1.1rem; font-family: monospace; font-weight: bold; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; width: 100%; max-width: 250px;" />
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQir2()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qir2-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Derivation:</strong></p>
+                    <p>A quoted 5-year simple compounding rate of $L = 10\%$ corresponds to a Zero-Coupon Bond (ZCB) discount factor of:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ P(0, 5) = \frac{1}{1 + \tau L} = \frac{1}{1 + 5 \times 0.10} = \frac{1}{1.5} \approx 0.666667 $$
+                    </div>
+                    <p>The continuously compounded yield $y$ over the same period $[0, 5]$ satisfies the ZCB pricing relation:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ P(0, 5) = e^{-\tau y} \implies e^{-5 y} = \frac{1}{1.5} \implies e^{5 y} = 1.5 $$
+                    </div>
+                    <p>Taking the natural logarithm on both sides gives:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ 5 y = \ln(1.5) \implies y = \frac{\ln(1.5)}{5} \approx \frac{0.405465}{5} = 0.081093 \text{ (or } \mathbf{8.11\%}\text{)} $$
+                    </div>
+                    <p>So the yield expressed in percentage points is exactly <strong>8.11</strong>.</p>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answer: 8.11</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 3 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 3 (Default Risk Effect)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                What would happen to the prices of bonds if one takes into account default risk?
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qir3_option" value="increase" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">Increase</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qir3_option" value="decrease" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">Decrease</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQir3()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qir3-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Analysis &amp; Explanation:</strong></p>
+                    <p>Default risk represents the probability that the bond issuer will fail to meet coupon or principal payments. When default risk is taken into account:</p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <li>Investors demand a higher yield to compensate for taking on the credit risk of default (the credit risk premium).</li>
+                        <li>Mathematically, the discount rate (yield) $y_{\text{risky}} = y_{\text{riskfree}} + s$ increases, where $s > 0$ represents the credit spread.</li>
+                        <li>Since the present value of cash flows is inversely related to the discount rate, a higher yield spreads the discount factor downwards:
+                            $$ P_{\text{risky}}(t, T) < P_{\text{riskfree}}(t, T) $$
+                        </li>
+                    </ul>
+                    <p>Thus, bond prices will **Decrease**.</p>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answer: Decrease</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 4 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 4 (Comparing Loan Quotes)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                Suppose you want to take out a 10-year loan and you shop around at different banks to get the best deal. Bank A quotes an interest rate of 9% while Bank B quotes an interest rate of 7%. Obviously you are tempted to take the offer of Bank B, however in the small print of the contracts you read that Bank A uses simple rates and Bank B uses continuously compounded rates. Is Bank B truly the best deal?
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qir4_option" value="yes" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">Yes</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qir4_option" value="no" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">No</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQir4()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qir4-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Analysis:</strong></p>
+                    <p>To determine which bank is the best deal for taking out a 10-year loan, we calculate the total amount of payback required at maturity $T = 10$ for a principal loan of 1 unit:</p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <li><strong>Bank A (Simple Interest Rate $L = 9\%$):</strong>
+                            Using simple linear interest payback formulation:
+                            $$ \text{Payback}_A = 1 + T \times L = 1 + 10 \times 0.09 = 1.90 \text{ units} $$
+                        </li>
+                        <li><strong>Bank B (Continuously Compounded Yield $y = 7\%$):</strong>
+                            Using continuous compounding exponential payback formulation:
+                            $$ \text{Payback}_B = e^{T \times y} = e^{10 \times 0.07} = e^{0.7} \approx 2.01375 \text{ units} $$
+                        </li>
+                    </ul>
+                    <p>Since this is a loan, you want to pay back the **least** amount of money possible. Since $\text{Payback}_A (1.90) < \text{Payback}_B (2.01)$, Bank A is actually the cheaper and better deal, and Bank B is **NOT** the best deal. Hence, the answer is **No**.</p>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answer: No</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 5 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 5 (MMA Monotonicity)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">True / False</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                Is the following statement true or false?<br/>
+                <em>The money market account is always increasing over time if the short rate is a positive process.</em>
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qir5_option" value="true" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">True</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qir5_option" value="false" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">False</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQir5()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qir5-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Mathematical Derivation:</strong></p>
+                    <p>The money market account value at time $t$ is mathematically defined as:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ B(t) = e^{\int_0^t r(s) ds} $$
+                    </div>
+                    <p>Taking the time derivative of the money market account via the fundamental theorem of calculus:</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ \frac{d B(t)}{d t} = r(t) e^{\int_0^t r(s) ds} = r(t) B(t) $$
+                    </div>
+                    <p>Since the exponential function is always positive ($B(t) > 0$), and the short rate is a positive process ($r(t) > 0$ for all $t$):</p>
+                    <div style="margin: 1rem 0; overflow-x: auto; text-align: center;">
+                        $$ \frac{d B(t)}{d t} = r(t) B(t) > 0 $$
+                    </div>
+                    <p>Since the derivative is strictly positive, the money market account $B(t)$ is strictly increasing over time. Therefore, the statement is **True**.</p>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answer: True</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 6 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 6 (Yield Curve Shape)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">True / False</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                Is the following statement true or false?<br/>
+                <em>The yield curve is always upward sloping.</em>
+            </p>
+
+            <!-- Radio Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qir6_option" value="true" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">True</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="radio" name="qir6_option" value="false" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">False</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQir6()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qir6-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Analysis &amp; Explanation:</strong></p>
+                    <p>The yield curve (or term structure of interest rates) represents the relation between the contract maturity $T$ and the annualized continuously compounded yield $y(t, T)$. Market pricing expectations, liquidity preferences, and risk premiums dynamically shape this curve:</p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <li><strong>Upward Sloping (Normal):</strong> Longer-term yields are higher than short-term yields, which is the most common state to compensate for maturity and inflation risks.</li>
+                        <li><strong>Flat Yield Curve:</strong> Short-term and long-term rates are identical.</li>
+                        <li><strong>Downward Sloping (Inverted):</strong> Short-term yields are higher than long-term yields. This typically occurs when the central bank maintains tight monetary policy and the market anticipates future rate cuts and economic recession.</li>
+                        <li><strong>Humped Yield Curve:</strong> Mid-term yields are higher than both short-term and long-term yields.</li>
+                    </ul>
+                    <p>Since all of these shapes are economically plausible and observed in real-world interest rate markets, the statement is **False**.</p>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answer: False</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 7 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 7 (n-Fold Rate Properties)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice (Select all that apply)</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                Which of the following statements about the $n$-fold compounded interest rate $y_n(t, T)$ are true?
+            </p>
+
+            <!-- Checkbox Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="checkbox" name="qir7_option" value="qir7_1" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">For $T \to t$ it converges to the short rate: $\lim_{T \to t} y_n(t, T) = r(t)$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="checkbox" name="qir7_option" value="qir7_2" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">For $n = 1$ it coincides with the simple rate: $y_1(t, T) = L(t, T)$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="checkbox" name="qir7_option" value="qir7_3" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">For $n \to \infty$ it converges to the continuously compounded rate (yield): $\lim_{n \to \infty} y_n(t, T) = y(t, T)$</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="checkbox" name="qir7_option" value="qir7_4" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">$y_n(t, T)$ is decreasing in $n$: $y_n(t, T) \geq y_{n+1}(t, T)$</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQir7()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qir7-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Analysis of the Statements:</strong></p>
+                    <ol style="margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <li>
+                            <strong>Statement 1: $\lim_{T \to t} y_n(t, T) = r(t)$ (TRUE)</strong>
+                            <p style="margin-top: 0.25rem; opacity: 0.95;">
+                                At the short end, as maturity $T$ approaches spot time $t$, all compounding conventions (simple compounding, continuous yield, and $n$-fold compounding) converge to the same instantaneous short rate $r(t)$.
+                            </p>
+                        </li>
+                        <li>
+                            <strong>Statement 2: $y_1(t, T) = L(t, T)$ (FALSE)</strong>
+                            <p style="margin-top: 0.25rem; opacity: 0.95;">
+                                Under annual compounding ($n=1$), the bond price is $P(t, T) = (1 + y_1)^{-(T-t)}$. Under simple compounding, the bond price is $P(t, T) = (1 + (T-t)L)^{-1}$. In general, $(1 + y_1)^{T-t} \neq 1 + (T-t)L$, so they do not coincide unless $T-t = 1$ year exactly.
+                            </p>
+                        </li>
+                        <li>
+                            <strong>Statement 3: $\lim_{n \to \infty} y_n(t, T) = y(t, T)$ (TRUE)</strong>
+                            <p style="margin-top: 0.25rem; opacity: 0.95;">
+                                Continuous compounding is defined as the mathematical limit of $n$-fold compounding as the frequency $n$ goes to infinity. Applying the standard calculus limit:
+                                $$ \lim_{n \to \infty} \left(1 + \frac{y_n}{n}\right)^{-n(T-t)} = e^{-y(T-t)} \implies \lim_{n \to \infty} y_n(t, T) = y(t, T) $$
+                            </p>
+                        </li>
+                        <li>
+                            <strong>Statement 4: $y_n(t, T) \geq y_{n+1}(t, T)$ (TRUE)</strong>
+                            <p style="margin-top: 0.25rem; opacity: 0.95;">
+                                As the compounding frequency $n$ increases, interest compounds more frequently, earning interest-on-interest throughout the year. Therefore, a smaller quoted annualized rate is required to achieve the exact same total repayment (discount factor) over the period. Thus, $y_n$ is strictly decreasing in $n$, satisfying $y_1 > y_2 > y_4 > y_{12} > y_{365} > y$.
+                            </p>
+                        </li>
+                    </ol>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answers: Statement 1, Statement 3, and Statement 4 are all TRUE.</p>
+                </div>
+            </details>
+        </div>
+
+        <!-- QUESTION 8 -->
+        <div class="quiz-interactive-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow); margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span style="font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);">Question 8 (ZCB Discount Application)</span>
+                <span style="font-size: 0.875rem; font-weight: 500; color: #94a3b8;">Multiple Choice (Select all that apply)</span>
+            </div>
+            
+            <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-color); line-height: 1.7; margin-bottom: 1.5rem;">
+                Let $C$ denote a cash flow at some future date $T$. In which of the following cases is the time-$t$ value given by $P(t, T) \times C$?
+            </p>
+
+            <!-- Checkbox Options -->
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="checkbox" name="qir8_option" value="qir8_1" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">$C$ is the dividend paid by a stock company.</span>
+                </label>
+                <label style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border: 1px solid var(--card-border); border-radius: 8px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'; this.style.background='var(--nav-hover)'" onmouseout="this.style.borderColor='var(--card-border)'; this.style.background='var(--card-bg)'">
+                    <input type="checkbox" name="qir8_option" value="qir8_2" style="margin-top: 0.25rem; accent-color: var(--accent);" />
+                    <span style="font-size: 1rem; color: var(--text-color); line-height: 1.5;">$C$ is the fixed payment of five dollars.</span>
+                </label>
+            </div>
+
+            <!-- Action Button & Feedback -->
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <button onclick="checkQir8()" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Submit Answer</button>
+                </div>
+                <div id="qir8-feedback" style="display: none; padding: 1rem; border-radius: 8px; font-size: 1rem; line-height: 1.5;"></div>
+            </div>
+
+            <!-- Collapsible Solution -->
+            <details style="border: 1px solid var(--card-border); border-radius: 8px;">
+                <summary style="font-size: 0.95rem; font-weight: 600; color: var(--text-color); padding: 0.75rem 1.25rem; background: var(--metric-bg); cursor: pointer; border-radius: 8px; outline: none;">Show Mathematical Solution &amp; Derivation</summary>
+                <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); opacity: 0.9; line-height: 1.75;">
+                    <p><strong>Step-by-Step Analysis &amp; Explanation:</strong></p>
+                    <p>The time-$t$ ZCB price $P(t, T)$ represents the discount factor for a <strong>guaranteed, risk-free unit payment</strong> at maturity $T$ under no-arbitrage conditions:</p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <li><strong>Fixed Payment of Five Dollars ($C = 5$): (TRUE)</strong>
+                            A fixed dollar payment has no default risk, no indexation risk, and no timing uncertainty. Its value is completely deterministic under risk-free conditions. Thus, by no-arbitrage, its present value is exactly given by multiplying by the risk-free discount factor:
+                            $$ V(t) = P(t, T) \times C $$
+                        </li>
+                        <li><strong>Stock Dividend Payment: (FALSE)</strong>
+                            A stock dividend is a risky cash flow. It depends on the company's financial performance, equity value, and board decisions (dividend cuts, suspensions). Since it contains both default/equity risks and timing/amount uncertainty, it cannot be discounted using the risk-free ZCB price alone; it requires an equity risk premium or risk-adjusted expectation.
+                        </li>
+                    </ul>
+                    <p style="margin-bottom: 0; font-weight: 700; color: #16a34a;">Correct Answer: Fixed payment of five dollars ($C$ is the second option).</p>
+                </div>
+            </details>
+        </div>
+    </div>
+</div>
+
+<script>
+    function checkQir1() {
+        const val = document.getElementById('qir1_input').value.trim();
+        const result = document.getElementById('qir1-feedback');
+        if (!val) {
+            result.innerHTML = '<strong>⚠️ Please enter your answer first.</strong>';
+            result.className = 'feedback-warn';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        const numericVal = parseInt(val);
+        if (numericVal === 35) {
+            result.innerHTML = '<strong>✓ Correct!</strong> Under a constant 2% rate, it takes exactly $t = \\ln(2)/0.02 \\approx 34.66$ years to double, which rounds up to the next full year of <strong>35</strong>.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: Find $t$ such that $e^{0.02 t} = 2$, and round the decimal result to the <em>next</em> full year (ceiling).';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+
+    function checkQir2() {
+        const val = document.getElementById('qir2_input').value.trim();
+        const result = document.getElementById('qir2-feedback');
+        if (!val) {
+            result.innerHTML = '<strong>⚠️ Please enter your answer first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        const numericVal = parseFloat(val);
+        if (Math.abs(numericVal - 8.11) < 0.015) {
+            result.innerHTML = '<strong>✓ Correct!</strong> The 5-year yield is exactly $y = \\ln(1.5)/5 \\approx 8.11\\%$.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: Find the discount factor $P = 1 / (1 + 5 \\times 0.10) = 1/1.5$. Then solve $e^{-5 y} = P$ for $y$, convert to percentage points, and round to two decimal places.';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+
+    function checkQir3() {
+        let selectedValue = '';
+        const radios = document.getElementsByName('qir3_option');
+        for (const r of radios) {
+            if (r.checked) {
+                selectedValue = r.value;
+                break;
+            }
+        }
+        const result = document.getElementById('qir3-feedback');
+        if (!selectedValue) {
+            result.innerHTML = '<strong>⚠️ Please select an option first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        if (selectedValue === 'decrease') {
+            result.innerHTML = '<strong>✓ Correct!</strong> Higher default risk requires a higher credit risk premium (yield spread), which increases the discount rate and decreases bond prices.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: Default risk means there is a chance you will not receive the coupon payments. Does this increase or decrease the bond\'s current present value?';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+
+    function checkQir4() {
+        let selectedValue = '';
+        const radios = document.getElementsByName('qir4_option');
+        for (const r of radios) {
+            if (r.checked) {
+                selectedValue = r.value;
+                break;
+            }
+        }
+        const result = document.getElementById('qir4-feedback');
+        if (!selectedValue) {
+            result.innerHTML = '<strong>⚠️ Please select an option first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        if (selectedValue === 'no') {
+            result.innerHTML = '<strong>✓ Correct!</strong> Bank A\'s payback is $1 + 10 \\times 0.09 = 1.90$ units, while Bank B\'s payback is $e^{10 \\times 0.07} \\approx 2.01$ units. Bank B requires a higher payback, so it is not the best deal.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: Calculate the actual maturity payback of 1 borrowed unit for both banks: simple $1 + T \\times L$ vs. continuous $e^{T \\times y}$. Remember that for a loan, you want to pay back the least amount possible!';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+
+    function checkQir5() {
+        let selectedValue = '';
+        const radios = document.getElementsByName('qir5_option');
+        for (const r of radios) {
+            if (r.checked) {
+                selectedValue = r.value;
+                break;
+            }
+        }
+        const result = document.getElementById('qir5-feedback');
+        if (!selectedValue) {
+            result.innerHTML = '<strong>⚠️ Please select an option first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        if (selectedValue === 'true') {
+            result.innerHTML = '<strong>✓ Correct!</strong> The time derivative is $d B(t) / dt = r(t) B(t) > 0$, meaning the MMA value is strictly monotonically increasing over time.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: Note that the derivative of $B(t) = e^{\\int_0^t r(s)ds}$ with respect to $t$ is $r(t) B(t)$. Since both the short rate and $B(t)$ are strictly positive, what does this imply about the slope of $B(t)$?';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+
+    function checkQir6() {
+        let selectedValue = '';
+        const radios = document.getElementsByName('qir6_option');
+        for (const r of radios) {
+            if (r.checked) {
+                selectedValue = r.value;
+                break;
+            }
+        }
+        const result = document.getElementById('qir6-feedback');
+        if (!selectedValue) {
+            result.innerHTML = '<strong>⚠️ Please select an option first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        if (selectedValue === 'false') {
+            result.innerHTML = '<strong>✓ Correct!</strong> The yield curve can take flat, upward sloping, downward sloping (inverted), or humped shapes depending on interest rate cycles and monetary expectations.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: Recall that the yield curve can invert (meaning longer maturities yield less than shorter ones) under tight monetary conditions or recession expectations.';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+
+    function checkQir7() {
+        const checkboxes = document.getElementsByName('qir7_option');
+        const checkedValues = [];
+        for (const c of checkboxes) {
+            if (c.checked) checkedValues.push(c.value);
+        }
+        const result = document.getElementById('qir7-feedback');
+        if (checkedValues.length === 0) {
+            result.innerHTML = '<strong>⚠️ Please select at least one option first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        
+        // Correct answers are: qir7_1 (T -> t limit), qir7_3 (n -> inf limit), qir7_4 (decreasing in n)
+        const is1Checked = checkedValues.includes('qir7_1');
+        const is2Checked = checkedValues.includes('qir7_2');
+        const is3Checked = checkedValues.includes('qir7_3');
+        const is4Checked = checkedValues.includes('qir7_4');
+        
+        if (is1Checked && !is2Checked && is3Checked && is4Checked) {
+            result.innerHTML = '<strong>✓ Correct!</strong> Statements 1, 3, and 4 are mathematically true. Statement 2 is false because $y_1$ and $L$ are different annual compounding formulations.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: Review the convergence definitions. As $T \\to t$, $y_n$ goes to $r(t)$ (Statement 1). As $n \\to \\infty$, $y_n$ goes to continuously compounded yield $y$ (Statement 3). Because of compounding frequency benefits, $y_n$ is strictly decreasing in $n$ (Statement 4). Statement 2 is false as simple rate $L$ has a different linear format than annual compounding $y_1$.';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+
+    function checkQir8() {
+        const checkboxes = document.getElementsByName('qir8_option');
+        const checkedValues = [];
+        for (const c of checkboxes) {
+            if (c.checked) checkedValues.push(c.value);
+        }
+        const result = document.getElementById('qir8-feedback');
+        if (checkedValues.length === 0) {
+            result.innerHTML = '<strong>⚠️ Please select at least one option first.</strong>';
+            result.style.background = '#fffbeb';
+            result.style.border = '1px solid #fde68a';
+            result.style.color = '#b45309';
+            result.style.display = 'block';
+            return;
+        }
+        
+        // Correct answer is only: qir8_2 (fixed payment of five dollars)
+        const is1Checked = checkedValues.includes('qir8_1');
+        const is2Checked = checkedValues.includes('qir8_2');
+        
+        if (!is1Checked && is2Checked) {
+            result.innerHTML = '<strong>✓ Correct!</strong> A fixed, risk-free future payment $C$ can be perfectly priced today by multiplying by the ZCB discount factor $P(t, T)$. A risky stock dividend cannot.';
+            result.style.background = '#f0fdf4';
+            result.style.border = '1px solid #bbf7d0';
+            result.style.color = '#15803d';
+        } else {
+            result.innerHTML = '<strong>✗ Incorrect.</strong> Try again! Hint: Zero-coupon bond price $P(t, T)$ is a risk-free discount factor. Can a dividend paid by a stock be priced as a risk-free payment?';
+            result.style.background = '#fef2f2';
+            result.style.border = '1px solid #fecaca';
+            result.style.color = '#b91c1c';
+        }
+        result.style.display = 'block';
+        if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise([result]);
+    }
+</script>

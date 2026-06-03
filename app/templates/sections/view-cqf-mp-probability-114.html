@@ -1,0 +1,206 @@
+<div id="view-cqf-mp-probability-114" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">1.14 CLT Convergence</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.14 Central Limit Theorem Convergence</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Independent distributions, sample means, standardizations, and live Monte Carlo simulators.</div>
+    </header>
+
+    <!-- Core Theory Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">1.14.1 The Central Limit Theorem</h3>
+        <p>Let $X_1, X_2, \dots, X_n$ be independent and identically distributed (i.i.d.) random variables, each with mean $\mu$ and finite variance $\sigma^2$:</p>
+        <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
+            $$Z_n = \frac{\sum_{i=1}^n X_i - n\mu}{\sigma \sqrt{n}} \ \xrightarrow{d} \ N(0, 1) \quad \text{as } n \to \infty$$
+        </p>
+        <p><strong>Underlying Concept:</strong> Regardless of the base distribution's shape (even if highly skewed, uniform, or binary coin flips), the sample mean $\bar{X} = \frac{1}{n}\sum X_i$ converges to a standard Gaussian normal distribution curve as $n$ increases!</p>
+        <p>The sample mean's theoretical variance scales down systematically: $\text{Var}(\bar{X}) = \frac{\sigma^2}{n}$.</p>
+    </div>
+
+    <!-- CLT Simulator Sandbox -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">1.14.2 Interactive Central Limit Theorem Sandbox</h3>
+        <p>Watch the Central Limit Theorem in action! Generate 2,000 runs consisting of the average of $N$ i.i.d. draws from a non-normal distribution, and observe real-time convergence of the empirical histogram to the standard Gaussian bell curve:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 280px 1fr; gap: 2rem; align-items: start;">
+                <!-- Controls Column -->
+                <div style="background: var(--card-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 1.25rem;">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; color: var(--text-color);">Simulator Inputs</h3>
+                    
+                    <!-- Base Distribution Selector -->
+                    <div>
+                        <span style="font-weight: 600; display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-color);">Base Distribution</span>
+                        <select id="cltDistSelect" onchange="runCltSimulation()" style="width: 100%; padding: 0.4rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; cursor: pointer; font-family: var(--font-family-sans); font-weight: 600;">
+                            <option value="uniform">Uniform Distribution</option>
+                            <option value="exponential">Exponential Distribution</option>
+                            <option value="bernoulli">Bernoulli (Coin Flip)</option>
+                        </select>
+                    </div>
+
+                    <!-- Sample size N slider -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label for="cltNSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Sample Size ($N$)</label>
+                            <span id="cltNVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">N = 2</span>
+                        </div>
+                        <input id="cltNSlider" type="range" min="1" max="30" step="1" value="2" style="width: 100%; cursor: pointer;" oninput="runCltSimulation()">
+                    </div>
+
+                    <div style="border-top: 1px solid var(--card-border); padding-top: 1rem;">
+                        <button onclick="runCltSimulation()" style="width: 100%; background: var(--accent); color: white; border: none; padding: 0.6rem; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: background 0.2s;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                            Simulate 2000 Runs
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Plot Column -->
+                <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; min-height: 320px; position: relative;">
+                    <h4 style="margin: 0 0 0.75rem 0; font-family: var(--font-family-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-color); text-transform: uppercase; letter-spacing: 0.05em;">Empirical Sample Mean Distribution vs Gaussian Bell</h4>
+                    <div style="width: 100%; height: 260px;">
+                        <canvas id="cltPlotChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            let cltChartInstance = null;
+
+            function drawGaussianPdf(x, mean, std) {
+                if (std <= 0) return 0;
+                return (1.0 / (std * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean) / std, 2));
+            }
+
+            window.runCltSimulation = function() {
+                const dist = document.getElementById('cltDistSelect').value;
+                const N = parseInt(document.getElementById('cltNSlider').value);
+                document.getElementById('cltNVal').innerText = 'N = ' + N;
+
+                const runCount = 2000;
+                const sampleMeans = [];
+
+                let meanSingle = 0.5;
+                let stdSingle = Math.sqrt(1/12);
+
+                if (dist === 'uniform') {
+                    meanSingle = 0.5;
+                    stdSingle = Math.sqrt(1/12);
+                } else if (dist === 'exponential') {
+                    meanSingle = 1.0;
+                    stdSingle = 1.0;
+                } else if (dist === 'bernoulli') {
+                    meanSingle = 0.5;
+                    stdSingle = 0.5;
+                }
+
+                for (let r = 0; r < runCount; r++) {
+                    let sum = 0;
+                    for (let n = 0; n < N; n++) {
+                        if (dist === 'uniform') {
+                            sum += Math.random();
+                        } else if (dist === 'exponential') {
+                            sum += -Math.log(Math.random() || 0.0001);
+                        } else if (dist === 'bernoulli') {
+                            sum += Math.random() < 0.5 ? 1 : 0;
+                        }
+                    }
+                    sampleMeans.push(sum / N);
+                }
+
+                const meanOfMeans = meanSingle;
+                const stdOfMeans = stdSingle / Math.sqrt(N);
+
+                const binCount = 40;
+                const minX = meanSingle - 3.5 * stdSingle;
+                const maxX = meanSingle + 3.5 * stdSingle;
+                const step = (maxX - minX) / binCount;
+
+                const bins = new Array(binCount).fill(0);
+                sampleMeans.forEach(val => {
+                    const idx = Math.floor((val - minX) / step);
+                    if (idx >= 0 && idx < binCount) {
+                        bins[idx]++;
+                    }
+                });
+
+                const histData = bins.map(c => c / (runCount * step));
+                const labels = [];
+                const gaussianPoints = [];
+                for (let i = 0; i < binCount; i++) {
+                    const x = minX + (i + 0.5) * step;
+                    labels.push(x.toFixed(2));
+                    gaussianPoints.push(drawGaussianPdf(x, meanOfMeans, stdOfMeans));
+                }
+
+                const isDark = document.body.classList.contains('dark-theme');
+                const gridColor = isDark ? 'rgba(68, 76, 86, 0.2)' : 'rgba(203, 213, 225, 0.2)';
+                const labelColor = isDark ? '#adbac7' : '#475569';
+
+                if (cltChartInstance) cltChartInstance.destroy();
+
+                const ctx = document.getElementById('cltPlotChart').getContext('2d');
+                cltChartInstance = new Chart(ctx, {
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Theoretical Normal Limit',
+                                type: 'line',
+                                data: gaussianPoints,
+                                borderColor: '#10b981',
+                                borderWidth: 3,
+                                pointRadius: 0,
+                                fill: false,
+                                order: 1
+                            },
+                            {
+                                label: 'Empirical Sample Means',
+                                type: 'bar',
+                                data: histData,
+                                backgroundColor: 'rgba(139, 92, 246, 0.25)',
+                                borderColor: '#8b5cf6',
+                                borderWidth: 1,
+                                barPercentage: 1.0,
+                                categoryPercentage: 1.0,
+                                order: 2
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: labelColor } } },
+                        scales: {
+                            x: {
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor, maxTicksLimit: 10 }
+                            },
+                            y: {
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor }
+                            }
+                        }
+                    }
+                });
+
+                const parent = document.getElementById('view-cqf-mp-probability-114');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            setTimeout(() => {
+                if (document.getElementById('cltDistSelect')) runCltSimulation();
+            }, 100);
+        })();
+    </script>
+</div>

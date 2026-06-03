@@ -1,0 +1,129 @@
+<div id="view-cqf-mp-probability-13" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">1.3 Conditional &amp; Bayes</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.3 Conditional Probability &amp; Bayes' Theorem</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Joint dependencies, sequential multiplications, and prior-to-posterior likelihood updates.</div>
+    </header>
+
+    <!-- Core Theory Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1.3.1 Conditional Probability &amp; Bayes' Rule</h3>
+        <p>The probability of event $B$ scales dynamically if we know a dependent event $A$ has already occurred:</p>
+        <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+            $$P(A|B) = \frac{P(A \cap B)}{P(B)} \implies P(A \cap B) = P(A|B) \times P(B)$$
+        </p>
+        <p>Equating these products yields **Bayes' Theorem** (prior-to-posterior mapping):</p>
+        <p style="text-align: center; font-size: 1.08rem; font-weight: 700; margin: 0.5rem 0;">
+            $$P(B|A) = \frac{P(A|B) \times P(B)}{P(A)}$$
+        </p>
+    </div>
+
+    <!-- Bayes' Coins Solver -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1.3.2 Interactive Bayes' Coin Probability Solver</h3>
+        <p>Simulate picking a double-headed cheating coin out of a bag containing fair and cheating coins:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start;">
+                <!-- Inputs -->
+                <div>
+                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Cheating Coins:</label>
+                            <input id="bayesCheatCoins" type="number" min="1" max="5" value="1" oninput="solveBayesCoins()" style="width: 60px; padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Fair Coins:</label>
+                            <input id="bayesFairCoins" type="number" min="1" max="20" value="9" oninput="solveBayesCoins()" style="width: 60px; padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Observed Heads:</label>
+                            <input id="bayesHeadsCount" type="number" min="1" max="10" value="5" oninput="solveBayesCoins()" style="width: 60px; padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none;">
+                        </div>
+                    </div>
+                    <div style="font-size: 0.85rem; line-height: 1.5; background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid #ec4899;">
+                        <div id="bayesMarginal">P(Observed Heads) = 12.81%</div>
+                        <div id="bayesPosterior" style="font-weight: 700; margin-top: 0.25rem;">P(Cheating Coin | Heads) = 78.05%</div>
+                    </div>
+                </div>
+
+                <!-- Canvas Chart -->
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
+                    <canvas id="bayesCanvas" width="300" height="150" style="width: 100%; height: 150px; background: #000; border-radius: 6px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.solveBayesCoins = function() {
+                const cheat = parseInt(document.getElementById('bayesCheatCoins').value) || 1;
+                const fair = parseInt(document.getElementById('bayesFairCoins').value) || 9;
+                const heads = parseInt(document.getElementById('bayesHeadsCount').value) || 5;
+
+                const totalCoins = cheat + fair;
+                const priorCheat = cheat / totalCoins;
+                const priorFair = fair / totalCoins;
+
+                // Likelihoods
+                const likeCheat = 1.0;
+                const likeFair = Math.pow(0.5, heads);
+
+                const marginal = (likeCheat * priorCheat) + (likeFair * priorFair);
+                const posterior = (likeCheat * priorCheat) / marginal;
+
+                document.getElementById('bayesMarginal').innerHTML = `P(Observed Heads) = ${(marginal * 100).toFixed(2)}%`;
+                document.getElementById('bayesPosterior').innerHTML = `P(Cheating Coin | Heads) = ${(posterior * 100).toFixed(2)}%`;
+
+                drawBayesGraph(priorCheat, posterior);
+
+                const parent = document.getElementById('view-cqf-mp-probability-13');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawBayesGraph(prior, post) {
+                const canvas = document.getElementById('bayesCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const barW = 50;
+                const chartH = 90;
+                const startY = 110;
+
+                // Draw Prior (Purple)
+                const priorH = prior * chartH;
+                ctx.fillStyle = '#8b5cf6';
+                ctx.fillRect(50, startY - priorH, barW, priorH);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '10px sans-serif';
+                ctx.fillText(`Prior: ${(prior*100).toFixed(0)}%`, 50, startY - priorH - 8);
+
+                // Draw Posterior (Pink)
+                const postH = post * chartH;
+                ctx.fillStyle = '#ec4899';
+                ctx.fillRect(170, startY - postH, barW, postH);
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(`Post: ${(post*100).toFixed(0)}%`, 170, startY - postH - 8);
+
+                ctx.fillStyle = '#a1a1aa';
+                ctx.fillText('Prior P(Cheat)', 45, startY + 18);
+                ctx.fillText('Posterior P(Cheat|H)', 150, startY + 18);
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('bayesCheatCoins')) solveBayesCoins();
+            }, 100);
+        })();
+    </script>
+</div>

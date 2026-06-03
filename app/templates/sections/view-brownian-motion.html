@@ -1,0 +1,122 @@
+<div id="view-brownian-motion" style="display: none;">
+    <header>
+        <h1>Module 3.1: Stochastic Calculus</h1>
+        <div class="subtitle" style="color: #6b7280;">2. Brownian Motion &amp; Stochastic Integral</div>
+    </header>
+    <div class="container" style="grid-template-columns: 1fr; gap: 3rem; max-width: 1400px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+            <div class="card" style="margin-bottom: 0;">
+                <h2>Brownian Motion &amp; Itô Isometry</h2>
+                <p>The standard <strong>Brownian Motion</strong> $W(t)$ is the mathematical foundation for continuous continuous-time random processes. A process is a standard Brownian motion if:
+                <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
+                    <li>$W(0) = 0$ and $t \mapsto W(t)$ is almost surely continuous.</li>
+                    <li><strong>Independent Increments:</strong> $W(t) - W(s)$ is independent of $\mathcal{F}_s$ for all $t > s \ge 0$.</li>
+                    <li><strong>Normal Increments:</strong> $W(t) - W(s) \sim \mathcal{N}(0, t - s)$.</li>
+                </ul>
+                </p>
+                <p>Unlike ordinary calculus curves which are smooth, Brownian paths are extremely jagged. They have infinite total variation but a finite, deterministic <strong>Quadratic Variation</strong> $[W]_t = t$. This is defined as the limit of squared increments over partitions:</p>
+                <p style="text-align: center;">$$ [W]_t = \lim_{\|\Pi\| \to 0} \sum_{i=1}^n (W(t_i) - W(t_{i-1}))^2 = t \quad \text{almost surely} $$</p>
+                <div style="background: #f9fafb; padding: 1.5rem; border-radius: 4px; border-left: 4px solid var(--accent); margin: 1.5rem 0;">
+                    <strong>Theorem (Itô Isometry):</strong> For any square-integrable adapted process $\sigma(t)$, the stochastic integral $I(t) = \int_0^t \sigma(s) dW(s)$ is a martingale and satisfies:
+                    <p style="text-align: center; font-size: 1.1rem; margin-top: 1rem; margin-bottom: 0.5rem;">
+                        $$ \mathbb{E}\left[ \left( \int_0^t \sigma(s) dW(s) \right)^2 \right] = \mathbb{E}\left[ \int_0^t \sigma(s)^2 ds \right] $$
+                    </p>
+                    If $\sigma(s)$ is deterministic, the integral $I(t)$ is normally distributed with mean $0$ and variance $\int_0^t \sigma(s)^2 ds$.
+                </div>
+            </div>
+            <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px;">
+                <h3 style="margin-top:0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+                <p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> Brownian motion is the mathematical way to describe pure random jitter. Because it's so jagged, you can't integrate it like regular smooth equations.</p>
+                <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+                    <li style="margin-bottom: 1rem;"><strong>Infinite Jaggedness:</strong> If you zoom in on a Brownian path, it looks just as jagged as it did from far away. It travels an infinite distance, but because it constantly backtracks, it only wanders a distance that scales with $\sqrt{t}$ on average.</li>
+                    <li style="margin-bottom: 1rem;"><strong>Quadratic Variation ($[W]_t = t$):</strong> If you square the tiny changes and sum them up, the randomness cancels out perfectly and you get exactly the time elapsed $t$! This is why $dW^2 = dt$ in stochastic calculus.</li>
+                    <li style="margin-bottom: 1rem;"><strong>Itô Isometry:</strong> This is a powerful variance-conservation law. It says that the variance (risk) of your accumulated trading profits is exactly the integral of the squared sizing of your bets ($\sigma(s)^2$) over time.</li>
+                    <li style="margin-bottom: 0;"><strong>Example:</strong> If you trade with constant volatility $\sigma$, the variance of your portfolio grows exactly as $\sigma^2 t$. If your trading volatility increases linearly, the risk scales as $\int_0^t (as)^2 ds = \frac{1}{3}a^2 t^3$.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Interactive Visualization -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <h2>Interactive Simulation: Stochastic Volatility Integral &amp; Itô Isometry</h2>
+            <p style="margin-bottom: 1.5rem;">Select a volatility profile $\sigma(t)$ and adjust the base parameter. Observe that as you simulate paths of $I(t) = \int_0^t \sigma(s) dW(s)$, exactly 95% of the simulated paths fall inside the theoretical $\pm 1.96 \sqrt{\int_0^t \sigma(s)^2 ds}$ standard deviation bounds, verifying the Itô Isometry variance prediction.</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <!-- Volatility Type Selection -->
+                <div style="display: flex; flex-direction: column; gap: 0.5rem; grid-column: span 2;">
+                    <label style="font-weight: 600; font-size: 0.85rem; color: #334155;">Volatility Function $\sigma(t)$ Profile:</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button id="btnVolConstant" class="vol-btn" style="flex: 1; background: var(--primary-color); color: white; border: none; padding: 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">Constant: $\sigma$</button>
+                        <button id="btnVolLinear" class="vol-btn" style="flex: 1; background: #e2e8f0; color: #334155; border: none; padding: 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">Linear: $\sigma \cdot t$</button>
+                        <button id="btnVolSinusoidal" class="vol-btn" style="flex: 1; background: #e2e8f0; color: #334155; border: none; padding: 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">Sinusoidal</button>
+                    </div>
+                </div>
+                <!-- Base Parameter Slider -->
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <label for="volBaseSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Vol Coefficient $\sigma_0$: <span id="volBaseValue">0.10</span></label>
+                    <input id="volBaseSlider" max="0.25" min="0.02" step="0.01" style="width: 100%;" type="range" value="0.10"/>
+                </div>
+                <!-- Re-simulate Button -->
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <button id="resimulateBmBtn" style="background: var(--primary-color); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 4px; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%;">Run 5 Paths</button>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <h3 style="margin-top:0; font-family: 'Inter', sans-serif; font-size: 1.1rem; color: #475569; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem;">1. Brownian Motion &amp; Quadratic Variation $[W]_t$</h3>
+                    <div class="chart-container" style="height: 350px;">
+                        <canvas id="bmChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="margin-top:0; font-family: 'Inter', sans-serif; font-size: 1.1rem; color: #475569; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem;">2. Stochastic Integral $I(t) = \int_0^t \sigma(s) dW(s)$</h3>
+                    <div class="chart-container" style="height: 350px;">
+                        <canvas id="stochIntegralChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sample Exercise -->
+        <div class="card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
+            <h2 style="color: #166534;">Practice Exercise: Calculating Integral Variances</h2>
+            <p style="color: #166534; font-weight: 500;">Compute the variance and the probability distribution of the stochastic integral $I(t) = \int_0^t s^2 dW(s)$ at time $t = 2$. What is the probability that $I(2) \ge 3$?</p>
+            <details style="background: white; padding: 1rem; border-radius: 6px; border: 1px solid #bbf7d0;">
+                <summary style="cursor: pointer; font-weight: 600; color: #15803d; list-style: none; display: flex; align-items: center;">
+                    <span style="margin-right: 0.5rem;">👉</span> Show Step-by-Step Solution
+                </summary>
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; color: #334155;">
+                    <p>To find the distribution of $I(t) = \int_0^t s^2 dW(s)$, we apply Itô Isometry:</p>
+                    <ol style="line-height: 1.8;">
+                        <li>Since the integrand $\sigma(s) = s^2$ is deterministic, the stochastic integral is normally distributed:
+                            <div style="text-align: center; margin: 0.5rem 0;">$$I(t) \sim \mathcal{N}\left(0, \operatorname{Var}(I(t))\right)$$</div>
+                        </li>
+                        <li>Apply Itô Isometry to calculate the variance:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$\operatorname{Var}(I(t)) = \mathbb{E}[I(t)^2] = \int_0^t (s^2)^2 ds = \int_0^t s^4 ds = \left[ \frac{s^5}{5} \right]_0^t = \frac{t^5}{5}$$
+                            </div>
+                        </li>
+                        <li>Evaluate the variance at $t = 2$:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$\operatorname{Var}(I(2)) = \frac{2^5}{5} = \frac{32}{5} = 6.4$$
+                            </div>
+                            The standard deviation is $\sqrt{6.4} \approx 2.53$. So $I(2) \sim \mathcal{N}(0, 6.4)$.
+                        </li>
+                        <li>We want to find $P(I(2) \ge 3)$. Standardize the variable:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$Z = \frac{3 - 0}{\sqrt{6.4}} = \frac{3}{2.5298} \approx 1.186$$
+                            </div>
+                        </li>
+                        <li>Use standard normal distribution properties:
+                            <div style="text-align: center; margin: 0.5rem 0;">
+                                $$P(Z \ge 1.19) = 1 - \Phi(1.19) = 1 - 0.8830 = 0.1170$$
+                            </div>
+                        </li>
+                    </ol>
+                    <p><strong>Answer:</strong> The variance is exactly <strong>$6.4$</strong>. The probability that $I(2) \ge 3$ is approximately **$11.70\%$**.</p>
+                </div>
+            </details>
+        </div>
+    </div>
+</div>

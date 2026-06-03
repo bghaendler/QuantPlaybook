@@ -1,0 +1,444 @@
+<div id="view-cqf-fp-deriv-ir-swaps" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <span class="badge" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #4f46e5;">Finance Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9;">Derivatives</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.5rem; font-weight: 800; border-bottom: none; padding-bottom: 0; background: linear-gradient(135deg, var(--text-color), #4f46e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Derivatives: Interest Rate Swaps</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1.05rem;">Exploring Term Reference Rates, compounded OIS mechanics, and liability hedging frameworks.</div>
+    </header>
+
+    <!-- Sub-Navigation Bar -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.75rem; flex-wrap: wrap;">
+        <button class="nav-item tab-btn active" id="btn-ir-term" onclick="selectIRTab('term')" style="padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: 1px solid var(--card-border); background: var(--metric-bg); color: var(--text-color);">1. EURIBOR Term Swap</button>
+        <button class="nav-item tab-btn" id="btn-ir-ois" onclick="selectIRTab('ois')" style="padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: 1px solid var(--card-border); background: var(--metric-bg); color: var(--text-color);">2. compounded SONIA OIS</button>
+        <button class="nav-item tab-btn" id="btn-ir-hedge" onclick="selectIRTab('hedge')" style="padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: 1px solid var(--card-border); background: var(--metric-bg); color: var(--text-color);">3. Liability Hedging</button>
+    </div>
+
+    <!-- TAB 1: EURIBOR Term Swap -->
+    <div id="tab-content-term" class="tab-pane" style="display: block;">
+        <div class="card" style="margin-bottom: 2rem; border-left: 4px solid #4f46e5;">
+            <h3 style="margin-top:0; color: #4f46e5;">2-Year Semi-Annual EURIBOR Swap</h3>
+            <p style="font-size:0.9rem; line-height:1.5;">
+                In a classic interest rate swap, coupons are paid periodically (e.g. semi-annually) based on a <strong>Term Reference Rate</strong> like EURIBOR. Reference rates represent the averages at which European banks lend to one another across standard tenors.
+            </p>
+
+            <div style="background: rgba(79, 70, 229, 0.04); padding: 1rem; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1.5rem; line-height: 1.5; border: 1px dashed rgba(79, 70, 229, 0.2);">
+                <strong>Lecture Case Parameters:</strong> Notional size of <strong>€100,000,000</strong>. Fixed rate payer (A) pays <strong>3.00% p.a.</strong> every 6 months. Floating receiver (B) pays <strong>6-month EURIBOR</strong>. Drag the sliders below to adjust the EURIBOR settings for each semi-annual period and trace the net cash flows:
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem; align-items: start;">
+                <!-- Sliders and calculation inputs -->
+                <div>
+                    <h4 style="margin-top:0; color: var(--accent);">Adjust Period Reference Rates (p.a.)</h4>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                            <span>Period 1 (Month 6) EURIBOR:</span>
+                            <strong id="lbl-euribor-1" style="color: var(--accent);">3.40%</strong>
+                        </div>
+                        <input id="slider-euribor-1" type="range" min="1" max="5" step="0.1" value="3.4" oninput="calcTermSwap()" style="width: 100%;">
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                            <span>Period 2 (Month 12) EURIBOR:</span>
+                            <strong id="lbl-euribor-2" style="color: var(--accent);">3.20%</strong>
+                        </div>
+                        <input id="slider-euribor-2" type="range" min="1" max="5" step="0.1" value="3.2" oninput="calcTermSwap()" style="width: 100%;">
+                    </div>
+
+                    <div style="margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                            <span>Period 3 (Month 18) EURIBOR:</span>
+                            <strong id="lbl-euribor-3" style="color: var(--accent);">3.00%</strong>
+                        </div>
+                        <input id="slider-euribor-3" type="range" min="1" max="5" step="0.1" value="3.0" oninput="calcTermSwap()" style="width: 100%;">
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                            <span>Period 4 (Month 24) EURIBOR:</span>
+                            <strong id="lbl-euribor-4" style="color: var(--accent);">2.90%</strong>
+                        </div>
+                        <input id="slider-euribor-4" type="range" min="1" max="5" step="0.1" value="2.9" oninput="calcTermSwap()" style="width: 100%;">
+                    </div>
+
+                    <!-- Slide Typo / Copy Paste Highlight -->
+                    <div style="background: rgba(245, 158, 11, 0.08); border-left: 4px solid #f59e0b; padding: 1rem; border-radius: 8px; font-size: 0.82rem; line-height: 1.4; margin-bottom: 1.5rem;">
+                        <div style="font-weight: 700; color: #d97706; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.25rem;">
+                            <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                            Slide Typo Alert: Duplicate Leg 2
+                        </div>
+                        <span><strong>Copy-Paste Discrepancy on Slide:</strong> For Period 2, the slide shows a 6m rate of 3.2% p.a., but mistakenly copy-pastes the formula from Period 1: <em>"Net: 100m * 0.4% p.a. x 6/12 = 200,000"</em> (instead of 0.2% p.a. = €100,000). You can toggle this switch to observe standard math versus Neil's slide values:</span>
+                        <div style="margin-top: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <label style="font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.25rem;">
+                                <input type="checkbox" id="ir-typo-toggle" onchange="calcTermSwap()" checked> Show Slide Copy-Paste Values
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ledger list -->
+                <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 12px;">
+                    <h4 style="margin-top:0; color: var(--accent);">Live Leg Settlement Table:</h4>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem;">
+                        <thead>
+                            <tr style="border-bottom: 1.5px solid var(--card-border); text-align: left;">
+                                <th style="padding: 0.5rem 0.2rem;">Period</th>
+                                <th style="padding: 0.5rem 0.2rem;">Fixed Rate</th>
+                                <th style="padding: 0.5rem 0.2rem;">EURIBOR</th>
+                                <th style="padding: 0.5rem 0.2rem; text-align: right;">Net Cash Flow</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbl-term-body">
+                            <!-- Populated Dynamically -->
+                        </tbody>
+                    </table>
+                    <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1.5px solid var(--card-border); display: flex; justify-content: space-between; font-weight: 800; font-size: 0.9rem;">
+                        <span>Cumulative Swap P/L (A):</span>
+                        <span id="term-cumulative-pl" style="color: #10b981;">+€200,000</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: compounded SONIA OIS -->
+    <div id="tab-content-ois" class="tab-pane" style="display: none;">
+        <div class="card" style="margin-bottom: 2rem; border-left: 4px solid #10b981;">
+            <h3 style="margin-top:0; color: #10b981;">1-Week Compound GBP SONIA OIS</h3>
+            <p style="font-size:0.9rem; line-height:1.5;">
+                In an <strong>Overnight Index Swap (OIS)</strong>, the floating rate payer compounding daily index values published daily by central banks (e.g. GBP SONIA, USD SOFR, EUR €STR) across the accrual period. Fixed rate payments are known upfront.
+            </p>
+
+            <div style="background: rgba(16, 185, 129, 0.04); padding: 1rem; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1.5rem; line-height: 1.5; border: 1px dashed rgba(16, 185, 129, 0.2);">
+                <strong>GBP SONIA 1-Week Example:</strong> Notional principal is <strong>£100,000,000</strong>. Fixed rate is locked at <strong>4.75% p.a.</strong> (7 days). Floating rate references daily compounding of overnight SONIA. Adjust daily SONIA rates below to witness the compounding effect and how weekends (Friday applied for Sat/Sun) impact the accrual:
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem; align-items: start;">
+                <!-- Compounding Timeline Table -->
+                <div>
+                    <h4 style="margin-top:0; color: var(--accent);">Compounded Accumulation Schedule</h4>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; line-height: 1.4;">
+                        <thead>
+                            <tr style="border-bottom: 1.5px solid var(--card-border); text-align: left;">
+                                <th style="padding: 0.4rem 0.2rem;">Day / Date</th>
+                                <th style="padding: 0.4rem 0.2rem;">SONIA Rate</th>
+                                <th style="padding: 0.4rem 0.2rem;">Accrual Days</th>
+                                <th style="padding: 0.4rem 0.2rem; text-align: right;">Compounded Notional</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.4rem 0.2rem;">Start (Tue 15)</td>
+                                <td style="padding: 0.4rem 0.2rem;">-</td>
+                                <td style="padding: 0.4rem 0.2rem;">-</td>
+                                <td style="padding: 0.4rem 0.2rem; text-align: right; font-family: monospace;">£100,000,000.00</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.4rem 0.2rem;">Tue 15 (➔ Wed)</td>
+                                <td style="padding: 0.4rem 0.2rem;"><input id="sonia-0" type="number" step="0.05" value="4.50" style="width: 50px; font-weight:700;" oninput="calcOisSwap()"> %</td>
+                                <td style="padding: 0.4rem 0.2rem;">1</td>
+                                <td id="notional-1" style="padding: 0.4rem 0.2rem; text-align: right; font-family: monospace;">£100,012,329.00</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.4rem 0.2rem;">Wed 16 (➔ Thu)</td>
+                                <td style="padding: 0.4rem 0.2rem;"><input id="sonia-1" type="number" step="0.05" value="4.50" style="width: 50px; font-weight:700;" oninput="calcOisSwap()"> %</td>
+                                <td style="padding: 0.4rem 0.2rem;">1</td>
+                                <td id="notional-2" style="padding: 0.4rem 0.2rem; text-align: right; font-family: monospace;">£100,024,659.00</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.4rem 0.2rem;">Thu 17 (➔ Fri)</td>
+                                <td style="padding: 0.4rem 0.2rem;"><input id="sonia-2" type="number" step="0.05" value="4.50" style="width: 50px; font-weight:700;" oninput="calcOisSwap()"> %</td>
+                                <td style="padding: 0.4rem 0.2rem;">1</td>
+                                <td id="notional-3" style="padding: 0.4rem 0.2rem; text-align: right; font-family: monospace;">£100,036,990.00</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border); background: rgba(79, 70, 229, 0.03);">
+                                <td style="padding: 0.4rem 0.2rem;"><strong>Fri 18 (Weekend!)</strong></td>
+                                <td style="padding: 0.4rem 0.2rem;"><input id="sonia-3" type="number" step="0.05" value="4.50" style="width: 50px; font-weight:700;" oninput="calcOisSwap()"> %</td>
+                                <td style="padding: 0.4rem 0.2rem; color: #4f46e5; font-weight:700;">3 (Fri-Sun)</td>
+                                <td id="notional-4" style="padding: 0.4rem 0.2rem; text-align: right; font-family: monospace;">£100,073,991.00</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--card-border);">
+                                <td style="padding: 0.4rem 0.2rem;">Mon 21 (➔ Tue)</td>
+                                <td style="padding: 0.4rem 0.2rem;"><input id="sonia-4" type="number" step="0.05" value="4.50" style="width: 50px; font-weight:700;" oninput="calcOisSwap()"> %</td>
+                                <td style="padding: 0.4rem 0.2rem;">1</td>
+                                <td id="notional-5" style="padding: 0.4rem 0.2rem; text-align: right; font-family: monospace;">£100,086,329.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Live Ledger and Charts -->
+                <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 12px; height: 100%;">
+                    <h4 style="margin-top:0; color: var(--accent);">Final Compounded Exchange</h4>
+                    
+                    <div style="margin-bottom: 0.75rem; font-size: 0.85rem;">
+                        <span>Fixed Obligation (Locked):</span>
+                        <strong style="float: right;">£91,096.00</strong>
+                    </div>
+                    <div style="margin-bottom: 1.25rem; font-size: 0.85rem;">
+                        <span>compounded Floating Obligation:</span>
+                        <strong id="ois-accrued-float" style="float: right;">£86,329.00</strong>
+                    </div>
+
+                    <div style="border-top: 1.5px solid var(--card-border); padding-top: 1rem; text-align: center;">
+                        <span style="font-weight: 700; font-size: 0.8rem; color: #6b7280; text-transform: uppercase; display: block; margin-bottom: 0.25rem;">Net Exchange Settlement</span>
+                        <h2 id="ois-settlement" style="margin: 0; color: #ef4444; font-size: 1.8rem; font-weight: 800;">£4,767.00</h2>
+                        <span style="font-size: 0.75rem; color: #6b7280; display: block; margin-top: 0.25rem;">Paid by Fixed Payer to Floating Receiver</span>
+                    </div>
+
+                    <!-- Compounding Growth chart placeholder -->
+                    <div style="position: relative; height: 140px; width: 100%; margin-top: 1.5rem;">
+                        <canvas id="oisChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Liability Hedging -->
+    <div id="tab-content-hedge" class="tab-pane" style="display: none;">
+        <div class="card" style="margin-bottom: 2rem;">
+            <h3 style="margin-top: 0; color: #4f46e5;">Liability Hedging with Payer Swaps</h3>
+            <p style="font-size:0.9rem; line-height:1.5;">
+                Corporates with floating-rate debt can hedge against rising interest rates using a **Payer Swap** (paying fixed, receiving floating).
+            </p>
+
+            <!-- Flow chart block -->
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 2rem; border-radius: 12px; margin-bottom: 1.5rem; text-align: center;">
+                <h4 style="margin-top: 0; color: var(--accent); margin-bottom: 1.5rem;">The Flow of Interest Rates</h4>
+                
+                <div style="display: flex; justify-content: center; align-items: center; gap: 2rem; flex-wrap: wrap;">
+                    
+                    <!-- Lender Box -->
+                    <div style="background: var(--card-bg); border: 1.5px solid var(--card-border); padding: 1rem; border-radius: 8px; width: 150px;">
+                        <div style="font-weight: 800; font-size: 0.95rem; color: #4f46e5;">Lender Bank</div>
+                        <div style="font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem;">Issues 5y Loan</div>
+                    </div>
+
+                    <!-- Left arrow -->
+                    <div style="text-align: center; color: #ef4444;">
+                        <div style="font-size: 1.5rem; line-height: 1;">⬅️</div>
+                        <div style="font-size: 0.72rem; font-family: monospace; font-weight:700;">Floating Rate</div>
+                    </div>
+
+                    <!-- Corporate Box -->
+                    <div style="background: #4f46e5; color: white; padding: 1.25rem; border-radius: 8px; width: 180px; box-shadow: 0 4px 6px rgba(79,70,229,0.2);">
+                        <div style="font-weight: 800; font-size: 1rem;">Corporate</div>
+                        <div style="font-size: 0.78rem; opacity: 0.9; margin-top: 0.25rem;">Net Fixed Payment: <strong>4.52% p.a.</strong></div>
+                    </div>
+
+                    <!-- Right arrow -->
+                    <div style="text-align: center; color: #10b981;">
+                        <div style="display: flex; gap: 1rem; justify-content: center; font-size: 1.5rem; line-height: 1;">
+                            <span>➡️</span>
+                            <span>⬅️</span>
+                        </div>
+                        <div style="font-size: 0.72rem; font-family: monospace; font-weight:700;">Pay Fixed 4.52%<br>Rec Float</div>
+                    </div>
+
+                    <!-- Swap Market Maker Box -->
+                    <div style="background: var(--card-bg); border: 1.5px solid var(--card-border); padding: 1rem; border-radius: 8px; width: 160px;">
+                        <div style="font-weight: 800; font-size: 0.95rem; color: #10b981;">Swap Trader</div>
+                        <div style="font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem;">Wholesale Swap Desk</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="font-size: 0.9rem; line-height: 1.5;">
+                <strong>Explanation:</strong> The Corporate receives floating interest from the Swap Trader, which perfectly offsets their floating interest liability owed to the Lender Bank. The only net unhedged cash outflow remaining for the Corporate is the **4.52% Fixed Swap Rate**, converting their volatile floating loan into a highly predictable fixed liability.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let oisChartInstance = null;
+
+function selectIRTab(tabId) {
+    document.querySelectorAll('.tab-pane').forEach(pane => pane.style.display = 'none');
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.background = 'var(--metric-bg)';
+        btn.style.borderColor = 'var(--card-border)';
+    });
+
+    document.getElementById('tab-content-' + tabId).style.display = 'block';
+    
+    const activeBtn = document.getElementById('btn-ir-' + tabId);
+    if (activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.style.background = 'rgba(79, 70, 229, 0.1)';
+        activeBtn.style.borderColor = '#4f46e5';
+    }
+
+    if (tabId === 'ois') {
+        setTimeout(calcOisSwap, 100);
+    }
+}
+
+function calcTermSwap() {
+    const fixedRate = 3.00 / 100;
+    const notional = 100000000;
+    
+    // Sliders
+    const r1 = parseFloat(document.getElementById('slider-euribor-1').value) / 100;
+    const r2 = parseFloat(document.getElementById('slider-euribor-2').value) / 100;
+    const r3 = parseFloat(document.getElementById('slider-euribor-3').value) / 100;
+    const r4 = parseFloat(document.getElementById('slider-euribor-4').value) / 100;
+
+    document.getElementById('lbl-euribor-1').innerText = (r1 * 100).toFixed(2) + '%';
+    document.getElementById('lbl-euribor-2').innerText = (r2 * 100).toFixed(2) + '%';
+    document.getElementById('lbl-euribor-3').innerText = (r3 * 100).toFixed(2) + '%';
+    document.getElementById('lbl-euribor-4').innerText = (r4 * 100).toFixed(2) + '%';
+
+    const useTypo = document.getElementById('ir-typo-toggle').checked;
+    
+    // Period calculations (semi-annual x6/12 = 0.5)
+    let net1 = notional * (r1 - fixedRate) * 0.5;
+    let net2 = notional * (r2 - fixedRate) * 0.5;
+    if (useTypo && r1 === 0.034 && r2 === 0.032) {
+        net2 = 200000; // Force Neil's duplicate slide typo!
+    }
+    let net3 = notional * (r3 - fixedRate) * 0.5;
+    let net4 = notional * (r4 - fixedRate) * 0.5;
+
+    const tbody = document.getElementById('tbl-term-body');
+    tbody.innerHTML = '';
+
+    const periods = [
+        { name: '1 (Month 6)', rate: r1, net: net1 },
+        { name: '2 (Month 12)', rate: r2, net: net2 },
+        { name: '3 (Month 18)', rate: r3, net: net3 },
+        { name: '4 (Month 24)', rate: r4, net: net4 }
+    ];
+
+    let totalPL = 0;
+    periods.forEach(p => {
+        totalPL += p.net;
+        const color = p.net >= 0 ? '#10b981' : '#ef4444';
+        const sign = p.net >= 0 ? '+' : '';
+        const displayVal = sign + '€' + Math.abs(p.net).toLocaleString();
+
+        tbody.innerHTML += `
+            <tr style="border-bottom: 1px solid var(--card-border);">
+                <td style="padding: 0.5rem 0.2rem; font-weight:700;">${p.name}</td>
+                <td style="padding: 0.5rem 0.2rem;">3.00%</td>
+                <td style="padding: 0.5rem 0.2rem; font-family: monospace;">${(p.rate * 100).toFixed(2)}%</td>
+                <td style="padding: 0.5rem 0.2rem; text-align: right; color: ${color}; font-weight: 800; font-family: monospace;">${displayVal}</td>
+            </tr>
+        `;
+    });
+
+    const cumEl = document.getElementById('term-cumulative-pl');
+    cumEl.innerText = (totalPL >= 0 ? '+' : '') + '€' + totalPL.toLocaleString();
+    cumEl.style.color = totalPL >= 0 ? '#10b981' : '#ef4444';
+}
+
+function calcOisSwap() {
+    const fixedRate = 4.75 / 100;
+    const notionalBase = 100000000;
+    
+    // Read user daily inputs
+    const s0 = parseFloat(document.getElementById('sonia-0').value) / 100;
+    const s1 = parseFloat(document.getElementById('sonia-1').value) / 100;
+    const s2 = parseFloat(document.getElementById('sonia-2').value) / 100;
+    const s3 = parseFloat(document.getElementById('sonia-3').value) / 100;
+    const s4 = parseFloat(document.getElementById('sonia-4').value) / 100;
+
+    // Compounding schedule (365 day basis)
+    let n0 = notionalBase;
+    let n1 = n0 * (1 + (s0 * 1 / 365));
+    let n2 = n1 * (1 + (s1 * 1 / 365));
+    let n3 = n2 * (1 + (s2 * 1 / 365));
+    let n4 = n3 * (1 + (s3 * 3 / 365)); // 3 days weekend!
+    let n5 = n4 * (1 + (s4 * 1 / 365));
+
+    document.getElementById('notional-1').innerText = '£' + n1.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('notional-2').innerText = '£' + n2.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('notional-3').innerText = '£' + n3.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('notional-4').innerText = '£' + n4.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('notional-5').innerText = '£' + n5.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+    const accruedFloat = n5 - notionalBase;
+    const fixedObligation = notionalBase * fixedRate * 7 / 365;
+
+    document.getElementById('ois-accrued-float').innerText = '£' + accruedFloat.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    
+    const diff = fixedObligation - accruedFloat;
+    const diffSign = diff >= 0 ? '+' : '-';
+    
+    const setEl = document.getElementById('ois-settlement');
+    setEl.innerText = '£' + Math.abs(diff).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    setEl.style.color = diff >= 0 ? '#ef4444' : '#10b981';
+
+    drawOisChart([n0, n1, n2, n3, n4, n5]);
+}
+
+function drawOisChart(notionals) {
+    const ctx = document.getElementById('oisChart').getContext('2d');
+    if (oisChartInstance) {
+        oisChartInstance.destroy();
+    }
+
+    const isDark = document.body.classList.contains('dark-theme');
+    const gridColor = isDark ? '#2c2c2c' : '#edece9';
+    const textColor = isDark ? '#e3e3e3' : '#37352f';
+
+    const labels = ['Tue 15', 'Wed 16', 'Thu 17', 'Fri 18', 'Mon 21', 'Tue 22'];
+    const interestAccrued = notionals.map(n => n - 100000000);
+
+    oisChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Compounded Float Interest (£)',
+                data: interestAccrued,
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                borderWidth: 2,
+                fill: true,
+                pointRadius: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    grid: { color: gridColor },
+                    ticks: { color: textColor, font: { size: 8 } }
+                },
+                y: {
+                    grid: { color: gridColor },
+                    ticks: { color: textColor, font: { size: 8 } }
+                }
+            }
+        }
+    });
+}
+
+// Initialise tab views
+setTimeout(() => {
+    selectIRTab('term');
+    calcTermSwap();
+}, 500);
+
+// Observer to handle tab scale adjustments on visibility change
+const optIRObserver = new MutationObserver(() => {
+    if (document.getElementById('view-cqf-fp-deriv-ir-swaps').style.display === 'block') {
+        setTimeout(() => {
+            if (oisChartInstance) {
+                oisChartInstance.resize();
+            }
+        }, 100);
+    }
+});
+optIRObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+</script>

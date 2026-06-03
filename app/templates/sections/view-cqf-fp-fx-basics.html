@@ -1,0 +1,48 @@
+<div id="view-cqf-fp-fx-basics" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #4f46e5;">Finance Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9;">Foreign Exchange</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">FX Basics</h1>
+    </header>
+    <div class="card">
+        <h3>14.1 Foreign Exchange Structure</h3>
+        <p>Currencies are traded strictly in pairs (e.g. EUR/USD). The US Dollar acts as the global primary reserve currency, participating in the vast majority of trades.</p>
+        <p>Terminology: <strong>Base Currency</strong> / <strong>Quote Currency</strong>.</p>
+        <p>For a quote pair $C_1 / C_2 = X$, $1$ unit of base currency $C_1$ buys $X$ units of quote currency $C_2$.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Interactive Cross-Rate Converter Matrix</h3>
+        <p>Convert EUR and GBP to USD simultaneously based on current live rates:</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+            <div>
+                <label style="font-weight: 600; font-size: 0.85rem; display: block; margin-bottom: 0.5rem;">EUR/USD Spot Rate:</label>
+                <input id="fxBasEur" type="number" value="1.0950" step="0.0005" style="padding: 0.3rem; border-radius: 6px; border: 1px solid var(--input-border); width: 100%;" oninput="calcFXBas()">
+            </div>
+            <div>
+                <label style="font-weight: 600; font-size: 0.85rem; display: block; margin-bottom: 0.5rem;">GBP/USD Spot Rate:</label>
+                <input id="fxBasGbp" type="number" value="1.2750" step="0.0005" style="padding: 0.3rem; border-radius: 6px; border: 1px solid var(--input-border); width: 100%;" oninput="calcFXBas()">
+            </div>
+        </div>
+
+        <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
+            <h4 style="margin-top:0; color:var(--accent);">Derived EUR/GBP Cross-Rate:</h4>
+            <div id="fxBasCross" style="font-size: 1.6rem; font-weight: 800; color: #4f46e5;">0.8588</div>
+            <p style="font-size:0.85rem; margin-top:0.5rem;">Calculated via: (EUR/USD) / (GBP/USD)</p>
+        </div>
+    </div>
+</div>
+
+<script>
+function calcFXBas() {
+    const eur = parseFloat(document.getElementById('fxBasEur').value) || 0.0001;
+    const gbp = parseFloat(document.getElementById('fxBasGbp').value) || 0.0001;
+    
+    const cross = eur / gbp;
+    document.getElementById('fxBasCross').innerText = cross.toFixed(4);
+}
+setTimeout(calcFXBas, 500);
+</script>

@@ -1,0 +1,798 @@
+<div id="view-cqf-m3-l10" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 03: Equities &amp; Currencies</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 10</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L10: FX Options</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Currency Market Conventions, Covered Interest Parity Failure, Uncovered Interest Parity, and Garman-Kohlhagen Models</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM3L10Market" onclick="switchM3L10Tab('market')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. Market Evolution &amp; Conventions</button>
+        <button id="tabM3L10Cip" onclick="switchM3L10Tab('cip')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. CIP &amp; Basis Failure</button>
+        <button id="tabM3L10Uip" onclick="switchM3L10Tab('uip')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. UIP &amp; The Carry Trade</button>
+        <button id="tabM3L10Gk" onclick="switchM3L10Tab('gk')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. Garman-Kohlhagen &amp; Smiles</button>
+        <button id="tabM3L10Symmetries" onclick="switchM3L10Tab('symmetries')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Broken Symmetries</button>
+        <button id="tabM3L10Sandbox" onclick="switchM3L10Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Interactive FX Labs</button>
+    </div>
+
+    <!-- TAB 1: Market Evolution & Conventions -->
+    <div id="secM3L10Market" style="display: block;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; display: grid; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Scale of the FX Market</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        The global Foreign Exchange (FX) market is the largest and deepest financial market in the world, operating 24 hours a day. In 2022, the average daily turnover reached nearly **$8 trillion USD equivalent** ($8,000,000,000,000$ USD). The vast size of the market is partly driven by the fact that many other transaction types (such as overseas equity and pension fund investments) have FX transactions embedded within them.
+                    </p>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        <strong>Historical Evolution</strong>:
+                        <ul>
+                            <li><strong>Pre-WWII:</strong> Currency values were primarily tied to precious metals like gold or silver.</li>
+                            <li><strong>Bretton Woods System (1944):</strong> A fixed exchange rate system was established where other currencies were pegged to the US Dollar, which in turn was pegged to gold at a fixed rate:
+                                $$\text{1 troy oz Gold} = 35\text{ USD}$$
+                            </li>
+                            <li><strong>Floating Rates (Post-1973):</strong> Following the collapse of the Bretton Woods system, major industrial nations transitioned to floating currency regimes by the early 1980s, creating foreign exchange risk and establishing the need for derivative hedging products.</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Core FX Contract Types</h3>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                        Foreign exchange transactions are split into five primary contract categories:
+                        <ul style="padding-left:1.15rem; margin-top:0.25rem; margin-bottom:0.25rem;">
+                            <li><strong>Spot:</strong> Direct exchange of currencies at the spot rate ($S_0$) without including interest rate differentials.</li>
+                            <li><strong>Swaps:</strong> The most common FX transaction, involving a temporary exchange of currencies reversed at a later date.</li>
+                            <li><strong>Forwards:</strong> Locks in the exchange rate for a future date, mathematically tied to the interest differential:
+                                $$\frac{F}{S_0} = \frac{1 + r_f}{1 + r_d} \implies f_{t,t+k} - s_t \approx i^*_{t,t+k} - i_{t,t+k}$$
+                            </li>
+                            <li><strong>Futures:</strong> Standardized, daily-settled exchange contracts with average 3-month maturities to mitigate credit risk.</li>
+                            <li><strong>Non-Deliverable Forwards (NDFs):</strong> Cash-settled forwards used for restricted or non-convertible currencies, settled in convertible currencies like USD.</li>
+                        </ul>
+                    </p>
+                    <div style="background:var(--metric-bg); padding:0.65rem 0.85rem; border-radius:6px; border-left:3px solid var(--accent); font-size:0.75rem; line-height:1.4; font-weight:600; text-align:center;">
+                        Convention &amp; Regime Note:<br>
+                        "Cable" refers to GBP/USD (named after the 1858 transatlantic line). The base currency ranking dictates quotes (EUR > GBP > AUD > USD).
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: CIP & Basis Failure -->
+    <div id="secM3L10Cip" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Covered Interest Parity (CIP) &amp; Cross-Currency Basis Failure</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    Historically, Covered Interest Parity (CIP) held true in practice, as active arbitrage trading quickly erased any temporary deviations. Since the 2008 financial crisis, however, segmentations in global funding markets, credit risks, and balance sheet constraints have caused persistent, non-zero cross-currency bases, indicating that traditional arbitrage-free equations no longer strictly hold.
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); margin-bottom:1.25rem; font-size:0.85rem; line-height:1.6;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">The Cross-Currency Basis</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        The cross-currency (xccy) basis is defined as the difference between the domestic interest rate implied by the FX forward market and the actual local market interest rate. Under CIP, the theoretical domestic rate is:
+                        $$r_d(\text{theoretical}) = \frac{S}{F} \times (1 + r_f) - 1$$
+                        The <strong>Cross-Currency Basis</strong> is the difference between this theoretical rate and the actual market swap rate:
+                        $$\text{Basis} = r_d(\text{theoretical}) - r_d(\text{market})$$
+                    </p>
+                    <div style="background:var(--card-bg); padding:0.75rem; border-radius:6px; border:1px solid var(--card-border); margin-top:0.75rem; font-size:0.8rem; color:#4b5563;">
+                        <strong>Historical Calibration Example (December 29, 2011 on EURUSD):</strong><br>
+                        Given Spot $S = 1.296$, Forward $F = 1.304$, Foreign $r_f$ (USD 1Y swap) $= 0.691\%$, and Domestic $r_d$ (EUR 1Y swap market) $= 1.094\%$:
+                        $$r_d(\text{theoretical}) = \frac{1.296}{1.304} \times (1 + 0.00691) - 1 \approx 0.073\%$$
+                        $$\text{Basis} = 0.073\% - 1.094\% = -1.021\% \ (\approx -102\text{ bp})$$
+                        This aligns perfectly with the actual market-quoted EURUSD xccy basis of $-101.9\text{ bp}$.
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; font-size:0.85rem; line-height:1.5; color:#4b5563; margin-bottom:1.25rem;">
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong style="color:var(--accent);">A. Additive Property of Basis Swaps</strong>
+                        <p style="margin:0.25rem 0 0 0; font-size:0.8rem;">
+                            Because most swaps are quoted against USD, non-quoted crosses can be bridged additively:
+                            $$\text{XCCY}_{AB} = \text{XCCY}_{CA} - \text{XCCY}_{CB}$$
+                            $$\text{XCCY}_{JPY\text{-}GBP} = \text{XCCY}_{USD\text{-}JPY} - \text{XCCY}_{USD\text{-}GBP}$$
+                            For short tenors where quoted bases are unavailable:
+                            $$\text{EURJPY 3m basis} = 100 \times \left[ \left( \frac{F}{S} \left(1 + \frac{r_d}{400}\right) - 1 \right) \times 400 - r_f \right]$$
+                        </p>
+                    </div>
+                    <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
+                        <strong style="color:var(--accent);">B. Yield Pickup (FX Hedged Pickup)</strong>
+                        <p style="margin:0.25rem 0 0 0; font-size:0.8rem;">
+                            Exploits differences between sovereign bond yields and swap rates cross-borders while hedging FX risk:
+                            $$\text{Pickup} = \Delta_{\text{bond}} - \Delta_{\text{swap}} + \text{Basis} \neq 0$$
+                            Where $\Delta_{\text{bond}} = r_{\text{bond, USD}} - r_{\text{bond, EUR}}$ and $\Delta_{\text{swap}} = r_{\text{swap, USD}} - r_{\text{swap, EUR}}$.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">The Conversion Factor (Spread Scaling)</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        Corporate issuers with a credit spread must apply a **Conversion Factor** ($CF$) when issuing in a foreign currency to equate credit spread present values:
+                        $$PV_{\text{local}} = \frac{\text{Amount}}{1+r_{\text{local}}} \implies CF = \frac{PV_{\text{domestic}}}{PV_{\text{foreign}}}$$
+                        For a 1-year bond with a $2\%$ spread where EUR swap is $1\%$ and USD swap is $5\%$:
+                        $$PV_{\text{EUR}} = \frac{2\%}{1.01} = 1.98\%, \quad PV_{\text{USD}} = \frac{2\%}{1.05} = 1.90\% \implies CF = \frac{1.98}{1.90} \approx 1.04$$
+                        $$\text{Effective USD Spread} = \text{USD Spread} \times CF = 2\% \times 1.04 = 2.08\%$$
+                        For a multi-period realistic yield curve over $n$ periods, utilizing discount factors $DF_i = 1/(1+r_i)^i$:
+                        $$\text{Conversion Factor} = \frac{\sum_{i=1}^n \text{EUR } DF_i}{\sum_{i=1}^n \text{USD } DF_i}$$
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: UIP & The Carry Trade -->
+    <div id="secM3L10Uip" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; display: grid; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Theoretical UIP &amp; Fama Regression Tests</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        Uncovered Interest Parity (UIP) states that, under risk neutrality and no-arbitrage, the expected spot change over maturity $t+k$ should equal the interest rate differential:
+                        $$F_{t, t+k} = S_t \times \frac{1 + I^*_{t, t+k}}{1 + I_{t, t+k}} \implies f_{t, t+k} - s_t = i^*_{t, t+k} - i_{t, t+k}$$
+                        For UIP to hold under expectations, the expected future spot must equal the locked forward rate: $E_t(s_{t+k}) = f_{t, t+k}$.
+                    </p>
+                    <div style="background:var(--metric-bg); padding:0.85rem; border-radius:6px; border-left:3px solid var(--accent); font-size:0.8rem; line-height:1.45; color:#374151; margin-bottom: 0.5rem;">
+                        <strong>The UIP Fama Regression (1984):</strong><br>
+                        $$s_{t+k} - s_t = \alpha + \beta (i^*_{t, t+k} - i_{t, t+k}) + \varepsilon_t$$
+                        - **$\beta = 1$**: UIP holds perfectly; high-interest currency depreciates by the rate differential, erasing extra yield.<br>
+                        - **$\beta \leq 0$**: UIP fails systematically. The high-interest currency actually appreciates or remains stable, giving carry traders the yield differential AND exchange profits.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The FX Carry Trade &amp; PPP Convergence</h3>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                        Investors harvest this anomaly by borrowing low-yield currencies to buy high-yield ones.
+                        <strong>Quarterly Position Rule ($X_t$):</strong>
+                        $$X_t = \begin{cases} 
+                        -100\%, & \text{if } I_{t, t+1} < I^*_{t, t+1} \quad \text{(Short } r_d \text{ / Long } r_f \text{)} \\ 
+                        100\%, & \text{if } I_{t, t+1} > I^*_{t, t+1} \quad \text{(Long } r_d \text{ / Short } r_f \text{)} \\ 
+                        0\%, & \text{if } I_{t, t+1} = I^*_{t, t+1} 
+                        \end{cases}$$
+                        <strong>Quarterly Payoff ($PL_t$) with Transaction/Rollover Drag ($\gamma = 0.06\%$):</strong>
+                        $$PL_t = X_t \times \left( 1 - \frac{F_{t, t+1}}{S_{t+1}} \right) - \gamma \times |X_t - X_{t-1}| - \frac{\gamma}{8}$$
+                    </p>
+                    <div style="background:var(--metric-bg); padding:0.65rem; border-radius:6px; font-size:0.75rem; line-height:1.4; color:#374151;">
+                        <strong>Historical Performance &amp; PPP:</strong><br>
+                        - <strong>1975–1980:</strong> UIP held; carry returns were close to zero.<br>
+                        - <strong>1995–2007:</strong> Complete UIP breakdown; large carry windfalls.<br>
+                        - <strong>Long-term Macro:</strong> Carry flows drive currencies toward OECD Purchasing Power Parity (PPP) rates.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Garman-Kohlhagen & Smiles -->
+    <div id="secM3L10Gk" style="display: none;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; display: grid; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Geometric Brownian Motion &amp; The Garman-Kohlhagen PDE</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        Under the Black-Scholes-Merton framework, spot FX rates are assumed to evolve according to Geometric Brownian Motion (GBM):
+                        $$\mathrm{d}S_t = \mu S_t \mathrm{d}t + \sigma S_t \mathrm{d}W_t$$
+                        Imposing risk-neutral pricing leads to the **Garman-Kohlhagen Partial Differential Equation** (1983) incorporating risk-free rates for both base ($r_b$) and quote ($r$) currencies:
+                        $$\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} + (r - r_b)S \frac{\partial V}{\partial S} - rV = 0$$
+                    </p>
+                    <div style="background:var(--metric-bg); padding:0.85rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.8rem; line-height:1.45; color:#374151;">
+                        <strong>Analytical Pricing Solutions for European FX Options:</strong>
+                        $$c = S_0 e^{-r_b T} N(d_1) - K e^{-r T} N(d_2)$$
+                        $$p = K e^{-r T} N(-d_2) - S_0 e^{-r_b T} N(-d_1)$$
+                        $$d_1 = \frac{\ln(S_0 / K) + (r - r_b + \sigma^2 / 2)T}{\sigma\sqrt{T}}, \quad d_2 = d_1 - \sigma\sqrt{T}$$
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Volatility Surface &amp; Market Quoting</h3>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                        <ul>
+                            <li><strong>Realised vs. Implied Volatility:</strong> Realised is backward-looking (historical standard deviation of logs), whereas Implied is forward-looking (backed out from premiums).</li>
+                            <li><strong>Volatility Smiles &amp; Skews:</strong> Symmetrical crosses (EUR/USD) yield a <strong>smile</strong>. High-yield EM pairs (USD/TRY) show a safe-haven flight <strong>smirk (skew)</strong>. Extremely short-dated pre-announcement options form a <strong>frown</strong>.</li>
+                            <li><strong>Risk Reversals ($25\Delta$):</strong> FX strikes are quoted in Deltas rather than percentages:
+                                $$\text{25-delta Risk Reversal} = \sigma_{\text{call}/25\Delta} - \sigma_{\text{put}/25\Delta}$$
+                            </li>
+                            <li><strong>Curvature (Butterfly Spread):</strong> Measures smile steepness relative to ATM:
+                                $$\sigma_{\text{butterfly}/25\Delta} = \left[\frac{\sigma_{\text{call}/25\Delta} + \sigma_{\text{put}/25\Delta}}{2}\right] - \sigma_{\text{ATM}}$$
+                            </li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: Broken Symmetries & Risk Management (Greeks) -->
+    <div id="secM3L10Symmetries" style="display: none;">
+        <!-- Card 1: Trading Styles and Risk Management (The Greeks) -->
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.3rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">5. Trading Styles and Risk Management (The Greeks)</h3>
+            <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1.25rem;">
+                In FX options trading, market participants are broadly categorized into two types based on their investment objectives, hedging frequencies, and portfolio volatility management strategies.
+            </p>
+            
+            <!-- Side by Side Trading Styles Comparison -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem;">
+                <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <strong style="color: var(--accent); font-size: 0.95rem; display: block; margin-bottom: 0.5rem;">Static Traders (Hedgers)</strong>
+                        <p style="margin: 0; font-size: 0.82rem; line-height: 1.5; color: #4b5563;">
+                            Typically corporate treasurers or portfolio managers who hold predefined currency exposures. They purchase options as "insurance policies" to protect against unfavorable movements, locking in a worst-case strike rate. Because they hold positions long-term (until expiry), they require minimal option terminology and focus on simple At-the-Money-Forward (ATMF), Out-of-the-Money (OTM), and In-the-Money (ITM) designations.
+                        </p>
+                    </div>
+                </div>
+                <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <strong style="color: var(--accent); font-size: 0.95rem; display: block; margin-bottom: 0.5rem;">Dynamic Traders (Market Makers)</strong>
+                        <p style="margin: 0; font-size: 0.82rem; line-height: 1.5; color: #4b5563;">
+                            Options traders or bank dealers who trade volatility rather than direction. They continuously manage their risk exposure by buying and selling the underlying currency in the spot market—a process called <strong>Delta Hedging</strong>. Their goal is to generate trading profits from spot movements to cover the premium paid for the option.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delta Hedging Example Box -->
+            <div style="background: rgba(16, 185, 129, 0.05); border-left: 3px solid #10b981; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; font-size: 0.82rem; line-height: 1.5; color: #374151;">
+                <strong>Practical Example of Delta Hedging:</strong><br>
+                If a dynamic trader buys a 1-week ATMF EUR call (USD put) for $10$ million EUR notional, the initial option delta is roughly $50\%$. To hedge this exposure, the trader immediately sells $5$ million EUR in the spot market. If the EURUSD spot rate falls, the trader buys back the $5$ million EUR spot position at a profit and re-hedges. If the spot rate rises, the spot position is adjusted accordingly.
+            </div>
+
+            <h4 style="margin-top: 1.5rem; margin-bottom: 0.5rem; font-family: var(--font-family-sans); font-size: 1.1rem; color: var(--accent);">The Greeks analytical Formulas</h4>
+            <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                The "Greeks" are partial derivatives of the option price ($V$) with respect to its pricing parameters. Dynamic traders use them to manage risks and evaluate option sensitivities.
+            </p>
+
+            <!-- Greeks LaTeX Table Matrix -->
+            <div style="overflow-x: auto; border: 1px solid var(--card-border); border-radius: 8px; margin-bottom: 1.5rem;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; font-family: var(--font-family-sans); background: var(--card-bg);">
+                    <thead>
+                        <tr style="background: var(--metric-bg); border-bottom: 2px solid var(--card-border); text-align: left;">
+                            <th style="padding: 0.75rem; color: var(--accent); font-weight: 700; width: 15%;">Greek Sensitivity</th>
+                            <th style="padding: 0.75rem; color: var(--accent); font-weight: 700; width: 42.5%;">Call Option Formula</th>
+                            <th style="padding: 0.75rem; color: var(--accent); font-weight: 700; width: 42.5%;">Put Option Formula</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.75rem; font-weight: bold; color: var(--accent);">Value ($c$ or $p$)</td>
+                            <td style="padding: 0.75rem;">$$c = S_0 e^{-r_b T} N(d_1) - K e^{-r T} N(d_2)$$</td>
+                            <td style="padding: 0.75rem;">$$p = K e^{-r T} N(-d_2) - S_0 e^{-r_b T} N(-d_1)$$</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.75rem; font-weight: bold; color: var(--accent);">Delta ($\Delta$)</td>
+                            <td style="padding: 0.75rem;">$$\Delta_c = e^{-r_b T} N(d_1)$$</td>
+                            <td style="padding: 0.75rem;">$$\Delta_p = e^{-r_b T} [N(d_1) - 1]$$</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.75rem; font-weight: bold; color: var(--accent);">Gamma ($\Gamma$)</td>
+                            <td colspan="2" style="padding: 0.75rem; text-align: center;">
+                                $$\Gamma_c = \Gamma_p = e^{-r_b T} \frac{N'(d_1)}{S_0 \sigma \sqrt{T}}$$
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.75rem; font-weight: bold; color: var(--accent);">Theta ($\Theta$)</td>
+                            <td style="padding: 0.75rem; font-size: 0.75rem;">
+                                $$\Theta_c = -\frac{S_0 N'(d_1) \sigma e^{-r_b T}}{2\sqrt{T}} + r_b S_0 N(d_1) e^{-r_b T} - r K e^{-r T} N(d_2)$$
+                            </td>
+                            <td style="padding: 0.75rem; font-size: 0.75rem;">
+                                $$\Theta_p = -\frac{S_0 N'(d_1) \sigma e^{-r_b T}}{2\sqrt{T}} - r_b S_0 N(-d_1) e^{-r_b T} + r K e^{-r T} N(-d_2)$$
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.75rem; font-weight: bold; color: var(--accent);">Vega ($\nu$)</td>
+                            <td colspan="2" style="padding: 0.75rem; text-align: center;">
+                                $$\nu_c = \nu_p = S_0 \sqrt{T} N'(d_1) e^{-r_b T}$$
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.75rem; font-weight: bold; color: var(--accent);">Rho ($\rho$)</td>
+                            <td style="padding: 0.75rem;">$$\rho_c = -S_0 e^{-r_b T} N(d_1)$$</td>
+                            <td style="padding: 0.75rem;">$$\rho_p = S_0 e^{-r_b T} N(-d_1)$$</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Detailed Breakdown of sensitivities -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; font-size: 0.82rem; line-height: 1.5; color: #4b5563;">
+                <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                    <strong style="color: var(--accent); display: block; margin-bottom: 0.25rem;">1. Delta ($\Delta$) &amp; Gamma ($\Gamma$)</strong>
+                    <strong>Delta</strong> measures the option sensitivity to changes in the underlying spot price $S$: $\Delta = \frac{\partial V}{\partial S}$.<br>
+                    <strong>Gamma</strong> represents the rate of change of Delta: $\Gamma = \frac{\partial^2 V}{\partial S^2} = \frac{\partial \Delta}{\partial S}$.
+                    Gamma dictates rebalancing frequency:
+                    <ul style="margin: 0.25rem 0 0 0; padding-left: 1.15rem;">
+                        <li><strong>Low Gamma:</strong> Delta changes slowly; less frequent hedging required.</li>
+                        <li><strong>High Gamma:</strong> Near expiry ATMF; Delta swings wildly, requiring intense spot rebalancing.</li>
+                    </ul>
+                </div>
+                <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                    <strong style="color: var(--accent); display: block; margin-bottom: 0.25rem;">2. Theta ($\Theta$), Vega ($\nu$), &amp; Rho ($\rho$)</strong>
+                    <strong>Theta:</strong> Time decay sensitivity: $\Theta = -\frac{\partial V}{\partial T}$. Dynamic traders aim to beat Theta decay by harvesting Delta hedging profits.<br>
+                    <strong>Vega:</strong> Volatility sensitivity: $\nu = \frac{\partial V}{\partial \sigma}$. Dominates long-dated options.<br>
+                    <strong>Rho:</strong> Interest rate sensitivity: $\rho = \frac{\partial V}{\partial r}$. Covers dual currencies: base ($r_b$) and quote ($r$) interest rate movements.
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Broken Symmetries in Option Payoffs -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.3rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">6. Broken Symmetries in Option Payoffs</h3>
+            <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                Under standard financial textbooks, put and call options are presented as symmetric mirror images. However, empirical research across currency pairs shows a fundamental asymmetry in the historical performance of ATMF puts and calls, particularly in long-dated tenors.
+            </p>
+
+            <!-- Empirical Table -->
+            <h4 style="margin-top: 1rem; margin-bottom: 0.5rem; font-family: var(--font-family-sans); font-size: 1rem; color: var(--accent);">Average Payout-to-Premium Ratios (34 Currency Pairs)</h4>
+            <div style="overflow-x: auto; border: 1px solid var(--card-border); border-radius: 8px; margin-bottom: 1.5rem;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; font-family: var(--font-family-sans); background: var(--card-bg); text-align: center;">
+                    <thead>
+                        <tr style="background: var(--metric-bg); border-bottom: 2px solid var(--card-border);">
+                            <th style="padding: 0.75rem; color: var(--accent); text-align: left; font-weight: 700;">Option Strategy</th>
+                            <th style="padding: 0.75rem; color: var(--accent); font-weight: 700;">1-Week</th>
+                            <th style="padding: 0.75rem; color: var(--accent); font-weight: 700;">1-Month</th>
+                            <th style="padding: 0.75rem; color: var(--accent); font-weight: 700;">3-Month</th>
+                            <th style="padding: 0.75rem; color: var(--accent); font-weight: 700;">6-Month</th>
+                            <th style="padding: 0.75rem; color: var(--accent); font-weight: 700;">12-Month</th>
+                            <th style="padding: 0.75rem; color: var(--accent); font-weight: 700;">2-Year</th>
+                            <th style="padding: 0.75rem; color: var(--accent); font-weight: 700;">3-Year</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.75rem; text-align: left; font-weight: bold; color: var(--accent);">Straddles (P+C)</td>
+                            <td style="padding: 0.75rem;">~83%</td>
+                            <td style="padding: 0.75rem;">~81%</td>
+                            <td style="padding: 0.75rem;">~88%</td>
+                            <td style="padding: 0.75rem;">~92%</td>
+                            <td style="padding: 0.75rem;">~92%</td>
+                            <td style="padding: 0.75rem;">~89%</td>
+                            <td style="padding: 0.75rem;">~91%</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--card-border); background: rgba(239, 68, 68, 0.02);">
+                            <td style="padding: 0.75rem; text-align: left; font-weight: bold; color: #ef4444;">Call Options Only</td>
+                            <td style="padding: 0.75rem;">~81%</td>
+                            <td style="padding: 0.75rem;">~75%</td>
+                            <td style="padding: 0.75rem;">~72%</td>
+                            <td style="padding: 0.75rem;">~62%</td>
+                            <td style="padding: 0.75rem;">~58%</td>
+                            <td style="padding: 0.75rem;">~53%</td>
+                            <td style="padding: 0.75rem;">~49%</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--card-border); background: rgba(16, 185, 129, 0.02);">
+                            <td style="padding: 0.75rem; text-align: left; font-weight: bold; color: #10b981;">Put Options Only</td>
+                            <td style="padding: 0.75rem;">~85%</td>
+                            <td style="padding: 0.75rem;">~87%</td>
+                            <td style="padding: 0.75rem;">~105%</td>
+                            <td style="padding: 0.75rem;">~122%</td>
+                            <td style="padding: 0.75rem;">~127%</td>
+                            <td style="padding: 0.75rem;">~125%</td>
+                            <td style="padding: 0.75rem;">~130%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- The Mechanism of Asymmetry -->
+            <h4 style="margin-top: 1.5rem; margin-bottom: 0.5rem; font-family: var(--font-family-sans); font-size: 1.1rem; color: var(--accent);">The Mechanism of Asymmetry (UIP Failure)</h4>
+            <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                This divergence is fundamentally driven by the systematic failure of Uncovered Interest Parity (UIP):
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr; gap: 1rem; font-size: 0.85rem; line-height: 1.6; color: #374151; margin-bottom: 1.5rem;">
+                <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                    <ol style="margin: 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Assumed Pricing Model:</strong> The Garman-Kohlhagen model uses the FX forward rate ($F$) as the expected mean of the future spot rate distribution:
+                            $$F = S_0 e^{(r - r_b)T}$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Forward Rate Prediction:</strong> If the base currency has a lower interest rate than the foreign currency ($r_b < r$), standard pricing assumes the foreign currency must depreciate over time to prevent arbitrage. Thus, the pricing distribution is centered around a depreciated forward rate ($F < S_0$).
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>The Reality of UIP Failure:</strong> In reality, the spot rate does not depreciate toward the forward rate; on average, it remains close to the inception spot rate ($S_0$).
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Impact on Option Payoffs:</strong> Because the actual spot rate at expiry ($S_T$) is systematically higher than the model's assumed mean ($F$), the actual distribution of spot rates shifts relative to the model's assumptions:
+                            <ul style="margin-top: 0.25rem; padding-left: 1.15rem;">
+                                <li><strong style="color: #10b981;">Puts (Underpriced / Cheap Buy):</strong> Puts pay out when the final spot is below the strike. Because the actual spot distribution is systematically shifted above the forward, puts expire in-the-money far more frequently than priced, making them high-value buys.</li>
+                                <li><strong style="color: #ef4444;">Calls (Overpriced / Expensive Buy):</strong> Calls pay out when the final spot is above the strike. They expire out-of-the-money more frequently than expected, making them poor value.</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Citigroup Case Study -->
+            <div style="background: rgba(239, 68, 68, 0.05); border-left: 3px solid #ef4444; padding: 1rem; border-radius: 6px; font-size: 0.82rem; line-height: 1.5; color: #374151;">
+                <strong>Pennies in Front of the Steamroller (Citigroup Case Study):</strong><br>
+                Jessica James warns strongly against systemic option-selling strategies. She details a Citigroup capital allocation committee case study of a manager who was highly profitable for 17 consecutive months by systematically selling straddles. As volatility declined, the fund was forced to increase leverage to maintain returns. When volatility spiked in late 2007, the fund lost 5 years of accumulated gains in a single month, demonstrating the high tail-risk profiles (infinite loss potential) of uncovered volatility selling.
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Interactive FX Labs -->
+    <div id="secM3L10Sandbox" style="display: none;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <!-- LAB 1: CIP Basis Arbitrage & Yield Pickup -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab A: CIP Basis Arbitrage &amp; Yield Pickup</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Domestic Rate ($r_d$):</label>
+                        <input id="numM3L10Rd" type="number" value="0.05" step="0.01" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L10CipLab()">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">xccy Basis ($b$ in bps):</label>
+                        <input id="numM3L10Basis" type="number" value="-80" step="10" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L10CipLab()">
+                    </div>
+                </div>
+                <div style="height: 140px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m3l10CipChart"></canvas>
+                </div>
+                <div id="outM3L10Cip" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Loading basis arbitrage metrics...
+                </div>
+            </div>
+
+            <!-- LAB 2: Volatility Smile & Smirk Surface -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab B: FX Volatility Smile &amp; Smirk Surface</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Currency Pair Environment:</label>
+                        <select id="selectM3L10SmileType" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L10SmileLab()">
+                            <option value="smile" selected>Symmetric Smile (EUR/USD)</option>
+                            <option value="smirk">EM Flight-to-Safety Skew (USD/TRY)</option>
+                            <option value="frown">Binary Announcement Frown (Brexit/NFP)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Base Volatility ($\sigma_0$):</label>
+                        <input id="numM3L10SmileVol" type="number" value="0.12" step="0.01" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L10SmileLab()">
+                    </div>
+                </div>
+                <div style="height: 140px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m3l10SmileChart"></canvas>
+                </div>
+                <div id="outM3L10Smile" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Loading volatility structures...
+                </div>
+            </div>
+
+            <!-- LAB 3: Carry Trade & UIP Failure Monte Carlo -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem; grid-column: span 2;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab C: Carry Trade &amp; UIP Failure Monte Carlo</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Investment Currency Yield ($r_f$):</label>
+                        <input id="numM3L10CarryRf" type="number" value="0.08" step="0.01" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L10CarryLab()">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Exchange Volatility ($\sigma$):</label>
+                        <input id="numM3L10CarryVol" type="number" value="0.15" step="0.01" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM3L10CarryLab()">
+                    </div>
+                    <div style="display:flex; align-items:flex-end;">
+                        <button class="btn" style="width:100%; background:var(--accent); color:#ffffff; font-weight:700; border:none; padding:0.2rem; border-radius:4px; cursor:pointer;" onclick="runM3L10CarryLab()">Simulate Carry Returns</button>
+                    </div>
+                </div>
+                <div style="height: 160px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m3l10CarryChart"></canvas>
+                </div>
+                <div id="outM3L10Carry" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Loading carry trade simulations...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching logic for CQF M3 L10
+    window.switchM3L10Tab = function(tab) {
+        const tabs = ['market', 'cip', 'uip', 'gk', 'symmetries', 'sandbox'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM3L10' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM3L10' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) {
+                sec.style.display = (t === tab ? 'block' : 'none');
+                if (t === tab && !sec.dataset.typeset) {
+                    if (typeof window.safeTypeset === 'function') {
+                        window.safeTypeset([sec]);
+                        sec.dataset.typeset = 'true';
+                    }
+                }
+            }
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        if (tab === 'sandbox') {
+            setTimeout(initM3L10Labs, 100);
+        }
+    };
+
+    let m3l10CipChartInstance = null;
+    let m3l10SmileChartInstance = null;
+    let m3l10CarryChartInstance = null;
+
+    // Normal Cumulative Distribution Function
+    function m3l10NormCdf(x) {
+        const b1 =  0.319381530;
+        const b2 = -0.356563782;
+        const b3 =  1.781477937;
+        const b4 = -1.821255978;
+        const b5 =  1.330274429;
+        const p  =  0.2316419;
+        const c  =  0.39894228;
+
+        if (x >= 0.0) {
+            let k = 1.0 / (1.0 + p * x);
+            return 1.0 - c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        } else {
+            let k = 1.0 / (1.0 - p * x);
+            return c * Math.exp(-x * x / 2.0) * k * (k * (k * (k * (k * b5 + b4) + b3) + b2) + b1);
+        }
+    }
+
+    // Normal Probability Density Function
+    function m3l10NormPdf(x) {
+        return (1 / Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * x * x);
+    }
+
+    // Box-Muller transform for normal distribution
+    function m3l10RandomNormal() {
+        let u = 0, v = 0;
+        while(u === 0) u = Math.random(); 
+        while(v === 0) v = Math.random();
+        return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    }
+
+    window.initM3L10Labs = function() {
+        runM3L10CipLab();
+        runM3L10SmileLab();
+        runM3L10CarryLab();
+    };
+
+    window.runM3L10CipLab = function() {
+        const rd = parseFloat(document.getElementById('numM3L10Rd').value);
+        const basisBps = parseFloat(document.getElementById('numM3L10Basis').value);
+        const b = basisBps / 10000; // basis in decimals
+        const rf = 0.01; // Foreign rate 1%
+        const S0 = 1.0;
+
+        let tenors = [0.25, 0.5, 0.75, 1.0, 1.5, 2.0];
+        let cipForwards = [];
+        let actualForwards = [];
+
+        tenors.forEach(t => {
+            cipForwards.push(S0 * Math.exp((rd - rf) * t));
+            actualForwards.push(S0 * Math.exp((rd - rf + b) * t));
+        });
+
+        const pickup = Math.abs(b) * 10000;
+        const outEl = document.getElementById('outM3L10Cip');
+        outEl.innerHTML = `
+            CIP Theoretical Forward (1Y): <strong>${cipForwards[3].toFixed(4)}</strong>, Market Forward (1Y): <strong>${actualForwards[3].toFixed(4)}</strong>.<br>
+            Regulatory constraints prevent arbitrage, creating a persistent cross-currency basis of <strong>${basisBps.toFixed(0)} bps</strong>.<br>
+            Hedged Yield Pickup Arbitrage potential: <strong style="color:var(--accent);">${pickup.toFixed(0)} bps</strong> sovereign bond outperformance!
+        `;
+        if (typeof window.safeTypeset === 'function') {
+            window.safeTypeset([outEl]);
+        }
+
+        const ctx = document.getElementById('m3l10CipChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m3l10CipChartInstance) m3l10CipChartInstance.destroy();
+
+        m3l10CipChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: tenors.map(t => t + 'Y'),
+                datasets: [
+                    {
+                        label: 'CIP Theoretical Forward',
+                        data: cipForwards,
+                        borderColor: 'var(--accent)',
+                        borderWidth: 2,
+                        fill: false
+                    },
+                    {
+                        label: 'Market Forward (with xccy basis)',
+                        data: actualForwards,
+                        borderColor: 'rgba(239, 68, 68, 0.85)',
+                        borderWidth: 1.5,
+                        fill: false,
+                        borderDash: [5, 5]
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, labels: { font: { size: 8 }, color: tickColor } } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+
+    window.runM3L10SmileLab = function() {
+        const type = document.getElementById('selectM3L10SmileType').value;
+        const vol0 = parseFloat(document.getElementById('numM3L10SmileVol').value);
+
+        let deltas = [10, 25, 35, 50, 65, 75, 90]; // option deltas (proxies for strikes)
+        let vols = [];
+
+        deltas.forEach(d => {
+            const normalized = (d - 50) / 25; // range -1.6 to 1.6
+            let vol = vol0;
+
+            if (type === 'smile') {
+                // Symmetric smile
+                vol += 0.03 * normalized * normalized;
+            } else if (type === 'smirk') {
+                // Emerging market skew smirk
+                vol += -0.04 * normalized + 0.015 * normalized * normalized;
+            } else if (type === 'frown') {
+                // Volatility frown (binary event at center)
+                vol += 0.05 * Math.exp(-3 * normalized * normalized);
+            }
+            vols.push(vol * 100);
+        });
+
+        const outEl = document.getElementById('outM3L10Smile');
+        outEl.innerHTML = `
+            Structure Type: <strong>${type.toUpperCase()}</strong>, Base Implied Volatility: <strong>${(vol0*100).toFixed(1)}%</strong>.<br>
+            EUR/USD major crosses form a <strong>smile</strong>, while emerging market crosses (USD/TRY) show high crash-protecting <strong>smirks</strong>.<br>
+            A short-term <strong>frown</strong> occurs only around critical binary events (like Non-Farm Payroll releases).
+        `;
+        if (typeof window.safeTypeset === 'function') {
+            window.safeTypeset([outEl]);
+        }
+
+        const ctx = document.getElementById('m3l10SmileChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m3l10SmileChartInstance) m3l10SmileChartInstance.destroy();
+
+        m3l10SmileChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: deltas.map(d => d + 'Δ Put'),
+                datasets: [{
+                    label: 'Implied Volatility (%)',
+                    data: vols,
+                    borderColor: 'var(--accent)',
+                    borderWidth: 2.5,
+                    fill: false,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Option Delta (Strike)', font: { size: 8 }, color: tickColor },
+                        ticks: { color: tickColor, font: { size: 8 } },
+                        grid: { color: gridColor }
+                    },
+                    y: {
+                        title: { display: true, text: 'Implied Volatility (%)', font: { size: 8 }, color: tickColor },
+                        ticks: { color: tickColor, font: { size: 8 } },
+                        grid: { color: gridColor }
+                    }
+                }
+            }
+        });
+    };
+
+    window.runM3L10CarryLab = function() {
+        const rf = parseFloat(document.getElementById('numM3L10CarryRf').value);
+        const sig = parseFloat(document.getElementById('numM3L10CarryVol').value);
+        const rd = 0.02; // funding currency rate 2%
+        const S0 = 100;
+
+        const N_paths = 6;
+        const totalSteps = 100;
+        const T = 1.0;
+        const dt = T / totalSteps;
+
+        let timeSteps = [];
+        for (let j = 0; j <= totalSteps; j++) timeSteps.push(j);
+
+        // UIP states that spot depreciates by (rd - rf)
+        // Empirical failure shows spot drifts by 0.2 * (rf - rd) due to carry inflows
+        let datasets = [];
+
+        for (let p = 0; p < N_paths; p++) {
+            let path = [S0];
+            let S = S0;
+            for (let j = 1; j <= totalSteps; j++) {
+                const rand = m3l10RandomNormal();
+                // Empirical Carry trade path (appreciating or stable high-yield asset)
+                const drift = 0.15 * (rf - rd); // Carry herding drift
+                S = S * Math.exp((drift - 0.5 * sig * sig) * dt + sig * Math.sqrt(dt) * rand);
+                path.push(S);
+            }
+
+            datasets.push({
+                label: 'Carry Path ' + (p+1),
+                data: path,
+                borderColor: 'rgba(16, 185, 129, 0.65)',
+                borderWidth: 1.5,
+                showLine: true,
+                pointRadius: 0,
+                fill: false
+            });
+        }
+
+        const outEl = document.getElementById('outM3L10Carry');
+        outEl.innerHTML = `
+            Funding Rate ($r_d$): <strong>${(rd*100).toFixed(0)}%</strong>, Investment Yield ($r_f$): <strong>${(rf*100).toFixed(0)}%</strong>.<br>
+            Empirical UIP failure is demonstrated: High-yielding currencies appreciate rather than depreciate as models dictate.<br>
+            <strong>Carry Trade Risk</strong>: Generates highly stable monthly interest pickups, but carries fat tail drawdown risk ("eating pennies in front of a steamroller").
+        `;
+        if (typeof window.safeTypeset === 'function') {
+            window.safeTypeset([outEl]);
+        }
+
+        const ctx = document.getElementById('m3l10CarryChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m3l10CarryChartInstance) m3l10CarryChartInstance.destroy();
+
+        m3l10CarryChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: timeSteps,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+</script>

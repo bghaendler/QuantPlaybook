@@ -1,0 +1,237 @@
+<div id="view-cqf-mp-calculus-111" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9; font-family: var(--font-family-sans);">1.11 Complex &amp; Euler Proofs</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.11 Complex Algebra &amp; Euler Proofs</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Complex conjugates, polar expansions, Euler's formula proofs, and complex trigonometric integration.</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
+        <button id="tabCalc111Theory" onclick="switchCalc111Tab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Theory</button>
+        <button id="tabCalc111Exercises" onclick="switchCalc111Tab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Solutions</button>
+    </div>
+
+    <!-- Tab: Core Theory -->
+    <div id="secCalc111Theory" style="display: block;">
+        <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1.11.1 Complex Algebra &amp; Identity</h3>
+            <p>For any complex number $z = x + iy \in \mathbb{C}$ (where $i = \sqrt{-1}$), its complex conjugate is defined as $\bar{z} = x - iy$. Key algebraic relations include:</p>
+            <div style="background: var(--metric-bg); padding: 0.8rem 1rem; border-radius: 8px; font-family: monospace; font-size: 0.88rem; line-height: 1.5; margin: 0.75rem 0;">
+                • Re z = (z + z̄) / 2 &nbsp;&nbsp;&nbsp; • Im z = (z - z̄) / (2i)<br>
+                • z z̄ = |z|² = x² + y² &nbsp; • |z₁ z₂| = |z₁| |z₂|
+            </div>
+            <p><strong>Euler's Series Expansion Proof:</strong> Substituting $x = i\theta$ in the Maclaurin series of $e^x$ and grouping real/imaginary parts proves Euler's formula:</p>
+            <p style="text-align: center; font-size: 0.92rem; font-weight: 700; margin: 0.5rem 0;">
+                $$e^{i\theta} = \sum_{n=0}^{\infty} \frac{(i\theta)^n}{n!} = \sum_{even} \frac{(-1)^k \theta^{2k}}{(2k)!} + i\sum_{odd} \frac{(-1)^k \theta^{2k+1}}{(2k+1)!} = \cos\theta + i\sin\theta$$
+            </p>
+        </div>
+
+        <!-- Interactive Laboratory -->
+        <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1.11.2 Interactive Complex &amp; Polar Representation Laboratory</h3>
+            <p>Convert cartesian complex numbers $z = x + iy$ to polar form $z = r e^{i\theta}$ dynamically and observe on the complex plane (Argand Diagram):</p>
+
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start;">
+                    <!-- Left: Inputs & Outputs -->
+                    <div>
+                        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
+                            <div>
+                                <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Real part $x$:</label>
+                                <input id="calc111InputX" type="number" value="2.0" step="0.2" min="-4.0" max="4.0" oninput="calculateInteractiveComplex()" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Imaginary part $y$:</label>
+                                <input id="calc111InputY" type="number" value="2.0" step="0.2" min="-4.0" max="4.0" oninput="calculateInteractiveComplex()" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
+                            </div>
+                        </div>
+                        <div style="font-size: 0.85rem; line-height: 1.6; color: var(--text-color); background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid #ec4899; margin-bottom: 0.5rem;">
+                            <div id="calc111OutputModulus"><strong>Modulus $r = |z|$:</strong> Evaluating...</div>
+                            <div id="calc111OutputArg" style="margin-top: 0.25rem;"><strong>Argument $\theta$ (rad):</strong> Evaluating...</div>
+                            <div id="calc111OutputPolar" style="margin-top: 0.25rem;"><strong>Polar Form $r e^{i\theta}$:</strong> Evaluating...</div>
+                        </div>
+                        <p style="font-size: 0.78rem; color: #6b7280; margin: 0.4rem 0 0 0;">
+                            * Drag or edit values to watch the vector rotate and scale. The dashed circle denotes modulus radius $r$.
+                        </p>
+                    </div>
+
+                    <!-- Right: Argand Plane Canvas -->
+                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
+                        <canvas id="calc111Canvas" width="400" height="240" style="width: 100%; height: 240px; background: #000; border-radius: 6px;"></canvas>
+                        <div style="position: absolute; bottom: 8px; right: 12px; font-size: 0.68rem; color: #a1a1aa; display: flex; gap: 0.5rem; background: rgba(0,0,0,0.8); padding: 2px 6px; border-radius: 4px;">
+                            <span>Re (Horizontal)</span>
+                            <span>Im (Vertical)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab: Worked Solutions Sheet -->
+    <div id="secCalc111Exercises" style="display: none;">
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="card" style="padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Exercise 1: Complex Trigonometric Integration</h3>
+                <p>Evaluate the integral $I = \int e^x \sin x \, dx$ cleanly using the complex exponential method.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6;">
+                    <strong>Step-by-Step Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Use Euler's identity:</strong>
+                            $$\sin x = \text{Im}[e^{ix}]$$
+                            $$I = \int e^x \text{Im}[e^{ix}] dx = \text{Im}\left[ \int e^{(1+i)x} dx \right]$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Integrate complex exponential:</strong>
+                            $$\int e^{(1+i)x} dx = \frac{e^{(1+i)x}}{1+i} = \frac{e^x e^{ix}(1-i)}{(1+i)(1-i)} = \frac{e^x(\cos x + i\sin x)(1-i)}{2}$$
+                        </li>
+                        <li style="margin: 0;">
+                            <strong>Isolate Imaginary component:</strong>
+                            $$\text{Im}\left[ \frac{e^x}{2} ((\cos x + \sin x) + i(\sin x - \cos x)) \right] = \frac{1}{2} e^x (\sin x - \cos x) + C$$
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.switchCalc111Tab = function(tab) {
+                const tabTheo = document.getElementById('tabCalc111Theory');
+                const tabExer = document.getElementById('tabCalc111Exercises');
+                const secTheo = document.getElementById('secCalc111Theory');
+                const secExer = document.getElementById('secCalc111Exercises');
+
+                if (tab === 'theory') {
+                    tabTheo.style.color = '#ec4899';
+                    tabTheo.style.borderBottomColor = '#ec4899';
+                    tabExer.style.color = '#6b7280';
+                    tabExer.style.borderBottomColor = 'transparent';
+                    secTheo.style.display = 'block';
+                    secExer.style.display = 'none';
+                    setTimeout(drawComplexPlane, 20);
+                } else {
+                    tabExer.style.color = '#ec4899';
+                    tabExer.style.borderBottomColor = '#ec4899';
+                    tabTheo.style.color = '#6b7280';
+                    tabTheo.style.borderBottomColor = 'transparent';
+                    secExer.style.display = 'block';
+                    secTheo.style.display = 'none';
+                }
+            };
+
+            window.calculateInteractiveComplex = function() {
+                const x = parseFloat(document.getElementById('calc111InputX').value);
+                const y = parseFloat(document.getElementById('calc111InputY').value);
+
+                const elMod = document.getElementById('calc111OutputModulus');
+                const elArg = document.getElementById('calc111OutputArg');
+                const elPolar = document.getElementById('calc111OutputPolar');
+
+                if (isNaN(x) || isNaN(y)) {
+                    return;
+                }
+
+                const r = Math.sqrt(x * x + y * y);
+                const theta = Math.atan2(y, x);
+                const degrees = theta * (180 / Math.PI);
+
+                elMod.innerHTML = `<strong>Modulus $r = |z|$:</strong> ${r.toFixed(4)}`;
+                elArg.innerHTML = `<strong>Argument $\\theta$:</strong> ${theta.toFixed(4)} rad ($${degrees.toFixed(2)}^{\\circ}$)`;
+                elPolar.innerHTML = `<strong>Polar Form $r e^{i\\theta}$:</strong> $${r.toFixed(2)} e^{${theta.toFixed(2)}i}$`;
+
+                drawComplexPlane(x, y, r, theta);
+
+                const parent = document.getElementById('view-cqf-mp-calculus-111');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            window.drawComplexPlane = function(x, y, r, theta) {
+                const canvas = document.getElementById('calc111Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Grid
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= canvas.width; i += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, canvas.height);
+                    ctx.stroke();
+                }
+                for (let i = 0; i <= canvas.height; i += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(canvas.width, i);
+                    ctx.stroke();
+                }
+
+                const scale = 25; // pixels per unit
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+
+                const toCanvasX = (real) => centerX + real * scale;
+                const toCanvasY = (imag) => centerY - imag * scale;
+
+                // Draw Real and Imaginary Axes
+                ctx.strokeStyle = '#52525b';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(0, centerY);
+                ctx.lineTo(canvas.width, centerY);
+                ctx.moveTo(centerX, 0);
+                ctx.lineTo(centerX, canvas.height);
+                ctx.stroke();
+
+                // Draw Modulus Radius Dashed Circle
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 1.0;
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, r * scale, 0, 2 * Math.PI);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Draw Angle Arc
+                if (r > 0.1) {
+                    ctx.strokeStyle = '#f59e0b';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, 30, 0, -theta, theta < 0);
+                    ctx.stroke();
+                }
+
+                // Draw Complex Vector
+                ctx.strokeStyle = '#ec4899';
+                ctx.lineWidth = 3.0;
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(toCanvasX(x), toCanvasY(y));
+                ctx.stroke();
+
+                // Draw Endpoint dot
+                ctx.fillStyle = '#ec4899';
+                ctx.beginPath();
+                ctx.arc(toCanvasX(x), toCanvasY(y), 5.5, 0, 2 * Math.PI);
+                ctx.fill();
+            };
+
+            setTimeout(() => {
+                if (document.getElementById('calc111InputX')) calculateInteractiveComplex();
+            }, 100);
+        })();
+    </script>
+</div>

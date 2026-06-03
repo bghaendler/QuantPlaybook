@@ -1,0 +1,457 @@
+<div id="view-cqf-mp-calculus-foundations" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9; font-family: var(--font-family-sans);">Calculus: Foundations</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1. Mathematical Foundations</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Mathematical shorthand, number fields, function mapping types, quadratics, exponentials, and limits.</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
+        <button id="tabCalcFoundTheory" onclick="switchCalcFoundTab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Foundations Theory</button>
+        <button id="tabCalcFoundExercises" onclick="switchCalcFoundTab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Limits &amp; Financial Solutions</button>
+    </div>
+
+    <!-- Tab: Core Theory -->
+    <div id="secCalcFoundTheory" style="display: block;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Card 1.1: Mathematical Shorthand & Number Systems -->
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700;">1.1 Mathematical Shorthand &amp; Number Systems</h3>
+                <p>We establish standard shorthand logic notation frequently used in derivations:</p>
+                <div style="background: var(--metric-bg); padding: 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-bottom: 1rem; line-height: 1.4;">
+                    &exist; : there exists &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &forall; : for all<br>
+                    &there4; : therefore &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &because; : because<br>
+                    &rArr; : which gives &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; s.t. : such that<br>
+                    &iff; : if and only if &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &equiv; : equivalent<br>
+                    &in; : element of &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; !x : unique x
+                </div>
+                <p>Standard numbers fields and sets are classified as:</p>
+                <ul style="padding-left: 1.2rem; font-size: 0.88rem; line-height: 1.5; margin: 0;">
+                    <li><strong>Natural Numbers ($\mathbb{N}$):</strong> $\{0, 1, 2, 3, \dots\}$ — Used for indexing discrete time-steps $t_k$.</li>
+                    <li><strong>Integers ($\mathbb{Z}$):</strong> $\{0, \pm 1, \pm 2, \dots\}$ — Represents countable state units or portfolio positions.</li>
+                    <li><strong>Rationals ($\mathbb{Q}$):</strong> $\{p/q : p,q \in \mathbb{Z}\}$ — E.g. grid spacing steps in Finite Difference Methods.</li>
+                    <li><strong>Irrationals ($\mathbb{Q}$'):</strong> $\{\sqrt{2}, \pi, e\}$ — Transcendental numbers like Euler's $e$ drive all continuous growth.</li>
+                    <li><strong>Reals ($\mathbb{R}$):</strong> Union of all rational and irrational fields. Option prices, volatilities, and asset paths belong here.</li>
+                    <li><strong>Complex ($\mathbb{C}$):</strong> $\{x + iy : i = \sqrt{-1}\}$ — Vital for Fourier Transforms and Characteristic Functions in Heston stochastic volatility models.</li>
+                </ul>
+                <p style="margin-top: 0.75rem; font-size: 0.88rem;"><strong>Intervals notation:</strong> Open $(a,b) \equiv a < x < b$; Closed $[a,b] \equiv a \le x \le b$; Semi-open/closed $[a,b) \equiv a \le x < b$.</p>
+            </div>
+
+            <!-- Card 1.2: Mapping Theory, Domains & Inverses -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">1.2 Mapping Theory, Domains &amp; Inverses</h3>
+                    <p>A function $f: X \to Y$ maps elements of a domain $X$ uniquely to an image/range set $Y$:</p>
+                    <ul style="padding-left: 1.2rem; font-size: 0.88rem; line-height: 1.5; margin: 0.5rem 0;">
+                        <li><strong>One-to-One (1-1):</strong> Each $x \in X$ maps to exactly one unique $y \in Y$ (e.g. $y = 3x+1$). Invertible!</li>
+                        <li><strong>Many-to-One:</strong> Multiple distinct $x_i$ map to the same $y$ (e.g. $y = 2x^2-1$, where $x = \pm 2 \implies y = 7$). Payoff of a straddle or symmetric option.</li>
+                        <li><strong>One-to-Many:</strong> Maps a single $x$ to multiple $y$ values (e.g., $y = \pm\sqrt{x}$). <em>Note: A one-to-many mapping is multivalued and is NOT a strict mathematical function unless a single branch (e.g. positive) is selected.</em></li>
+                    </ul>
+                    <p><strong>Inverse Functions ($f^{-1}(x)$):</strong> Maps the image back to the domain. Must satisfy $f(f^{-1}(x)) = x$ and $f^{-1}(f(x)) = x$.</p>
+                    <p style="font-size: 0.88rem; background: var(--metric-bg); padding: 0.5rem; border-radius: 4px; font-family: monospace;">
+                        f(x) = 2x&sup2; - 1 &rArr; f&macr;&sup1;(x) = &radic;((x+1)/2)<br>
+                        Domain restrictions exist, e.g. for &radic;((x+1)/2) &rArr; x &ge; -1
+                    </p>
+                    <p style="margin-top: 0.5rem; font-size: 0.88rem;"><strong>Even vs. Odd Functions:</strong> Even: $f(-x) = f(x)$ (e.g., $x^2$, $\cos x$). Odd: $f(-x) = -f(x)$ (e.g., $x^3$, $\sin x$). All functions can be written as a sum of even and odd functions.</p>
+                    
+                    <!-- Interactive Mapping Laboratory -->
+                    <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; margin-top: 1rem; font-family: var(--font-family-sans);">
+                        <h4 style="margin: 0 0 0.5rem 0; font-size: 0.88rem; font-weight: 700; color: var(--accent);">Interactive Mapping &amp; Inverse Laboratory</h4>
+                        <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 0.75rem;">
+                            <div>
+                                <label style="font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Select Function $f(x)$:</label>
+                                <select id="mapFuncSelect" onchange="calculateInteractiveMapping()" style="padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600;">
+                                    <option value="linear">1-1 Linear: 3x + 1</option>
+                                    <option value="quadratic">Many-1 Quadratic: 2x² - 1</option>
+                                    <option value="multivalued">One-Many: ±√x (x ≥ 0)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="font-size: 0.75rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Input $x$ Value:</label>
+                                <input id="mapFuncInputX" type="number" value="2" step="0.5" oninput="calculateInteractiveMapping()" style="width: 70px; padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none;">
+                            </div>
+                        </div>
+                        <div style="font-size: 0.82rem; line-height: 1.5; color: var(--text-color); background: var(--card-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid var(--accent);">
+                            <div id="mapOutputF"><strong>Mapping:</strong> $f(2) = 7$</div>
+                            <div id="mapOutputInv"><strong>Inverse Mapping:</strong> $f^{-1}(7) = 2$ &amp; $-2$ (multivalued)</div>
+                            <div id="mapOutputStatus" style="font-weight: 700; color: #10b981; margin-top: 0.25rem;">Status: Valid Many-to-One Function</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 1.3: Explicit/Implicit Representations & Quadratic Form -->
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.3 Function Types, Implicit Form &amp; Quadratics</h3>
+                <p><strong>Explicit vs. Implicit:</strong> Explicit has the dependent variable isolated ($y = f(x)$). Implicit has variables bundled ($f(x,y) = 0$).</p>
+                <p style="font-size: 0.85rem; font-style: italic; margin-bottom: 0.5rem;">Example: $y^2 + x^2 - 16 = 0$ is implicit. Solving gives $y = \pm\sqrt{16-x^2}$ (which is one-to-many, representing two functional branches).</p>
+                
+                <p><strong>Polynomials:</strong> $f(x) = \sum_{k=0}^{n} a_k x^k$ is a polynomial of degree $n$.</p>
+                <p><strong>Solving the Quadratic Equation $ax^2 + bx + c = 0$:</strong> We complete the square to derive the quadratic formula:</p>
+                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+                    $$\left(x + \frac{b}{2a}\right)^2 = \frac{b^2 - 4ac}{4a^2} \implies x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$$
+                </p>
+                <ul style="padding-left: 1.2rem; font-size: 0.85rem; line-height: 1.5; margin: 0.5rem 0 0 0;">
+                    <li><strong>$b^2 - 4ac > 0$:</strong> 2 distinct real roots</li>
+                    <li><strong>$b^2 - 4ac = 0$:</strong> 1 repeated real root ($x = -b/2a$)</li>
+                    <li><strong>$b^2 - 4ac < 0$:</strong> Complex conjugate pair roots ($x \in \mathbb{C}$)</li>
+                </ul>
+
+                <!-- Interactive Quadratic Solver Panel -->
+                <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <h4 style="margin: 0 0 0.5rem 0; font-size: 0.88rem; font-weight: 700; color: #10b981;">Interactive Quadratic &amp; Discriminant Solver</h4>
+                    <div style="display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.75rem;">
+                        <div>
+                            <label style="font-size: 0.72rem; font-weight: 600; display: block;">Coeff $a$:</label>
+                            <input id="quadInputA" type="number" value="1" style="width: 45px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveQuadratic()">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.72rem; font-weight: 600; display: block;">Coeff $b$:</label>
+                            <input id="quadInputB" type="number" value="-5" style="width: 45px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveQuadratic()">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.72rem; font-weight: 600; display: block;">Coeff $c$:</label>
+                            <input id="quadInputC" type="number" value="6" style="width: 45px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveQuadratic()">
+                        </div>
+                    </div>
+                    <div style="font-size: 0.82rem; line-height: 1.5; color: var(--text-color); background: var(--card-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid #10b981;">
+                        <div id="quadOutputDisc"><strong>Discriminant ($b^2 - 4ac$):</strong> $25 - 24 = 1$ ($>0$)</div>
+                        <div id="quadOutputRoots"><strong>Roots:</strong> $x_1 = 3.00$, $x_2 = 2.00$</div>
+                        <div id="quadOutputExplanation" style="font-weight: 700; color: #10b981; margin-top: 0.25rem;">Status: Two distinct real roots</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 1.4: Exponential, Logarithmic & Limits -->
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1.4 Exponentials, Logarithms &amp; Limit Rules</h3>
+                <p>The number $e$ is defined as the continuous limit: $e = \lim_{n \to \infty} (1 + 1/n)^n \approx 2.718281828$.</p>
+                <p>The natural logarithm $\ln(x)$ and exponential $e^x$ are mutual inverses ($\ln(e^x) = e^{\ln(x)} = x$).</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; background: var(--metric-bg); padding: 0.6rem; border-radius: 6px; font-size: 0.85rem; font-family: monospace; margin: 0.5rem 0;">
+                    <div>e<sup>x</sup>e<sup>y</sup> = e<sup>x+y</sup>, e⁰ = 1<br>log(xy) = log x + log y</div>
+                    <div>log(x/y) = log x - log y<br>log(1/x) = -log x</div>
+                </div>
+                <p><strong>The Modulus Function (Piecewise):</strong> $|x| = x$ if $x \ge 0$, and $-x$ if $x < 0$.</p>
+                <p><strong>Limits and Continuity:</strong> A function $f(x)$ is continuous at $x_0$ if $\lim_{x \to x_0} f(x) = f(x_0)$. The limit exists if and only if left-hand and right-hand limits are equal:</p>
+                <p style="text-align: center; margin: 0.5rem 0;">$$\lim_{x \to x_0^-} f(x) = \lim_{x \to x_0^+} f(x) = l$$</p>
+
+                <!-- Interactive Limit & Continuity Laboratory -->
+                <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <h4 style="margin: 0 0 0.5rem 0; font-size: 0.88rem; font-weight: 700; color: #f59e0b;">Interactive Limit &amp; Continuity Laboratory</h4>
+                    <div style="display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap;">
+                        <div>
+                            <label style="font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Select Function $f(x)$:</label>
+                            <select id="limitFuncSelect" onchange="calculateInteractiveLimit()" style="padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600;">
+                                <option value="sin_x_x">Sinc Curve: sin(x) / x</option>
+                                <option value="exp_limit">Continuous Compounding: (1 + x)^(1/x)</option>
+                                <option value="mod_x_x">Modulus Discontinuity: |x| / x</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Target $x_0$:</label>
+                            <input id="limitTargetX" type="number" value="0" step="0.1" style="width: 50px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveLimit()">
+                        </div>
+                    </div>
+                    <div style="font-size: 0.82rem; line-height: 1.5; color: var(--text-color); background: var(--card-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid #f59e0b;">
+                        <div id="limitOutputLeft"><strong>Left-hand Limit ($x \to x_0^-$):</strong> 1.0000</div>
+                        <div id="limitOutputRight"><strong>Right-hand Limit ($x \to x_0^+$):</strong> 1.0000</div>
+                        <div id="limitOutputStatus" style="font-weight: 700; color: #10b981; margin-top: 0.25rem;">Status: Limit exists, continuous at x₀</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab: Worked Solutions Sheet -->
+    <div id="secCalcFoundExercises" style="display: none;">
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Problem 1: Limits & L'Hôpital's Rule -->
+            <div class="card" style="padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Exercise 1: Limits &amp; L'Hôpital's Rule</h3>
+                <p>Evaluate the limit $\lim_{x \to 0} \frac{\cos x + 2x - 1}{3x}$ using L'Hôpital's Rule and explain the step-by-step calculus methodology.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Identify the Indeterminate Form:</strong> Evaluate at $x = 0$:
+                            $$\text{Numerator: } \cos(0) + 2(0) - 1 = 0 \quad , \quad \text{Denominator: } 3(0) = 0$$
+                            This results in the indeterminate form $\frac{0}{0}$. Therefore, **L'Hôpital's Rule** is applicable.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Differentiate Numerator and Denominator:</strong>
+                            Let $f(x) = \cos x + 2x - 1 \implies f'(x) = -\sin x + 2$.
+                            Let $g(x) = 3x \implies g'(x) = 3$.
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Evaluate the Limit of the Derivatives:</strong>
+                            $$\lim_{x \to 0} \frac{-\sin x + 2}{3} = \frac{0 + 2}{3} = \frac{2}{3}$$
+                        </li>
+                    </ol>
+                </div>
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid var(--accent); padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. What is an indeterminate form?</strong> Plugging in zero directly gives $\frac{0}{0}$, which is undefined because division by zero is not mathematically allowed.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. What is L'Hôpital's Rule?</strong> Instead of static values at $x = 0$, we look at the speed (derivative) at which they shrink to zero. The ratio of their speeds gives us their fair limits.</p>
+                        <p style="margin: 0;"><strong>3. Differentiating denominator</strong> Differentiating $3x$ yields a constant $3$, removing the division-by-zero crisis.</p>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Problem 2: Continuous Compounding Proof -->
+            <div class="card" style="padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Exercise 2: Derivation of Continuous Compounding Limit</h3>
+                <p>Prove that the continuous compounding limit holds: $\lim_{n \to \infty} P \left(1 + \frac{r}{n}\right)^{nt} = P e^{rt}$ using logarithmic limits and L'Hôpital's Rule.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Proof:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Isolate the variable part:</strong> We want to evaluate the limit $L = \lim_{n \to \infty} \left(1 + \frac{r}{n}\right)^{nt}$. Let's take the natural logarithm of both sides:
+                            $$\ln(L) = \lim_{n \to \infty} \ln\left[\left(1 + \frac{r}{n}\right)^{nt}\right] = \lim_{n \to \infty} nt \ln\left(1 + \frac{r}{n}\right)$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Reframe into $\frac{0}{0}$ Indeterminate Form:</strong> Let $x = 1/n$. As $n \to \infty$, $x \to 0$. Substituting yields:
+                            $$\ln(L) = \lim_{x \to 0} \frac{t \ln(1 + rx)}{x}$$
+                            Plugging in $x = 0$ yields $\frac{t \ln(1)}{0} = \frac{0}{0}$, which is indeterminate.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Apply L'Hôpital's Rule:</strong> Differentiate the numerator and denominator with respect to $x$:
+                            $$\text{Numerator Derivative: } \frac{d}{dx}[t \ln(1+rx)] = \frac{t \cdot r}{1+rx}$$
+                            $$\text{Denominator Derivative: } \frac{d}{dx}[x] = 1$$
+                        </li>
+                        <li style="margin: 0;">
+                            <strong>Evaluate the Limit:</strong>
+                            $$\ln(L) = \lim_{x \to 0} \frac{\frac{tr}{1+rx}}{1} = tr \implies L = e^{rt}$$
+                            Multiplying by principal $P$ yields the continuous compounding formula: $P e^{rt}$. $\blacksquare$
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Problem 3: piecewise continuity barrier options -->
+            <div class="card" style="padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Exercise 3: Continuity Check of Piecewise Barrier Payoffs</h3>
+                <p>An asset cashflow is modeled via a piecewise function representing a down-and-out cash payoff with barrier level $H = 80$ and digital payoff $K = 50$:
+                $$f(S) = \begin{cases} 50 & \text{if } S \ge 80 \\ 0 & \text{if } S < 80 \end{cases}$$
+                Analyze the continuity of $f(S)$ at the barrier shock boundary $S = 80$ using left/right limits.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Continuity Diagnostics:</strong>
+                    <ul style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;"><strong>Right-hand limit (Above Barrier):</strong> $\lim_{S \to 80^+} f(S) = \lim_{S \to 80^+} 50 = 50$.</li>
+                        <li style="margin-bottom: 0.5rem;"><strong>Left-hand limit (Below Barrier/Out):</strong> $\lim_{S \to 80^-} f(S) = \lim_{S \to 80^-} 0 = 0$.</li>
+                        <li style="margin: 0;"><strong>Synthesis:</strong> Since $\lim_{S \to 80^-} f(S) \ne \lim_{S \to 80^+} f(S)$, the function has a **jump discontinuity** of magnitude 50 at $S=80$. This singularity requires special smoothing in numerical Finite Difference schemes to avoid instability!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.switchCalcFoundTab = function(tab) {
+                const tabTheo = document.getElementById('tabCalcFoundTheory');
+                const tabExer = document.getElementById('tabCalcFoundExercises');
+                const secTheo = document.getElementById('secCalcFoundTheory');
+                const secExer = document.getElementById('secCalcFoundExercises');
+
+                if (tab === 'theory') {
+                    tabTheo.style.color = 'var(--accent)';
+                    tabTheo.style.borderBottomColor = 'var(--accent)';
+                    tabExer.style.color = '#6b7280';
+                    tabExer.style.borderBottomColor = 'transparent';
+                    secTheo.style.display = 'block';
+                    secExer.style.display = 'none';
+                } else {
+                    tabExer.style.color = 'var(--accent)';
+                    tabExer.style.borderBottomColor = 'var(--accent)';
+                    tabTheo.style.color = '#6b7280';
+                    tabTheo.style.borderBottomColor = 'transparent';
+                    secExer.style.display = 'block';
+                    secTheo.style.display = 'none';
+                }
+            };
+
+            window.calculateInteractiveMapping = function() {
+                const fn = document.getElementById('mapFuncSelect').value;
+                const xVal = parseFloat(document.getElementById('mapFuncInputX').value);
+                const elF = document.getElementById('mapOutputF');
+                const elInv = document.getElementById('mapOutputInv');
+                const elStat = document.getElementById('mapOutputStatus');
+
+                if (isNaN(xVal)) {
+                    elF.innerHTML = "<strong>Mapping:</strong> Please input a valid number!";
+                    elInv.innerHTML = "";
+                    elStat.innerText = "Status: Awaiting Input";
+                    elStat.style.color = "#ea580c";
+                    return;
+                }
+
+                if (fn === 'linear') {
+                    const yVal = 3 * xVal + 1;
+                    const xInv = (yVal - 1) / 3;
+                    elF.innerHTML = `<strong>Mapping:</strong> $f(${xVal}) = 3(${xVal}) + 1 = ${yVal}$`;
+                    elInv.innerHTML = `<strong>Unique Inverse:</strong> $f^{-1}(${yVal}) = (${yVal} - 1)/3 = ${xInv.toFixed(2)}$`;
+                    elStat.innerText = "Status: Valid One-to-One (1-1) Function";
+                    elStat.style.color = "#10b981";
+                } else if (fn === 'quadratic') {
+                    const yVal = 2 * xVal * xVal - 1;
+                    if (yVal < -1) {
+                        elF.innerHTML = `<strong>Mapping:</strong> $f(${xVal}) = 2(${xVal})^2 - 1 = ${yVal}$`;
+                        elInv.innerHTML = `<strong>Inverse:</strong> Complex conjugate roots (undefined on $\\mathbb{R}$)`;
+                        elStat.innerText = "Status: Domain Restriction Exceeded";
+                        elStat.style.color = "#ef4444";
+                    } else {
+                        const root1 = Math.sqrt((yVal + 1) / 2);
+                        const root2 = -root1;
+                        elF.innerHTML = `<strong>Mapping:</strong> $f(${xVal}) = 2(${xVal})^2 - 1 = ${yVal}$`;
+                        elInv.innerHTML = `<strong>Inverse (Multivalued Branches):</strong> $f^{-1}(${yVal}) = \\pm\\sqrt{(${yVal} + 1)/2} = ${root1.toFixed(2)}$ and ${root2.toFixed(2)}$`;
+                        elStat.innerText = "Status: Valid Many-to-One Function";
+                        elStat.style.color = "#10b981";
+                    }
+                } else if (fn === 'multivalued') {
+                    if (xVal < 0) {
+                        elF.innerHTML = `<strong>Mapping:</strong> $f(${xVal}) = \\pm\\sqrt{${xVal}}$ (Undefined for $x < 0$)`;
+                        elInv.innerHTML = `<strong>Inverse:</strong> $f^{-1}(y) = y^2$`;
+                        elStat.innerText = "Status: Out of Domain ($x < 0$)";
+                        elStat.style.color = "#ef4444";
+                    } else {
+                        const root1 = Math.sqrt(xVal);
+                        const root2 = -root1;
+                        elF.innerHTML = `<strong>Multivalued Mapping (2 Branches):</strong> $f(${xVal}) = +${root1.toFixed(2)}$ and $-${root2.toFixed(2)}$`;
+                        elInv.innerHTML = `<strong>Inverse Mapping:</strong> $f^{-1}(y) = y^2$ (maps both back to $x = ${xVal}$)`;
+                        elStat.innerText = "Status: One-to-Many Relation (NOT a single-valued function!)";
+                        elStat.style.color = "#ea580c";
+                    }
+                }
+
+                if (window.MathJax && typeof window.MathJax.typeset === 'function') {
+                    window.MathJax.typeset();
+                }
+            };
+
+            window.calculateInteractiveQuadratic = function() {
+                const a = parseFloat(document.getElementById('quadInputA').value);
+                const b = parseFloat(document.getElementById('quadInputB').value);
+                const c = parseFloat(document.getElementById('quadInputC').value);
+                const elD = document.getElementById('quadOutputDisc');
+                const elR = document.getElementById('quadOutputRoots');
+                const elE = document.getElementById('quadOutputExplanation');
+
+                if (isNaN(a) || isNaN(b) || isNaN(c)) {
+                    elD.innerHTML = "<strong>Discriminant:</strong> Please input valid numbers!";
+                    elR.innerHTML = "";
+                    elE.innerText = "Status: Awaiting Coefficients";
+                    elE.style.color = "#ea580c";
+                    return;
+                }
+
+                if (a === 0) {
+                    const root = -c / b;
+                    elD.innerHTML = "<strong>Discriminant:</strong> N/A (Linear, $a=0$)";
+                    elR.innerHTML = `<strong>Linear Root:</strong> $x = -c/b = ${root.toFixed(2)}$`;
+                    elE.innerText = "Status: Degenerate Linear Equation";
+                    elE.style.color = "#ea580c";
+                    return;
+                }
+
+                const disc = b * b - 4 * a * c;
+                elD.innerHTML = `<strong>Discriminant ($b^2 - 4ac$):</strong> $(${b})^2 - 4(${a})(${c}) = ${disc}$`;
+
+                if (disc > 0) {
+                    const r1 = (-b + Math.sqrt(disc)) / (2 * a);
+                    const r2 = (-b - Math.sqrt(disc)) / (2 * a);
+                    elR.innerHTML = `<strong>Roots:</strong> $x_1 = ${r1.toFixed(2)}$, $x_2 = ${r2.toFixed(2)}$`;
+                    elE.innerText = "Status: Two Distinct Real Roots";
+                    elE.style.color = "#10b981";
+                } else if (disc === 0) {
+                    const r = -b / (2 * a);
+                    elR.innerHTML = `<strong>Root:</strong> $x_1 = x_2 = ${r.toFixed(2)}$`;
+                    elE.innerText = "Status: One Double Real Root";
+                    elE.style.color = "#0ea5e9";
+                } else {
+                    const realPart = -b / (2 * a);
+                    const imagPart = Math.sqrt(-disc) / (2 * a);
+                    elR.innerHTML = `<strong>Complex Roots:</strong> $x_1, x_2 = ${realPart.toFixed(2)} \\pm ${imagPart.toFixed(2)}i$`;
+                    elE.innerText = "Status: Complex Conjugate Pair Roots";
+                    elE.style.color = "#8b5cf6";
+                }
+
+                if (window.MathJax && typeof window.MathJax.typeset === 'function') {
+                    window.MathJax.typeset();
+                }
+            };
+
+            window.calculateInteractiveLimit = function() {
+                const fn = document.getElementById('limitFuncSelect').value;
+                const x0 = parseFloat(document.getElementById('limitTargetX').value);
+                const elL = document.getElementById('limitOutputLeft');
+                const elR = document.getElementById('limitOutputRight');
+                const elS = document.getElementById('limitOutputStatus');
+
+                if (isNaN(x0)) {
+                    elL.innerHTML = "Please input a valid target point!";
+                    elR.innerHTML = "";
+                    elS.innerText = "Status: Awaiting input";
+                    elS.style.color = "#ea580c";
+                    return;
+                }
+
+                const eps = 1e-7;
+
+                const evalFn = (x) => {
+                    if (fn === 'sin_x_x') {
+                        if (Math.abs(x) < 1e-9) return 1.0;
+                        return Math.sin(x) / x;
+                    }
+                    if (fn === 'exp_limit') {
+                        if (Math.abs(x) < 1e-9) return Math.E;
+                        if (1 + x <= 0) return NaN;
+                        return Math.pow(1 + x, 1 / x);
+                    }
+                    if (fn === 'mod_x_x') {
+                        if (Math.abs(x) < 1e-9) return NaN;
+                        return Math.abs(x) / x;
+                    }
+                    return 0;
+                };
+
+                const valLeft = evalFn(x0 - eps);
+                const valRight = evalFn(x0 + eps);
+
+                if (isNaN(valLeft) || isNaN(valRight)) {
+                    elL.innerHTML = `<strong>Left-hand Limit ($x \\to ${x0.toFixed(2)}^-$):</strong> Undefined (Out of domain)`;
+                    elR.innerHTML = `<strong>Right-hand Limit ($x \\to ${x0.toFixed(2)}^+$):</strong> Undefined (Out of domain)`;
+                    elS.innerText = "Status: Limit does not exist (Domain boundary exceeded)";
+                    elS.style.color = "#ef4444";
+                    return;
+                }
+
+                elL.innerHTML = `<strong>Left-hand Limit ($x \\to ${x0.toFixed(2)}^-$):</strong> ${valLeft.toFixed(6)}`;
+                elR.innerHTML = `<strong>Right-hand Limit ($x \\to ${x0.toFixed(2)}^+$):</strong> ${valRight.toFixed(6)}`;
+
+                const diff = Math.abs(valLeft - valRight);
+                if (diff < 1e-4) {
+                    elS.innerText = `Status: Limit exists and is equal to ${((valLeft + valRight) / 2).toFixed(4)}`;
+                    elS.style.color = "#10b981";
+                } else {
+                    elS.innerText = `Status: Limit does not exist! Jump discontinuity detected (Left/Right differ by ${diff.toFixed(2)})`;
+                    elS.style.color = "#ef4444";
+                }
+
+                if (window.MathJax && typeof window.MathJax.typeset === 'function') {
+                    window.MathJax.typeset();
+                }
+            };
+
+            setTimeout(() => {
+                if (document.getElementById('mapFuncSelect')) calculateInteractiveMapping();
+                if (document.getElementById('quadInputA')) calculateInteractiveQuadratic();
+                if (document.getElementById('limitFuncSelect')) calculateInteractiveLimit();
+            }, 100);
+        })();
+    </script>
+</div>

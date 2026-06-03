@@ -1,0 +1,125 @@
+<div id="view-cqf-mp-probability-14" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">1.4 Exclusivity &amp; Independence</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.4 Mutually Exclusive &amp; Independent Events</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Event disjoint operations, simplified unions, independent multiplications, and diagnostic rules.</div>
+    </header>
+
+    <!-- Core Theory Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.4.1 Exclusivity &amp; Independence Principles</h3>
+        <p>Distinguishing mutually exclusive vs independent events is a key mathematical prerequisite:</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1rem 0;">
+            <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--accent);">
+                <strong style="font-size: 1rem; color: var(--accent); display: block; margin-bottom: 0.5rem;">Mutually Exclusive</strong>
+                Events that cannot happen at the same time (no outcomes in common):
+                <p style="font-weight: 700; margin: 0.5rem 0;">
+                    $$P(A \cap B) = 0$$
+                </p>
+                The Addition Rule simplifies to:
+                <p style="font-weight: 700; margin: 0.5rem 0;">
+                    $$P(A \cup B) = P(A) + P(B)$$
+                </p>
+            </div>
+            
+            <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border-left: 4px solid #10b981;">
+                <strong style="font-size: 1rem; color: #10b981; display: block; margin-bottom: 0.5rem;">Independent Events</strong>
+                The occurrence of one event has no impact on the probability of the other:
+                <p style="font-weight: 700; margin: 0.5rem 0;">
+                    $$P(A|B) = P(A)$$
+                </p>
+                The Multiplication Rule simplifies to:
+                <p style="font-weight: 700; margin: 0.5rem 0;">
+                    $$P(A \cap B) = P(A) \times P(B)$$
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rule Checker Interactive Laboratory -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.4.2 Interactive Exclusivity &amp; Independence Diagnostic</h3>
+        <p>Input probabilities to test if the two events $A$ and $B$ are Mutually Exclusive, Independent, or general dependent:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; align-items: center;">
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">P(A):</label>
+                    <input id="prob14InputA" type="number" value="0.4" step="0.1" min="0" max="1" oninput="diagnoseProb14()" style="width: 60px; padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);">
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">P(B):</label>
+                    <input id="prob14InputB" type="number" value="0.5" step="0.1" min="0" max="1" oninput="diagnoseProb14()" style="width: 60px; padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);">
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">P(A ∩ B):</label>
+                    <input id="prob14InputIntersection" type="number" value="0.2" step="0.05" min="0" max="1" oninput="diagnoseProb14()" style="width: 60px; padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);">
+                </div>
+            </div>
+            <div style="font-size: 0.85rem; line-height: 1.5; background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid var(--accent);">
+                <div id="prob14Diagnostic">Checking...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.diagnoseProb14 = function() {
+                const pA = parseFloat(document.getElementById('prob14InputA').value);
+                const pB = parseFloat(document.getElementById('prob14InputB').value);
+                const pInter = parseFloat(document.getElementById('prob14InputIntersection').value);
+
+                const elDiagnostic = document.getElementById('prob14Diagnostic');
+
+                if (isNaN(pA) || isNaN(pB) || isNaN(pInter)) {
+                    elDiagnostic.innerHTML = "Please enter valid probability inputs.";
+                    return;
+                }
+
+                if (pInter > Math.min(pA, pB)) {
+                    elDiagnostic.innerHTML = "<strong>Error:</strong> Intersection P(A ∩ B) cannot exceed individual probabilities P(A) or P(B).";
+                    elDiagnostic.style.color = "#ea580c";
+                    return;
+                }
+
+                elDiagnostic.style.color = "var(--text-color)";
+
+                let html = "";
+                // 1. Exclusivity check
+                if (pInter === 0) {
+                    html += `<strong>Exclusivity:</strong> Mutually Exclusive! P(A ∩ B) = 0. Therefore, P(A ∪ B) = P(A) + P(B) = ${(pA + pB).toFixed(2)}<br>`;
+                } else {
+                    html += `<strong>Exclusivity:</strong> NOT Mutually Exclusive. They overlap because P(A ∩ B) = ${pInter.toFixed(2)} ≠ 0.<br>`;
+                }
+
+                // 2. Independence check
+                const testProduct = pA * pB;
+                const difference = Math.abs(pInter - testProduct);
+
+                if (difference < 1e-9) {
+                    html += `<strong>Independence:</strong> Independent! P(A ∩ B) = P(A) × P(B) = ${testProduct.toFixed(4)}. Occurrence of A provides zero info on B.`;
+                } else {
+                    html += `<strong>Independence:</strong> Dependent! P(A) × P(B) = ${testProduct.toFixed(4)} ≠ P(A ∩ B) = ${pInter.toFixed(4)}. They scale conditionally.`;
+                }
+
+                elDiagnostic.innerHTML = html;
+
+                const parent = document.getElementById('view-cqf-mp-probability-14');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            setTimeout(() => {
+                if (document.getElementById('prob14InputA')) diagnoseProb14();
+            }, 100);
+        })();
+    </script>
+</div>

@@ -1,0 +1,152 @@
+<div id="view-cqf-mp-linalg-orthogonal" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(236, 72, 153, 0.1); color: #ec4899; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #ec4899; font-family: var(--font-family-sans);">2.5 Orthogonal Matrices</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Orthogonal Matrices</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Geometric rotations and reflections, transpose relations, and structural properties.</div>
+    </header>
+
+    <!-- General Definition -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1. Orthogonal Matrix Definition</h3>
+        <p>A square matrix $\mathbf{P}$ is defined as **orthogonal** if and only if:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$\mathbf{P}\mathbf{P}^{\mathrm{T}} = \mathbf{P}^{\mathrm{T}}\mathbf{P} = \mathbf{I}$$</p>
+        <p>This implies that the inverse of an orthogonal matrix is simply its transpose:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold; color: var(--accent);">$$\mathbf{P}^{-1} = \mathbf{P}^{\mathrm{T}}$$</p>
+    </div>
+
+    <!-- Core Structural Properties -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">2. Core Structural Properties</h3>
+        <p>The algebra of orthogonal matrices leads to several critical geometric properties:</p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li>The rows and columns of an orthogonal matrix are mutually **orthogonal** to each other (their dot product is zero).</li>
+            <li>Each row and column vector has a **unit length** (norm is exactly $1$).</li>
+            <li>In two dimensions, standard orthogonal matrices take the form of rotations or reflections:
+                $$\text{Rotation: } \begin{pmatrix} \cos\theta & \sin\theta \\ -\sin\theta & \cos\theta \end{pmatrix} \quad \text{or} \quad \text{Reflection: } \begin{pmatrix} \cos\theta & \sin\theta \\ \sin\theta & -\cos\theta \end{pmatrix}$$
+            </li>
+        </ul>
+    </div>
+
+    <!-- Interactive Orthogonal Rotation sandbox -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">3. Interactive Orthogonal Rotation Sandbox</h3>
+        <p>Adjust rotation angle $\theta$ to configure a standard $2 \times 2$ orthogonal rotation matrix $\mathbf{P}$. The sandbox dynamically verifies that $\mathbf{P} \mathbf{P}^{\mathrm{T}} = \mathbf{I}$ and plots the rotated vector unit coordinates:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls Column -->
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div>
+                        <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Rotation Angle ($\theta$):</label>
+                        <input type="range" id="linalgOrthoSlider" min="0" max="360" value="45" step="5" oninput="runLinAlgOrthogonalSimulation()" style="width: 100%; margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: -0.75rem; margin-bottom: 1.25rem; color: #6b7280;">
+                            <span>0°</span>
+                            <span id="linalgOrthoThetaVal" style="font-weight: bold; color: var(--accent);">theta = 45°</span>
+                            <span>360°</span>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); margin-bottom: 0.75rem;">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">ROTATION MATRIX P</div>
+                        <div id="linalgOrthoMatrix" style="font-family: monospace; font-size: 0.95rem; font-weight: 700; margin-top: 0.5rem; white-space: pre; line-height: 1.6;">[  0.71,  0.71 ]<br>[ -0.71,  0.71 ]</div>
+                    </div>
+
+                    <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); border-left: 4px solid #10b981;">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">IDENTITY VERIFICATION P·Pᵀ</div>
+                        <div id="linalgOrthoIdentity" style="font-family: monospace; font-size: 0.95rem; font-weight: 700; margin-top: 0.5rem; white-space: pre; line-height: 1.6; color: #10b981;">[ 1.00, 0.00 ]<br>[ 0.00, 1.00 ]</div>
+                    </div>
+                </div>
+
+                <!-- Custom 2D Line Chart Canvas -->
+                <div style="background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 1rem;">
+                    <canvas id="linalgOrthoCanvas" width="320" height="200" style="width: 100%; height: 200px; display: block;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.runLinAlgOrthogonalSimulation = function() {
+                const thetaDeg = parseFloat(document.getElementById('linalgOrthoSlider').value);
+                document.getElementById('linalgOrthoThetaVal').innerText = `theta = ${thetaDeg}°`;
+
+                const thetaRad = thetaDeg * (Math.PI / 180);
+                const cosT = Math.cos(thetaRad);
+                const sinT = Math.sin(thetaRad);
+
+                // Rotation Matrix elements
+                const p11 = cosT;
+                const p12 = sinT;
+                const p21 = -sinT;
+                const p22 = cosT;
+
+                document.getElementById('linalgOrthoMatrix').innerHTML = `[  ${p11.toFixed(2)},  ${p12.toFixed(2)} ]<br>[ ${p21.toFixed(2)},  ${p22.toFixed(2)} ]`;
+
+                // P * P^T multiplication
+                const ppt11 = p11 * p11 + p12 * p12;
+                const ppt12 = p11 * p21 + p12 * p22;
+                const ppt21 = p21 * p11 + p22 * p12;
+                const ppt22 = p21 * p21 + p22 * p22;
+
+                document.getElementById('linalgOrthoIdentity').innerHTML = `[ ${ppt11.toFixed(1)}, ${ppt12.toFixed(1)} ]<br>[ ${ppt21.toFixed(1)}, ${ppt22.toFixed(1)} ]`;
+
+                drawOrthoGraph(p11, p12, p21, p22);
+
+                const parent = document.getElementById('view-cqf-mp-linalg-orthogonal');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawOrthoGraph(p11, p12, p21, p22) {
+                const canvas = document.getElementById('linalgOrthoCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const originX = canvas.width / 2;
+                const originY = canvas.height / 2;
+
+                // Simple grid lines
+                ctx.strokeStyle = '#222';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(0, originY);
+                ctx.lineTo(canvas.width, originY);
+                ctx.moveTo(originX, 0);
+                ctx.lineTo(originX, canvas.height);
+                ctx.stroke();
+
+                // Draw rotated basis vectors e1 and e2. Scale 1 unit = 50px
+                const scale = 50;
+
+                // Rotated e1 (Blue)
+                ctx.strokeStyle = '#2563eb';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(originX, originY);
+                ctx.lineTo(originX + p11 * scale, originY - p12 * scale);
+                ctx.stroke();
+
+                // Rotated e2 (Orange)
+                ctx.strokeStyle = '#ea580c';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(originX, originY);
+                ctx.lineTo(originX + p21 * scale, originY - p22 * scale);
+                ctx.stroke();
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('linalgOrthoSlider')) runLinAlgOrthogonalSimulation();
+            }, 100);
+        })();
+    </script>
+</div>

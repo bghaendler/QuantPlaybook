@@ -1,0 +1,509 @@
+<div id="view-cqf-mp-calculus-derivatives" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9; font-family: var(--font-family-sans);">Calculus: Advanced Derivatives</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">3. Advanced Derivatives</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Standard calculus rules, Leibniz product differentiation, Taylor expansion shock parameters, and convergence sandbox.</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
+        <button id="tabCalcDerivTheory" onclick="switchCalcDerivTab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Calculus Theory</button>
+        <button id="tabCalcDerivSandbox" onclick="switchCalcDerivTab('sandbox')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Taylor Approximation Sandbox</button>
+        <button id="tabCalcDerivExercises" onclick="switchCalcDerivTab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Taylor Solutions</button>
+    </div>
+
+    <!-- Tab 1: Theory Cards -->
+    <div id="secCalcDerivTheory" style="display: block;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Card 1.7: Single-Variable Derivatives & Standard Results -->
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700;">1.7 Derivatives &amp; Standard Calculus Results</h3>
+                <p>The derivative of $f(x)$ represents its local slope and is defined via the Lagrange or Leibniz limits. Common standard results used as structural building blocks are:</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; background: var(--metric-bg); padding: 0.6rem; border-radius: 6px; font-size: 0.85rem; font-family: monospace; margin-bottom: 0.75rem;">
+                    <div>d/dx(xⁿ) = n xⁿ⁻¹<br>d/dx(eᵃˣ) = a eᵃˣ<br>d/dx(ln x) = 1/x</div>
+                    <div>d/dx(sin x) = cos x<br>d/dx(cos x) = -sin x<br>d/dx(tan x) = sec² x</div>
+                </div>
+                <p><strong>Linearity of Derivatives:</strong> If $\alpha, \beta$ are constants, then $\frac{d}{dx}(\alpha f + \beta g) = \alpha f' + \beta g'$.</p>
+                <p><strong>Bivariate Implicit Differentiation:</strong> Allows finding derivatives when functions are bundled. For $f(x,y)=0$ (e.g. $4y^4 - 2y^2x^2 - yx^2 + x^2 + 3 = 0$):</p>
+                <p style="text-align: center; font-size: 0.88rem; font-family: monospace;">
+                    16y³y' - 2(2yy'x² + 2y²x) - (y'x² + 2xy) + 2x = 0
+                </p>
+                <p>Solving for $y'$ yields the implicit rate of change as a function of both $x$ and $y$.</p>
+
+                <!-- Interactive Derivative Laboratory -->
+                <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <h4 style="margin: 0 0 0.5rem 0; font-size: 0.88rem; font-weight: 700; color: var(--accent);">Interactive Derivative &amp; Implicit Rate Laboratory</h4>
+                    <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 0.75rem;">
+                        <div>
+                            <label style="font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Select Mode:</label>
+                            <select id="derivModeSelect" onchange="calculateInteractiveDerivative()" style="padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600;">
+                                <option value="implicit">Implicit: y' for f(x,y)=0</option>
+                                <option value="polynomial">Polynomial: d/dx(xⁿ)</option>
+                            </select>
+                        </div>
+                        <div id="derivInputsImplicit" style="display: flex; gap: 0.5rem;">
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Input $x$:</label>
+                                <input id="derivInputX" type="number" value="1.0" step="0.5" style="width: 50px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveDerivative()">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Input $y$:</label>
+                                <input id="derivInputY" type="number" value="1.0" step="0.5" style="width: 50px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveDerivative()">
+                            </div>
+                        </div>
+                        <div id="derivInputsPoly" style="display: none; gap: 0.5rem;">
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Exponent $n$:</label>
+                                <input id="derivInputN" type="number" value="3" step="1" style="width: 50px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveDerivative()">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">At $x$:</label>
+                                <input id="derivInputPolyX" type="number" value="2.0" step="0.5" style="width: 50px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveDerivative()">
+                            </div>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.82rem; line-height: 1.5; color: var(--text-color); background: var(--card-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid var(--accent);">
+                        <div id="derivOutputFormula"><strong>Formula:</strong> $y' = \frac{4y^2x + 2xy - 2x}{16y^3 - 4yx^2 - x^2}$</div>
+                        <div id="derivOutputResult"><strong>Result:</strong> $y' = 0.3636$</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 1.8: Higher Derivatives, Leibniz Rule & Singularities -->
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">1.8 Higher-Order Derivatives &amp; Leibniz Rule</h3>
+                <p>Higher-order derivatives are defined recursively: $f^{(n)}(x) = \frac{d}{dx}[f^{(n-1)}(x)]$. For an $n$-th degree polynomial, the $(n+1)$-th derivative is zero.</p>
+                <p><strong>Leibniz Rule (Product Derivatives):</strong> Generalizes the product rule to find the $n$-th derivative of a product $y = uv$:</p>
+                <p style="text-align: center; font-size: 0.98rem; font-weight: 700; margin: 0.5rem 0;">
+                    $$D^n(uv) = \sum_{r=0}^{n} \binom{n}{r} D^r u \, D^{n-r} v \quad \text{where} \quad \binom{n}{r} = \frac{n!}{r!(n-r)!}$$
+                </p>
+                <p style="font-size: 0.85rem; font-style: italic;">
+                    Example: Find $D^n(x^3 e^{ax})$. Setting $u=x^3$ and $v=e^{ax}$, only $u_0, u_1, u_2, u_3$ are non-zero, truncating the sum to four active terms.
+                </p>
+                <p><strong>Singularities:</strong> A function is singular where it is undefined or its derivative does not exist (e.g., $f(x) = \frac{1}{x-2}$ is singular at $x=2$, representing a vertical asymptote).</p>
+            </div>
+
+            <!-- Card 1.9: Taylor Series, Parabolic Fit & Binomial Theorem -->
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.9 Taylor Series, Parabolic Fit &amp; Binomial Theorem</h3>
+                <p>The Taylor series builds a local polynomial approximation of $f(x)$ around $x_0$:</p>
+                <ul style="padding-left: 1.2rem; font-size: 0.88rem; line-height: 1.5; margin: 0.5rem 0;">
+                    <li><strong>Linear Approximation (Tangent):</strong> $f(x) \approx f(x_0) + (x-x_0)f'(x_0)$</li>
+                    <li><strong>Quadratic Parabolic Fit:</strong> $f(x) \approx f(x_0) + (x-x_0)f'(x_0) + \frac{1}{2}(x-x_0)^2 f''(x_0)$ (matches curvature).</li>
+                </ul>
+                <p><strong>The Binomial Theorem:</strong> Maclaurin expansion of $(1+x)^n$ for any real number $n$:</p>
+                <p style="text-align: center; font-size: 0.95rem; font-weight: 700; margin: 0.4rem 0;">
+                    $$(1+x)^n = 1 + nx + \frac{n(n-1)}{2!}x^2 + \frac{n(n-1)(n-2)}{3!}x^3 + \dots$$
+                </p>
+                <p style="font-size: 0.88rem;">For negative or fractional exponents (e.g., $(1+x)^{-1} = 1-x+x^2-x^3+\dots$), this series has infinite terms and converges strictly within $|x| < 1$.</p>
+
+                <!-- Interactive Taylor Parabolic Shock Laboratory -->
+                <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <h4 style="margin: 0 0 0.5rem 0; font-size: 0.88rem; font-weight: 700; color: #10b981;">Interactive Taylor Parabolic Shock Laboratory</h4>
+                    <div style="display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap;">
+                        <div>
+                            <label style="font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Curve $f(x)$:</label>
+                            <select id="shockFuncSelect" onchange="calculateInteractiveShock()" style="padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600;">
+                                <option value="exp">Exponential Asset Curve: e^x</option>
+                                <option value="ln">Log Asset Curve: ln(1+x)</option>
+                                <option value="cos">Oscillatory Curve: cos(x)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Baseline $x_0$:</label>
+                            <input id="shockInputX0" type="number" value="0.0" step="0.2" style="width: 55px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveShock()">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 0.25rem;">Shock $\delta x$:</label>
+                            <input id="shockInputDx" type="number" value="0.5" step="0.1" style="width: 55px; padding: 0.2rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calculateInteractiveShock()">
+                        </div>
+                    </div>
+                    <div style="font-size: 0.82rem; line-height: 1.5; color: var(--text-color); background: var(--card-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid #10b981;">
+                        <div id="shockOutputExact"><strong>Exact Value $f(x_0 + \delta x)$:</strong> 1.6487</div>
+                        <div id="shockOutputLinear"><strong>Linear (Delta) Fit:</strong> 1.5000 (Error: -9.02%)</div>
+                        <div id="shockOutputParabolic"><strong>Parabolic (Delta-Gamma) Fit:</strong> 1.6250 (Error: -1.44%)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 2: Sandbox Plot -->
+    <div id="secCalcDerivSandbox" style="display: none;">
+        <div class="card" style="margin-bottom: 2rem;">
+            <div style="margin-bottom: 1.5rem;">
+                <h2 style="margin: 0; font-family: var(--font-family-sans); font-weight: 800; font-size: 1.4rem;">Taylor Series Approximation Sandbox</h2>
+                <div style="color: #6b7280; font-size: 0.95rem; margin-top: 0.25rem;">Visualize how adding polynomial degrees allows the Taylor series to replicate transcendental functions locally. Choose a function, drag the order slider, and observe convergence of the approximation to the exact curve.</div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 280px 1fr; gap: 2rem; align-items: start;">
+                <!-- Controls Column -->
+                <div style="background: var(--metric-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-family-sans);">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">Inputs &amp; Functions</h3>
+                    
+                    <!-- Function Selector -->
+                    <div>
+                        <span style="font-weight: 600; display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-color);">Target Function $f(x)$</span>
+                        <select id="taylorFuncSelect" onchange="updateTaylorApproximation()" style="width: 100%; padding: 0.4rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; cursor: pointer; font-family: var(--font-family-sans); font-weight: 600;">
+                            <option value="exp">Exponential: e^x</option>
+                            <option value="sin">Trigonometric: sin(x)</option>
+                            <option value="cos">Trigonometric: cos(x)</option>
+                            <option value="ln">Logarithmic: ln(1+x)</option>
+                        </select>
+                    </div>
+
+                    <!-- Polynomial Order Slider -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label for="taylorOrderSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Order (Degree N)</label>
+                            <span id="taylorOrderVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">N = 2</span>
+                        </div>
+                        <input id="taylorOrderSlider" type="range" min="1" max="10" step="1" value="2" style="width: 100%; cursor: pointer;" oninput="updateTaylorApproximation()">
+                    </div>
+
+                    <!-- Expansion Point Slider -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label for="taylorCenterSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Expansion Center ($x_0$)</label>
+                            <span id="taylorCenterVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">0.0</span>
+                        </div>
+                        <input id="taylorCenterSlider" type="range" min="-1.5" max="1.5" step="0.1" value="0" style="width: 100%; cursor: pointer;" oninput="updateTaylorApproximation()">
+                    </div>
+                </div>
+
+                <!-- Plot Column -->
+                <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; min-height: 320px; position: relative;">
+                    <h4 style="margin: 0 0 0.75rem 0; font-family: var(--font-family-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-color); text-transform: uppercase; letter-spacing: 0.05em;">Taylor Expansion Convergence Plot</h4>
+                    <div style="width: 100%; height: 260px;">
+                        <canvas id="taylorPlotChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 3: Worked Exercises -->
+    <div id="secCalcDerivExercises" style="display: none;">
+        <div class="card" style="padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Taylor Series Expansion Problem</h3>
+            <p>Derive the Taylor series expansion of $f(x) = \ln(1+x)$ up to the third order around $x_0 = 0$, and explain its financial application.</p>
+            <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                <strong>Step-by-Step Mathematical Derivation:</strong>
+                <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                    <li style="margin-bottom: 0.5rem;">
+                        <strong>State the Taylor expansion formula:</strong> Around $x_0 = 0$:
+                        $$f(x) \approx f(0) + f'(0)x + \frac{f''(0)}{2!}x^2 + \frac{f'''(0)}{3!}x^3$$
+                    </li>
+                    <li style="margin-bottom: 0.5rem;">
+                        <strong>Calculate successive derivatives at $x$:</strong>
+                        $$f(x) = \ln(1+x) \quad , \quad f'(x) = (1+x)^{-1} \quad , \quad f''(x) = -(1+x)^{-2} \quad , \quad f'''(x) = 2(1+x)^{-3}$$
+                    </li>
+                    <li style="margin-bottom: 0.5rem;">
+                        <strong>Evaluate derivatives at $x_0 = 0$:</strong>
+                        $$f(0) = 0 \quad , \quad f'(0) = 1 \quad , \quad f''(0) = -1 \quad , \quad f'''(0) = 2$$
+                    </li>
+                    <li style="margin: 0;">
+                        <strong>Assemble the Taylor polynomial:</strong>
+                        $$\ln(1+x) \approx x - \frac{1}{2}x^2 + \frac{1}{3}x^3$$
+                    </li>
+                </ol>
+            </div>
+            <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                <summary style="cursor: pointer; font-weight: 700; color: #8b5cf6; font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid #8b5cf6; padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                    <p style="margin: 0 0 0.5rem 0;"><strong>1. Why use a Taylor Series?</strong> A Taylor series breaks a curved function down into a simpler polynomial (like $x - x^2/2 + x^3/3$) which only uses basic algebraic operators.</p>
+                    <p style="margin: 0 0 0.5rem 0;"><strong>2. Why take successive derivatives?</strong> The first derivative captures the slope (Delta), the second captures curvature (Gamma), and the third captures warp.</p>
+                    <p style="margin: 0;"><strong>3. Financial connection:</strong> Options sensitivities (Delta, Gamma) represent first and second-order Taylor terms respectively.</p>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            let taylorChartInstance = null;
+
+            window.switchCalcDerivTab = function(tab) {
+                const tabTheo = document.getElementById('tabCalcDerivTheory');
+                const tabSand = document.getElementById('tabCalcDerivSandbox');
+                const tabExer = document.getElementById('tabCalcDerivExercises');
+                const secTheo = document.getElementById('secCalcDerivTheory');
+                const secSand = document.getElementById('secCalcDerivSandbox');
+                const secExer = document.getElementById('secCalcDerivExercises');
+
+                if (tab === 'theory') {
+                    tabTheo.style.color = 'var(--accent)';
+                    tabTheo.style.borderBottomColor = 'var(--accent)';
+                    tabSand.style.color = tabExer.style.color = '#6b7280';
+                    tabSand.style.borderBottomColor = tabExer.style.borderBottomColor = 'transparent';
+                    secTheo.style.display = 'block';
+                    secSand.style.display = secExer.style.display = 'none';
+                } else if (tab === 'sandbox') {
+                    tabSand.style.color = 'var(--accent)';
+                    tabSand.style.borderBottomColor = 'var(--accent)';
+                    tabTheo.style.color = tabExer.style.color = '#6b7280';
+                    tabTheo.style.borderBottomColor = tabExer.style.borderBottomColor = 'transparent';
+                    secSand.style.display = 'block';
+                    secTheo.style.display = secExer.style.display = 'none';
+                    setTimeout(() => { updateTaylorApproximation(); }, 50);
+                } else {
+                    tabExer.style.color = 'var(--accent)';
+                    tabExer.style.borderBottomColor = 'var(--accent)';
+                    tabTheo.style.color = tabSand.style.color = '#6b7280';
+                    tabTheo.style.borderBottomColor = tabSand.style.borderBottomColor = 'transparent';
+                    secExer.style.display = 'block';
+                    secTheo.style.display = secSand.style.display = 'none';
+                }
+            };
+
+            function fact(n) {
+                if (n <= 1) return 1;
+                let res = 1;
+                for (let i = 2; i <= n; i++) res *= i;
+                return res;
+            }
+
+            window.updateTaylorApproximation = function() {
+                const fn = document.getElementById('taylorFuncSelect').value;
+                const N = parseInt(document.getElementById('taylorOrderSlider').value);
+                const x0 = parseFloat(document.getElementById('taylorCenterSlider').value);
+
+                document.getElementById('taylorOrderVal').innerText = 'N = ' + N;
+                document.getElementById('taylorCenterVal').innerText = x0.toFixed(1);
+
+                const minX = -3.0;
+                const maxX = 3.0;
+                const steps = 100;
+                const dx = (maxX - minX) / steps;
+
+                const exactPoints = [];
+                const approxPoints = [];
+
+                const evalExact = (x) => {
+                    if (fn === 'exp') return Math.exp(x);
+                    if (fn === 'sin') return Math.sin(x);
+                    if (fn === 'cos') return Math.cos(x);
+                    if (fn === 'ln') return Math.log(Math.max(0.001, 1 + x));
+                    return 0;
+                };
+
+                const getDerivative = (n, center) => {
+                    if (fn === 'exp') return Math.exp(center);
+                    if (fn === 'sin') {
+                        const rem = n % 4;
+                        if (rem === 0) return Math.sin(center);
+                        if (rem === 1) return Math.cos(center);
+                        if (rem === 2) return -Math.sin(center);
+                        return -Math.cos(center);
+                    }
+                    if (fn === 'cos') {
+                        const rem = n % 4;
+                        if (rem === 0) return Math.cos(center);
+                        if (rem === 1) return -Math.sin(center);
+                        if (rem === 2) return -Math.cos(center);
+                        return Math.sin(center);
+                    }
+                    if (fn === 'ln') {
+                        if (n === 0) return Math.log(Math.max(0.001, 1 + center));
+                        const sgn = (n % 2 === 0) ? -1 : 1;
+                        return sgn * fact(n - 1) / Math.pow(1 + center, n);
+                    }
+                    return 0;
+                };
+
+                const evalApprox = (x) => {
+                    let sum = 0;
+                    for (let n = 0; n <= N; n++) {
+                        const coeff = getDerivative(n, x0) / fact(n);
+                        sum += coeff * Math.pow(x - x0, n);
+                    }
+                    return sum;
+                };
+
+                for (let i = 0; i <= steps; i++) {
+                    const x = minX + i * dx;
+                    exactPoints.push({ x: x, y: evalExact(x) });
+                    approxPoints.push({ x: x, y: evalApprox(x) });
+                }
+
+                const isDark = document.body.classList.contains('dark-theme');
+                const gridColor = isDark ? 'rgba(68, 76, 86, 0.2)' : 'rgba(203, 213, 225, 0.2)';
+                const labelColor = isDark ? '#adbac7' : '#475569';
+
+                if (taylorChartInstance) taylorChartInstance.destroy();
+
+                const ctx = document.getElementById('taylorPlotChart').getContext('2d');
+                taylorChartInstance = new Chart(ctx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [
+                            {
+                                label: 'Exact Function f(x)',
+                                data: exactPoints,
+                                showLine: true,
+                                borderColor: '#10b981',
+                                borderWidth: 3,
+                                pointRadius: 0,
+                                fill: false
+                            },
+                            {
+                                label: 'Taylor Approximation (Order N)',
+                                data: approxPoints,
+                                showLine: true,
+                                borderColor: '#ea580c',
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                pointRadius: 0,
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: labelColor } } },
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                position: 'bottom',
+                                min: -3.0,
+                                max: 3.0,
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor }
+                            },
+                            y: {
+                                min: fn === 'ln' ? -2.0 : -3.0,
+                                max: fn === 'ln' ? 2.5 : 3.0,
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor }
+                            }
+                        }
+                    }
+                });
+            };
+
+            window.calculateInteractiveDerivative = function() {
+                const mode = document.getElementById('derivModeSelect').value;
+                const elFormula = document.getElementById('derivOutputFormula');
+                const elResult = document.getElementById('derivOutputResult');
+                const pImplicit = document.getElementById('derivInputsImplicit');
+                const pPoly = document.getElementById('derivInputsPoly');
+
+                if (mode === 'implicit') {
+                    pImplicit.style.display = 'flex';
+                    pPoly.style.display = 'none';
+
+                    const xVal = parseFloat(document.getElementById('derivInputX').value);
+                    const yVal = parseFloat(document.getElementById('derivInputY').value);
+
+                    if (isNaN(xVal) || isNaN(yVal)) {
+                        elResult.innerHTML = "Please input valid numbers!";
+                        return;
+                    }
+
+                    const num = 4 * yVal * yVal * xVal + 2 * xVal * yVal - 2 * xVal;
+                    const den = 16 * yVal * yVal * yVal - 4 * yVal * xVal * xVal - xVal * xVal;
+
+                    elFormula.innerHTML = `<strong>Formula:</strong> $y' = \\frac{4y^2x + 2xy - 2x}{16y^3 - 4yx^2 - x^2}$`;
+                    
+                    if (Math.abs(den) < 1e-9) {
+                        elResult.innerHTML = `<strong>y'(${xVal.toFixed(2)}, ${yVal.toFixed(2)}):</strong> Undefined (Denominator is zero)`;
+                    } else {
+                        const yPrime = num / den;
+                        elResult.innerHTML = `<strong>y'(${xVal.toFixed(2)}, ${yVal.toFixed(2)}):</strong> ${yPrime.toFixed(4)}`;
+                    }
+                } else {
+                    pImplicit.style.display = 'none';
+                    pPoly.style.display = 'flex';
+
+                    const nVal = parseFloat(document.getElementById('derivInputN').value);
+                    const xVal = parseFloat(document.getElementById('derivInputPolyX').value);
+
+                    if (isNaN(nVal) || isNaN(xVal)) {
+                        elResult.innerHTML = "Please input valid numbers!";
+                        return;
+                    }
+
+                    elFormula.innerHTML = `<strong>Formula:</strong> $\\frac{d}{dx}(x^n) = n x^{n-1}$`;
+
+                    if (xVal === 0 && nVal - 1 < 0) {
+                        elResult.innerHTML = `<strong>Result:</strong> Undefined (Division by zero)`;
+                    } else {
+                        const derivVal = nVal * Math.pow(xVal, nVal - 1);
+                        elResult.innerHTML = `<strong>Derivative at $x=${xVal.toFixed(2)}$:</strong> ${derivVal.toFixed(4)}`;
+                    }
+                }
+
+                if (window.MathJax && typeof window.MathJax.typeset === 'function') {
+                    window.MathJax.typeset();
+                }
+            };
+
+            window.calculateInteractiveShock = function() {
+                const fn = document.getElementById('shockFuncSelect').value;
+                const x0 = parseFloat(document.getElementById('shockInputX0').value);
+                const dx = parseFloat(document.getElementById('shockInputDx').value);
+
+                const elExact = document.getElementById('shockOutputExact');
+                const elLinear = document.getElementById('shockOutputLinear');
+                const elParabolic = document.getElementById('shockOutputParabolic');
+
+                if (isNaN(x0) || isNaN(dx)) {
+                    elExact.innerHTML = "Please input valid baseline and shock values!";
+                    elLinear.innerHTML = "";
+                    elParabolic.innerHTML = "";
+                    return;
+                }
+
+                const targetX = x0 + dx;
+                let exactVal, f0, fPrime, fDoublePrime;
+
+                if (fn === 'exp') {
+                    exactVal = Math.exp(targetX);
+                    f0 = Math.exp(x0);
+                    fPrime = Math.exp(x0);
+                    fDoublePrime = Math.exp(x0);
+                } else if (fn === 'ln') {
+                    if (x0 <= -1 || targetX <= -1) {
+                        elExact.innerHTML = "<strong>Exact Value:</strong> Out of domain ($x \\le -1$)";
+                        elLinear.innerHTML = "";
+                        elParabolic.innerHTML = "";
+                        return;
+                    }
+                    exactVal = Math.log(1 + targetX);
+                    f0 = Math.log(1 + x0);
+                    fPrime = 1 / (1 + x0);
+                    fDoublePrime = -1 / ((1 + x0) * (1 + x0));
+                } else if (fn === 'cos') {
+                    exactVal = Math.cos(targetX);
+                    f0 = Math.cos(x0);
+                    fPrime = -Math.sin(x0);
+                    fDoublePrime = -Math.cos(x0);
+                }
+
+                const linearVal = f0 + dx * fPrime;
+                const parabolicVal = f0 + dx * fPrime + 0.5 * dx * dx * fDoublePrime;
+
+                const errLin = ((linearVal - exactVal) / exactVal) * 100;
+                const errPara = ((parabolicVal - exactVal) / exactVal) * 100;
+
+                elExact.innerHTML = `<strong>Exact Value $f(${x0.toFixed(2)} + ${dx.toFixed(2)})$:</strong> ${exactVal.toFixed(5)}`;
+                elLinear.innerHTML = `<strong>Linear (Delta) Fit:</strong> ${linearVal.toFixed(5)} <span style="color: ${errLin >= 0 ? '#ef4444' : '#ea580c'}; font-weight:600;">(Error: ${errLin.toFixed(2)}%)</span>`;
+                elParabolic.innerHTML = `<strong>Parabolic (Delta-Gamma) Fit:</strong> ${parabolicVal.toFixed(5)} <span style="color: #10b981; font-weight:600;">(Error: ${errPara.toFixed(2)}%)</span>`;
+
+                if (window.MathJax && typeof window.MathJax.typeset === 'function') {
+                    window.MathJax.typeset();
+                }
+            };
+
+            setTimeout(() => {
+                if (document.getElementById('derivModeSelect')) calculateInteractiveDerivative();
+                if (document.getElementById('shockFuncSelect')) calculateInteractiveShock();
+            }, 100);
+        })();
+    </script>
+</div>

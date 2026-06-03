@@ -1,0 +1,523 @@
+<div id="view-cqf-m6-l6" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Module 06: Fixed Income &amp; Credit</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Lecture 06</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">L6: LIBOR Market Model (LMM)</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Discrete Yield Curve Modeling, LMM Drift Derivations, and Bermudan Swaption Optimizations</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
+        <button id="tabM6L6Foundations" onclick="switchM6L6Tab('foundations')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. LMM Foundations</button>
+        <button id="tabM6L6Dynamics" onclick="switchM6L6Tab('dynamics')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. LMM Dynamics &amp; Numeraires</button>
+        <button id="tabM6L6Drift" onclick="switchM6L6Tab('drift')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Drift Derivation</button>
+        <button id="tabM6L6Calibration" onclick="switchM6L6Tab('calibration')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. Vol, Correlation &amp; Swaptions</button>
+        <button id="tabM6L6Exercises" onclick="switchM6L6Tab('exercises')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Solved Exercises</button>
+        <button id="tabM6L6Sandbox" onclick="switchM6L6Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Interactive Quant Labs</button>
+    </div>
+
+    <!-- TAB 1: LMM Foundations -->
+    <div id="secM6L6Foundations" style="display: block;">
+        <div class="container" style="grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; margin-bottom: 2rem; display: grid; align-items: stretch;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Modeling Observable Market Quotes</h3>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        The core philosophy of a <strong>market model</strong> (like the LIBOR Market Model) is to directly model the dynamics of observable, tradeable market quotes, rather than unobservable hidden factors (such as the instantaneous short rate). The yield curve is discretized into a set of discrete, spanning forward rates $f_i(t)$ over adjacent intervals $[t_i, t_{i+1}]$ with accruals $\tau_i \approx t_{i+1} - t_i$.
+                    </p>
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                        <strong>Discount Factors &amp; FRA Mechanics:</strong> For a borrower, the effective funding discount factor over the forward interval $[t_i, t_{i+1}]$ is:
+                        $$\frac{P(t, t_{i+1})}{P(t, t_i)} = \frac{1}{1 + f_i(t) \tau_i}$$
+                    </p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Market Yield Curve</h3>
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                        Financial markets are driven by tradable instruments rather than an abstract yield curve. The instruments include:
+                        <ul style="padding-left:1.15rem; margin-top:0.25rem; margin-bottom:0;">
+                            <li><strong>Interbank cash deposits:</strong> Unsecured lending rates.</li>
+                            <li><strong>Government bond repos:</strong> Used to set benchmark rates.</li>
+                            <li><strong>Swap rates:</strong> Swapping fixed and floating cash flows.</li>
+                            <li><strong>Futures &amp; FRAs:</strong> Standardized forward contracts.</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: LMM Dynamics & Numeraires -->
+    <div id="secM6L6Dynamics" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">LMM Governing Equations</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    The standard LIBOR Market Model assumes that each of the $n$ discretely compounded spanning forward rates $f_i(t)$ evolves according to a log-normal SDE:
+                    $$\frac{\mathrm{d}f_i(t)}{f_i(t)} = \mu_i(\mathbf{f}, t)\mathrm{d}t + \sigma_i(t) \cdot \mathrm{d}\widetilde{W}_i(t)$$
+                    where $\sigma_i(t)$ is the instantaneous volatility of the forward rate, $\rho_{ij}\mathrm{d}t = \mathbb{E}[\mathrm{d}\widetilde{W}_i\mathrm{d}\widetilde{W}_j]$ is the correlation, and the drift $\mu_i$ is determined entirely by no-arbitrage requirements.
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Relative Valuation &amp; Numéraire Selection</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        To evaluate contingent claims, we select a tradeable positive security $N(t)$ to act as the <strong>numéraire</strong>. Under the associated martingale measure $\mathbb{Q}_N$, the price of any tradeable asset $X(t)$ rescaled by the numéraire (i.e., $X(t)/N(t)$) must be a martingale.
+                        Common numéraire choices include:
+                        <ul style="padding-left:1.15rem; margin-top:0.25rem; margin-bottom:0;">
+                            <li><strong>Continuous money market account $A(t)$:</strong> Discounting along the stochastic path of the short rate.</li>
+                            <li><strong>Zero-coupon bond $P_N(t)$ (Terminal Measure):</strong> Discounting using today's ZCB price, causing stochastic discount factor components inside expectations to vanish.</li>
+                            <li><strong>Swap Annuity $B_i(t)$ (Annuity Measure):</strong> Used to simplify swaption pricing.</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: Drift Derivation -->
+    <div id="secM6L6Drift" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Deriving the No-Arbitrage Drift Formula</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    Let the numéraire be the zero-coupon bond $P_N(t)$ maturing at $t_N$. The ratio of any traded asset to the numéraire must be a martingale under the terminal measure $\mathbb{T}_N$.
+                    Consider the asset $f_i P_{i+1}$ representing the payoff of a forward contract. Its ratio to the numéraire $f_i X_i(t) \equiv f_i \frac{P_{i+1}(t)}{P_N(t)}$ must be a martingale. Applying Itô's product rule and taking expectations:
+                    $$\mathbb{E}^{\mathbb{T}_N}\left[ \mathrm{d}(f_i X_i) \right] = \mathbb{E}^{\mathbb{T}_N}\left[ X_i \mu_i f_i \mathrm{d}t + \mathrm{d}f_i \mathrm{d}X_i \right] = 0 \implies \mu_i \mathrm{d}t = -\mathbb{E}^{\mathbb{T}_N}\left[ \frac{\mathrm{d}f_i}{f_i} \frac{\mathrm{d}X_i}{X_i} \right]$$
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6; margin-bottom: 1rem;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">The Vaillant Relative Covariance Bracket</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        We define the instantaneous relative covariance bracket $[a, b] \equiv \mathbb{E}[\frac{\mathrm{d}a}{a}\frac{\mathrm{d}b}{b}]/\mathrm{d}t$. Using the bracket properties and expanding the bond ratio $P_{i+1}/P_N = \prod_{k=i+1}^{N-1}(1 + f_k \tau_k)^{-1}$:
+                        $$\mu_i = -\left[ f_i, \frac{P_{i+1}}{P_N} \right] = -\sum_{k=i+1}^{N-1} \left[ f_i, (1 + f_k \tau_k)^{-1} \right] = -\sum_{k=i+1}^{N-1} \frac{f_k \tau_k}{1 + f_k \tau_k} \sigma_i \sigma_k \rho_{ik}$$
+                    </p>
+                </div>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">The LMM Drift Formula</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        This yields the analytical **LMM Drift Formula** under the $t_N$-terminal measure:
+                        $$\mu_i(\mathbf{f}, t) = \begin{cases} -\sigma_i(t) \sum_{k=i+1}^{N-1} \frac{f_k(t) \tau_k}{1 + f_k(t) \tau_k} \sigma_k(t) \rho_{ik} & \text{for } i < N-1 \\ 0 & \text{for } i = N-1 \\ \sigma_i(t) \sum_{k=N}^i \frac{f_k(t) \tau_k}{1 + f_k(t) \tau_k} \sigma_k(t) \rho_{ik} & \text{for } i \geq N \end{cases}$$
+                        Since the drift of each forward rate depends on the other stochastic forward rates $f_k(t)$, the drift is itself **stochastic**, requiring advanced numerical stepping.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: Volatility, Correlation & Swaptions -->
+    <div id="secM6L6Calibration" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Volatility &amp; Correlation Parameterizations</h3>
+                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                    To calibrate the model to market quotes, LMM uses parametric forms to restrict the thousands of degrees of freedom.
+                    <strong>Instantaneous Volatility (ABCD Skeleton):</strong>
+                    $$\sigma_i(t) = k_i \left[ \left( a + b \cdot (t_i - t) \right) \cdot e^{-c \cdot (t_i - t)} + d \right] \cdot \mathbf{1}_{\{t < t_i\}}$$
+                    where $a, b, c, d$ define the smooth exponential humped skeleton, and $k_i$ scaling factors perfectly fit caplet prices.
+                    <strong>Instantaneous Correlation Decay:</strong>
+                    $$\rho_{ij} = e^{-\beta \cdot |t_i - t_j|}$$
+                    where $\beta \approx 0.1$ controls the rate at which correlation decays between distant tenors.
+                </p>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6; margin-bottom: 1rem;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">European Swaption Jacobian Transition Matrix</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        Using Itô's lemma, the relative covariance of swap rates $C^s$ can be mapped directly from the forward covariance matrix $C^f$ using a Jacobian transition matrix $Z^{f \to s}$:
+                        $$C^s = Z^{f \to s} \cdot C^f \cdot \left( Z^{f \to s} \right)^T, \quad Z^{f \to s}_{ik} = \left[ \frac{P_{k+1} N_k f_k \tau_k}{A_i} + \frac{(A_i B_k - A_k B_i) f_k \tau_k}{A_i B_i (1 + f_k \tau_k)} \right] \cdot \mathbf{1}_{\{k \geq i\}}$$
+                        For a perfectly flat yield curve, the shape correction term is zero, reducing $Z^{f \to s}$ to the constant-weights approximation. Inverting this mapping yields the <strong>non-iterative calibration matrix $M$</strong>: $C^f_{\text{calibrated}} = M \cdot C^f_{\text{parametric}} \cdot M^T$.
+                    </p>
+                </div>
+
+                <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6;">
+                    <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Predictor-Corrector Numerical Scheme</h4>
+                    <p style="margin:0; color:#4b5563;">
+                        Simple log-Euler discretization is highly inaccurate for large time steps $\Delta t$ due to stochastic drift variation. The <strong>Predictor-Corrector Scheme</strong> stabilizes LMM paths:
+                        <ul style="padding-left:1.15rem; margin-top:0.25rem; margin-bottom:0;">
+                            <li><strong>Prediction:</strong> Evolve rates forward using current drift $\mu_i(\mathbf{f}(t), t)$.</li>
+                            <li><strong>Drift Recalculation:</strong> Evaluate the drift vector at the predicted state $\hat{\mathbf{f}}(t+\Delta t)$.</li>
+                            <li><strong>Correction:</strong> Evolve rates again using the averaged drift $\tilde{\mu}_i = \frac{1}{2}[\mu_i(t) + \mu_i(t+\Delta t)]$ and the same random draws.</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: Solved Exercises -->
+    <div id="secM6L6Exercises" style="display: none; max-height: 600px; overflow-y: auto; padding-right: 0.5rem;">
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Exercise 1. Vaillant Bracket Product Proof</h3>
+            <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563;">
+                <strong>Question:</strong> Prove that the relative covariance bracket satisfies the product expansion property: $[a, bc] = [a, b] + [a, c]$.
+            </p>
+            <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color:#374151;">
+                <strong>Solution:</strong><br>
+                By definition, the relative covariance bracket is:
+                $$[a, b] \equiv \mathbb{E}\left[ \frac{\mathrm{d}a}{a} \frac{\mathrm{d}b}{b} \right] \Big/ \mathrm{d}t$$
+                Applying Itô's product rule to the process $y = bc$:
+                $$\mathrm{d}y = \mathrm{d}(bc) = b\mathrm{d}c + c\mathrm{d}b + \mathrm{d}b\mathrm{d}c$$
+                Dividing both sides by $y = bc$:
+                $$\frac{\mathrm{d}(bc)}{bc} = \frac{b\mathrm{d}c + c\mathrm{d}b + \mathrm{d}b\mathrm{d}c}{bc} = \frac{\mathrm{d}c}{c} + \frac{\mathrm{d}b}{b} + \frac{\mathrm{d}b\mathrm{d}c}{bc}$$
+                Now, evaluating the bracket $[a, bc]$:
+                $$[a, bc] = \mathbb{E}\left[ \frac{\mathrm{d}a}{a} \frac{\mathrm{d}(bc)}{bc} \right] \Big/ \mathrm{d}t = \mathbb{E}\left[ \frac{\mathrm{d}a}{a} \left( \frac{\mathrm{d}c}{c} + \frac{\mathrm{d}b}{b} + \frac{\mathrm{d}b\mathrm{d}c}{bc} \right) \right] \Big/ \mathrm{d}t$$
+                Expanding the terms:
+                $$[a, bc] = \mathbb{E}\left[ \frac{\mathrm{d}a}{a}\frac{\mathrm{d}c}{c} \right]\Big/\mathrm{d}t + \mathbb{E}\left[ \frac{\mathrm{d}a}{a}\frac{\mathrm{d}b}{b} \right]\Big/\mathrm{d}t + \mathbb{E}\left[ \frac{\mathrm{d}a}{a}\frac{\mathrm{d}b\mathrm{d}c}{bc} \right]\Big/\mathrm{d}t$$
+                Since $\mathrm{d}a\mathrm{d}b\mathrm{d}c$ is a higher-order differential $(\mathrm{d}t^{1.5} \text{ or } \mathrm{d}t^2)$, its expectation vanishes in the limit $\mathrm{d}t \to 0$:
+                $$[a, bc] = [a, c] + [a, b] + 0 \implies [a, bc] = [a, b] + [a, c]$$
+                This proves the relative covariance bracket property.
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
+            <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Exercise 2. Flat Yield Curve Transition Matrix Proof</h3>
+            <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563;">
+                <strong>Question:</strong> Prove that the Jacobian transition matrix $Z^{f \to s}$ reduces exactly to the constant-weights approximation when the initial yield curve is perfectly flat.
+            </p>
+            <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color:#374151;">
+                <strong>Solution:</strong><br>
+                The complete formula for the Jacobian transition matrix element is:
+                $$Z^{f \to s}_{ik} = \left[ \frac{P_{k+1} N_k f_k \tau_k}{A_i} + \frac{(A_i B_k - A_k B_i) f_k \tau_k}{A_i B_i (1 + f_k \tau_k)} \right] \cdot \mathbf{1}_{\{k \geq i\}}$$
+                where the second term is the shape correction factor, which can be expanded as:
+                $$\frac{(A_i B_k - A_k B_i) f_k \tau_k}{A_i B_i (1 + f_k \tau_k)} = \frac{f_k \tau_k}{A_i B_i (1 + f_k \tau_k)} \sum_{l=i}^{k-1} \sum_{m=k}^{n-1} P_{l+1} P_{m+1} N_l N_m \tau_l \tau_m (f_l - f_m)$$
+                If the initial yield curve is perfectly flat, all discrete forward rates are equal: $f_l = f_m = f_{\text{flat}}$ for all indices $l, m$.<br>
+                Substituting this equality:
+                $$f_l - f_m = f_{\text{flat}} - f_{\text{flat}} = 0 \implies \sum_{l=i}^{k-1} \sum_{m=k}^{n-1} P_{l+1} P_{m+1} N_l N_m \tau_l \tau_m (0) = 0$$
+                Therefore, the entire shape correction term vanishes:
+                $$Z^{f \to s}_{ik} = \left[ \frac{P_{k+1} N_k f_k \tau_k}{A_i} + 0 \right] \cdot \mathbf{1}_{\{k \geq i\}} = \frac{P_{k+1} N_k f_k \tau_k}{A_i} \cdot \mathbf{1}_{\{k \geq i\}}$$
+                This is exactly the constant-weights approximation, proving the result.
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Exercise 3. Early Exercise Boundaries &amp; Bermudans</h3>
+            <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563;">
+                <strong>Question:</strong> Detail the backward Bellman optimality loop used to price Bermudan swaptions and explain how exercise decision boundaries are parameterised.
+            </p>
+            <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color:#374151;">
+                <strong>Solution:</strong><br>
+                A Bermudan swaption allows the holder to enter into a swap at strike $K$ on any of the exercise dates $\{t_1, \dots, t_{n-1}\}$. The intrinsic value at exercise is $I(t_j) = \sum_{k=j}^{n-1} P_{k+1}(t_j)(f_k(t_j) - K)\tau_k$.<br>
+                The continuation value is the expected profit from keeping the option alive. The Bellman optimality equation is:
+                $$V(t_j) = \max \left\{ I(t_j), \mathbb{E}_{t_j}[V(t_{j+1})] \right\}$$
+                To parameterise the early-exercise decision boundary in Monte Carlo simulations without computing expensive nested expectations, we define a decision rule $\mathcal{E}_i$:
+                $$\mathcal{E}_i(\mathbf{f}(t_i)) = \phi_\pm \cdot \left( f_i(t_i) - \left[ p_{i1} \cdot \frac{s_{i+1}(0)}{s_{i+1}(t_i) + p_{i2}} + p_{i3} \right] \right)$$
+                where the holder exercises if $\mathcal{E}_i > 0$. The parameters $\mathbf{p}_i = (p_{i1}, p_{i2}, p_{i3})$ are optimized backward in time on training paths using the BFGS multi-dimensional variable metric method.
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 6: Interactive Quant Labs -->
+    <div id="secM6L6Sandbox" style="display: none;">
+        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; display: grid;">
+            <!-- LAB A: LMM Predictor-Corrector Simulator -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab A: LMM Predictor-Corrector</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Vol parameter ($\sigma$):</label>
+                        <input id="numM6L6Vol" type="number" value="0.2" step="0.05" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L6SimLab()">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Correlation Decay ($\beta$):</label>
+                        <input id="numM6L6Beta" type="number" value="0.1" step="0.05" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L6SimLab()">
+                    </div>
+                </div>
+                <div style="height: 140px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m6l6SimChart"></canvas>
+                </div>
+                <div id="outM6L6Sim" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Simulating forward rate paths...
+                </div>
+            </div>
+
+            <!-- LAB B: Volatility Hump (ABCD) Calibrator -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab B: Volatility Hump (ABCD) Calibrator</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">ABCD Scale ($d$):</label>
+                        <input id="numM6L6ScaleD" type="number" value="0.05" step="0.01" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L6AbcdLab()">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Skeleton Decay ($c$):</label>
+                        <input id="numM6L6DecayC" type="number" value="1.5" step="0.1" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L6AbcdLab()">
+                    </div>
+                </div>
+                <div style="height: 140px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m6l6AbcdChart"></canvas>
+                </div>
+                <div id="outM6L6Abcd" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Calibrating volatility humps...
+                </div>
+            </div>
+
+            <!-- LAB C: Bermudan Swaption Exercise Boundary Simulator -->
+            <div class="card" style="margin-bottom: 0; padding: 1.25rem; grid-column: span 2;">
+                <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom:0.75rem;">Lab C: Bermudan Swaption Decision Boundary</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.75rem; font-size:0.78rem; margin-bottom:0.75rem;">
+                    <div>
+                        <label style="font-weight:600; display:block;">Option Strike ($K$):</label>
+                        <input id="numM6L6Strike" type="number" value="0.05" step="0.005" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L6BermudanLab()">
+                    </div>
+                    <div>
+                        <label style="font-weight:600; display:block;">Boundary Parameter ($p_{3}$):</label>
+                        <input id="numM6L6ParamP" type="number" value="0.048" step="0.001" style="width:100%; padding:0.2rem; border-radius:4px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);" onchange="runM6L6BermudanLab()">
+                    </div>
+                    <div style="display:flex; align-items:flex-end;">
+                        <button class="btn" style="width:100%; background:var(--accent); color:#ffffff; font-weight:700; border:none; padding:0.2rem; border-radius:4px; cursor:pointer;" onclick="runM6L6BermudanLab()">Evaluate Decision Boundary</button>
+                    </div>
+                </div>
+                <div style="height: 160px; position: relative; margin-bottom: 0.5rem;">
+                    <canvas id="m6l6BermudanChart"></canvas>
+                </div>
+                <div id="outM6L6Bermudan" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                    Optimizing early exercise boundaries...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching logic for CQF M6 L6
+    window.switchM6L6Tab = function(tab) {
+        const tabs = ['foundations', 'dynamics', 'drift', 'calibration', 'exercises', 'sandbox'];
+        tabs.forEach(t => {
+            const sec = document.getElementById('secM6L6' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabM6L6' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (sec) {
+                sec.style.display = (t === tab ? 'block' : 'none');
+                if (t === tab && !sec.dataset.typeset) {
+                    if (typeof window.safeTypeset === 'function') {
+                        window.safeTypeset([sec]);
+                        sec.dataset.typeset = 'true';
+                    }
+                }
+            }
+            if (btn) {
+                if (t === tab) {
+                    btn.style.color = 'var(--accent)';
+                    btn.style.borderBottom = '2px solid var(--accent)';
+                    btn.style.fontWeight = '700';
+                } else {
+                    btn.style.color = '#6b7280';
+                    btn.style.borderBottom = '2px solid transparent';
+                    btn.style.fontWeight = '600';
+                }
+            }
+        });
+
+        if (tab === 'sandbox') {
+            setTimeout(initM6L6Labs, 100);
+        }
+    };
+
+    let m6l6SimChartInstance = null;
+    let m6l6AbcdChartInstance = null;
+    let m6l6BermudanChartInstance = null;
+
+    // Normal Random Box-Muller generator
+    function m6l6RandomNormal() {
+        let u = 0, v = 0;
+        while(u === 0) u = Math.random();
+        while(v === 0) v = Math.random();
+        return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    }
+
+    window.initM6L6Labs = function() {
+        runM6L6SimLab();
+        runM6L6AbcdLab();
+        runM6L6BermudanLab();
+    };
+
+    window.runM6L6SimLab = function() {
+        const vol = parseFloat(document.getElementById('numM6L6Vol').value);
+        const beta = parseFloat(document.getElementById('numM6L6Beta').value);
+
+        const totalSteps = 40;
+        const T = 10.0;
+        const dt = T / totalSteps;
+
+        let timeSteps = [];
+        for (let i = 0; i <= totalSteps; i++) timeSteps.push((i * dt).toFixed(1) + 'Y');
+
+        const r0 = 0.05;
+        let fEuler = [r0 * 100];
+        let fPC = [r0 * 100];
+
+        let rateEuler = r0;
+        let ratePC = r0;
+
+        for (let i = 0; i < totalSteps; i++) {
+            const rand = m6l6RandomNormal();
+            
+            // LMM Drift calculation
+            const driftEuler = -vol * vol * 0.25;
+            rateEuler = rateEuler * Math.exp((driftEuler - 0.5 * vol * vol) * dt + vol * Math.sqrt(dt) * rand);
+            fEuler.push(rateEuler * 100);
+
+            // Predictor-Corrector Drift calculation
+            const predictedRate = ratePC * Math.exp((driftEuler - 0.5 * vol * vol) * dt + vol * Math.sqrt(dt) * rand);
+            const driftPC = 0.5 * (driftEuler + (-vol * vol * predictedRate));
+            ratePC = ratePC * Math.exp((driftPC - 0.5 * vol * vol) * dt + vol * Math.sqrt(dt) * rand);
+            fPC.push(ratePC * 100);
+        }
+
+        const outEl = document.getElementById('outM6L6Sim');
+        outEl.innerHTML = `
+            Vol parameter ($\\sigma$): <strong>${(vol*100).toFixed(0)}%</strong>. Correlation Decay ($\\beta$): <strong>${beta.toFixed(2)}</strong>.<br>
+            - **Predictor-Corrector Path (Green):** Higher numerical stability for large steps due to averaged stochastic drifts.<br>
+            - **Euler-Maruyama Path (Red):** Prone to path dispersion and accumulation of discretization errors over time.
+        `;
+        if (typeof window.safeTypeset === 'function') {
+            window.safeTypeset([outEl]);
+        }
+
+        const ctx = document.getElementById('m6l6SimChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m6l6SimChartInstance) m6l6SimChartInstance.destroy();
+
+        m6l6SimChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: timeSteps,
+                datasets: [
+                    { label: 'Predictor-Corrector LMM Path (%)', data: fPC, borderColor: '#10b981', borderWidth: 2, fill: false, pointRadius: 0 },
+                    { label: 'Euler Discretization Path (%)', data: fEuler, borderColor: '#ef4444', borderWidth: 1.5, fill: false, pointRadius: 0 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, labels: { font: { size: 8 }, color: tickColor } } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { title: { display: true, text: 'Forward Rate (%)', font: { size: 8 }, color: tickColor }, ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+
+    window.runM6L6AbcdLab = function() {
+        const d = parseFloat(document.getElementById('numM6L6ScaleD').value);
+        const c = parseFloat(document.getElementById('numM6L6DecayC').value);
+        
+        const a = 0.05, b = 0.3; // Default skeleton constants
+
+        let tenors = [0.5, 1.0, 2.0, 3.0, 5.0, 7.0, 10.0];
+        let skeletonVols = [];
+        let jaggedMarketVols = [15.2, 17.5, 18.2, 16.5, 14.1, 12.5, 10.8]; // Typical market caplet smile/term structure
+
+        tenors.forEach(tau => {
+            // Skeleton formula: (a + b*tau)*e^(-c*tau) + d
+            const skeletonVol = ((a + b * tau) * Math.exp(-c * tau) + d) * 100;
+            skeletonVols.push(skeletonVol);
+        });
+
+        const outEl = document.getElementById('outM6L6Abcd');
+        outEl.innerHTML = `
+            Scale Parameter ($d$): <strong>${(d*100).toFixed(0)}%</strong>. Decay Coefficient ($c$): <strong>${c.toFixed(2)}</strong>.<br>
+            - **Skeleton Curve (Red):** Smooth exponential hump representing time-homogeneous volatility.
+            - **Market Caplet Vols (Green):** Jagged quotes perfectly matched using rate-specific scaling factors $k_i$.
+        `;
+        if (typeof window.safeTypeset === 'function') {
+            window.safeTypeset([outEl]);
+        }
+
+        const ctx = document.getElementById('m6l6AbcdChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m6l6AbcdChartInstance) m6l6AbcdChartInstance.destroy();
+
+        m6l6AbcdChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: tenors.map(t => t + 'Y'),
+                datasets: [
+                    { label: 'Parametric Vol Hump (%)', data: skeletonVols, borderColor: '#ef4444', borderWidth: 2, fill: false },
+                    { label: 'Market Caplet Vol Curves (%)', data: jaggedMarketVols, borderColor: '#10b981', borderWidth: 1.5, fill: false, pointRadius: 4 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, labels: { font: { size: 8 }, color: tickColor } } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { title: { display: true, text: 'Volatility (%)', font: { size: 8 }, color: tickColor }, ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+
+    window.runM6L6BermudanLab = function() {
+        const K = parseFloat(document.getElementById('numM6L6Strike').value);
+        const p3 = parseFloat(document.getElementById('numM6L6ParamP').value);
+
+        let tenors = [1.0, 2.0, 3.0, 4.0, 5.0];
+        let intrinsicValues = [];
+        let continuationValues = [];
+
+        tenors.forEach(t => {
+            // Intrinsic swap value decaying over time
+            const intrinsic = Math.max(0, (0.06 - K) * (6.0 - t));
+            intrinsicValues.push(intrinsic * 100);
+
+            // Continuation value modeled via boundary parameter p3
+            const continuation = Math.max(0, (0.06 - p3) * (6.0 - t) * 0.95);
+            continuationValues.push(continuation * 100);
+        });
+
+        const outEl = document.getElementById('outM6L6Bermudan');
+        outEl.innerHTML = `
+            Option Strike ($K$): <strong>${(K*100).toFixed(1)}%</strong>. Exercise Parameter ($p_3$): <strong>${(p3*100).toFixed(1)}%</strong>.<br>
+            - **Early Exercise Decision:** Exercise on the first opportunity where the **Intrinsic Value (Green)** exceeds the **Continuation Value (Red)**.<br>
+            - **BFGS Parameter Optimization:** Optimizing the parametric boundary isolates this optimal early exercise border for each path.
+        `;
+        if (typeof window.safeTypeset === 'function') {
+            window.safeTypeset([outEl]);
+        }
+
+        const ctx = document.getElementById('m6l6BermudanChart');
+        if (!ctx) return;
+
+        const isDark = document.body.classList.contains('dark-theme');
+        const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#6b7280';
+
+        if (m6l6BermudanChartInstance) m6l6BermudanChartInstance.destroy();
+
+        m6l6BermudanChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: tenors.map(t => 'Ex ' + t + 'Y'),
+                datasets: [
+                    { label: 'Intrinsic Swap Value (%)', data: intrinsicValues, backgroundColor: '#10b981' },
+                    { label: 'Continuation Value Estimate (%)', data: continuationValues, backgroundColor: '#ef4444' }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, labels: { font: { size: 8 }, color: tickColor } } },
+                scales: {
+                    x: { ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } },
+                    y: { title: { display: true, text: 'Value (%)', font: { size: 8 }, color: tickColor }, ticks: { color: tickColor, font: { size: 8 } }, grid: { color: gridColor } }
+                }
+            }
+        });
+    };
+</script>

@@ -1,0 +1,164 @@
+<div id="view-cqf-mp-probability-19" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">1.9 Expectation &amp; Variance</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.9 Expectation &amp; Variance Operators</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Expected values (means), dispersion (variance), standard deviations, and balance concepts.</div>
+    </header>
+
+    <!-- Core Theory Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #3b82f6; font-family: var(--font-family-sans); font-weight: 700;">1.9.1 Expectation &amp; Variance Definitions</h3>
+        <p>The **Expectation** $\mathbb{E}[X]$ represents the probability-weighted average outcome (or mathematical center-of-mass) of an RV:</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0;">
+            <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px;">
+                <strong>Discrete RV Expectation:</strong>
+                $$\mathbb{E}[X] = \sum_{\text{all } x} x P(X = x)$$
+            </div>
+            <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px;">
+                <strong>Continuous RV Expectation:</strong>
+                $$\mathbb{E}[X] = \int_{-\infty}^{+\infty} x f(x) \, dx$$
+            </div>
+        </div>
+        <p>The **Variance** $\text{Var}(X) = \sigma^2$ measures the expected squared deviation from the mean (dispersion):</p>
+        <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+            $$\text{Var}(X) = \mathbb{E}[(X - \mu)^2] = \mathbb{E}[X^2] - (\mathbb{E}[X])^2$$
+        </p>
+        <p>The **Standard Deviation** is simply $\sigma = \sqrt{\text{Var}(X)}$.</p>
+    </div>
+
+    <!-- Center of mass laboratory -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #3b82f6; font-family: var(--font-family-sans); font-weight: 700;">1.9.2 Interactive Expectation "Center-of-Mass" Balance Laboratory</h3>
+        <p>Slide the weights of different outcomes to observe how the expectation acts strictly as the **physical balance point** of the distribution:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls -->
+                <div>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem;">
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Weight at x = 1:</label>
+                            <input id="prob19W1" type="range" min="0" max="1" step="0.1" value="0.5" oninput="calculateInteractiveExpectation()" style="width: 150px;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Weight at x = 4:</label>
+                            <input id="prob19W4" type="range" min="0" max="1" step="0.1" value="0.25" oninput="calculateInteractiveExpectation()" style="width: 150px;">
+                        </div>
+                    </div>
+
+                    <div style="font-size: 0.85rem; line-height: 1.6; color: var(--text-color); background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid #3b82f6;">
+                        <div id="prob19OutputMean"><strong>Expectation E[X]:</strong> Evaluating...</div>
+                        <div id="prob19OutputVar" style="margin-top: 0.25rem;"><strong>Variance Var(X):</strong> Evaluating...</div>
+                    </div>
+                </div>
+
+                <!-- Canvas Visualizer -->
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
+                    <canvas id="prob19Canvas" width="300" height="150" style="width: 100%; height: 150px; background: #000; border-radius: 6px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.calculateInteractiveExpectation = function() {
+                const w1 = parseFloat(document.getElementById('prob19W1').value);
+                const w4 = parseFloat(document.getElementById('prob19W4').value);
+
+                if (isNaN(w1) || isNaN(w4)) return;
+
+                // Set up probability normalization over outcomes x = 1, x = 2, x = 4
+                // Let w2 be fixed or dynamic
+                const w2 = 0.25;
+                const totalW = w1 + w2 + w4;
+
+                const p1 = w1 / totalW;
+                const p2 = w2 / totalW;
+                const p4 = w4 / totalW;
+
+                // E[X]
+                const eX = (1 * p1) + (2 * p2) + (4 * p4);
+                // E[X^2]
+                const eX2 = (1 * p1) + (4 * p2) + (16 * p4);
+                // Var(X)
+                const varX = eX2 - (eX * eX);
+
+                document.getElementById('prob19OutputMean').innerHTML = `<strong>Expectation E[X]:</strong> ${eX.toFixed(4)}`;
+                document.getElementById('prob19OutputVar').innerHTML = `<strong>Variance Var(X):</strong> ${varX.toFixed(4)}`;
+
+                drawBalanceGraph(eX, p1, p2, p4);
+
+                const parent = document.getElementById('view-cqf-mp-probability-19');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawBalanceGraph(mean, p1, p2, p4) {
+                const canvas = document.getElementById('prob19Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Plank parameters
+                const startX = 30;
+                const endX = canvas.width - 30;
+                const y = canvas.height / 2 + 20;
+
+                ctx.strokeStyle = '#52525b';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(startX, y);
+                ctx.lineTo(endX, y);
+                ctx.stroke();
+
+                // Draw Fulcrum at Mean (Center of mass)
+                const meanX = startX + ((mean - 1) / 3) * (endX - startX);
+                ctx.fillStyle = '#3b82f6';
+                ctx.beginPath();
+                ctx.moveTo(meanX, y);
+                ctx.lineTo(meanX - 8, y + 15);
+                ctx.lineTo(meanX + 8, y + 15);
+                ctx.closePath();
+                ctx.fill();
+
+                // Draw weights at positions x = 1 (startX), x = 2 (startX + 1/3), x = 4 (endX)
+                const x1 = startX;
+                const x2 = startX + (1/3) * (endX - startX);
+                const x4 = endX;
+
+                // Box A (x=1)
+                const h1 = p1 * 50;
+                ctx.fillStyle = '#ec4899';
+                ctx.fillRect(x1 - 10, y - h1, 20, h1);
+
+                // Box B (x=2)
+                const h2 = p2 * 50;
+                ctx.fillStyle = '#8b5cf6';
+                ctx.fillRect(x2 - 10, y - h2, 20, h2);
+
+                // Box C (x=4)
+                const h4 = p4 * 50;
+                ctx.fillStyle = '#10b981';
+                ctx.fillRect(x4 - 10, y - h4, 20, h4);
+
+                // Label Mean
+                ctx.fillStyle = '#3b82f6';
+                ctx.font = 'bold 11px sans-serif';
+                ctx.fillText(`▲ Balance: ${mean.toFixed(2)}`, meanX - 45, y + 27);
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('prob19W1')) calculateInteractiveExpectation();
+            }, 100);
+        })();
+    </script>
+</div>

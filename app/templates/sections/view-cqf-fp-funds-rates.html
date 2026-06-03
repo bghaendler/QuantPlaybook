@@ -1,0 +1,258 @@
+<div id="view-cqf-fp-funds-rates" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #4f46e5;">Finance Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9;">Fundamentals</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Central Banks & Reference Rates</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Understand the mechanics of monetary policy, interbank reserve accounts, secured repo transactions, and modern risk-free reference rates.</p>
+    </header>
+
+    <!-- Row 1: Conceptual Summary & Interactive Reserve Transfer Model -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+        
+        <!-- conceptual panel -->
+        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="17" x2="9" y2="7"/><line x1="15" y1="17" x2="15" y2="7"/></svg>
+                    Central Bank Reserve Accounts
+                </h3>
+                <p>Commercial banks hold <strong>reserve accounts</strong> directly with their respective central bank. These reserve balances are the cornerstone of the modern financial system, facilitating smooth interbank settlement.</p>
+                <p style="line-height: 1.6;">When customers conduct cross-bank transactions, physical reserves are shifted between the banks' reserve accounts at the central bank. Overnight, the central bank pays interest on these reserve balances. This interest rate is the <strong>Policy Rate</strong> (or reference rate)—the primary lever of global monetary policy.</p>
+                
+                <div style="background: var(--accent-glow); border: 1px solid var(--accent); border-radius: 8px; padding: 0.75rem 1rem; margin-top: 1rem;">
+                    <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">Key Takeaway</span>
+                    <span style="font-size: 0.88rem; color: var(--text-color);">When central banks "raise" or "lower" interest rates, they are directly adjusting the overnight policy rate paid on reserve balances.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- reserves simulator -->
+        <div class="card">
+            <h3 style="margin-top: 0; display: flex; align-items: center; gap: 0.5rem;">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                Reserve Transfer & Interest Simulator
+            </h3>
+            <p style="font-size: 0.85rem; color: #64748b; margin-top: 0;">Simulate overnight reserve balances and calculate the overnight interest paid by the Central Bank.</p>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.25rem;">
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <span>Central Bank Policy Rate:</span>
+                        <span id="policyRateVal" style="color: var(--accent); font-weight: 800;">5.25%</span>
+                    </label>
+                    <input type="range" id="policyRateSlider" min="0" max="10" step="0.25" value="5.25" style="width: 100%; cursor: pointer;" oninput="updateReservesSim()">
+                </div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <div style="flex: 1; background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; text-align: center;">
+                        <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600; text-transform: uppercase;">Bank A Reserves</span>
+                        <div id="bankAReserves" style="font-size: 1.25rem; font-weight: 800; margin: 0.25rem 0;">€100,000</div>
+                        <span id="bankAInterest" style="font-size: 0.75rem; color: #10b981; font-weight: 700;">Overnight Earn: €14.58</span>
+                    </div>
+                    <div style="flex: 1; background: var(--metric-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; text-align: center;">
+                        <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600; text-transform: uppercase;">Bank B Reserves</span>
+                        <div id="bankBReserves" style="font-size: 1.25rem; font-weight: 800; margin: 0.25rem 0;">€100,000</div>
+                        <span id="bankBInterest" style="font-size: 0.75rem; color: #10b981; font-weight: 700;">Overnight Earn: €14.58</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-secondary" onclick="transferReserves('AtoB')" style="flex: 1; font-size: 0.8rem; font-weight: 700; padding: 0.5rem; border-radius: 6px;">
+                        Transfer €20k A → B
+                    </button>
+                    <button class="btn btn-secondary" onclick="transferReserves('BtoA')" style="flex: 1; font-size: 0.8rem; font-weight: 700; padding: 0.5rem; border-radius: 6px;">
+                        Transfer €20k B → A
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 2: Secured Repos Simulation -->
+    <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+        
+        <!-- Repo Calculator -->
+        <div class="card">
+            <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Fixed Income Markets: Repo (Repurchase Agreement) Simulator
+            </h3>
+            <p style="font-size: 0.88rem; color: #64748b;">A <strong>Repo</strong> is secured borrowing where a party sells securities (e.g. government T-bills) to raise cash, agreeing to buy them back at a slightly higher price (repo rate) tomorrow. Adjust parameters below to calculate repo transactions.</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.25rem;">
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Collateral Value (€)</label>
+                    <input type="number" id="repoCollateral" value="1050000" step="50000" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calcRepo()">
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Haircut (%)</label>
+                    <input type="number" id="repoHaircut" value="4.76" step="0.1" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calcRepo()">
+                </div>
+                <div>
+                    <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Repo Rate (%)</label>
+                    <input type="number" id="repoRate" value="3.25" step="0.05" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calcRepo()">
+                </div>
+            </div>
+
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 1rem; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; text-align: center;">
+                <div>
+                    <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Cash Borrowed (Today)</span>
+                    <div id="repoCashLent" style="font-size: 1.2rem; font-weight: 800; color: var(--text-color); margin-top: 0.25rem;">€1,000,020</div>
+                </div>
+                <div>
+                    <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Repayment (Tomorrow)</span>
+                    <div id="repoRepay" style="font-size: 1.2rem; font-weight: 800; color: var(--text-color); margin-top: 0.25rem;">€1,000,110</div>
+                </div>
+                <div>
+                    <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Overnight Interest Paid</span>
+                    <div id="repoInterest" style="font-size: 1.2rem; font-weight: 800; color: #e11d48; margin-top: 0.25rem;">€90.28</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Haircut explanation panel -->
+        <div class="card" style="background: linear-gradient(135deg, var(--bg-color) 0%, var(--accent-glow) 100%); display: flex; flex-direction: column; justify-content: center;">
+            <h4 style="margin: 0 0 0.5rem 0; color: var(--accent); font-size: 1.05rem;">Understanding Repo Haircuts</h4>
+            <p style="font-size: 0.88rem; margin: 0 0 0.75rem 0; line-height: 1.5;">A <strong>haircut</strong> is the percentage reduction in the value of the asset used as collateral. For example, if you pledge €1.05M of assets with a 4.76% haircut, you can borrow exactly:</p>
+            <div style="font-family: monospace; font-size: 0.95rem; background: rgba(0,0,0,0.1); padding: 0.5rem; border-radius: 6px; text-align: center; margin-bottom: 0.5rem;">
+                €1,050,000 × (1 - 0.0476) = €1,000,000
+            </div>
+            <p style="font-size: 0.82rem; color: #64748b; margin: 0; line-height: 1.4;">Haircuts protect lenders against fluctuations in the collateral asset price during the term of the repo.</p>
+        </div>
+    </div>
+
+    <!-- Row 3: Modern Reference Rates Comparison Table -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Major Global Overnight Index Rates (OIRs)
+        </h3>
+        <p style="font-size: 0.88rem; color: #64748b; margin-top: 0;">These rates represent modern risk-free benchmarks compiled by central banks to serve as global reference benchmarks.</p>
+        
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; margin-top: 0.75rem; font-size: 0.88rem; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--sidebar-border);">
+                        <th style="padding: 0.75rem 0.5rem; font-weight: 700; color: var(--accent);">Overnight Index Rate</th>
+                        <th style="padding: 0.75rem 0.5rem; font-weight: 700;">Calculating Agent</th>
+                        <th style="padding: 0.75rem 0.5rem; font-weight: 700;">Source Market</th>
+                        <th style="padding: 0.75rem 0.5rem; font-weight: 700; text-align: center;">Currency</th>
+                        <th style="padding: 0.75rem 0.5rem; font-weight: 700; text-align: center;">Secured / Unsecured</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid var(--sidebar-border); transition: background 0.2s;" class="table-row-hover">
+                        <td style="padding: 0.75rem 0.5rem; font-weight: 700; color: var(--text-color);">EFFR <span style="font-size:0.75rem; color:#64748b; font-weight:400;">(Effective Fed Funds Rate)</span></td>
+                        <td style="padding: 0.75rem 0.5rem;">Federal Reserve</td>
+                        <td style="padding: 0.75rem 0.5rem;">Interbank Fed Funds Market</td>
+                        <td style="padding: 0.75rem 0.5rem; text-align: center;"><span style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.72rem;">USD</span></td>
+                        <td style="padding: 0.75rem 0.5rem; text-align: center;"><span style="background: rgba(148, 163, 184, 0.1); color: #64748b; font-weight: 600; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.72rem;">Unsecured</span></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--sidebar-border); transition: background 0.2s;" class="table-row-hover">
+                        <td style="padding: 0.75rem 0.5rem; font-weight: 700; color: var(--text-color);">SOFR <span style="font-size:0.75rem; color:#64748b; font-weight:400;">(Secured Overnight Financing)</span></td>
+                        <td style="padding: 0.75rem 0.5rem;">Federal Reserve</td>
+                        <td style="padding: 0.75rem 0.5rem;">USD General Collateral Repos</td>
+                        <td style="padding: 0.75rem 0.5rem; text-align: center;"><span style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.72rem;">USD</span></td>
+                        <td style="padding: 0.75rem 0.5rem; text-align: center;"><span style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; font-weight: 600; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.72rem;">Secured</span></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--sidebar-border); transition: background 0.2s;" class="table-row-hover">
+                        <td style="padding: 0.75rem 0.5rem; font-weight: 700; color: var(--text-color);">€STR <span style="font-size:0.75rem; color:#64748b; font-weight:400;">(Euro Short Term Rate)</span></td>
+                        <td style="padding: 0.75rem 0.5rem;">ECB</td>
+                        <td style="padding: 0.75rem 0.5rem;">Wholesale Interbank Market</td>
+                        <td style="padding: 0.75rem 0.5rem; text-align: center;"><span style="background: rgba(99, 102, 241, 0.1); color: #6366f1; font-weight: 700; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.72rem;">EUR</span></td>
+                        <td style="padding: 0.75rem 0.5rem; text-align: center;"><span style="background: rgba(148, 163, 184, 0.1); color: #64748b; font-weight: 600; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.72rem;">Unsecured</span></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--sidebar-border); transition: background 0.2s;" class="table-row-hover">
+                        <td style="padding: 0.75rem 0.5rem; font-weight: 700; color: var(--text-color);">SARON <span style="font-size:0.75rem; color:#64748b; font-weight:400;">(Swiss Average Overnight)</span></td>
+                        <td style="padding: 0.75rem 0.5rem;">SIX Swiss Exchange</td>
+                        <td style="padding: 0.75rem 0.5rem;">SIX Repo Ltd Electronic Platform</td>
+                        <td style="padding: 0.75rem 0.5rem; text-align: center;"><span style="background: rgba(236, 72, 153, 0.1); color: #ec4899; font-weight: 700; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.72rem;">CHF</span></td>
+                        <td style="padding: 0.75rem 0.5rem; text-align: center;"><span style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; font-weight: 600; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.72rem;">Secured</span></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--sidebar-border); transition: background 0.2s;" class="table-row-hover">
+                        <td style="padding: 0.75rem 0.5rem; font-weight: 700; color: var(--text-color);">TONA <span style="font-size:0.75rem; color:#64748b; font-weight:400;">(Tokyo Overnight Average)</span></td>
+                        <td style="padding: 0.75rem 0.5rem;">Bank of Japan</td>
+                        <td style="padding: 0.75rem 0.5rem;">Yen Unsecured Overnight Market</td>
+                        <td style="padding: 0.75rem 0.5rem; text-align: center;"><span style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; font-weight: 700; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.72rem;">JPY</span></td>
+                        <td style="padding: 0.75rem 0.5rem; text-align: center;"><span style="background: rgba(148, 163, 184, 0.1); color: #64748b; font-weight: 600; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.72rem;">Unsecured</span></td>
+                    </tr>
+                    <tr style="transition: background 0.2s;" class="table-row-hover">
+                        <td style="padding: 0.75rem 0.5rem; font-weight: 700; color: var(--text-color);">SONIA <span style="font-size:0.75rem; color:#64748b; font-weight:400;">(Sterling Overnight Index Average)</span></td>
+                        <td style="padding: 0.75rem 0.5rem;">Bank of England</td>
+                        <td style="padding: 0.75rem 0.5rem;">Sterling Interbank Market</td>
+                        <td style="padding: 0.75rem 0.5rem; text-align: center;"><span style="background: rgba(239, 68, 68, 0.1); color: #ef4444; font-weight: 700; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.72rem;">GBP</span></td>
+                        <td style="padding: 0.75rem 0.5rem; text-align: center;"><span style="background: rgba(148, 163, 184, 0.1); color: #64748b; font-weight: 600; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.72rem;">Unsecured</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+.table-row-hover:hover {
+    background: var(--accent-glow) !important;
+}
+</style>
+
+<script>
+// Reserve Simulator State
+let bankAReserves = 100000;
+let bankBReserves = 100000;
+
+function updateReservesSim() {
+    const rate = parseFloat(document.getElementById('policyRateSlider').value) || 0;
+    document.getElementById('policyRateVal').innerText = rate.toFixed(2) + '%';
+    
+    // Overnight Interest = Balance * (Rate / 100) / 360 days
+    const interestA = bankAReserves * (rate / 100) / 360;
+    const interestB = bankBReserves * (rate / 100) / 360;
+    
+    document.getElementById('bankAReserves').innerText = '€' + bankAReserves.toLocaleString();
+    document.getElementById('bankBReserves').innerText = '€' + bankBReserves.toLocaleString();
+    
+    document.getElementById('bankAInterest').innerText = 'Overnight Earn: €' + interestA.toFixed(2);
+    document.getElementById('bankBInterest').innerText = 'Overnight Earn: €' + interestB.toFixed(2);
+}
+
+function transferReserves(direction) {
+    if (direction === 'AtoB') {
+        if (bankAReserves >= 20000) {
+            bankAReserves -= 20000;
+            bankBReserves += 20000;
+        }
+    } else {
+        if (bankBReserves >= 20000) {
+            bankBReserves -= 20000;
+            bankAReserves += 20000;
+        }
+    }
+    updateReservesSim();
+}
+
+// Repo Calculator State
+function calcRepo() {
+    const collateral = parseFloat(document.getElementById('repoCollateral').value) || 0;
+    const haircut = parseFloat(document.getElementById('repoHaircut').value) || 0;
+    const repoRate = parseFloat(document.getElementById('repoRate').value) || 0;
+    
+    // Cash Lent = Collateral * (1 - Haircut/100)
+    const cashLent = collateral * (1 - haircut / 100);
+    
+    // Interest = Cash Lent * (RepoRate / 100) / 360
+    const interest = cashLent * (repoRate / 100) / 360;
+    const repayment = cashLent + interest;
+    
+    document.getElementById('repoCashLent').innerText = '€' + Math.round(cashLent).toLocaleString();
+    document.getElementById('repoRepay').innerText = '€' + Math.round(repayment).toLocaleString();
+    document.getElementById('repoInterest').innerText = '€' + interest.toFixed(2);
+}
+
+// Initialize on load
+setTimeout(() => {
+    updateReservesSim();
+    calcRepo();
+}, 200);
+</script>

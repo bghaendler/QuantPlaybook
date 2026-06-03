@@ -1,0 +1,231 @@
+<div id="view-cqf-mp-calculus-13" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9; font-family: var(--font-family-sans);">1.3 Implicit &amp; Quadratics</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.3 Function Types, Implicit Form &amp; Quadratics</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Explicit vs. implicit representations, polynomial degrees, and discriminant boundaries.</div>
+    </header>
+
+    <!-- Core Theory Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.3.1 Explicit vs. Implicit Forms</h3>
+        <p>Mathematical expressions can represent relationships in two distinct ways:</p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li><strong>Explicit Form ($y = f(x)$):</strong> The dependent variable $y$ is isolated on one side of the equation. E.g. $y = 3x^2 + 2x - 1$.</li>
+            <li><strong>Implicit Form ($f(x,y) = 0$):</strong> Variables are bundled together in a joint relation. E.g. $y^2 + x^2 - 16 = 0$. Implicit functions require specialized rules (like implicit differentiation) to evaluate derivatives without separating the variables.</li>
+        </ul>
+        <p style="margin-top: 1rem;"><strong>Quadratic Systems:</strong> Solving quadratic equations of form $ax^2 + bx + c = 0$ is done by completing the square to derive the quadratic formula:
+        $$x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$$
+        The behavior of the roots depends strictly on the **Discriminant** ($\Delta = b^2 - 4ac$):
+        * $\Delta > 0$: 2 distinct real roots (parabola crosses the X-axis twice).
+        * $\Delta = 0$: 1 repeated real root (parabola touches the X-axis at its vertex).
+        * $\Delta < 0$: 2 complex conjugate roots (parabola never touches the X-axis).
+        </p>
+    </div>
+
+    <!-- Always Visible Interactive Solver and Graph Side-by-Side -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.3.2 Interactive Quadratic &amp; Discriminant Visualizer</h3>
+        <p>Input quadratic coefficients and observe the discriminant behavior, root calculations, and the visual parabola graph in real-time:</p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; margin-top: 1rem;">
+            <!-- Inputs Column -->
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); display: flex; flex-direction: column; gap: 1rem;">
+                <div style="display: flex; gap: 0.75rem;">
+                    <div>
+                        <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Coefficient $a$:</label>
+                        <input id="quadInputA" type="number" value="2" style="width: 70px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;" oninput="calculateInteractiveQuadratic()">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Coefficient $b$:</label>
+                        <input id="quadInputB" type="number" value="7" style="width: 70px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;" oninput="calculateInteractiveQuadratic()">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Coefficient $c$:</label>
+                        <input id="quadInputC" type="number" value="2" style="width: 70px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;" oninput="calculateInteractiveQuadratic()">
+                    </div>
+                </div>
+                
+                <div style="font-size: 0.88rem; line-height: 1.6; color: var(--text-color); background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid #10b981;">
+                    <div id="quadOutputDisc"><strong>Discriminant ($b^2 - 4ac$):</strong> $49 - 16 = 33$ ($>0$)</div>
+                    <div id="quadOutputRoots" style="margin-top: 0.25rem;"><strong>Roots:</strong> $x_1 = -0.31$, $x_2 = -3.19$</div>
+                    <div id="quadOutputExplanation" style="font-weight: 700; color: #10b981; margin-top: 0.5rem;">Status: Two distinct real roots</div>
+                </div>
+            </div>
+
+            <!-- Graph Column -->
+            <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 0.75rem; border-radius: 8px; position: relative;">
+                <canvas id="calc13Canvas" width="400" height="200" style="width: 100%; height: 200px; background: #000; border-radius: 6px;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completing the Square Proof Card -->
+    <div class="card" style="padding: 1.5rem; margin-bottom: 2rem;">
+        <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Worked Solutions: Completing the Square Proof</h3>
+        <p>Derive the standard quadratic formula $x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}$ from $ax^2 + bx + c = 0$ by completing the square.</p>
+        <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6;">
+            <strong>Step-by-Step Proof:</strong>
+            <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                <li style="margin-bottom: 0.5rem;">
+                    <strong>Divide by $a$ (assuming $a \ne 0$):</strong>
+                    $$x^2 + \frac{b}{a}x + \frac{c}{a} = 0 \implies x^2 + \frac{b}{a}x = -\frac{c}{a}$$
+                </li>
+                <li style="margin-bottom: 0.5rem;">
+                    <strong>Complete the Square:</strong> Add $\left(\frac{b}{2a}\right)^2$ to both sides:
+                    $$x^2 + \frac{b}{a}x + \left(\frac{b}{2a}\right)^2 = \left(\frac{b}{2a}\right)^2 - \frac{c}{a}$$
+                    $$\left(x + \frac{b}{2a}\right)^2 = \frac{b^2}{4a^2} - \frac{4ac}{4a^2} = \frac{b^2 - 4ac}{4a^2}$$
+                </li>
+                <li style="margin: 0;">
+                    <strong>Take the square root and solve for $x$:</strong>
+                    $$x + \frac{b}{2a} = \frac{\pm\sqrt{b^2 - 4ac}}{2a} \implies x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a} \quad \blacksquare$$
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.calculateInteractiveQuadratic = function() {
+                const a = parseFloat(document.getElementById('quadInputA').value);
+                const b = parseFloat(document.getElementById('quadInputB').value);
+                const c = parseFloat(document.getElementById('quadInputC').value);
+                const elD = document.getElementById('quadOutputDisc');
+                const elR = document.getElementById('quadOutputRoots');
+                const elE = document.getElementById('quadOutputExplanation');
+
+                if (isNaN(a) || isNaN(b) || isNaN(c)) {
+                    elD.innerHTML = "<strong>Discriminant:</strong> Please input valid numbers!";
+                    elR.innerHTML = "";
+                    elE.innerText = "Status: Awaiting Coefficients";
+                    elE.style.color = "#ea580c";
+                    return;
+                }
+
+                if (a === 0) {
+                    const root = -c / b;
+                    elD.innerHTML = "<strong>Discriminant:</strong> N/A (Linear, $a=0$)";
+                    elR.innerHTML = `<strong>Linear Root:</strong> $x = -c/b = ${root.toFixed(2)}$`;
+                    elE.innerText = "Status: Degenerate Linear Equation";
+                    elE.style.color = "#ea580c";
+                    drawQuadraticGraph();
+                    return;
+                }
+
+                const disc = b * b - 4 * a * c;
+                elD.innerHTML = `<strong>Discriminant ($b^2 - 4ac$):</strong> $(${b})^2 - 4(${a})(${c}) = ${disc}$`;
+
+                if (disc > 0) {
+                    const r1 = (-b + Math.sqrt(disc)) / (2 * a);
+                    const r2 = (-b - Math.sqrt(disc)) / (2 * a);
+                    elR.innerHTML = `<strong>Roots:</strong> $x_1 = ${r1.toFixed(2)}$, $x_2 = ${r2.toFixed(2)}$`;
+                    elE.innerText = "Status: Two Distinct Real Roots";
+                    elE.style.color = "#10b981";
+                } else if (disc === 0) {
+                    const r = -b / (2 * a);
+                    elR.innerHTML = `<strong>Root:</strong> $x_1 = x_2 = ${r.toFixed(2)}$`;
+                    elE.innerText = "Status: One Double Real Root";
+                    elE.style.color = "#0ea5e9";
+                } else {
+                    const realPart = -b / (2 * a);
+                    const imagPart = Math.sqrt(-disc) / (2 * a);
+                    elR.innerHTML = `<strong>Complex Roots:</strong> $x_1, x_2 = ${realPart.toFixed(2)} \\pm ${imagPart.toFixed(2)}i$`;
+                    elE.innerText = "Status: Complex Conjugate Pair Roots";
+                    elE.style.color = "#8b5cf6";
+                }
+
+                drawQuadraticGraph();
+
+                const parent = document.getElementById('view-cqf-mp-calculus-13');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            window.drawQuadraticGraph = function() {
+                const canvas = document.getElementById('calc13Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const a = parseFloat(document.getElementById('quadInputA').value);
+                const b = parseFloat(document.getElementById('quadInputB').value);
+                const c = parseFloat(document.getElementById('quadInputC').value);
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Grid lines & axes
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= canvas.width; i += 50) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, canvas.height);
+                    ctx.stroke();
+                }
+                for (let i = 0; i <= canvas.height; i += 50) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(canvas.width, i);
+                    ctx.stroke();
+                }
+
+                // Coordinates Mapping
+                const xMin = -6.0, xMax = 6.0;
+                const yMin = -15.0, yMax = 15.0;
+
+                const toCanvasX = (x) => ((x - xMin) / (xMax - xMin)) * canvas.width;
+                const toCanvasY = (y) => canvas.height - ((y - yMin) / (yMax - yMin)) * canvas.height;
+
+                // Draw X and Y Axes
+                ctx.strokeStyle = '#52525b';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(0, toCanvasY(0));
+                ctx.lineTo(canvas.width, toCanvasY(0));
+                ctx.moveTo(toCanvasX(0), 0);
+                ctx.lineTo(toCanvasX(0), canvas.height);
+                ctx.stroke();
+
+                // Parabola equation: y = ax^2 + bx + c
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                for (let px = 0; px <= canvas.width; px++) {
+                    const x = xMin + (px / canvas.width) * (xMax - xMin);
+                    const y = a * x * x + b * x + c;
+                    if (px === 0) ctx.moveTo(px, toCanvasY(y));
+                    else ctx.lineTo(px, toCanvasY(y));
+                }
+                ctx.stroke();
+
+                // Draw real roots if they exist
+                if (a !== 0) {
+                    const disc = b * b - 4 * a * c;
+                    if (disc >= 0) {
+                        const r1 = (-b + Math.sqrt(disc)) / (2 * a);
+                        const r2 = (-b - Math.sqrt(disc)) / (2 * a);
+
+                        ctx.fillStyle = '#ef4444';
+                        ctx.beginPath();
+                        ctx.arc(toCanvasX(r1), toCanvasY(0), 6, 0, 2 * Math.PI);
+                        ctx.fill();
+
+                        if (disc > 0) {
+                            ctx.beginPath();
+                            ctx.arc(toCanvasX(r2), toCanvasY(0), 6, 0, 2 * Math.PI);
+                            ctx.fill();
+                        }
+                    }
+                }
+            };
+
+            setTimeout(() => {
+                if (document.getElementById('quadInputA')) calculateInteractiveQuadratic();
+            }, 100);
+        })();
+    </script>
+</div>

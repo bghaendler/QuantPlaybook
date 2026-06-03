@@ -1,0 +1,162 @@
+<div id="view-cqf-mp-probability-111" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">1.11 Moments &amp; Skew/Kurt</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.11 Moments, Skewness &amp; Kurtosis</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Central moments, asymmetry metrics, tail fatness, and peakedness classifications.</div>
+    </header>
+
+    <!-- Core Theory Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">1.11.1 Central Moments &amp; Tail Risk</h3>
+        <p>Moments summarize the structural layout of probability functions. The $n$-th moment is defined as $\mathbb{E}[X^n]$:</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1rem 0;">
+            <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--accent);">
+                <strong style="font-size: 1rem; color: var(--accent); display: block; margin-bottom: 0.5rem;">Skewness (3rd Central Moment)</strong>
+                Measures asymmetry:
+                <p style="font-weight: 700; margin: 0.5rem 0;">
+                    $$\text{Skewness} = \frac{\mathbb{E}[(X - \mu)^3]}{\sigma^3}$$
+                </p>
+                Symmetric normal curves have a skewness of 0. Positive values indicate a right fat tail.
+            </div>
+            
+            <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border-left: 4px solid #10b981;">
+                <strong style="font-size: 1rem; color: #10b981; display: block; margin-bottom: 0.5rem;">Kurtosis (4th Central Moment)</strong>
+                Measures tail weight / extreme risk:
+                <p style="font-weight: 700; margin: 0.5rem 0;">
+                    $$\text{Kurtosis} = \frac{\mathbb{E}[(X - \mu)^4]}{\sigma^4}$$
+                </p>
+                A standard normal curve has Kurtosis = 3. Excess Kurtosis ($\text{Kurtosis} - 3$) isolates tail anomalies.
+            </div>
+        </div>
+        
+        <p><strong>peakedness Classifications:</strong></p>
+        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+            <li><strong>Leptokurtic (Kurt > 3):</strong> High peak with thick, heavy tails (fat-tailed risk).</li>
+            <li><strong>Platykurtic (Kurt < 3):</strong> Broad, flat top with thin tails.</li>
+            <li><strong>Mesokurtic (Kurt = 3):</strong> Matches standard normal distribution curve.</li>
+        </ul>
+    </div>
+
+    <!-- Skew/Kurt Simulator -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">1.11.2 Interactive Kurtosis Peakedness Explorer</h3>
+        <p>Select different distribution profiles to visualize how skewness and kurtosis affect curve geometry:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls -->
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Select Shape:</label>
+                    <select id="prob11Shape" onchange="runProb11Moments()" style="padding: 0.35rem 0.5rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600; outline: none; cursor: pointer; width: 100%; margin-bottom: 1rem;">
+                        <option value="meso">Mesokurtic: Standard Normal (Kurt = 3, Skew = 0)</option>
+                        <option value="lepto">Leptokurtic: Heavy Peak / Fat Tails (Kurt = 6, Skew = 0)</option>
+                        <option value="skew">Right-Skewed (Kurt = 4.5, Skew = 1.2)</option>
+                    </select>
+
+                    <div style="font-size: 0.85rem; line-height: 1.5; background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid #8b5cf6;">
+                        <div id="prob11MomentResult">Select a shape above.</div>
+                    </div>
+                </div>
+
+                <!-- Canvas Visualizer -->
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
+                    <canvas id="prob111Canvas" width="300" height="180" style="width: 100%; height: 180px; background: #000; border-radius: 6px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.runProb11Moments = function() {
+                const shape = document.getElementById('prob11Shape').value;
+                const elResult = document.getElementById('prob11MomentResult');
+
+                if (shape === 'meso') {
+                    elResult.innerHTML = `<strong>Properties:</strong> Mesokurtic. Gaussian baseline. Skewness = 0.00, Kurtosis = 3.00. Excess Kurtosis = 0.00.`;
+                } else if (shape === 'lepto') {
+                    elResult.innerHTML = `<strong>Properties:</strong> Leptokurtic. High concentration near the mean but containing significantly **fatter tails** (greater frequency of extreme outlier events). Skewness = 0.00, Kurtosis = 6.00.`;
+                } else {
+                    elResult.innerHTML = `<strong>Properties:</strong> Positive (Right) Skew. Asymmetric bias. Outliers fall on the right tail. Skewness = 1.20, Kurtosis = 4.50.`;
+                }
+
+                drawMomentsGraph(shape);
+
+                const parent = document.getElementById('view-cqf-mp-probability-111');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawMomentsGraph(shape) {
+                const canvas = document.getElementById('prob111Canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Grid
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= canvas.width; i += 30) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, canvas.height);
+                    ctx.stroke();
+                }
+
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height - 30;
+
+                ctx.strokeStyle = '#8b5cf6';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+
+                let first = true;
+                for (let px = 0; px <= canvas.width; px++) {
+                    const x = (px - centerX) / 40;
+                    let y = 0;
+
+                    if (shape === 'meso') {
+                        // Standard Normal PDF shape
+                        y = Math.exp(-0.5 * x * x) * 80;
+                    } else if (shape === 'lepto') {
+                        // Sharp peak, fat tails
+                        y = 1.4 * Math.exp(-2.0 * Math.abs(x)) * 80 + 0.1 * Math.exp(-0.1 * x * x) * 80;
+                    } else {
+                        // Skewed (Log-normal-like shape)
+                        if (x < -1.8) continue;
+                        const shiftX = x + 2.0;
+                        y = (shiftX > 0) ? (1.0 / (shiftX * 0.8)) * Math.exp(-0.5 * Math.pow(Math.log(shiftX)/0.6, 2)) * 70 : 0;
+                    }
+
+                    if (first) {
+                        ctx.moveTo(px, centerY - y);
+                        first = false;
+                    } else {
+                        ctx.lineTo(px, centerY - y);
+                    }
+                }
+                ctx.stroke();
+
+                // Axis line
+                ctx.strokeStyle = '#52525b';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(10, centerY);
+                ctx.lineTo(canvas.width - 10, centerY);
+                ctx.stroke();
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('prob11Shape')) runProb11Moments();
+            }, 100);
+        })();
+    </script>
+</div>

@@ -1,0 +1,175 @@
+<div id="view-cqf-mp-diffeq-variable" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #f59e0b; font-family: var(--font-family-sans);">7. Variable Coeffs &amp; Euler</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Linear ODEs with Variable Coefficients - Cauchy-Euler Equations</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Variable coefficient structures, trial solutions $x^\lambda$, three roots cases, and logarithmic transformations to constant coefficients.</div>
+    </header>
+
+    <!-- General Framework Card -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1. Cauchy-Euler Equations</h3>
+        <p>A Cauchy-Euler equation is a specific type of variable-coefficient ordinary differential equation where the coefficient of each derivative term is a polynomial whose degree matches the order of that derivative. The second-order form is:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$A x^2 \frac{d^2 y}{dx^2} + B x \frac{dy}{dx} + C y = 0$$</p>
+        
+        <p>To solve this, we assume a trial solution of the form: $y = x^{\lambda}$. Differentiating once and twice yields:</p>
+        <p style="text-align: center;">$$\frac{dy}{dx} = \lambda x^{\lambda-1} \quad \text{and} \quad \frac{d^2y}{dx^2} = \lambda(\lambda-1)x^{\lambda-2}$$</p>
+        <p>Substituting these back into the differential equation gives:</p>
+        <p style="text-align: center;">$$A x^2 \left( \lambda(\lambda-1)x^{\lambda-2} \right) + B x \left( \lambda x^{\lambda-1} \right) + C x^\lambda = 0 \implies x^\lambda \left[ A \lambda(\lambda-1) + B \lambda + C \right] = 0$$</p>
+        <p>Assuming $x \ne 0$, we obtain the **Auxiliary Equation**:</p>
+        <p style="text-align: center; font-size: 1.15rem; font-weight: bold; color: var(--accent);">$$A \lambda^2 + (B - A)\lambda + C = 0$$</p>
+        <p style="margin-top: 0.5rem; font-style: italic; color: #6b7280;">Note: This is a key distinction from the constant coefficient case; the middle coefficient becomes $(B - A)$ due to the second differentiation product $x^2 \cdot x^{\lambda-2}$.</p>
+    </div>
+
+    <!-- The Three Root Cases -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">2. The Three Root Cases</h3>
+        
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">
+            <strong style="color: var(--accent);">Case 1: Two Distinct Real Roots $\lambda_1, \lambda_2$</strong>
+            <p style="margin: 0.25rem 0;">The general solution is a linear combination of power functions:</p>
+            <p style="font-weight: bold; font-size: 1.05rem;">$$y = c_1 x^{\lambda_1} + c_2 x^{\lambda_2}$$</p>
+            <p style="margin: 0.5rem 0; font-size: 0.85rem; color: #6b7280;"><em>Example:</em> For $A=1, B=-2, C=-4 \implies \lambda^2 - 3\lambda - 4 = 0 \implies \lambda = 4, -1$. Solution: $y = c_1 x^4 + c_2 x^{-1}$.</p>
+
+            <strong style="display: block; margin-top: 1rem; color: #10b981;">Case 2: One Repeated Real Root $\lambda$</strong>
+            <p style="margin: 0.25rem 0;">A second independent solution is found by multiplying by $\log x$. The general solution is:</p>
+            <p style="font-weight: bold; font-size: 1.05rem;">$$y = x^\lambda \left( c_1 + c_2 \log x \right)$$</p>
+            <p style="margin: 0.5rem 0; font-size: 0.85rem; color: #6b7280;"><em>Example:</em> For $A=1, B=-7, C=16 \implies \lambda^2 - 8\lambda + 16 = 0 \implies \lambda = 4$ (repeated). Solution: $y = x^4 (c_1 + c_2 \log x)$.</p>
+
+            <strong style="display: block; margin-top: 1rem; color: var(--warning);">Case 3: Complex Conjugate Roots $\alpha \pm i\beta$</strong>
+            <p style="margin: 0.25rem 0;">Rewriting $x^{\pm i\beta} = e^{\pm i\beta \log x}$ and applying Euler's formula produces trigonometric terms with logarithmic arguments:</p>
+            <p style="font-weight: bold; font-size: 1.05rem;">$$y = x^\alpha \left[ A \cos(\beta \log x) + B \sin(\beta \log x) \right]$/p>
+            <p style="margin: 0.5rem 0; font-size: 0.85rem; color: #6b7280;"><em>Example:</em> For $A=1, B=-3, C=13 \implies \lambda^2 - 4\lambda + 13 = 0 \implies \lambda = 2 \pm 3i$. Solution: $y = x^2 \left[ A \cos(3 \log x) + B \sin(3 \log x) \right]$.</p>
+        </div>
+    </div>
+
+    <!-- Logarithmic Transformation Method -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">3. Logarithmic Transformation to Constant Coefficients</h3>
+        <p>Non-homogeneous Cauchy-Euler equations can be converted into constant-coefficient problems using the change of variable: <strong>$t = \log x \implies x = e^t$</strong>. Applying the chain rule to represent derivatives gives:</p>
+        
+        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color); margin-top: 1rem;">
+            <strong>First Derivative Transformation:</strong>
+            $$\frac{dy}{dx} = \frac{dy}{dt}\frac{dt}{dx} = \frac{1}{x}\frac{dy}{dt} \implies x \frac{dy}{dx} = \frac{dy}{dt}$$
+
+            <strong style="display: block; margin-top: 1rem;">Second Derivative Transformation:</strong>
+            $$\frac{d^2y}{dx^2} = \frac{d}{dx}\left[ \frac{1}{x}\frac{dy}{dt} \right] = -\frac{1}{x^2}\frac{dy}{dt} + \frac{1}{x}\frac{d}{dx}\left[ \frac{dy}{dt} \right]$$
+            $$= -\frac{1}{x^2}\frac{dy}{dt} + \frac{1}{x^2}\frac{d^2y}{dt^2} = \frac{1}{x^2} \left( \frac{d^2y}{dt^2} - \frac{dy}{dt} \right)$$
+            <p style="margin-top: 0.5rem; font-weight: bold; color: #10b981;">$$\implies x^2 \frac{d^2y}{dx^2} = \frac{d^2y}{dt^2} - \frac{dy}{dt}$$</p>
+            <p style="margin: 0.5rem 0;">Substituting these expressions into the Euler equation completely cancels the variable $x$ terms, leaving a constant-coefficient ordinary differential equation in $y$ as a function of $t$.</p>
+        </div>
+    </div>
+
+    <!-- Interactive Variable Coefficients sandbox -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">4. Interactive Cauchy-Euler sandbox</h3>
+        <p>Observe the general solution curve $y(x) = x^\lambda$ for the Cauchy-Euler equation $x^2 y'' - \lambda(\lambda-1) y = 0$. Use the slider to adjust root parameter $\lambda$ and observe how the polynomial growth or decay changes dynamically:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; align-items: start;">
+                <!-- Controls -->
+                <div>
+                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Root parameter ($\lambda$):</label>
+                    <input type="range" id="diffeqVarSliderL" min="-2" max="3" value="2" step="1" oninput="runDiffeqVariableSimulation()" style="width: 100%; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: -0.75rem; margin-bottom: 1.25rem; color: #6b7280;">
+                        <span>-2 (Decay)</span>
+                        <span id="diffeqVarLVal" style="font-weight: bold; color: var(--accent);">lambda = 2</span>
+                        <span>3 (Growth)</span>
+                    </div>
+
+                    <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border);">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">DERIVED ODE REPRESENTATION</div>
+                        <div id="diffeqVarODE" style="font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-top: 0.25rem;">x^2 y'' - 2 y = 0</div>
+                    </div>
+                </div>
+
+                <!-- Custom 2D Line Chart Canvas -->
+                <div style="background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 1rem;">
+                    <canvas id="diffeqVarCanvas" width="320" height="200" style="width: 100%; height: 200px; display: block;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.runDiffeqVariableSimulation = function() {
+                const lambda = parseInt(document.getElementById('diffeqVarSliderL').value);
+                document.getElementById('diffeqVarLVal').innerText = `lambda = ${lambda}`;
+
+                const coef = lambda * (lambda - 1);
+                document.getElementById('diffeqVarODE').innerText = `x^2 y'' - ${coef} y = 0`;
+
+                drawVariableGraph(lambda);
+
+                const parent = document.getElementById('view-cqf-mp-diffeq-variable');
+                if (parent && parent.style.display !== 'none') {
+                    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                        window.MathJax.typesetPromise([parent]);
+                    }
+                }
+            };
+
+            function drawVariableGraph(lambda) {
+                const canvas = document.getElementById('diffeqVarCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const margin = 20;
+                const topMargin = 20;
+                const bottomMargin = 20;
+                const width = canvas.width - 2 * margin;
+                const height = canvas.height - topMargin - bottomMargin;
+
+                const minX = 0.2;
+                const maxX = 3.0;
+                const minY = 0.0;
+                const maxY = 10.0;
+
+                function getCX(x) {
+                    return margin + ((x - minX) / (maxX - minX)) * width;
+                }
+
+                function getCY(y) {
+                    return canvas.height - bottomMargin - ((y - minY) / (maxY - minY)) * height;
+                }
+
+                // Grid lines
+                ctx.strokeStyle = '#222';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(margin, canvas.height - bottomMargin);
+                ctx.lineTo(canvas.width - margin, canvas.height - bottomMargin);
+                ctx.stroke();
+
+                // Plot exact solution curve: y(x) = x^lambda
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                let started = false;
+                for (let x = minX; x <= maxX; x += 0.05) {
+                    const y = Math.pow(x, lambda);
+                    const cx = getCX(x);
+                    const cy = getCY(y);
+                    if (y >= minY && y <= maxY) {
+                        if (!started) {
+                            ctx.moveTo(cx, cy);
+                            started = true;
+                        } else {
+                            ctx.lineTo(cx, cy);
+                        }
+                    }
+                }
+                ctx.stroke();
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('diffeqVarSliderL')) runDiffeqVariableSimulation();
+            }, 100);
+        })();
+    </script>
+</div>

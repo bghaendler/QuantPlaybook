@@ -1,0 +1,310 @@
+<div id="view-cqf-fp-sec-equities" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #4f46e5;">Finance Primer</span>
+            <span class="badge" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #0ea5e9;">Securities</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Equities, Corporate Actions &amp; Indexes</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Study the complete equity lifecycle: from founder capitalization and venture dilution, to corporate actions (rights and stock splits), and market index calculations.</p>
+    </header>
+
+    <!-- Row 1: Cap Table funding Stages Simulator -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+            Equity Lifecycle: Startup to IPO Dilution Simulator
+        </h3>
+        <p style="font-size: 0.88rem; color: #64748b; margin-top: 0;">Step through the lifecycle of a company. Watch how share counts, valuation, and ownership percentages change as new capital is raised, diluting earlier investors while increasing their cash value.</p>
+        
+        <!-- Funding stages selector buttons -->
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem; background: var(--metric-bg); padding: 0.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
+            <button onclick="setCapStage('startup')" id="btnStageStartup" class="btn" style="flex: 1; font-size: 0.8rem; font-weight: 700; padding: 0.4rem; border-radius: 6px; background: var(--accent); color: white; border: none; cursor: pointer;">Stage 1: Startup (€400k Val)</button>
+            <button onclick="setCapStage('vc')" id="btnStageVC" class="btn" style="flex: 1; font-size: 0.8rem; font-weight: 700; padding: 0.4rem; border-radius: 6px; background: transparent; color: var(--text-color); border: none; cursor: pointer;">Stage 2: Venture Capital (€5M Val)</button>
+            <button onclick="setCapStage('ipo')" id="btnStageIPO" class="btn" style="flex: 1; font-size: 0.8rem; font-weight: 700; padding: 0.4rem; border-radius: 6px; background: transparent; color: var(--text-color); border: none; cursor: pointer;">Stage 3: Public IPO (€20M Val)</button>
+        </div>
+
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--sidebar-border);">
+                        <th style="padding: 0.5rem;">Investor</th>
+                        <th style="padding: 0.5rem; text-align: right;">Initial Investment</th>
+                        <th style="padding: 0.5rem; text-align: right;">Ownership %</th>
+                        <th style="padding: 0.5rem; text-align: right;">Shares Held</th>
+                        <th style="padding: 0.5rem; text-align: right; color: var(--accent);">Current Value (€)</th>
+                    </tr>
+                </thead>
+                <tbody id="capTableBody">
+                    <!-- filled dynamically -->
+                </tbody>
+            </table>
+        </div>
+        <div style="margin-top: 1rem; padding: 0.75rem; background: var(--accent-glow); border-radius: 6px; font-size: 0.8rem; color: var(--text-color);" id="capStageDesc">
+            Entrepreneur A starts the company with B and C. Shares are issued at €4 each.
+        </div>
+    </div>
+
+    <!-- Row 2: Corporate Actions (Rights Issue vs Bonus Issues) -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+        
+        <!-- Rights Issue Card -->
+        <div class="card">
+            <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Corporate Actions: Rights Issue Calculator
+            </h3>
+            <p style="font-size: 0.85rem; color: #64748b;">In a rights issue, companies offer additional shares to existing holders (pre-emption rights) at a discount. Enter parameters below to calculate ex-rights pricing:</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+                <div>
+                    <label style="font-size: 0.7rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Pre-Issue Price (€)</label>
+                    <input type="number" id="rightsPrice" value="12.00" step="0.5" style="width: 100%; padding: 0.35rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calcRights()">
+                </div>
+                <div>
+                    <label style="font-size: 0.7rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Ratio (1 new for N)</label>
+                    <input type="number" id="rightsRatio" value="4" step="1" style="width: 100%; padding: 0.35rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calcRights()">
+                </div>
+                <div>
+                    <label style="font-size: 0.7rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Offer Price (€)</label>
+                    <input type="number" id="rightsOffer" value="8.00" step="0.5" style="width: 100%; padding: 0.35rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calcRights()">
+                </div>
+            </div>
+
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.75rem; display: flex; gap: 1rem; text-align: center;">
+                <div style="flex: 1;">
+                    <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Theoretical Ex-Rights Price (TERP)</span>
+                    <div id="rightsTerp" style="font-size: 1.25rem; font-weight: 800; color: #10b981; margin-top: 0.25rem;">€11.20</div>
+                </div>
+                <div style="flex: 1; border-left: 1px solid var(--card-border);">
+                    <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Value of a Right (Nil-Paid)</span>
+                    <div id="rightsNilPaid" style="font-size: 1.25rem; font-weight: 800; color: var(--accent); margin-top: 0.25rem;">€3.20</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bonus Issue & Splits Card -->
+        <div class="card">
+            <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
+                Bonus Issue &amp; Stock Split Adjuster
+            </h3>
+            <p style="font-size: 0.85rem; color: #64748b;">Bonus issues and stock splits split existing share capital, reducing the single share price to increase market liquidity without changing company value.</p>
+            
+            <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 0.75rem; margin-bottom: 1rem;">
+                <div>
+                    <label style="font-size: 0.7rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Pre-Split Stock Price ($)</label>
+                    <input type="number" id="splitPrice" value="890.00" step="10" style="width: 100%; padding: 0.35rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="calcSplit()">
+                </div>
+                <div>
+                    <label style="font-size: 0.7rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Split Ratio (e.g. 3-for-1)</label>
+                    <select id="splitRatio" onchange="calcSplit()" style="width: 100%; padding: 0.35rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);">
+                        <option value="2">2-for-1 Split</option>
+                        <option value="3" selected>3-for-1 Split</option>
+                        <option value="5">5-for-1 Split</option>
+                        <option value="10">10-for-1 Split</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.75rem; text-align: center;">
+                <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Post-Split Adjust Ex-Value</span>
+                <div id="splitResult" style="font-size: 1.25rem; font-weight: 800; color: #f59e0b; margin-top: 0.25rem;">$296.67</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Row 3: Capitalization-Weighted Market Index Simulator -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            Cap-Weighted Equity Index Simulator
+        </h3>
+        <p style="font-size: 0.88rem; color: #64748b; margin-top: 0;">Adjust the overall market shift slider to simulate price fluctuations. Watch how the total market capitalization, divisor, and index value respond instantly!</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 1.5rem;">
+            <div style="flex: 1;">
+                <label style="font-size: 0.8rem; font-weight: 700; display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                    <span>Simulated Market Shock:</span>
+                    <span id="marketShockVal" style="color: var(--accent); font-weight: 800;">Baseline (0%)</span>
+                </label>
+                <input type="range" id="marketShockSlider" min="-50" max="50" step="5" value="0" style="width: 100%; cursor: pointer;" oninput="updateMarketIndex()">
+            </div>
+            
+            <div style="text-align: center; padding-left: 1.5rem; border-left: 1px solid var(--card-border);">
+                <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Divisor</span>
+                <div id="indexDivisor" style="font-size: 1.1rem; font-weight: 800; margin-top: 0.15rem;">5.59B</div>
+            </div>
+            <div style="text-align: center; padding-left: 1.5rem; border-left: 1px solid var(--card-border); min-width: 120px;">
+                <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; color: var(--accent);">Index Value</span>
+                <div id="indexVal" style="font-size: 1.5rem; font-weight: 900; color: var(--accent); margin-top: 0.15rem;">1,000.00</div>
+            </div>
+        </div>
+
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--sidebar-border); color: #94a3b8;">
+                        <th style="padding: 0.4rem;">Company</th>
+                        <th style="padding: 0.4rem; text-align: right;">Base Price ($)</th>
+                        <th style="padding: 0.4rem; text-align: right;">Current Price ($)</th>
+                        <th style="padding: 0.4rem; text-align: right;">Shares in Issue</th>
+                        <th style="padding: 0.4rem; text-align: right;">Market Capitalization ($)</th>
+                    </tr>
+                </thead>
+                <tbody id="indexTableBody">
+                    <!-- filled dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+// Lifecycle Cap Table State
+const capStages = {
+    startup: [
+        { name: 'Entrepreneur A', invest: 200000, own: 50, shares: 50000, value: 200000 },
+        { name: 'Investor B', invest: 100000, own: 25, shares: 25000, value: 100000 },
+        { name: 'Investor C', invest: 100000, own: 25, shares: 25000, value: 100000 },
+        { name: 'Venture Capital (VC)', invest: 0, own: 0, shares: 0, value: 0 },
+        { name: 'IPO Public Investors', invest: 0, own: 0, shares: 0, value: 0 }
+    ],
+    vc: [
+        { name: 'Entrepreneur A', invest: 200000, own: 40, shares: 50000, value: 2000000 },
+        { name: 'Investor B', invest: 100000, own: 20, shares: 25000, value: 1000000 },
+        { name: 'Investor C', invest: 100000, own: 20, shares: 25000, value: 1000000 },
+        { name: 'Venture Capital (VC)', invest: 1000000, own: 20, shares: 25000, value: 1000000 },
+        { name: 'IPO Public Investors', invest: 0, own: 0, shares: 0, value: 0 }
+    ],
+    ipo: [
+        { name: 'Entrepreneur A', invest: 200000, own: 20, shares: 50000, value: 4000000 },
+        { name: 'Investor B', invest: 100000, own: 10, shares: 25000, value: 2000000 },
+        { name: 'Investor C', invest: 100000, own: 10, shares: 25000, value: 2000000 },
+        { name: 'Venture Capital (VC)', invest: 1000000, own: 10, shares: 25000, value: 2000000 },
+        { name: 'IPO Public Investors', invest: 10000000, own: 50, shares: 125000, value: 10000000 }
+    ]
+};
+
+const capDescriptions = {
+    startup: 'Stage 1 (Startup): Entrepreneur A registers a company. A, B, and C contribute initial capital to the tune of €400,000. Shares are issued at €4.00 each.',
+    vc: 'Stage 2 (Venture Capital): Prove of concept increases value. VC invests €1,000,000 at €40.00 a share. Total share count rises to 125k, diluting prior founders but raising A\'s share value to €2,000,000!',
+    ipo: 'Stage 3 (Public IPO): Capital raised on public exchange by selling 50% capital (125k new shares) at €80.00. Total value rises to €20M, A\'s initial €200k investment is now worth €4,000,000!'
+};
+
+function setCapStage(stage) {
+    const list = capStages[stage];
+    const body = document.getElementById('capTableBody');
+    body.innerHTML = '';
+    
+    list.forEach(item => {
+        if (item.own === 0 && item.shares === 0) return;
+        const tr = document.createElement('tr');
+        tr.style.borderBottom = '1px solid var(--sidebar-border)';
+        tr.innerHTML = `
+            <td style="padding: 0.5rem; font-weight: 700;">${item.name}</td>
+            <td style="padding: 0.5rem; text-align: right;">€${item.invest.toLocaleString()}</td>
+            <td style="padding: 0.5rem; text-align: right;">${item.own}%</td>
+            <td style="padding: 0.5rem; text-align: right;">${item.shares.toLocaleString()}</td>
+            <td style="padding: 0.5rem; text-align: right; font-weight:800; color: var(--accent);">€${item.value.toLocaleString()}</td>
+        `;
+        body.appendChild(tr);
+    });
+
+    document.getElementById('capStageDesc').innerText = capDescriptions[stage];
+
+    // Toggle button styles
+    ['Startup', 'VC', 'IPO'].forEach(s => {
+        const btn = document.getElementById('btnStage' + s);
+        if (s.toLowerCase() === stage) {
+            btn.style.background = 'var(--accent)';
+            btn.style.color = 'white';
+        } else {
+            btn.style.background = 'transparent';
+            btn.style.color = 'var(--text-color)';
+        }
+    });
+}
+
+// Rights calculator
+function calcRights() {
+    const price = parseFloat(document.getElementById('rightsPrice').value) || 0;
+    const ratio = parseInt(document.getElementById('rightsRatio').value) || 1;
+    const offer = parseFloat(document.getElementById('rightsOffer').value) || 0;
+    
+    // TERP = (Ratio * Price + Offer) / (Ratio + 1)
+    const terp = (ratio * price + offer) / (ratio + 1);
+    const nilPaid = terp - offer;
+    
+    document.getElementById('rightsTerp').innerText = '€' + terp.toFixed(2);
+    document.getElementById('rightsNilPaid').innerText = '€' + nilPaid.toFixed(2);
+}
+
+// Split calculator
+function calcSplit() {
+    const price = parseFloat(document.getElementById('splitPrice').value) || 0;
+    const ratio = parseInt(document.getElementById('splitRatio').value) || 1;
+    
+    const exValue = price / ratio;
+    document.getElementById('splitResult').innerText = '$' + exValue.toFixed(2);
+}
+
+// Index Calculator State
+const indexStocks = [
+    { name: 'Alphabet Inc.', price: 1588, shares: 679471032 },
+    { name: 'Apple Inc.', price: 503, shares: 4278330019 },
+    { name: 'Meta Platforms', price: 271, shares: 2852398523 },
+    { name: 'Procter & Gamble', price: 138, shares: 2492753623 },
+    { name: 'Nike Inc.', price: 111, shares: 132072072 },
+    { name: 'American Express', price: 100, shares: 799700000 },
+    { name: 'Home Depot', price: 287, shares: 1073170731 },
+    { name: 'Coca Cola Co.', price: 50, shares: 4121040000 },
+    { name: 'Walt Disney Co.', price: 130, shares: 1815384615 },
+    { name: 'Johnson & Johnson', price: 152, shares: 2631578947 }
+];
+
+const indexBaseValue = 1000;
+const indexBaseCap = 5592682000000; // sum of initial caps
+const indexDivisor = indexBaseCap / indexBaseValue;
+
+function updateMarketIndex() {
+    const shock = parseFloat(document.getElementById('marketShockSlider').value) || 0;
+    const shockLabel = document.getElementById('marketShockVal');
+    
+    if (shock === 0) shockLabel.innerText = 'Baseline (0%)';
+    else if (shock > 0) shockLabel.innerText = 'Market Boom (+' + shock + '%)';
+    else shockLabel.innerText = 'Market Crash (' + shock + '%)';
+
+    const tbody = document.getElementById('indexTableBody');
+    tbody.innerHTML = '';
+    
+    let totalCap = 0;
+    indexStocks.forEach(stock => {
+        const currentPrice = stock.price * (1 + shock / 100);
+        const mktCap = currentPrice * stock.shares;
+        totalCap += mktCap;
+        
+        const tr = document.createElement('tr');
+        tr.style.borderBottom = '1px solid var(--sidebar-border)';
+        tr.innerHTML = `
+            <td style="padding: 0.4rem; font-weight: 700;">${stock.name}</td>
+            <td style="padding: 0.4rem; text-align: right;">$${stock.price.toLocaleString()}</td>
+            <td style="padding: 0.4rem; text-align: right; color: var(--accent);">$${currentPrice.toFixed(2)}</td>
+            <td style="padding: 0.4rem; text-align: right; color: #64748b;">${stock.shares.toLocaleString()}</td>
+            <td style="padding: 0.4rem; text-align: right;">$${Math.round(mktCap).toLocaleString()}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    const currentIndexValue = totalCap / indexDivisor;
+    document.getElementById('indexDivisor').innerText = (indexDivisor / 1000000000).toFixed(2) + 'B';
+    document.getElementById('indexVal').innerText = currentIndexValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// Initialize on page load
+setTimeout(() => {
+    setCapStage('startup');
+    calcRights();
+    calcSplit();
+    updateMarketIndex();
+}, 200);
+</script>

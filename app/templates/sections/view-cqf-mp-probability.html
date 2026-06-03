@@ -1,0 +1,555 @@
+<div id="view-cqf-mp-probability" style="display: none;">
+    <header style="margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="badge" style="background: var(--accent-glow); color: var(--accent); font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid var(--accent); font-family: var(--font-family-sans);">Maths Primer</span>
+            <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 20px; border: 1px solid #10b981; font-family: var(--font-family-sans);">Probability &amp; Stats</span>
+        </div>
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Probability &amp; Statistics</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Expectation Algebra, Central Limit Theorem, Probability Distributions, and Maximum Likelihood Estimation</div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
+        <button id="tabProbTheory" onclick="switchProbTab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Probability Theory</button>
+        <button id="tabProbSandbox" onclick="switchProbTab('sandbox')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">CLT Simulator Sandbox</button>
+        <button id="tabProbVenn" onclick="switchProbTab('venn')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Venn &amp; Bayes Lab</button>
+    </div>
+
+    <!-- Tab B: Core Probability Theory -->
+    <div id="secProbTheory" style="display: block;">
+        <div style="display: flex; flex-direction: column; gap: 2rem; margin-bottom: 2rem;">
+            
+            <!-- 1.1 Preliminaries -->
+            <div class="card" style="padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700;">1.1 Preliminaries &amp; Scale</h3>
+                <p>The foundations of probability theory describe operations over experimental outcomes:</p>
+                <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+                    <li><strong>Experiment:</strong> A repeatable process giving rise to a set of outcomes.</li>
+                    <li><strong>Event ($E$):</strong> A collection (or set) of one or more outcomes.</li>
+                    <li><strong>Sample Space ($\Omega$):</strong> The set of all possible outcomes. For a fair six-sided die, $\Omega = \{1, 2, 3, 4, 5, 6\}$.</li>
+                </ul>
+                <p>The probability of an event $E$ is bounded strictly on the probability scale: $0 \le P(E) \le 1$. If $E'$ is the complementary event (not $E$), then:</p>
+                <p style="text-align: center; font-weight: 700; margin: 0.5rem 0;">
+                    $$P(E') = 1 - P(E)$$
+                </p>
+            </div>
+
+            <!-- 1.2 Probability Diagrams & Venn Rules -->
+            <div class="card" style="padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">1.2 Diagrammatic Probability &amp; Sets</h3>
+                <p>Visualizing sample spaces and event relationships is critical in multivariable probability. For two events $A$ and $B$, the **Addition Rule** accounts for joint intersections:</p>
+                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+                    $$P(A \cup B) = P(A) + P(B) - P(A \cap B)$$
+                </p>
+                <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; font-size: 0.88rem; line-height: 1.5; margin: 0.75rem 0;">
+                    <strong>Academic Example (Tri-Set Vet Client Survey):</strong> Out of 100 clients, 25 own dogs ($D$), 53 own cats ($C$), and 40 own tropical fish ($T$). With 15 owning $D \cap C$, 10 owning $C \cap T$, 11 owning $D \cap T$, and 7 owning all three ($D \cap C \cap T$), we find:
+                    <br>• $P(\text{Dogs only}) = \frac{25 - (8 + 4 + 7)}{100} = \frac{6}{100} = 6\%$
+                    <br>• $P(\text{No tropical fish}) = \frac{60}{100} = 60\%$
+                </div>
+            </div>
+
+            <!-- 1.3 Conditional Probability & Bayes' Theorem -->
+            <div class="card" style="padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1.3 Conditional Probability &amp; Bayes' Rule</h3>
+                <p>The probability of an event $B$ scales dynamically if we know a dependent event $A$ has already occurred:</p>
+                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+                    $$P(A|B) = \frac{P(A \cap B)}{P(B)} \implies P(A \cap B) = P(A|B) \times P(B)$$
+                </p>
+                <p>Because $P(A \cap B) = P(B \cap A)$, equating these products yields **Bayes' Theorem** (prior-to-posterior mapping):</p>
+                <p style="text-align: center; font-size: 1.08rem; font-weight: 700; margin: 0.5rem 0;">
+                    $$P(B|A) = \frac{P(A|B) \times P(B)}{P(A)}$$
+                </p>
+                <div style="background: rgba(236, 72, 153, 0.05); border-left: 4px solid #ec4899; padding: 1rem; border-radius: 6px; margin: 1rem 0; font-size: 0.88rem; line-height: 1.5;">
+                    <strong>Worked Academic Example:</strong> A bag contains 9 normal fair coins ($N$) and 1 double-headed coin ($H$). We pull one out and get 5 heads in a row. What is the probability it is the double-headed coin?
+                    <br>• Prior: $P(H) = 0.1$, $P(N) = 0.9$
+                    <br>• Likelihood: $P(\text{5H}|H) = 1$, $P(\text{5H}|N) = \frac{1}{32}$
+                    <br>• Marginal: $P(\text{5H}) = 1 \times 0.1 + \frac{1}{32} \times 0.9 = \frac{41}{320} \approx 12.8\%$
+                    <br>• Posterior: $P(H|\text{5H}) = \frac{1 \times 0.1}{41/320} = \frac{32}{41} \approx 78\%$
+                </div>
+            </div>
+
+            <!-- 1.6 & 1.7 Random Variables & Distributions -->
+            <div class="card" style="padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">1.6 &amp; 1.7 Random Variables &amp; Continuous Distributions</h3>
+                <p>A **Random Variable (RV)** is a function mapping outcomes from the sample space $\Omega$ to the real line $\mathbb{R}$.</p>
+                <p>For **Continuous RVs**, the probability of achieving any exact value is zero ($P(X=x) = 0$). Instead, we define a **Probability Density Function (PDF)** $f(x)$ where the probability of falling in the interval $(a, b)$ is the area under the curve:</p>
+                <p style="text-align: center; font-weight: 700; margin: 0.5rem 0;">
+                    $$P(a < X < b) = \int_a^b f(x)dx \quad \text{subject to} \quad \int_{-\infty}^{+\infty} f(x)dx = 1$$
+                </p>
+                <p>Conversely, the **Cumulative Distribution Function (CDF)** $F(x) = P(X \le x) = \int_{-\infty}^x f(t)dt$, meaning $f(x) = \frac{d}{dx}F(x)$.</p>
+            </div>
+
+            <!-- 1.9 & 1.10 Expectation Algebra, Moments & Skew/Kurtosis -->
+            <div class="card" style="padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #3b82f6; font-family: var(--font-family-sans); font-weight: 700;">1.9 - 1.11 Expectation Algebra &amp; Higher Moments</h3>
+                <p>Expectation $\mathbb{E}[X]$ and Variance $\text{Var}(X) = \mathbb{E}[X^2] - (\mathbb{E}[X])^2$ represent first and second moments. Higher normalized central moments describe structural characteristics of probability distributions:</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1rem 0;">
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px;">
+                        <strong style="color: var(--accent);">Skewness (Asymmetry):</strong>
+                        $$\text{Skew} = \frac{\mathbb{E}[(X-\mu)^3]}{\sigma^3}$$
+                        Measures directional bias (0 for symmetric normal curves, positive for right fat-tailed returns).
+                    </div>
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px;">
+                        <strong style="color: #ec4899;">Kurtosis (Tail Risk / Fatness):</strong>
+                        $$\text{Kurt} = \frac{\mathbb{E}[(X-\mu)^4]}{\sigma^4}$$
+                        Normal distributions have Kurt = 3. Excess Kurtosis ($\text{Kurt}-3$) represents tail-shock severity.
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1.13 Important Distributions (Binomial, Poisson, Normal) -->
+            <div class="card" style="padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1.13 Crucial Distributions in Quantitative Finance</h3>
+                <p>Three primary probability structures model discrete counts and continuous random asset pricing moves:</p>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem;">
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; font-size: 0.82rem; line-height: 1.4;">
+                        <strong style="color: #10b981; display: block; margin-bottom: 0.35rem;">Binomial Distribution</strong>
+                        $X \sim B(n, p)$ models finite success trials:
+                        $$P(X=x) = \binom{n}{x} p^x (1-p)^{n-x}$$
+                        Mean: $np$
+                        <br>Variance: $np(1-p)$
+                    </div>
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; font-size: 0.82rem; line-height: 1.4;">
+                        <strong style="color: #3b82f6; display: block; margin-bottom: 0.35rem;">Poisson Distribution</strong>
+                        $X \sim Po(\lambda)$ models arrival rates in space/time:
+                        $$P(X=r) = \frac{e^{-\lambda}\lambda^r}{r!}$$
+                        Mean: $\lambda$
+                        <br>Variance: $\lambda$
+                    </div>
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; font-size: 0.82rem; line-height: 1.4;">
+                        <strong style="color: #f59e0b; display: block; margin-bottom: 0.35rem;">Normal Distribution</strong>
+                        $X \sim N(\mu, \sigma^2)$ models continuous shifts:
+                        $$f(x) = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$$
+                        Z-transform: $Z = \frac{X-\mu}{\sigma} \sim N(0,1)$
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab C: CLT Simulator Sandbox -->
+    <div id="secProbSandbox" style="display: none;">
+        <div class="card" style="margin-bottom: 2rem;">
+            <div style="margin-bottom: 1.5rem;">
+                <h2 style="margin: 0; font-family: var(--font-family-sans); font-weight: 800; font-size: 1.4rem;">Central Limit Theorem Convergence Sandbox</h2>
+                <div style="color: #6b7280; font-size: 0.95rem; margin-top: 0.25rem;">Watch the Central Limit Theorem in action! Generate thousands of samples consisting of the average of $N$ i.i.d. draws from a non-normal distribution, and observe real-time convergence of the empirical histogram to the standard Gaussian bell curve.</div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 280px 1fr; gap: 2rem; align-items: start;">
+                <!-- Controls Column -->
+                <div style="background: var(--metric-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 1.25rem; font-family: var(--font-family-sans);">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; font-weight: 700; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">Simulator Inputs</h3>
+                    
+                    <!-- Base Distribution Selector -->
+                    <div>
+                        <span style="font-weight: 600; display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-color);">Base Distribution</span>
+                        <select id="cltDistSelect" onchange="runCltSimulation()" style="width: 100%; padding: 0.4rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; cursor: pointer; font-family: var(--font-family-sans); font-weight: 600;">
+                            <option value="uniform">Uniform Distribution</option>
+                            <option value="exponential">Exponential Distribution</option>
+                            <option value="bernoulli">Bernoulli (Coin Flip)</option>
+                        </select>
+                    </div>
+
+                    <!-- Sample size N slider -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <label for="cltNSlider" style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Sample Size ($N$)</label>
+                            <span id="cltNVal" style="font-weight: 700; font-size: 0.85rem; color: var(--accent);">N = 2</span>
+                        </div>
+                        <input id="cltNSlider" type="range" min="1" max="30" step="1" value="2" style="width: 100%; cursor: pointer;" oninput="runCltSimulation()">
+                    </div>
+
+                    <div style="border-top: 1px solid var(--card-border); padding-top: 1rem;">
+                        <button onclick="runCltSimulation()" style="width: 100%; background: var(--accent); color: white; border: none; padding: 0.6rem; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: background 0.2s;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                            Simulate 2000 Runs
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Plot Column -->
+                <div style="background: var(--card-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; min-height: 320px; position: relative;">
+                    <h4 style="margin: 0 0 0.75rem 0; font-family: var(--font-family-sans); font-size: 0.85rem; font-weight: 700; color: var(--text-color); text-transform: uppercase; letter-spacing: 0.05em;">Empirical Sample Mean Distribution vs Gaussian Bell</h4>
+                    <div style="width: 100%; height: 260px;">
+                        <canvas id="cltPlotChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab D: Venn & Bayes Lab -->
+    <div id="secProbVenn" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Venn Diagram Lab -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">Interactive Venn Area Lab</h3>
+                <p>Adjust probabilities of events $A$ and $B$ to dynamically solve set operations and visualize intersection overlaps:</p>
+
+                <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; font-family: var(--font-family-sans); margin-bottom: 1rem;">
+                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">P(A):</label>
+                            <input id="vennInputA" type="range" min="0.1" max="0.9" step="0.05" value="0.6" oninput="drawVennDiagram()" style="width: 100px;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">P(B):</label>
+                            <input id="vennInputB" type="range" min="0.1" max="0.9" step="0.05" value="0.5" oninput="drawVennDiagram()" style="width: 100px;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">P(A ∩ B):</label>
+                            <input id="vennInputIntersection" type="range" min="0" max="0.5" step="0.05" value="0.25" oninput="drawVennDiagram()" style="width: 100px;">
+                        </div>
+                    </div>
+                    <div style="font-size: 0.8rem; line-height: 1.5; background: var(--card-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 4px solid #8b5cf6;">
+                        <div id="vennOutputUnion">P(A ∪ B) = P(A) + P(B) - P(A ∩ B) = 0.85</div>
+                        <div id="vennOutputOnlyA">Only A = P(A) - P(A ∩ B) = 0.35</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: center; align-items: center; background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem;">
+                    <canvas id="vennCanvas" width="300" height="180" style="width: 100%; height: 180px; background: #000; border-radius: 6px;"></canvas>
+                </div>
+            </div>
+
+            <!-- Bayes' Coins Solver -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">Bayes' Coin Probability Solver</h3>
+                <p>Simulate picking a double-headed coin out of a bag containing fair and cheating coins:</p>
+
+                <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1rem; border-radius: 8px; font-family: var(--font-family-sans); margin-bottom: 1rem;">
+                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Cheating Coins:</label>
+                            <input id="bayesCheatCoins" type="number" min="1" max="5" value="1" oninput="solveBayesCoins()" style="width: 60px; padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Fair Coins:</label>
+                            <input id="bayesFairCoins" type="number" min="1" max="20" value="9" oninput="solveBayesCoins()" style="width: 60px; padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Observed Heads:</label>
+                            <input id="bayesHeadsCount" type="number" min="1" max="10" value="5" oninput="solveBayesCoins()" style="width: 60px; padding: 0.25rem; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none;">
+                        </div>
+                    </div>
+                    <div style="font-size: 0.8rem; line-height: 1.5; background: var(--card-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 4px solid #ec4899;">
+                        <div id="bayesMarginal">P(Observed Heads) = 12.81%</div>
+                        <div id="bayesPosterior" style="font-weight: 700;">P(Cheating Coin | Heads) = 78.05%</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: center; align-items: center; background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem;">
+                    <canvas id="bayesCanvas" width="300" height="180" style="width: 100%; height: 180px; background: #000; border-radius: 6px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            let cltChartInstance = null;
+
+            window.switchProbTab = function(tab) {
+                const tabTheo = document.getElementById('tabProbTheory');
+                const tabSand = document.getElementById('tabProbSandbox');
+                const tabVenn = document.getElementById('tabProbVenn');
+                
+                const secTheo = document.getElementById('secProbTheory');
+                const secSand = document.getElementById('secProbSandbox');
+                const secVenn = document.getElementById('secProbVenn');
+
+                if (tab === 'theory') {
+                    tabTheo.style.color = 'var(--accent)';
+                    tabTheo.style.borderBottomColor = 'var(--accent)';
+                    tabSand.style.color = tabVenn.style.color = '#6b7280';
+                    tabSand.style.borderBottomColor = tabVenn.style.borderBottomColor = 'transparent';
+                    secTheo.style.display = 'block';
+                    secSand.style.display = secVenn.style.display = 'none';
+                } else if (tab === 'sandbox') {
+                    tabSand.style.color = 'var(--accent)';
+                    tabSand.style.borderBottomColor = 'var(--accent)';
+                    tabTheo.style.color = tabVenn.style.color = '#6b7280';
+                    tabTheo.style.borderBottomColor = tabVenn.style.borderBottomColor = 'transparent';
+                    secSand.style.display = 'block';
+                    secTheo.style.display = secVenn.style.display = 'none';
+                    setTimeout(() => { runCltSimulation(); }, 50);
+                } else {
+                    tabVenn.style.color = 'var(--accent)';
+                    tabVenn.style.borderBottomColor = 'var(--accent)';
+                    tabTheo.style.color = tabSand.style.color = '#6b7280';
+                    tabTheo.style.borderBottomColor = tabSand.style.borderBottomColor = 'transparent';
+                    secVenn.style.display = 'block';
+                    secTheo.style.display = secSand.style.display = 'none';
+                    setTimeout(() => { 
+                        drawVennDiagram(); 
+                        solveBayesCoins();
+                    }, 50);
+                }
+            };
+
+            function drawGaussianPdf(x, mean, std) {
+                if (std <= 0) return 0;
+                return (1.0 / (std * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean) / std, 2));
+            }
+
+            window.runCltSimulation = function() {
+                const dist = document.getElementById('cltDistSelect').value;
+                const N = parseInt(document.getElementById('cltNSlider').value);
+                document.getElementById('cltNVal').innerText = 'N = ' + N;
+
+                const runCount = 2000;
+                const sampleMeans = [];
+
+                let meanSingle = 0.5;
+                let stdSingle = Math.sqrt(1/12);
+
+                if (dist === 'uniform') {
+                    meanSingle = 0.5;
+                    stdSingle = Math.sqrt(1/12);
+                } else if (dist === 'exponential') {
+                    meanSingle = 1.0;
+                    stdSingle = 1.0;
+                } else if (dist === 'bernoulli') {
+                    meanSingle = 0.5;
+                    stdSingle = 0.5;
+                }
+
+                for (let r = 0; r < runCount; r++) {
+                    let sum = 0;
+                    for (let n = 0; n < N; n++) {
+                        if (dist === 'uniform') {
+                            sum += Math.random();
+                        } else if (dist === 'exponential') {
+                            sum += -Math.log(Math.random() || 0.0001);
+                        } else if (dist === 'bernoulli') {
+                            sum += Math.random() < 0.5 ? 1 : 0;
+                        }
+                    }
+                    sampleMeans.push(sum / N);
+                }
+
+                const meanOfMeans = meanSingle;
+                const stdOfMeans = stdSingle / Math.sqrt(N);
+
+                const binCount = 40;
+                const minX = meanSingle - 3.5 * stdSingle;
+                const maxX = meanSingle + 3.5 * stdSingle;
+                const step = (maxX - minX) / binCount;
+
+                const bins = new Array(binCount).fill(0);
+                sampleMeans.forEach(val => {
+                    const idx = Math.floor((val - minX) / step);
+                    if (idx >= 0 && idx < binCount) {
+                        bins[idx]++;
+                    }
+                });
+
+                const histData = bins.map(c => c / (runCount * step));
+                const labels = [];
+                const gaussianPoints = [];
+                for (let i = 0; i < binCount; i++) {
+                    const x = minX + (i + 0.5) * step;
+                    labels.push(x.toFixed(2));
+                    gaussianPoints.push(drawGaussianPdf(x, meanOfMeans, stdOfMeans));
+                }
+
+                const isDark = document.body.classList.contains('dark-theme');
+                const gridColor = isDark ? 'rgba(68, 76, 86, 0.2)' : 'rgba(203, 213, 225, 0.2)';
+                const labelColor = isDark ? '#adbac7' : '#475569';
+
+                if (cltChartInstance) cltChartInstance.destroy();
+
+                const ctx = document.getElementById('cltPlotChart').getContext('2d');
+                cltChartInstance = new Chart(ctx, {
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Theoretical Normal Limit',
+                                type: 'line',
+                                data: gaussianPoints,
+                                borderColor: '#10b981',
+                                borderWidth: 3,
+                                pointRadius: 0,
+                                fill: false,
+                                order: 1
+							},
+                            {
+                                label: 'Empirical Sample Means',
+                                type: 'bar',
+                                data: histData,
+                                backgroundColor: 'rgba(139, 92, 246, 0.25)',
+                                borderColor: '#8b5cf6',
+                                borderWidth: 1,
+                                barPercentage: 1.0,
+                                categoryPercentage: 1.0,
+                                order: 2
+							}
+						]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { labels: { color: labelColor } } },
+                        scales: {
+                            x: {
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor, maxTicksLimit: 10 }
+                            },
+                            y: {
+                                grid: { color: gridColor },
+                                ticks: { color: labelColor }
+                            }
+                        }
+                    }
+                });
+            };
+
+            window.drawVennDiagram = function() {
+                const canvas = document.getElementById('vennCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+
+                const pA = parseFloat(document.getElementById('vennInputA').value);
+                const pB = parseFloat(document.getElementById('vennInputB').value);
+                let pIntersection = parseFloat(document.getElementById('vennInputIntersection').value);
+
+                // Caps intersection at min(pA, pB)
+                const maxIntersection = Math.min(pA, pB);
+                if (pIntersection > maxIntersection) {
+                    pIntersection = maxIntersection;
+                    document.getElementById('vennInputIntersection').value = pIntersection;
+                }
+
+                const pUnion = pA + pB - pIntersection;
+                const pOnlyA = pA - pIntersection;
+                const pOnlyB = pB - pIntersection;
+
+                document.getElementById('vennOutputUnion').innerHTML = `P(A ∪ B) = P(A) + P(B) - P(A ∩ B) = ${pUnion.toFixed(2)}`;
+                document.getElementById('vennOutputOnlyA').innerHTML = `Only A = P(A) - P(A ∩ B) = ${pOnlyA.toFixed(2)}`;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Grid
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= canvas.width; i += 30) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, canvas.height);
+                    ctx.stroke();
+                }
+
+                // Circle coordinates
+                const rA = Math.sqrt(pA) * 60;
+                const rB = Math.sqrt(pB) * 60;
+
+                // Adjust overlap distance dynamically based on P(A ∩ B)
+                let overlapD = rA + rB;
+                if (pIntersection > 0.01) {
+                    overlapD = (rA + rB) * (1 - (pIntersection / maxIntersection) * 0.45);
+                }
+
+                const cAx = canvas.width / 2 - overlapD / 4;
+                const cAy = canvas.height / 2;
+                const cBx = cAx + overlapD / 2;
+                const cBy = cAy;
+
+                // Set A (Blue fill)
+                ctx.fillStyle = 'rgba(59, 130, 246, 0.4)';
+                ctx.beginPath();
+                ctx.arc(cAx, cAy, rA, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.strokeStyle = '#3b82f6';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Set B (Purple fill)
+                ctx.fillStyle = 'rgba(139, 92, 246, 0.4)';
+                ctx.beginPath();
+                ctx.arc(cBx, cBy, rB, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.strokeStyle = '#8b5cf6';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Text labels
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 11px sans-serif';
+                ctx.fillText('Event A', cAx - 20, cAy - rA - 5);
+                ctx.fillText('Event B', cBx - 20, cBy - rB - 5);
+            };
+
+            window.solveBayesCoins = function() {
+                const cheat = parseInt(document.getElementById('bayesCheatCoins').value) || 1;
+                const fair = parseInt(document.getElementById('bayesFairCoins').value) || 9;
+                const heads = parseInt(document.getElementById('bayesHeadsCount').value) || 5;
+
+                const totalCoins = cheat + fair;
+                const priorCheat = cheat / totalCoins;
+                const priorFair = fair / totalCoins;
+
+                // Likelihoods
+                const likeCheat = 1.0;
+                const likeFair = Math.pow(0.5, heads);
+
+                // Marginal probability
+                const marginal = (likeCheat * priorCheat) + (likeFair * priorFair);
+
+                // Posterior probability
+                const posterior = (likeCheat * priorCheat) / marginal;
+
+                document.getElementById('bayesMarginal').innerHTML = `P(Observed Heads) = ${(marginal * 100).toFixed(2)}%`;
+                document.getElementById('bayesPosterior').innerHTML = `P(Cheating Coin | Heads) = ${(posterior * 100).toFixed(2)}%`;
+
+                // Draw Bar Chart on Canvas
+                const canvas = document.getElementById('bayesCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                ctx.strokeStyle = '#27272a';
+                ctx.lineWidth = 1;
+                for (let i = 0; i <= canvas.height; i += 30) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(canvas.width, i);
+                    ctx.stroke();
+                }
+
+                const barW = 60;
+                const chartH = 120;
+                const startY = 140;
+
+                // Draw Prior Bar (Purple)
+                const priorH = priorCheat * chartH;
+                ctx.fillStyle = '#8b5cf6';
+                ctx.fillRect(60, startY - priorH, barW, priorH);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '10px sans-serif';
+                ctx.fillText(`Prior: ${(priorCheat*100).toFixed(0)}%`, 60, startY - priorH - 8);
+
+                // Draw Posterior Bar (Pink)
+                const postH = posterior * chartH;
+                ctx.fillStyle = '#ec4899';
+                ctx.fillRect(180, startY - postH, barW, postH);
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(`Post: ${(posterior*100).toFixed(0)}%`, 180, startY - postH - 8);
+
+                // Label Axes
+                ctx.fillStyle = '#a1a1aa';
+                ctx.fillText('Prior P(Cheat)', 55, startY + 18);
+                ctx.fillText('Posterior P(Cheat|H)', 165, startY + 18);
+            };
+
+            setTimeout(() => {
+                if (document.getElementById('vennInputA')) {
+                    drawVennDiagram();
+                    solveBayesCoins();
+                }
+            }, 100);
+        })();
+    </script>
+</div>
