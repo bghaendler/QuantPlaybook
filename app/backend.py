@@ -270,5 +270,10 @@ def calculate(payload: Dict[str, Any] = Body(...)):
 # Trigger reload for Options Applications subpage update
 @app.get("/")
 def read_root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    import inspect
+    sig = inspect.signature(templates.TemplateResponse)
+    if "request" in sig.parameters:
+        return templates.TemplateResponse(request, "index.html", {"request": request})
+    else:
+        return templates.TemplateResponse("index.html", {"request": request})
 
