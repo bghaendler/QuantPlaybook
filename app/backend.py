@@ -28,7 +28,10 @@ from option_engine import OptionEngine
 app = FastAPI()
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 pricer_dir = os.path.join(base_dir, "option-pricer", "frontend", "dist")
-app.mount("/pricer", StaticFiles(directory=pricer_dir), name="pricer")
+if os.path.exists(pricer_dir):
+    app.mount("/pricer", StaticFiles(directory=pricer_dir), name="pricer")
+else:
+    print(f"Warning: Option pricer directory {pricer_dir} not found. Skipping mount.")
 templates = Jinja2Templates(directory=os.path.dirname(__file__))
 
 app.add_middleware(
