@@ -1974,13 +1974,7 @@
 </button>
 <div class="settings-dropdown" id="settingsDropdown">
 <div class="settings-dropdown-header">Page Settings</div>
-<div class="settings-dropdown-item">
-<span class="settings-item-label">Dark Mode</span>
-<label class="toggle-switch">
-<input id="toggleDarkMode" type="checkbox"/>
-<span class="slider-toggle"></span>
-</label>
-</div>
+
 <div class="settings-dropdown-item">
 <span class="settings-item-label">Small Text</span>
 <label class="toggle-switch">
@@ -2612,11 +2606,10 @@
             });
 
         window.toggleThemeShortcut = function() {
-            const toggleDarkMode = document.getElementById('toggleDarkMode');
-            if (toggleDarkMode) {
-                toggleDarkMode.checked = !toggleDarkMode.checked;
-                toggleDarkMode.dispatchEvent(new Event('change'));
-            }
+            const currentTheme = localStorage.getItem('notion-theme') || 'light';
+            const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('notion-theme', nextTheme);
+            applySettings(nextTheme, localStorage.getItem('notion-textSize') || 'normal', localStorage.getItem('notion-pageWidth') || 'standard');
         };
 
         // toggleCourse() is preserved as a no-op since course tabs were replaced by the unified sidebar.
@@ -5014,7 +5007,6 @@
         applySettings(savedTheme, savedTextSize, savedPageWidth);
 
         // Sync toggle UI to saved state
-        document.getElementById('toggleDarkMode').checked = savedTheme === 'dark';
         document.getElementById('toggleSmallText').checked = savedTextSize === 'small';
         document.getElementById('toggleFullWidth').checked = savedPageWidth === 'wide';
 
@@ -5032,13 +5024,6 @@
             if (!document.getElementById('settingsContainer').contains(e.target)) {
                 settingsDropdown.classList.remove('show');
             }
-        });
-
-        // Dark Mode toggle
-        document.getElementById('toggleDarkMode').addEventListener('change', function() {
-            const theme = this.checked ? 'dark' : 'light';
-            localStorage.setItem('notion-theme', theme);
-            applySettings(theme, localStorage.getItem('notion-textSize') || 'normal', localStorage.getItem('notion-pageWidth') || 'standard');
         });
 
         // Small Text toggle
