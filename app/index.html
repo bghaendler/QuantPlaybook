@@ -265,19 +265,18 @@
             font-size: 1.25rem;
         }
 
-        /* Content Width Transition */
+        /* Content Width — Notion-style Full Width toggle */
         .main-content-inner {
             max-width: 960px;
             width: 100%;
             margin: 0 auto;
-            transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
         body.wide-text .main-content-inner {
-            max-width: 96% !important;
+            max-width: 100%;
         }
-        body.wide-text .main-content-inner > div,
-        body.wide-text .main-content-inner > div > div,
-        body.wide-text .main-content-inner > div > div > div {
+        /* Override any per-template max-width caps when Full Width is on */
+        body.wide-text .main-content-inner [style*="max-width"] {
             max-width: 100% !important;
         }
 
@@ -937,7 +936,10 @@
             scroll-behavior: smooth;
             background: var(--bg-color);
             color: var(--text-color);
-            transition: background 0.3s, color 0.3s;
+            transition: background 0.3s, color 0.3s, padding 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        body.wide-text .main-content {
+            padding: 3.5rem 2rem;
         }
 
         header {
