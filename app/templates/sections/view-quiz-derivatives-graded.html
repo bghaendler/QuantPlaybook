@@ -43,16 +43,16 @@
                 <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
                 <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
                     <p><strong>Step-by-Step Derivation:</strong></p>
-                    <p>1. **Forward Rate Formulation in Vasicek:** The forward rate SDE in terms of the short rate is:
+                    <p>1. <strong>Forward Rate Formulation in Vasicek:</strong> The forward rate SDE in terms of the short rate is:
                        $$ f(t, T) = r(t) e^{-\kappa(T-t)} + \theta(1 - e^{-\kappa(T-t)}) - \frac{\sigma^2}{2\kappa^2}(1 - e^{-\kappa(T-t)})^2 $$
                     </p>
-                    <p>2. **Maturity Limit ($T \to t$):** Since $f(T, T) = r(T)$, taking the conditional expectation under the risk-neutral measure $\mathbb{Q}$ gives:
+                    <p>2. <strong>Maturity Limit ($T \to t$):</strong> Since $f(T, T) = r(T)$, taking the conditional expectation under the risk-neutral measure $\mathbb{Q}$ gives:
                        $$ \mathbb{E}^{\mathbb{Q}}_t [f(T, T)] = \mathbb{E}^{\mathbb{Q}}_t [r(T)] = r(t)e^{-\kappa(T-t)} + \theta(1 - e^{-\kappa(T-t)}) $$
                     </p>
-                    <p>3. **Convexity Adjustment:** The difference is:
+                    <p>3. <strong>Convexity Adjustment:</strong> The difference is:
                        $$ \gamma^*(t, T) = \mathbb{E}^{\mathbb{Q}}_t [f(T, T)] - f(t, T) = \frac{\sigma^2}{2\kappa^2}(1 - e^{-\kappa(T-t)})^2 $$
                     </p>
-                    <p>4. **Numerical Application ($t=0, T=1$):**
+                    <p>4. <strong>Numerical Application ($t=0, T=1$):</strong>
                        - Volatility: $\sigma = 0.01$
                        - Mean reversion: $\kappa = 0.86$
                        $$ \gamma^*(0, 1) = \frac{0.01^2}{2 \times 0.86^2}(1 - e^{-0.86})^2 \approx 6.7603 \times 10^{-5} \times (0.5768)^2 \approx 2.249 \times 10^{-5} \text{ (or } \mathbf{0.22 \text{ bps}} \text{)} $$
@@ -102,14 +102,14 @@
                 <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
                 <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
                     <p><strong>Theoretical Explanation:</strong></p>
-                    <p>1. **Cap-Floor Parity:** The algebraic relationship between caps, floors, and swaps is:
+                    <p>1. <strong>Cap-Floor Parity:</strong> The algebraic relationship between caps, floors, and swaps is:
                        $$ Cp(0) - Fl(0) = V_{swap}(0) = A(0)(R_{swap}(0) - K) $$
                        where $A(0) = \sum_{i=1}^M \delta P(0, T_i) > 0$ is the Annuity factor, $R_{swap}(0)$ is the spot par swap rate, and $K$ is the strike rate.
                     </p>
-                    <p>2. **Moneyness Condition:** If the cap is out-of-the-money (OTM), the strike rate $K$ exceeds the par interest rate $R_{swap}(0)$:
+                    <p>2. <strong>Moneyness Condition:</strong> If the cap is out-of-the-money (OTM), the strike rate $K$ exceeds the par interest rate $R_{swap}(0)$:
                        $$ K > R_{swap}(0) \implies R_{swap}(0) - K < 0 $$
                     </p>
-                    <p>3. **Inequality Result:** Because the swap value is negative, we have:
+                    <p>3. <strong>Inequality Result:</strong> Because the swap value is negative, we have:
                        $$ Cp(0) - Fl(0) < 0 \implies Cp(0) < Fl(0) $$
                     </p>
                     <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Option: $Cp(0) < Fl(0)$.</p>
@@ -156,13 +156,13 @@
                     <p><strong>Theoretical Explanation:</strong></p>
                     <p>A cap is a portfolio of caplets. The overall moneyness of the cap is determined by comparing its strike $K$ with the spot par swap rate $R_{swap}(0)$:</p>
                     <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
-                        <li>If $K > R_{swap}(0)$, the cap is **out-of-the-money**.</li>
+                        <li>If $K > R_{swap}(0)$, the cap is <strong>out-of-the-money</strong>.</li>
                     </ul>
                     <p>However, the moneyness of each individual caplet $i$ depends on its corresponding forward rate $F(0, T_{i-1}, T_i)$:</p>
                     <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
-                        <li>Caplet $i$ is **in-the-money** if $F(0, T_{i-1}, T_i) > K$.</li>
+                        <li>Caplet $i$ is <strong>in-the-money</strong> if $F(0, T_{i-1}, T_i) > K$.</li>
                     </ul>
-                    <p>In an upward-sloping yield curve, the forward rates for later periods can be significantly higher than the average spot swap rate: $F(0, T_{i-1}, T_i) > R_{swap}(0)$. If the curve is steep enough, there will be later forward rates that exceed the strike $K$, making their individual caplets **in-the-money**, even though the overall cap is **out-of-the-money** because $K > R_{swap}(0)$.</p>
+                    <p>In an upward-sloping yield curve, the forward rates for later periods can be significantly higher than the average spot swap rate: $F(0, T_{i-1}, T_i) > R_{swap}(0)$. If the curve is steep enough, there will be later forward rates that exceed the strike $K$, making their individual caplets <strong>in-the-money</strong>, even though the overall cap is <strong>out-of-the-money</strong> because $K > R_{swap}(0)$.</p>
                     <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Answer: True.</p>
                 </div>
             </details>
@@ -223,16 +223,16 @@
                     
                     <h4 style="font-weight: 700; color: var(--text-color); margin-top: 1rem;">Interpretation 1: Exclude First Caplet (Standard Market Convention)</h4>
                     <p>In the market, the first caplet resetting at $T_0=0$ is excluded because its floating rate $F(0, 0, 0.25) = 6\%$ is already known at $t=0$, making it a deterministic swap payment rather than an option. The cap consists of 7 caplets for $i=2, \dots, 8$.</p>
-                    <p>- **Discount Curve:** $P(0, 0.25) \approx 0.98522, \ P(0, 0.50) \approx 0.96590, \dots, P(0, 2.00) \approx 0.83902$.</p>
-                    <p>- **ATM Forward Strike:** $\kappa = \frac{P(0, 0.25) - P(0, 2.00)}{0.25 \sum_{i=2}^8 P(0, T_i)} \approx \mathbf{9.2747\%}$.</p>
-                    <p>- **Black Price:** Pricing the 7 caplets with strike $K = 9.2747\%$ at a target price of $1.00\%$ yields:
+                    <p>- <strong>Discount Curve:</strong> $P(0, 0.25) \approx 0.98522, \ P(0, 0.50) \approx 0.96590, \dots, P(0, 2.00) \approx 0.83902$.</p>
+                    <p>- <strong>ATM Forward Strike:</strong> $\kappa = \frac{P(0, 0.25) - P(0, 2.00)}{0.25 \sum_{i=2}^8 P(0, T_i)} \approx \mathbf{9.2747\%}$.</p>
+                    <p>- <strong>Black Price:</strong> Pricing the 7 caplets with strike $K = 9.2747\%$ at a target price of $1.00\%$ yields:
                        $$ \sigma_{\text{Black}} \approx \mathbf{15.35\%} $$
                     </p>
 
                     <h4 style="font-weight: 700; color: var(--text-color); margin-top: 1.5rem;">Interpretation 2: Include First Caplet (Alternative Textbook Convention)</h4>
                     <p>If all 8 periods $i=1, \dots, 8$ are included in the option strip (first caplet resets at $T_0=0$ and settles at $T_1=0.25$):</p>
-                    <p>- **ATM Strike:** $\kappa = \frac{P(0, 0) - P(0, 2.00)}{0.25 \sum_{i=1}^8 P(0, T_i)} \approx \mathbf{8.8322\%}$.</p>
-                    <p>- **Black Price:** Pricing the 8 caplets (the first caplet has $T=0$ SDE and price of 0 since $F(0, 0, 0.25) = 6\% < 8.8322\%$) yields:
+                    <p>- <strong>ATM Strike:</strong> $\kappa = \frac{P(0, 0) - P(0, 2.00)}{0.25 \sum_{i=1}^8 P(0, T_i)} \approx \mathbf{8.8322\%}$.</p>
+                    <p>- <strong>Black Price:</strong> Pricing the 8 caplets (the first caplet has $T=0$ SDE and price of 0 since $F(0, 0, 0.25) = 6\% < 8.8322\%$) yields:
                        $$ \sigma_{\text{Black}} \approx \mathbf{5.86\%} $$
                     </p>
                     <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Accepted Answers: 15.35% (standard) or 5.86% (alternative).</p>
@@ -360,18 +360,18 @@
                 <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
                 <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
                     <p><strong>Step-by-Step Proof of Swaption/Cap Parity Identity:</strong></p>
-                    <p>1. **Cap-Floor Parity:** The relationship is:
+                    <p>1. <strong>Cap-Floor Parity:</strong> The relationship is:
                        $$ Cp(0) - Fl(0) = V_{swap}(0) $$
                        where $V_{swap}(0)$ is the value of the spot/forwardpayer interest rate swap.
                     </p>
-                    <p>2. **Payer-Receiver Swaption Parity:** The swaption parity states:
+                    <p>2. <strong>Payer-Receiver Swaption Parity:</strong> The swaption parity states:
                        $$ Swpt_p(0) - Swpt_r(0) = V_{swap}(0) $$
                        Since both left-hand-side differences equal the same forward swap value $V_{swap}(0)$, they must be equal!
                     </p>
-                    <p>3. **Unified Parity Equation:**
+                    <p>3. <strong>Unified Parity Equation:</strong>
                        $$ Cp(0) - Fl(0) = Swpt_p(0) - Swpt_r(0) $$
                     </p>
-                    <p>4. **Numerical Solution:**
+                    <p>4. <strong>Numerical Solution:</strong>
                        - Payer Swaption: $Swpt_p(0) = 1.50\%$
                        - Receiver Swaption: $Swpt_r(0) = 1.80\%$
                        - Cap: $Cp(0) = 2.00\%$
@@ -419,22 +419,22 @@
                     <p>We evaluate this numerically using two standard interpretations for the ATM strike rate $\kappa$:</p>
 
                     <h4 style="font-weight: 700; color: var(--text-color); margin-top: 1rem;">Interpretation 1: Exclude First Caplet (Standard market convention)</h4>
-                    <p>1. **Forward Strike:** Excludes the first period's deterministic option. The ATM par swap rate is:
+                    <p>1. <strong>Forward Strike:</strong> Excludes the first period's deterministic option. The ATM par swap rate is:
                        $$ K \approx \mathbf{9.0054\%} \implies X = \frac{1}{1 + 0.25 \times 0.090054} \approx 0.977988 $$
                     </p>
-                    <p>2. **Analytical Put Pricing:** We price each of the 119 puts for $i=1, \dots, 119$ using:
+                    <p>2. <strong>Analytical Put Pricing:</strong> We price each of the 119 puts for $i=1, \dots, 119$ using:
                        $$ \text{Put}_i = X P(0, T_{i-1}) \Phi(-d_2) - P(0, T_i) \Phi(-d_1) $$
                        $$ \sigma_{p, i} = \sigma_V B(T_{i-1}, T_i) \sqrt{\frac{1 - e^{-2\kappa T_{i-1}}}{2\kappa}}, \quad B(\tau) = \frac{1 - e^{-\kappa\tau}}{\kappa} $$
                     </p>
-                    <p>3. **Result:** Summing over all 119 caplets yields:
+                    <p>3. <strong>Result:</strong> Summing over all 119 caplets yields:
                        $$ \text{Total Price} \approx \mathbf{4.16\%} $$
                     </p>
 
                     <h4 style="font-weight: 700; color: var(--text-color); margin-top: 1.5rem;">Interpretation 2: Include First Caplet (Textbook convention)</h4>
-                    <p>1. **Strike:** Includes the first period (deterministic payoff is 0 since $F(0, 0, 0.25) \approx 8.18\% < 8.9859\%$). The ATM strike is:
+                    <p>1. <strong>Strike:</strong> Includes the first period (deterministic payoff is 0 since $F(0, 0, 0.25) \approx 8.18\% < 8.9859\%$). The ATM strike is:
                        $$ K \approx \mathbf{8.9859\%} $$
                     </p>
-                    <p>2. **Result:** Summing over all 120 caplets yields:
+                    <p>2. <strong>Result:</strong> Summing over all 120 caplets yields:
                        $$ \text{Total Price} \approx \mathbf{4.26\%} $$
                     </p>
                     <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Accepted Answers: 4.16% (standard) or 4.26% (alternative).</p>

@@ -23,9 +23,9 @@
                 <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: var(--accent);">1. Delta Hedging &amp; Risk Elimination</h3>
                 <p>The binomial model assumes that over a small step $\delta t$, the stock price $S$ can only transition to an upward state $uS$ (with probability $p$) or a downward state $vS$ (with probability $1-p$):</p>
                 <p style="text-align: center;">$$0 < v < 1 < u$$</p>
-                <p>By constructing a hedged portfolio consisting of **one option ($V$)** and a **short position of $\Delta$ shares** of stock, we eliminate all random volatility:</p>
+                <p>By constructing a hedged portfolio consisting of <strong>one option ($V$)</strong> and a <strong>short position of $\Delta$ shares</strong> of stock, we eliminate all random volatility:</p>
                 <p style="text-align: center;">$$\Pi = V - \Delta S$$</p>
-                <p>Equating portfolio values across both upward ($\Pi^+$) and downward ($\Pi^-$) paths at $t + \delta t$ lets us solve for the risk-free **Delta Hedging Ratio ($\Delta$)**:</p>
+                <p>Equating portfolio values across both upward ($\Pi^+$) and downward ($\Pi^-$) paths at $t + \delta t$ lets us solve for the risk-free <strong>Delta Hedging Ratio ($\Delta$)</strong>:</p>
                 <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
                     $$\Delta = \frac{V^+ - V^-}{(u - v)S} = \frac{\text{Range of Option Payoffs}}{\text{Range of Stock Prices}}$$
                 </p>
@@ -41,11 +41,11 @@
             <div>
                 <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.1rem; font-weight: 700; color: #8b5cf6;">2. Risk-Neutral Expectations</h3>
                 <p>Because the hedged portfolio's future value is guaranteed, no-arbitrage rules dictate it must earn the risk-free rate: $\Pi_{t+\delta t} = \Pi_t e^{r \delta t}$.</p>
-                <p>Substituting $\Delta$ yields the fundamental **discrete pricing expectation**:</p>
+                <p>Substituting $\Delta$ yields the fundamental <strong>discrete pricing expectation</strong>:</p>
                 <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
                     $$V = e^{-r \delta t} \left( p' V^+ + (1 - p') V^- \right)$$
                 </p>
-                <p>where $p'$ is the **risk-neutral probability** of an upward stock movement:</p>
+                <p>where $p'$ is the <strong>risk-neutral probability</strong> of an upward stock movement:</p>
                 <p style="text-align: center;">$$p' = \frac{e^{r \delta t} - v}{u - v}$$</p>
                 <p style="font-size: 0.9rem; color: #64748b;">Notice that the real-world probability $p$ and stock drift $\mu$ are entirely absent. Option pricing depends solely on the risk-neutral probability $p'$, meaning risk-preferences are irrelevant.</p>
             </div>
@@ -69,7 +69,7 @@
                 </div>
                 <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px;">
                     <h4 style="margin: 0 0 0.5rem 0; font-family: var(--font-family-sans); font-size: 0.92rem; font-weight: 700; color: #0f766e;">Transition to Black-Scholes PDE</h4>
-                    <p style="font-size: 0.9rem; line-height: 1.5; margin: 0;">Taking the limit as step size $\delta t \to 0$, expanding option value $V(S, t)$ using multi-variable Taylor series, and substituting the delta hedge yields $\Delta = \frac{\partial V}{\partial S}$ and converges the discrete pricing formula directly to the continuous **Black-Scholes Partial Differential Equation**:</p>
+                    <p style="font-size: 0.9rem; line-height: 1.5; margin: 0;">Taking the limit as step size $\delta t \to 0$, expanding option value $V(S, t)$ using multi-variable Taylor series, and substituting the delta hedge yields $\Delta = \frac{\partial V}{\partial S}$ and converges the discrete pricing formula directly to the continuous <strong>Black-Scholes Partial Differential Equation</strong>:</p>
                     <p style="text-align: center; font-size: 0.95rem; font-weight: 700; margin: 0.5rem 0;">
                         $$\frac{\partial V}{\partial t} + r S \frac{\partial V}{\partial S} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} - r V = 0$$
                     </p>
@@ -334,7 +334,7 @@
         <details style="margin-top: 1.5rem; color: var(--text-color);">
             <summary style="cursor: pointer; font-weight: 600; color: var(--accent); font-family: var(--font-family-sans); font-size: 0.95rem; user-select: none;">View American Early Exercise boundary mathematics</summary>
             <div style="padding: 1.5rem; background: var(--metric-bg); border-radius: 8px; border-left: 4px solid var(--accent); margin-top: 0.75rem; font-size: 0.95rem; line-height: 1.6; font-family: var(--font-family-sans);">
-                <p>The **American option style** allows holder execution at *any* intermediate time node before expiration. This changes the backward induction step:</p>
+                <p>The <strong>American option style</strong> allows holder execution at *any* intermediate time node before expiration. This changes the backward induction step:</p>
                 <ol style="padding-left: 1.5rem;">
                     <li style="margin-bottom: 0.75rem;">
                         <strong>Calculate continuation value:</strong> At node $(i, j)$ at step $i$, we first solve for the discounted risk-neutral expectation:
@@ -347,7 +347,7 @@
                     <li style="margin-bottom: 0;">
                         <strong>Take the maximum:</strong> The final node option price is the maximum of continuation vs exercise:
                         $$V_{i, j} = \max(V_{\text{continuation}}, V_{\text{exercise}})$$
-                        If $V_{\text{exercise}} > V_{\text{continuation}}$, early exercise is optimal, increasing option value at the root! This typically occurs for **American Put options** when stock price falls deeply, as the immediate payout is worth more than waiting due to positive discounting drag.
+                        If $V_{\text{exercise}} > V_{\text{continuation}}$, early exercise is optimal, increasing option value at the root! This typically occurs for <strong>American Put options</strong> when stock price falls deeply, as the immediate payout is worth more than waiting due to positive discounting drag.
                     </li>
                 </ol>
             </div>

@@ -24,7 +24,7 @@
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Monte Carlo Simulation Foundations</h3>
                     <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
-                        Under the risk-neutral measure, options are priced by taking the discounted expectation of the terminal payoff. Instead of solving partial differential equations, **Monte Carlo Simulation** simulates millions of potential random asset paths to evaluate this expectation directly. The stock price evolves under the risk-neutral drift $r$ (the risk-neutral spot rate model).
+                        Under the risk-neutral measure, options are priced by taking the discounted expectation of the terminal payoff. Instead of solving partial differential equations, <strong>Monte Carlo Simulation</strong> simulates millions of potential random asset paths to evaluate this expectation directly. The stock price evolves under the risk-neutral drift $r$ (the risk-neutral spot rate model).
                     </p>
 
                     <h4 style="font-family: var(--font-family-sans); font-size: 1.05rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">The Five-Step Monte Carlo Recipe</h4>
@@ -38,11 +38,11 @@
 
                     <h4 style="font-family: var(--font-family-sans); font-size: 1.05rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Stochastic Discretization Schemes</h4>
                     <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.5rem;">
-                        - **Euler-Maruyama Scheme**: An extension of Euler's ODE method to stochastic calculus, providing accuracy order $\mathcal{O}(\sqrt{\Delta t})$:
+                        - <strong>Euler-Maruyama Scheme</strong>: An extension of Euler's ODE method to stochastic calculus, providing accuracy order $\mathcal{O}(\sqrt{\Delta t})$:
                         $$S_{t+\Delta t} = S_t \left( 1 + r \Delta t + \sigma \phi \sqrt{\Delta t} \right), \quad \phi \sim \mathcal{N}(0, 1)$$
-                        - **Milstein Scheme**: Includes a second-order correction term for high accuracy ($\mathcal{O}(\Delta t)$):
+                        - <strong>Milstein Scheme</strong>: Includes a second-order correction term for high accuracy ($\mathcal{O}(\Delta t)$):
                         $$S_{t+\Delta t} = S_t \left( 1 + r \Delta t + \sigma \phi \sqrt{\Delta t} + \frac{1}{2}\sigma^2 (\phi^2 - 1)\Delta t \right)$$
-                        - **Exact Discretization (GBM)**: Derived via log-SDE integration (exact when $\mu, \sigma$ are constant):
+                        - <strong>Exact Discretization (GBM)</strong>: Derived via log-SDE integration (exact when $\mu, \sigma$ are constant):
                         $$S_T = S_0 \exp\left( \left(r - \frac{1}{2}\sigma^2\right)T + \sigma \phi \sqrt{T} \right)$$
                     </p>
                 </div>
@@ -52,7 +52,7 @@
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Error Analysis &amp; Industry Preferences</h3>
                     <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563; margin-bottom: 1rem;">
-                        By the **Central Limit Theorem**, the pricing error decays according to:
+                        By the <strong>Central Limit Theorem</strong>, the pricing error decays according to:
                         $$\text{Error} \propto \frac{\sigma}{\sqrt{M}}$$
                         where $M$ is the number of simulations. Solvers determine the required number of paths by establishing a maximum acceptable error tolerance.
                     </p>
@@ -77,7 +77,7 @@
                     <div style="background: rgba(139, 92, 246, 0.05); border-left: 3px solid #8b5cf6; padding: 0.85rem 1rem; border-radius: 6px; font-size: 0.8rem; line-height: 1.5;">
                         📊 <strong>The Lawrence Survey Stats</strong>:
                         <br>
-                        A survey found that **60%** of industry trading desks prefer Monte Carlo, **30%** prefer Finite Difference Methods, and **10%** use binomial trees or transform methods (e.g. Fourier transforms).
+                        A survey found that <strong>60%</strong> of industry trading desks prefer Monte Carlo, <strong>30%</strong> prefer Finite Difference Methods, and <strong>10%</strong> use binomial trees or transform methods (e.g. Fourier transforms).
                     </div>
                 </div>
             </div>
@@ -110,10 +110,10 @@
                     <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border);">
                         <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Boundary Conditions</h4>
                         <p style="font-size: 0.8rem; margin: 0; line-height: 1.5;">
-                            - **Lower Boundary ($S=0$ / $i=0$)**:
+                            - <strong>Lower Boundary ($S=0$ / $i=0$)</strong>:
                               Diffusion and drift terms vanish, reducing the PDE to exponential decay:
                               $$V_0^{k+1} = (1 - r \delta t) V_0^k$$
-                            - **Upper Boundary ($S \to S^*$ / $i=I$)**:
+                            - <strong>Upper Boundary ($S \to S^*$ / $i=I$)</strong>:
                               At high spot values, the option value is linear, indicating vanishing gamma ($\frac{\partial^2 V}{\partial S^2} \to 0$):
                               $$V_I^{k} = 2V_{I-1}^k - V_{I-2}^k$$
                         </p>
@@ -125,7 +125,7 @@
                     <p style="margin-bottom: 0.5rem;">
                         <strong>Advantages</strong>: Straightforward to code with obvious instability indicators. Handles variable coefficients and dividends beautifully without requiring closed-form solutions. Ideal for American-style early exercise (since we simply take the maximum of the continuation value and intrinsic value at each grid node: $V_i^{k+1} = \max(V_{\text{continuation}}, V_{\text{intrinsic}})$).
                         <br>
-                        <strong>Disadvantages</strong>: Suffer from strict **conditional stability constraints** (time step $\delta t$ cannot be chosen independently of spatial grid size $\delta S$). Impractical beyond 3 spatial dimensions (curse of dimensionality).
+                        <strong>Disadvantages</strong>: Suffer from strict <strong>conditional stability constraints</strong> (time step $\delta t$ cannot be chosen independently of spatial grid size $\delta S$). Impractical beyond 3 spatial dimensions (curse of dimensionality).
                     </p>
                 </div>
             </div>
@@ -160,7 +160,7 @@
                 <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin: 0;">
                     Taking the worst-case boundary where the spot price is at its maximum grid limit ($n = N$) and the oscillation wave frequency peaks ($\sin^2 \frac{\omega}{2} = 1$):
                     $$\delta t \le \frac{1}{\sigma^2 N^2}$$
-                    Since $N = S^*/\delta S$, this places a direct quadratic constraint: **doubling the spatial resolution requires four times as many time steps ($\delta t \propto N^{-2}$)**.
+                    Since $N = S^*/\delta S$, this places a direct quadratic constraint: <strong>doubling the spatial resolution requires four times as many time steps ($\delta t \propto N^{-2}$)</strong>.
                 </p>
             </div>
         </div>

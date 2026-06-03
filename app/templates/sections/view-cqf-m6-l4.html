@@ -90,7 +90,7 @@
                     <p style="margin:0; color:#4b5563;">
                         Translating this back to the physical measure $\mathbb{P}$ using Girsanov's Brownian motion relation $\mathrm{d}X^\theta(t) = \mathrm{d}X(t) + \theta(t)\mathrm{d}t$:
                         $$\frac{\mathrm{d}B(t,U)}{B(t,U)} = \left( r(t) + b^\theta(t,U) \cdot \theta(t) \right)\mathrm{d}t + b^\theta(t,U) \cdot \mathrm{d}X(t)$$
-                        The term $\theta(t)$ is the **market price of interest rate risk**. It represents the premium (excess return) required by investors per unit of bond volatility risk $b^\theta(t,U)$. Note that the volatility coefficient $b^\theta(t,U)$ is invariant under change of measure, because changes of measure only affect the drift.
+                        The term $\theta(t)$ is the <strong>market price of interest rate risk</strong>. It represents the premium (excess return) required by investors per unit of bond volatility risk $b^\theta(t,U)$. Note that the volatility coefficient $b^\theta(t,U)$ is invariant under change of measure, because changes of measure only affect the drift.
                     </p>
                 </div>
             </div>
@@ -105,7 +105,7 @@
                 <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
                     A European call option maturing at $U$ on a bond maturing at $V$ ($U < V$) has the payoff $(B(U,V) - K)^+$. Pricing this directly under the risk-neutral spot martingale measure $\mathbb{Q}$ is highly difficult:
                     $$C(t) = A(t) \mathbb{E}^{\mathbb{Q}}\left[ \frac{(B(U,V) - K)^+}{A(U)} \ \Bigg|\ \mathcal{F}_t \right]$$
-                    This contains two correlated stochastic variables: the terminal bond price $B(U,V)$ and the discount factor $1/A(U)$. To simplify this, we define the **$U$-forward martingale measure** $\mathbb{P}_U$ using the bond $B(t,U)$ as the numeraire.
+                    This contains two correlated stochastic variables: the terminal bond price $B(U,V)$ and the discount factor $1/A(U)$. To simplify this, we define the <strong>$U$-forward martingale measure</strong> $\mathbb{P}_U$ using the bond $B(t,U)$ as the numeraire.
                 </p>
 
                 <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6; margin-bottom: 1rem;">
@@ -332,8 +332,8 @@
         const outEl = document.getElementById('outM6L4Spot');
         outEl.innerHTML = `
             Physical drift ($\\mu$): <strong>${(mu*100).toFixed(1)}%</strong>. Risk Premium ($\\theta$): <strong>${theta.toFixed(2)}</strong>.<br>
-            - **Physical Measure $\\mathbb{P}$ Path (Green):** Higher drift representing expected economic movement.<br>
-            - **Risk-Neutral Measure $\\mathbb{Q}$ Path (Red):** Calibrated drift representing arbitrage-free expectation with risk premium subtracted.
+            - <strong>Physical Measure $\\mathbb{P}$ Path (Green):</strong> Higher drift representing expected economic movement.<br>
+            - <strong>Risk-Neutral Measure $\\mathbb{Q}$ Path (Red):</strong> Calibrated drift representing arbitrage-free expectation with risk premium subtracted.
         `;
         if (typeof window.safeTypeset === 'function') {
             window.safeTypeset([outEl]);
@@ -416,9 +416,9 @@
         const outEl = document.getElementById('outM6L4Var');
         outEl.innerHTML = `
             Strike ($K$): <strong>${K.toFixed(2)}</strong>. Simulated Paths ($N$): <strong>${N}</strong>.<br>
-            - **Spot $\\mathbb{Q}$-Measure Est:** ${meanQ.toFixed(4)} &plusmn; ${stdErrorQ.toFixed(4)} (Std Error).<br>
-            - **Forward $\\mathbb{P}_U$-Measure Est:** ${meanF.toFixed(4)} &plusmn; ${stdErrorF.toFixed(4)} (Std Error).<br>
-            - **Variance Reduction:** Forward measure pricing exhibits **${((varQ - varF) / varQ * 100).toFixed(1)}% lower variance** due to structural elimination of the stochastic discounting factor!
+            - <strong>Spot $\\mathbb{Q}$-Measure Est:</strong> ${meanQ.toFixed(4)} &plusmn; ${stdErrorQ.toFixed(4)} (Std Error).<br>
+            - <strong>Forward $\\mathbb{P}_U$-Measure Est:</strong> ${meanF.toFixed(4)} &plusmn; ${stdErrorF.toFixed(4)} (Std Error).<br>
+            - <strong>Variance Reduction:</strong> Forward measure pricing exhibits <strong>${((varQ - varF) / varQ * 100).toFixed(1)}% lower variance</strong> due to structural elimination of the stochastic discounting factor!
         `;
         if (typeof window.safeTypeset === 'function') {
             window.safeTypeset([outEl]);
@@ -483,8 +483,8 @@
         const outEl = document.getElementById('outM6L4Forward');
         outEl.innerHTML = `
             Vol Diff ($b_V - b_U$): <strong>${(volDiff*100).toFixed(0)}%</strong>. Option Expiry ($U$): <strong>${U.toFixed(1)}Y</strong>.<br>
-            - **Estimated Call Price:** <strong>${optionPrice.toFixed(5)}</strong>.<br>
-            - **Convergence:** Running average (Red line) converges extremely rapidly to the terminal expectation due to the pathless lognormal terminal distribution.
+            - <strong>Estimated Call Price:</strong> <strong>${optionPrice.toFixed(5)}</strong>.<br>
+            - <strong>Convergence:</strong> Running average (Red line) converges extremely rapidly to the terminal expectation due to the pathless lognormal terminal distribution.
         `;
         if (typeof window.safeTypeset === 'function') {
             window.safeTypeset([outEl]);

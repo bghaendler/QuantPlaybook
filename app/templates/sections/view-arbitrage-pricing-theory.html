@@ -7,18 +7,18 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
             <div class="card" style="margin-bottom: 0;">
                 <h2>Arbitrage Pricing Theory &amp; Risk-Neutrality</h2>
-                <p>By combining Itô's formula and Girsanov's theorem, we arrive at the cornerstone of modern quantitative finance: the **Arbitrage Pricing Theory** and risk-neutral pricing framework.</p>
+                <p>By combining Itô's formula and Girsanov's theorem, we arrive at the cornerstone of modern quantitative finance: the <strong>Arbitrage Pricing Theory</strong> and risk-neutral pricing framework.</p>
                 <p>Suppose a risky asset (stock) $S(t)$ has real-world dynamics:
                 <p style="text-align: center;">$$ \frac{dS(t)}{S(t)} = \mu(t) dt + \sigma(t) dW(t) = \left( r(t) + \sigma(t) \lambda(t) \right) dt + \sigma(t) dW(t) $$</p>
-                where $r(t)$ is the risk-free short rate, $\sigma(t)$ is stock volatility, and $\lambda(t)$ is the **market price of risk** (risk premium per unit of volatility).</p>
+                where $r(t)$ is the risk-free short rate, $\sigma(t)$ is stock volatility, and $\lambda(t)$ is the <strong>market price of risk</strong> (risk premium per unit of volatility).</p>
                 <div style="background: #eff6ff; padding: 1.5rem; border-radius: 4px; border-left: 4px solid var(--accent); margin: 1.5rem 0;">
                     <strong>The Risk-Neutral Measure $\mathbb{Q}$:</strong> Switching to the equivalent probability measure $\mathbb{Q}$ defined by Girsanov removes the risk premium. Under $\mathbb{Q}$, <em>all</em> traded assets grow exactly at the risk-free rate:
                     <p style="text-align: center; font-size: 1.1rem; margin-top: 1rem; margin-bottom: 0.5rem;">
                         $$ \frac{dS(t)}{S(t)} = r(t) dt + \sigma(t) dW^*(t) $$
                     </p>
-                    Consequently, the discounted asset price process $S^*(t) = e^{-\int_0^t r(s) ds} S(t)$ is a **pure $\mathbb{Q}$-martingale**.
+                    Consequently, the discounted asset price process $S^*(t) = e^{-\int_0^t r(s) ds} S(t)$ is a <strong>pure $\mathbb{Q}$-martingale</strong>.
                 </div>
-                <p>This allows us to value any derivative payoff $V(T)$ at time $T$ as the discounted expectation of its future value under the risk-neutral measure: $V(0) = \mathbb{E}^{\mathbb{Q}}\left[ e^{-\int_0^T r(s) ds} V(T) \right]$. To hedge this option, a trader maintains a **replicating portfolio** holding $\Delta = \frac{\partial V}{\partial S}$ shares of stock.</p>
+                <p>This allows us to value any derivative payoff $V(T)$ at time $T$ as the discounted expectation of its future value under the risk-neutral measure: $V(0) = \mathbb{E}^{\mathbb{Q}}\left[ e^{-\int_0^T r(s) ds} V(T) \right]$. To hedge this option, a trader maintains a <strong>replicating portfolio</strong> holding $\Delta = \frac{\partial V}{\partial S}$ shares of stock.</p>
             </div>
             <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px;">
                 <h3 style="margin-top:0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
@@ -35,7 +35,7 @@
         <!-- Interactive Visualization -->
         <div class="card" style="margin-bottom: 2rem;">
             <h2>Interactive Simulation: Replicating Portfolio &amp; Option Pricing</h2>
-            <p style="margin-bottom: 1.5rem;">Adjust the parameters below to simulate stock price paths under the risk-neutral measure $\mathbb{Q}$. Compare the **Black-Scholes Analytical Option Price** with the empirical **Monte Carlo Simulation Average** from 100 paths. Note how they align, and examine the replicating delta ratio $\Delta$ and the hedging parameters.</p>
+            <p style="margin-bottom: 1.5rem;">Adjust the parameters below to simulate stock price paths under the risk-neutral measure $\mathbb{Q}$. Compare the <strong>Black-Scholes Analytical Option Price</strong> with the empirical <strong>Monte Carlo Simulation Average</strong> from 100 paths. Note how they align, and examine the replicating delta ratio $\Delta$ and the hedging parameters.</p>
             
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
                 <!-- Sliders Column 1 -->
@@ -110,7 +110,7 @@
         <!-- Sample Exercise -->
         <div class="card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
             <h2 style="color: #166534;">Practice Exercise: Pricing Binary Options</h2>
-            <p style="color: #166534; font-weight: 500;">A **Binary (Digital) Call Option** pays out exactly $1.00 if the stock price $S(T) \ge K$ at expiry $T$, and $0.00 otherwise. Using the risk-neutral pricing formula, write down the pricing formula for this digital option in terms of the standard normal CDF $N(d_2)$, and calculate its price if $S_0 = 100$, $K = 100$, $r = 5\%$, $\sigma = 20\%$, and $T = 1$ year.</p>
+            <p style="color: #166534; font-weight: 500;">A <strong>Binary (Digital) Call Option</strong> pays out exactly $1.00 if the stock price $S(T) \ge K$ at expiry $T$, and $0.00 otherwise. Using the risk-neutral pricing formula, write down the pricing formula for this digital option in terms of the standard normal CDF $N(d_2)$, and calculate its price if $S_0 = 100$, $K = 100$, $r = 5\%$, $\sigma = 20\%$, and $T = 1$ year.</p>
             <details style="background: white; padding: 1rem; border-radius: 6px; border: 1px solid #bbf7d0;">
                 <summary style="cursor: pointer; font-weight: 600; color: #15803d; list-style: none; display: flex; align-items: center;">
                     <span style="margin-right: 0.5rem;">👉</span> Show Step-by-Step Solution
@@ -153,7 +153,7 @@
                             </div>
                         </li>
                     </ol>
-                    <p><strong>Answer:</strong> The digital call option price formula is **$e^{-rT} N(d_2)$**. Under the given parameters, its price is **$0.5323$** (or **$53.23** cents per $1 payout).</p>
+                    <p><strong>Answer:</strong> The digital call option price formula is <strong>$e^{-rT} N(d_2)$</strong>. Under the given parameters, its price is <strong>$0.5323$</strong> (or <strong>$53.23</strong> cents per $1 payout).</p>
                 </div>
             </details>
         </div>

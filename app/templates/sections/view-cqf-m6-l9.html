@@ -25,9 +25,9 @@
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">What is a Credit Default Swap?</h3>
                     <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
-                        Dr. Jon Gregory defines a **Credit Default Swap (CDS)** as a bilateral derivative contract enabling market participants to transfer or trade default credit risk. 
-                        - **Protection Buyer:** Pays a periodic premium (the spread, quoted in basis points per annum) to the seller.
-                        - **Protection Seller:** Receives premium and commits to pay a lump sum of $1 - \\text{RR}$ (Loss Given Default, or $\\text{LGD}$) if a **Credit Event** occurs.
+                        Dr. Jon Gregory defines a <strong>Credit Default Swap (CDS)</strong> as a bilateral derivative contract enabling market participants to transfer or trade default credit risk. 
+                        - <strong>Protection Buyer:</strong> Pays a periodic premium (the spread, quoted in basis points per annum) to the seller.
+                        - <strong>Protection Seller:</strong> Receives premium and commits to pay a lump sum of $1 - \\text{RR}$ (Loss Given Default, or $\\text{LGD}$) if a <strong>Credit Event</strong> occurs.
                     </p>
                     <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
                         <strong>Credit Events:</strong> Governed by ISDA rules and decided by a regional Determination Committee (10 dealers, 5 buy-side), events include: Bankruptcy, Failure to Pay, Repudiation/Moratorium, Restructuring, and Government Intervention.
@@ -39,8 +39,8 @@
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Settlement: Physical vs. Cash</h3>
                     <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
-                        - **Physical Settlement:** Buyer delivers the defaulted bond to the seller, who pays full par notional. Historically suffered from **cheapest-to-deliver (CTD)** options (buyers searching for distressed, low-value bonds) and **delivery squeezes** (when gross CDS notional exceeds the total outstanding deliverable debt, such as during the Delphi 2005 default).
-                        - **Cash Settlement:** Seller pays $\\text{Notional} \\times (1 - \\text{RR})$. Most defaults are now cash-settled via **ISDA Credit Event Auctions** to establish the final recovery price.
+                        - <strong>Physical Settlement:</strong> Buyer delivers the defaulted bond to the seller, who pays full par notional. Historically suffered from <strong>cheapest-to-deliver (CTD)</strong> options (buyers searching for distressed, low-value bonds) and <strong>delivery squeezes</strong> (when gross CDS notional exceeds the total outstanding deliverable debt, such as during the Delphi 2005 default).
+                        - <strong>Cash Settlement:</strong> Seller pays $\\text{Notional} \\times (1 - \\text{RR})$. Most defaults are now cash-settled via <strong>ISDA Credit Event Auctions</strong> to establish the final recovery price.
                     </p>
                 </div>
             </div>
@@ -53,10 +53,10 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
                 <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Risky Discount Factors &amp; Survival Probability</h3>
                 <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
-                    Default is modeled as a Poisson process driven by an instantaneous conditional default intensity or **hazard rate** $h$:
-                    - **Survival Probability:** The probability that the reference entity survives up to time $t$:
+                    Default is modeled as a Poisson process driven by an instantaneous conditional default intensity or <strong>hazard rate</strong> $h$:
+                    - <strong>Survival Probability:</strong> The probability that the reference entity survives up to time $t$:
                       $$S(t) = \\exp(-ht)$$
-                    - **Risky Discount Factor:** Combining risk-free discounting $B(t) = \\exp(-rt)$ and survival probability $S(t)$ yields the credit-risk adjusted discount factor:
+                    - <strong>Risky Discount Factor:</strong> Combining risk-free discounting $B(t) = \\exp(-rt)$ and survival probability $S(t)$ yields the credit-risk adjusted discount factor:
                       $$DF_{\\text{risky}}(t) = \\exp[-(r + h)t]$$
                 </p>
 
@@ -64,11 +64,11 @@
                     <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">CDS Present Value &amp; Fair Spread Calibration</h4>
                     <p style="margin:0; color:#4b5563;">
                         A CDS comprises two legs:
-                        - **Premium Leg:** Paid by the buyer while the reference entity survives:
+                        - <strong>Premium Leg:</strong> Paid by the buyer while the reference entity survives:
                           $$PV_{\\text{premium}} = s \\cdot \\int_0^T \\exp[-(r+h)t] \\,\\mathrm{d}t = s \\cdot \\frac{1 - \\exp[-(r+h)T]}{r + h}$$
-                        - **Default Leg:** Paid by the seller at default:
+                        - <strong>Default Leg:</strong> Paid by the seller at default:
                           $$PV_{\\text{default}} = (1 - \\text{RR}) \\cdot h \\cdot \\frac{1 - \\exp[-(r+h)T]}{r + h}$$
-                        Equating the two legs yields the fair **CDS spread** formula:
+                        Equating the two legs yields the fair <strong>CDS spread</strong> formula:
                           $$s_{\\text{CDS}} = (1 - \\text{RR}) \\cdot h \\implies h = \\frac{s_{\\text{CDS}}}{1 - \\text{RR}}$$
                     </p>
                 </div>
@@ -82,18 +82,18 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
                 <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Proxy CDS Curve Modeling for Illiquid Names</h3>
                 <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
-                    Under Basel's **Fundamental Review of the Trading Book (FRTB-CVA)** and Credit Valuation Adjustment (CVA) capital frameworks, banks must hold capital against counterparty spread risks. For illiquid counterparties lacking traded CDS curves, banks are required to approximate spreads using **Proxy CDS Curves**.
+                    Under Basel's <strong>Fundamental Review of the Trading Book (FRTB-CVA)</strong> and Credit Valuation Adjustment (CVA) capital frameworks, banks must hold capital against counterparty spread risks. For illiquid counterparties lacking traded CDS curves, banks are required to approximate spreads using <strong>Proxy CDS Curves</strong>.
                 </p>
 
                 <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); margin-bottom:1.25rem; font-size:0.85rem; line-height:1.6;">
                     <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">The Cross-Sectional Log-Linear Regression Model</h4>
                     <p style="margin:0; color:#4b5563;">
-                        To estimate credit default swaps, banks perform a regression on observable liquid names in **log-space** (to ensure spreads are strictly positive):
+                        To estimate credit default swaps, banks perform a regression on observable liquid names in <strong>log-space</strong> (to ensure spreads are strictly positive):
                         $$\\log\\left(s_i^{\\text{proxy}}\\right) = \\beta_{\\text{glob}} + \\beta_{\\text{rating}(i)} + \\beta_{\\text{region}(i)} + \\beta_{\\text{sector}(i)}$$
                         Where:
-                        - **Rating:** AAA, AA, A, BBB, BB, B, CCC
-                        - **Region:** Europe, North America, Japan, LatAm
-                        - **Sector:** Financials, Energy, Healthcare, Tech
+                        - <strong>Rating:</strong> AAA, AA, A, BBB, BB, B, CCC
+                        - <strong>Region:</strong> Europe, North America, Japan, LatAm
+                        - <strong>Sector:</strong> Financials, Energy, Healthcare, Tech
                         Regulators explicitly require these broad category attributes rather than granular metrics to avoid overfitting sparse interbank data.
                     </p>
                 </div>
@@ -108,7 +108,7 @@
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Counterparty Wrong-Way Risk (WWR)</h3>
                     <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
-                        Purchasing a CDS creates counterparty credit risk to the protection seller. **Wrong-Way Risk (WWR)** occurs when there is a strong positive correlation between the default probability of the reference entity and the default probability of the protection seller itself (e.g. buying corporate bond protection from a financial bank).
+                        Purchasing a CDS creates counterparty credit risk to the protection seller. <strong>Wrong-Way Risk (WWR)</strong> occurs when there is a strong positive correlation between the default probability of the reference entity and the default probability of the protection seller itself (e.g. buying corporate bond protection from a financial bank).
                     </p>
                     <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
                         If the default correlation $\\rho_{12}$ approaches $1.0$, the present value of the protection leg collapses because the counterparty is highly likely to default at the same moment they owe the payout.
@@ -134,10 +134,10 @@
         <div class="card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
             <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Sovereign Defaults: The Ukraine Moratorium</h3>
             <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563;">
-                <strong>Case Background:</strong> During the 2022 wartime crisis, Ukraine suspended debt interest payments. While a sovereign suspension may not be a formal bankruptcy, the ISDA regional Determination Committee ruled it a **Repudiation/Moratorium Credit Event**, triggering full CDS payouts.
+                <strong>Case Background:</strong> During the 2022 wartime crisis, Ukraine suspended debt interest payments. While a sovereign suspension may not be a formal bankruptcy, the ISDA regional Determination Committee ruled it a <strong>Repudiation/Moratorium Credit Event</strong>, triggering full CDS payouts.
             </p>
             <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color:#374151;">
-                <strong>Pricing Impact:</strong> Sovereign spreads often spike to extreme ranges (exceeding 10,000 basis points). At this stage, quoting standard annual spreads becomes meaningless; instead, contracts trade on an **upfront premium basis** due to extreme annuity default risk (the risk that premium streams stop instantly).
+                <strong>Pricing Impact:</strong> Sovereign spreads often spike to extreme ranges (exceeding 10,000 basis points). At this stage, quoting standard annual spreads becomes meaningless; instead, contracts trade on an <strong>upfront premium basis</strong> due to extreme annuity default risk (the risk that premium streams stop instantly).
             </div>
         </div>
 
@@ -147,7 +147,7 @@
                 <strong>Case Background:</strong> In 2023, the Swiss government forced the acquisition of Credit Suisse by UBS, writing down Additional Tier 1 (AT1) bonds to zero. However, existing CDS contracts referenced Tier 2 subordinated debt, meaning AT1 bondholders lost everything without being able to trigger a CDS protection payout.
             </p>
             <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color:#374151;">
-                <strong>Regulatory Reform:</strong> This structural mismatch prompted the addition of **Government Intervention** to credit event definitions to bridge the gap between bank restructuring write-downs and derivative protection triggers.
+                <strong>Regulatory Reform:</strong> This structural mismatch prompted the addition of <strong>Government Intervention</strong> to credit event definitions to bridge the gap between bank restructuring write-downs and derivative protection triggers.
             </div>
         </div>
     </div>

@@ -14,7 +14,7 @@
         <p>Two famous probability setups challenge basic human intuition, demonstrating why rigorous mathematics is required over gut feelings:</p>
         <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
             <li><strong>The Birthday Problem:</strong> The probability that at least 2 people in a group of $N$ share a birthday. Counter-intuitively, in a group of just 23 people, the probability is greater than 50% ($P \approx 50.73\%$), and for 50 people, it is 97%!</li>
-            <li><strong>The Monty Hall Dilemma:</strong> A game show host offers you a choice of three doors. One has a car, two have goats. You choose a door (e.g. Door 1). Monty, who knows what's behind them, opens another door showing a goat (e.g. Door 3) and offers you to **swap** to Door 2. Mathematically, swapping **doubles** your chances of winning from $\frac{1}{3}$ to $\frac{2}{3}$!</li>
+            <li><strong>The Monty Hall Dilemma:</strong> A game show host offers you a choice of three doors. One has a car, two have goats. You choose a door (e.g. Door 1). Monty, who knows what's behind them, opens another door showing a goat (e.g. Door 3) and offers you to <strong>swap</strong> to Door 2. Mathematically, swapping <strong>doubles</strong> your chances of winning from $\frac{1}{3}$ to $\frac{2}{3}$!</li>
         </ul>
     </div>
 
@@ -96,7 +96,7 @@
                 document.getElementById(`doorContent${openedGoatDoor}`).innerText = '🐐 Goat';
                 document.getElementById(`doorContent${openedGoatDoor}`).style.color = '#ea580c';
 
-                document.getElementById('montyStatus').innerHTML = `You chose Door ${chosenDoor}. Monty has opened Door ${openedGoatDoor} to reveal a goat! Would you like to **swap** doors or **stay**?`;
+                document.getElementById('montyStatus').innerHTML = `You chose Door ${chosenDoor}. Monty has opened Door ${openedGoatDoor} to reveal a goat! Would you like to <strong>swap</strong> doors or <strong>stay</strong>?`;
                 document.getElementById('montyControls').style.display = 'flex';
                 gameState = 'doorChosen';
             };
@@ -128,9 +128,9 @@
                 if (won) {
                     if (isSwap) swapWins++;
                     else stayWins++;
-                    document.getElementById('montyStatus').innerHTML = `🎉 **You won the Car!** ${isSwap ? 'Swapping' : 'Staying'} was successful! Choose any door to play again.`;
+                    document.getElementById('montyStatus').innerHTML = `🎉 <strong>You won the Car!</strong> ${isSwap ? 'Swapping' : 'Staying'} was successful! Choose any door to play again.`;
                 } else {
-                    document.getElementById('montyStatus').innerHTML = `🐐 **Goat!** You got a goat. ${isSwap ? 'Swapping' : 'Staying'} failed. Choose any door to play again.`;
+                    document.getElementById('montyStatus').innerHTML = `🐐 <strong>Goat!</strong> You got a goat. ${isSwap ? 'Swapping' : 'Staying'} failed. Choose any door to play again.`;
                 }
 
                 updateMontyScoreboard();

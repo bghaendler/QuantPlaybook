@@ -29,7 +29,7 @@
                         $$\int_{\mathcal{D}} f(\mathbf{x}) \psi(\mathbf{x}) \, \mathrm{d}\mathbf{x} = \mathrm{E}_{\psi}[f(\mathbf{x})]$$
                     </p>
                     <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
-                        Calling a mathematical value an expectation does not demand Monte Carlo. For example, the standard European option value is an expectation computed entirely analytically using the **Black-Scholes-Merton** formula.
+                        Calling a mathematical value an expectation does not demand Monte Carlo. For example, the standard European option value is an expectation computed entirely analytically using the <strong>Black-Scholes-Merton</strong> formula.
                     </p>
                 </div>
             </div>
@@ -38,12 +38,12 @@
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Feynman-Kac Connection</h3>
                     <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
-                        The **Feynman-Kac Theorem** establishes a literal equivalence between the solutions of partial differential equations and expectations under a corresponding stochastic process. 
+                        The <strong>Feynman-Kac Theorem</strong> establishes a literal equivalence between the solutions of partial differential equations and expectations under a corresponding stochastic process. 
                         Given a PDE with terminal condition $V(T, \mathbf{X}) = f(\mathbf{X})$:
                         $$\frac{\partial V}{\partial t} + \sum_{i=1}^n b_i \frac{\partial V}{\partial X_i} + \frac{1}{2} \sum_{i,j=1}^n c_{ij} \frac{\partial^2 V}{\partial X_i \partial X_j} - rV = 0$$
                         The solution is identical to the risk-neutral discounted expectation:
                         $$V(t, \mathbf{X}) = \mathrm{E} \left[ f(\mathbf{X}_T) e^{-r(T-t)} \right]$$
-                        Whether to solve this via **finite difference schemes (PDE methods)** or **Monte Carlo path simulations** is purely an implementation choice. Both evaluate identical mathematical boundaries.
+                        Whether to solve this via <strong>finite difference schemes (PDE methods)</strong> or <strong>Monte Carlo path simulations</strong> is purely an implementation choice. Both evaluate identical mathematical boundaries.
                     </p>
                 </div>
             </div>
@@ -56,9 +56,9 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
                 <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Paradigm Shift: Quasi-Random vs. Low-Discrepancy Sequences</h3>
                 <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
-                    For production pricing in global financial institutions, pseudo-random numbers are obsolete. Instead, serious practitioners utilize **Low-Discrepancy Sequences (LDS)**. 
-                    - **Pseudo-Random Sequences:** Focus on emulating true randomness where each draw is statistically independent. This independence naturally causes clusters (overlapping points) and large empty gaps.
-                    - **Low-Discrepancy Sequences:** Are fully deterministic, taking into account all previously generated coordinates to actively fill "holes" and cover the sample space with maximum uniformity.
+                    For production pricing in global financial institutions, pseudo-random numbers are obsolete. Instead, serious practitioners utilize <strong>Low-Discrepancy Sequences (LDS)</strong>. 
+                    - <strong>Pseudo-Random Sequences:</strong> Focus on emulating true randomness where each draw is statistically independent. This independence naturally causes clusters (overlapping points) and large empty gaps.
+                    - <strong>Low-Discrepancy Sequences:</strong> Are fully deterministic, taking into account all previously generated coordinates to actively fill "holes" and cover the sample space with maximum uniformity.
                 </p>
 
                 <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); margin-bottom:1.25rem; font-size:0.85rem; line-height:1.6;">
@@ -66,7 +66,7 @@
                     <p style="margin:0; color:#4b5563;">
                         The rate of convergence of standard pseudo-random Monte Carlo is governed by the Central Limit Theorem at $O(1/\sqrt{N})$. In contrast, Low-Discrepancy Monte Carlo achieves a convergence rate close to $O(1/N)$.
                         $$\text{Required Iterations } (N) \text{ for same accuracy:} \quad N_{\text{PR}} = N_{\text{LDS}}^2$$
-                        If a Sobol' simulation achieves acceptable accuracy in 1,000 steps ($1$ second), a pseudo-random generator requires **1,000,000 steps ($16$ minutes)**. This offers massive operational and hardware cost savings on high-performance grids.
+                        If a Sobol' simulation achieves acceptable accuracy in 1,000 steps ($1$ second), a pseudo-random generator requires <strong>1,000,000 steps ($16$ minutes)</strong>. This offers massive operational and hardware cost savings on high-performance grids.
                     </p>
                 </div>
             </div>
@@ -81,8 +81,8 @@
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Wiener Path Construction: Incremental vs. Brownian Bridge</h3>
                     <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
                         To construct a discretized path of a standard Wiener process $W(t_i)$:
-                        - **Incremental Method:** Evolve sequentially step-by-step: $W(t_{i+1}) = W(t_i) + \sqrt{\Delta t} Z_i$. This is highly sequential and places all the variance allocation onto the final step.
-                        - **Brownian Bridge Method:** Shapes the path hierarchically. The first draw sets the path endpoint $W(T) = \sqrt{T} Z_1$. Subsequent draws bisect the path at midpoints, computing the conditional Gaussian mean and variance:
+                        - <strong>Incremental Method:</strong> Evolve sequentially step-by-step: $W(t_{i+1}) = W(t_i) + \sqrt{\Delta t} Z_i$. This is highly sequential and places all the variance allocation onto the final step.
+                        - <strong>Brownian Bridge Method:</strong> Shapes the path hierarchically. The first draw sets the path endpoint $W(T) = \sqrt{T} Z_1$. Subsequent draws bisect the path at midpoints, computing the conditional Gaussian mean and variance:
                         $$\mathrm{E}[W(t_j)] = \left(\frac{t_k - t_j}{t_k - t_i}\right)W(t_i) + \left(\frac{t_j - t_i}{t_k - t_i}\right)W(t_k)$$
                         $$\mathrm{V}[W(t_j)] = \frac{(t_j - t_i)(t_k - t_j)}{t_k - t_i}$$
                     </p>
@@ -96,7 +96,7 @@
                         A standard Poisson process has discrete jumps. 
                         - Evolving it via fine Bernoulli time-steps is highly inefficient and statistically flawed.
                         - Instead, we draw independent exponential times between events: $\tau_i \sim -\frac{\ln(1-u_i)}{\lambda}$.
-                        - For maximum efficiency under low-discrepancy sequences, Jäckel advocates the **Poisson Bridge**: first draw the total number of events $n$ over $(0, T)$ from a Poisson distribution, then distribute event times uniformly (via Beta distributions) to build the jump path hierarchically.
+                        - For maximum efficiency under low-discrepancy sequences, Jäckel advocates the <strong>Poisson Bridge</strong>: first draw the total number of events $n$ over $(0, T)$ from a Poisson distribution, then distribute event times uniformly (via Beta distributions) to build the jump path hierarchically.
                     </p>
                 </div>
             </div>
@@ -154,7 +154,7 @@
             </p>
             <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color:#374151;">
                 <strong>Analysis:</strong><br>
-                For a standard Normal variable $x \sim \mathcal{N}(0, 1)$, a call payoff $\max(x, 0)$ creates a distribution that is a **mixture of a Dirac delta spike at zero (with probability 0.5) and the positive half of the Gaussian PDF**:
+                For a standard Normal variable $x \sim \mathcal{N}(0, 1)$, a call payoff $\max(x, 0)$ creates a distribution that is a <strong>mixture of a Dirac delta spike at zero (with probability 0.5) and the positive half of the Gaussian PDF</strong>:
                 $$\psi(y) = \frac{1}{2}\delta(y) + \frac{1}{\sqrt{2\pi}} e^{-y^2/2} h(y)$$
                 If a quant attempts to match the first two moments of this mixed distribution to fit a pure log-normal distribution, the resulting analytic pricing will be severely distorted. This represents a notorious pitfall in pricing Asian options and basket options.
             </div>
@@ -167,8 +167,8 @@
             </p>
             <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color:#374151;">
                 <strong>Analysis:</strong><br>
-                1. **TAMPERING AND SEQUENTIAL OVERLAP:** In pseudo-random generators, sequential runs using different seeds from the same linear congruential pipeline often overlap in high dimensions. This makes them statistically dependent, invalidating standard error convergence bounds.<br>
-                2. **MASKING COMPROMISED GENERATORS:** If the generator is flawed, changing the seed will not reveal the issue; it merely generates another biased sample, risking a false positive validation. The correct path is to change the **generator class** (e.g. from LCG to Mersenne Twister or Sobol').
+                1. <strong>TAMPERING AND SEQUENTIAL OVERLAP:</strong> In pseudo-random generators, sequential runs using different seeds from the same linear congruential pipeline often overlap in high dimensions. This makes them statistically dependent, invalidating standard error convergence bounds.<br>
+                2. <strong>MASKING COMPROMISED GENERATORS:</strong> If the generator is flawed, changing the seed will not reveal the issue; it merely generates another biased sample, risking a false positive validation. The correct path is to change the <strong>generator class</strong> (e.g. from LCG to Mersenne Twister or Sobol').
             </div>
         </div>
     </div>
@@ -360,9 +360,9 @@
 
         const outEl = document.getElementById('outM3L12Discrepancy');
         if (genType === 'pseudo') {
-            outEl.innerHTML = `Generator: <strong>Pseudo-Random</strong>. Note the clear **overlapping clusters** and **large empty holes** (discrepancy breakdown) which slow down pricing convergence.`;
+            outEl.innerHTML = `Generator: <strong>Pseudo-Random</strong>. Note the clear <strong>overlapping clusters</strong> and <strong>large empty holes</strong> (discrepancy breakdown) which slow down pricing convergence.`;
         } else {
-            outEl.innerHTML = `Generator: <strong>Low-Discrepancy (Sobol' Proxy)</strong>. Notice how the points **perfectly fill gaps** in the space without clustering, ensuring optimal $O(1/N)$ convergence speed.`;
+            outEl.innerHTML = `Generator: <strong>Low-Discrepancy (Sobol' Proxy)</strong>. Notice how the points <strong>perfectly fill gaps</strong> in the space without clustering, ensuring optimal $O(1/N)$ convergence speed.`;
         }
     };
 
@@ -412,7 +412,7 @@
 
         const outEl = document.getElementById('outM3L12Path');
         outEl.innerHTML = `Mode: <strong>${mode === 'incremental' ? 'Sequential Incremental' : 'Hierarchical Brownian Bridge'}</strong>.<br>
-        Brownian Bridge captures **90%+ of path variability** in the first few hierarchical divisions, making it highly compatible with low-discrepancy sequences where early dimensions carry most of the mapping weight.`;
+        Brownian Bridge captures <strong>90%+ of path variability</strong> in the first few hierarchical divisions, making it highly compatible with low-discrepancy sequences where early dimensions carry most of the mapping weight.`;
 
         const ctx = document.getElementById('m3l12PathChart');
         if (!ctx) return;

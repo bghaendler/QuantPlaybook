@@ -24,7 +24,7 @@
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Deterministic Local Volatility $\sigma(S, t)$</h3>
                     <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
-                        If we assume the option market is perfectly correct, implied volatility contains all necessary information about future price distributions. To price exotic derivatives consistently, we extract a **local volatility** surface $\sigma(S, t)$ from observed market vanilla option prices over strikes and expirations.
+                        If we assume the option market is perfectly correct, implied volatility contains all necessary information about future price distributions. To price exotic derivatives consistently, we extract a <strong>local volatility</strong> surface $\sigma(S, t)$ from observed market vanilla option prices over strikes and expirations.
                     </p>
                     <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
                         <strong>Local Volatility Framework:</strong> Introduced by Bruno Dupire, Emanuel Derman, and Mark Rubinstein, this deterministic volatility model posits that the asset volatility is a direct function of spot price $S$ and time $t$. The standard Black-Scholes PDE remains valid:
@@ -41,7 +41,7 @@
                         $$\frac{\partial p}{\partial T} = \frac{1}{2}\frac{\partial^2}{\partial S^2}\left(\sigma^2 S^2 p\right) - \frac{\partial}{\partial S}\left((r-q) S p\right) - q p$$
                         Differentiating the European call integral twice w.r.t strike $E$ yields the risk-neutral density (Breeden-Litzenberger):
                         $$p = e^{(r-q)(T-t^*)} \frac{\partial^2 V}{\partial E^2}$$
-                        Substituting $p$ into the call integral time derivative and integrating by parts yields **Dupire's Local Variance Formula**:
+                        Substituting $p$ into the call integral time derivative and integrating by parts yields <strong>Dupire's Local Variance Formula</strong>:
                         $$\sigma^2_{loc}(K=E, T) = \frac{\frac{\partial V}{\partial T} + (r-q)E\frac{\partial V}{\partial E} + q V}{\frac{1}{2}E^2\frac{\partial^2 V}{\partial E^2}}$$
                     </p>
                 </div>
@@ -55,7 +55,7 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
                 <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Uncertain Volatility Model (Black-Scholes-Barenblatt PDE)</h3>
                 <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
-                    In contrast to deterministic local volatility, the **Uncertain Volatility Model** (developed by Marco Avellaneda, Antonio Levy, and Arnon Paras in 1995) makes no assumptions about the correctness of implied volatility. Volatility $\sigma$ is treated as an uncertain parameter constrained to lie within a defined band, without assigning any probability distribution:
+                    In contrast to deterministic local volatility, the <strong>Uncertain Volatility Model</strong> (developed by Marco Avellaneda, Antonio Levy, and Arnon Paras in 1995) makes no assumptions about the correctness of implied volatility. Volatility $\sigma$ is treated as an uncertain parameter constrained to lie within a defined band, without assigning any probability distribution:
                     $$\sigma^- \le \sigma \le \sigma^+$$
                     This reflects Frank Knight's classical distinction between <strong>randomness</strong> (known probabilities) and <strong>uncertainty</strong> (unknown probabilities, known boundaries).
                 </p>
@@ -85,7 +85,7 @@
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Compressing Volatility Spreads via Static Hedging</h3>
                     <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
-                        Because the uncertain volatility model produces wide bid-ask pricing spreads for complex exotic options (e.g. up-and-out barrier calls), traders can narrow these spreads by purchasing or selling highly liquid, traded vanilla options. This process is called **Optimal Static Hedging**.
+                        Because the uncertain volatility model produces wide bid-ask pricing spreads for complex exotic options (e.g. up-and-out barrier calls), traders can narrow these spreads by purchasing or selling highly liquid, traded vanilla options. This process is called <strong>Optimal Static Hedging</strong>.
                     </p>
                     <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
                         <strong>Portfolio Optimization:</strong> The net worst-case value of the statically hedged portfolio is:
@@ -120,9 +120,9 @@
             </p>
             <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color:#374151;">
                 <strong>Solution:</strong><br>
-                - **Backward PDE:** Marching backwards in time from a known option payoff $(S_T - K)^+$ at maturity $T$ to find today's option value $V(t, S)$. It is the pricing workhorse for specific contracts.<br>
-                - **Forward PDE:** Evolves the entire call price surface forward in maturity time $T$ for each strike $K$. Useful for calibrating volatility smiles.<br>
-                - **Breeden-Litzenberger Density:** The second derivative of the call price w.r.t. strike $K$ yields the risk-neutral probability density function ($f_{S_T}$), which is positive by definition:
+                - <strong>Backward PDE:</strong> Marching backwards in time from a known option payoff $(S_T - K)^+$ at maturity $T$ to find today's option value $V(t, S)$. It is the pricing workhorse for specific contracts.<br>
+                - <strong>Forward PDE:</strong> Evolves the entire call price surface forward in maturity time $T$ for each strike $K$. Useful for calibrating volatility smiles.<br>
+                - <strong>Breeden-Litzenberger Density:</strong> The second derivative of the call price w.r.t. strike $K$ yields the risk-neutral probability density function ($f_{S_T}$), which is positive by definition:
                   $$f_{S_T}(K) = e^{rT} \frac{\partial^2 C}{\partial K^2} \ge 0 \iff \frac{\partial^2 C}{\partial K^2} \ge 0$$
             </div>
         </div>
@@ -161,9 +161,9 @@
             </p>
             <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color:#374151;">
                 <strong>Solution:</strong><br>
-                - **Deterministic $\sigma(t)$:** The Black-Scholes formula **remains valid**. Implied volatility $\sigma_{imp}$ is the root-mean-square average variance over the option's life:
+                - <strong>Deterministic $\sigma(t)$:</strong> The Black-Scholes formula <strong>remains valid</strong>. Implied volatility $\sigma_{imp}$ is the root-mean-square average variance over the option's life:
                   $$\sigma_{imp} = \sqrt{\frac{1}{T - t} \int_t^T \sigma^2(\tau) \, \mathrm{d}\tau}$$
-                - **Local $\sigma(S, t)$:** The asset is no longer log-normal at maturity; thus, **closed-form BS solutions fail**. We must use numerical finite difference or Monte Carlo methods.
+                - <strong>Local $\sigma(S, t)$:</strong> The asset is no longer log-normal at maturity; thus, <strong>closed-form BS solutions fail</strong>. We must use numerical finite difference or Monte Carlo methods.
             </div>
         </div>
 
@@ -374,7 +374,7 @@
         const outEl = document.getElementById('outM3L11LocalVol');
         outEl.innerHTML = `
             Profile: <strong>${type.toUpperCase()}</strong>. ATM Implied Volatility: <strong>${(sig0*100).toFixed(1)}%</strong>.<br>
-            Note the **inverse problem curvature amplification**: The local volatility surface exhibits significantly steeper curvatures and characteristic jaggedness compared to the implied volatility smile due to the double strike derivatives ($\partial^2 V / \partial E^2$).
+            Note the <strong>inverse problem curvature amplification</strong>: The local volatility surface exhibits significantly steeper curvatures and characteristic jaggedness compared to the implied volatility smile due to the double strike derivatives ($\partial^2 V / \partial E^2$).
         `;
         if (typeof window.safeTypeset === 'function') {
             window.safeTypeset([outEl]);
@@ -453,7 +453,7 @@
         outEl.innerHTML = `
             Uncertainty Range: <strong>[${(sigMin*100).toFixed(0)}%, ${(sigMax*100).toFixed(0)}%]</strong>.<br>
             Under a simple long Call, Gamma is strictly positive, hence Worst-Case $V^-$ aligns with $\\sigma^-$, and Best-Case $V^+$ with $\\sigma^+$.<br>
-            For complex instruments like **Up-and-Out Barrier Calls**, Gamma switches signs, creating non-linear valuation bounds that standard Vega fails to capture.
+            For complex instruments like <strong>Up-and-Out Barrier Calls</strong>, Gamma switches signs, creating non-linear valuation bounds that standard Vega fails to capture.
         `;
         if (typeof window.safeTypeset === 'function') {
             window.safeTypeset([outEl]);
@@ -543,7 +543,7 @@
         outEl.innerHTML = `
             Selected Hedges: $q_1 = ${q1.toFixed(2)}$ (90 Call), $q_2 = ${q2.toFixed(2)}$ (110 Call).<br>
             Current Valuation Bid-Ask pricing spread at ATM (100 Spot): <strong style="color:var(--accent);">${currentSpreadAt100.toFixed(2)}</strong>.<br>
-            Applying the **Optimal Static Hedge** ($q_1=0.62$, $q_2=0.53$) shrinks the unhedged spread of **2.74** down to a tight spread of **1.04**!
+            Applying the <strong>Optimal Static Hedge</strong> ($q_1=0.62$, $q_2=0.53$) shrinks the unhedged spread of <strong>2.74</strong> down to a tight spread of <strong>1.04</strong>!
         `;
         if (typeof window.safeTypeset === 'function') {
             window.safeTypeset([outEl]);

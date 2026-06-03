@@ -25,7 +25,7 @@
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Stochastic Spot Rate ($r$)</h3>
                     <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
-                        The instantaneous **spot rate** $r$ is a mathematical construct representing the yield on a bond of infinitesimal maturity [PDF1: 2]. Real-world proxies are short-maturity instruments, such as a one-month bond yield [PDF1: 2]. We govern the spot rate's random walk via a Stochastic Differential Equation (SDE) [PDF1: 2]:
+                        The instantaneous <strong>spot rate</strong> $r$ is a mathematical construct representing the yield on a bond of infinitesimal maturity [PDF1: 2]. Real-world proxies are short-maturity instruments, such as a one-month bond yield [PDF1: 2]. We govern the spot rate's random walk via a Stochastic Differential Equation (SDE) [PDF1: 2]:
                         $$\mathrm{d}r = u(r, t)\mathrm{d}t + w(r, t)\mathrm{d}W_t$$
                         Where $u(r, t)$ is the real-world drift rate, and $w(r, t)$ represents the local interest rate volatility.
                     </p>
@@ -39,7 +39,7 @@
                         Because the spot rate $r$ is not a traded asset, we cannot hedge a bond with the underlying rate itself [PDF1: 2]. Instead, we construct a risk-free portfolio $\Pi = V_1 - \Delta V_2$ hedging a bond of maturity $T_1$ against another of maturity $T_2$ [PDF1: 2].
                         Applying Itô's Lemma, choosing $\Delta = \frac{\partial V_1}{\partial r} / \frac{\partial V_2}{\partial r}$ to eliminate $\mathrm{d}W_t$, and invoking no-arbitrage ($\mathrm{d}\Pi = r \Pi \mathrm{d}t$) separates maturities [PDF1: 3]:
                         $$\frac{\frac{\partial V_1}{\partial t} + \frac{1}{2}w^2 \frac{\partial^2 V_1}{\partial r^2} - r V_1}{\frac{\partial V_1}{\partial r}} = \frac{\frac{\partial V_2}{\partial t} + \frac{1}{2}w^2 \frac{\partial^2 V_2}{\partial r^2} - r V_2}{\frac{\partial V_2}{\partial r}} = a(r, t)$$
-                        This maturity-independent separation leads directly to the **Bond Pricing Equation (BPE)** [PDF1: 4]:
+                        This maturity-independent separation leads directly to the <strong>Bond Pricing Equation (BPE)</strong> [PDF1: 4]:
                         $$\frac{\partial V}{\partial t} + \frac{1}{2}w(r, t)^2 \frac{\partial^2 V}{\partial r^2} + \left( u(r, t) - \lambda(r, t) w(r, t) \right) \frac{\partial V}{\partial r} - r V = 0$$
                     </p>
                 </div>
@@ -53,7 +53,7 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
                 <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Market Price of Interest Rate Risk ($\lambda$)</h3>
                 <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
-                    The separation variable $a(r, t)$ is written without loss of generality in terms of the **market price of interest rate risk** $\lambda(r, t)$ [PDF1: 4]:
+                    The separation variable $a(r, t)$ is written without loss of generality in terms of the <strong>market price of interest rate risk</strong> $\lambda(r, t)$ [PDF1: 4]:
                     $$a(r, t) = \lambda(r, t)w(r, t) - u(r, t)$$
                     Applying Itô's Lemma to an unhedged bond, its price return decomposes into the risk-free rate plus excess compensation per unit of stochastic risk [PDF1: 5]:
                     $$\mathrm{d}V - r V \mathrm{d}t = w \frac{\partial V}{\partial r}\left( \mathrm{d}W_t + \lambda(r, t)\mathrm{d}t \right)$$
@@ -63,9 +63,9 @@
                 <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6;">
                     <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Equities vs. Fixed Income Risk Neutrality</h4>
                     <p style="margin:0; color:#4b5563;">
-                        - **For Traded Assets (Equities $S$):** The real-world drift is replaced by the risk-free rate $r$ in the pricing PDE. The market price of risk is the Sharpe ratio:
+                        - <strong>For Traded Assets (Equities $S$):</strong> The real-world drift is replaced by the risk-free rate $r$ in the pricing PDE. The market price of risk is the Sharpe ratio:
                         $$\lambda_S = \frac{\mu - r}{\sigma}$$
-                        - **For Non-Traded Quantities (Interest Rates $r$):** All pricing is done under the risk-neutral measure $\mathbb{Q}$, where the real-world drift $u(r, t)$ is replaced by the **risk-neutral drift**:
+                        - <strong>For Non-Traded Quantities (Interest Rates $r$):</strong> All pricing is done under the risk-neutral measure $\mathbb{Q}$, where the real-world drift $u(r, t)$ is replaced by the <strong>risk-neutral drift</strong>:
                         $$\text{Risk-Neutral Drift} = u(r, t) - \lambda(r, t)w(r, t)$$
                         $$\lambda_r = \frac{a(r,t) + u(r,t)}{w(r,t)}$$
                     </p>
@@ -80,7 +80,7 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
                 <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Tractable Affine Pricing Term Structures</h3>
                 <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
-                    An interest rate model belongs to the **affine class** if the price of a zero-coupon bond (ZCB) can be expressed as an exponential linear function of the short rate [PDF1: 11]:
+                    An interest rate model belongs to the <strong>affine class</strong> if the price of a zero-coupon bond (ZCB) can be expressed as an exponential linear function of the short rate [PDF1: 11]:
                     $$V(r, t; T) = \exp\left( A(t; T) - r B(t; T) \right)$$
                     Where $A(t; T)$ and $B(t; T)$ are maturity-dependent functions.
                 </p>
@@ -89,7 +89,7 @@
                     <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">The Affine Pricing Theorem</h4>
                     <p style="margin:0; color:#4b5563;">
                         Substituting $V = \exp(A - r B)$ into the Bond Pricing Equation and differentiating twice with respect to $r$ yields the necessary and sufficient structural condition:
-                        * **A spot rate model is affine if and only if both its risk-adjusted drift $(u - \lambda w)$ and local variance $w^2$ are linear in $r$ [PDF1: 12]:**
+                        * <strong>A spot rate model is affine if and only if both its risk-adjusted drift $(u - \lambda w)$ and local variance $w^2$ are linear in $r$ [PDF1: 12]:</strong>
                         $$w^2 = \alpha(t)r + \beta(t)$$
                         $$u - \lambda w = \eta(t) - \gamma(t)r$$
                         Under these conditions, $A(t; T)$ and $B(t; T)$ are governed by two coupled ordinary differential equations (ODEs):
@@ -121,7 +121,7 @@
             <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563;">
                 To resolve the negative rate problem, the CIR model scales local variance by the spot rate itself [PDF1: 47]:
                 $$\mathrm{d}r = (\eta - \gamma r)\mathrm{d}t + \sqrt{\alpha r} \mathrm{d}W_t$$
-                The spot rate remains strictly positive and bounded if the **Feller Condition** is satisfied [PDF1: 47]:
+                The spot rate remains strictly positive and bounded if the <strong>Feller Condition</strong> is satisfied [PDF1: 47]:
                 $$\eta > \alpha/2$$
                 The lower boundary $r=0$ is non-attainable if the steady-state parameter $k > 1$ [PDF1: 67]:
                 $$k = \frac{2\eta}{\alpha} + \frac{2\beta\gamma}{\alpha^2} > 1$$
@@ -153,11 +153,11 @@
                 <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6;">
                     <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Two-Factor Bond Pricing PDE</h4>
                     <p style="margin:0; color:#4b5563;">
-                        To eliminate both sources of randomness ($\mathrm{d}W_1, \mathrm{d}W_2$), we construct a portfolio using three bonds of different maturities [PDF1: 21]. Under no-arbitrage, the consistency determinant of the 3x2 matrix must equal zero, yielding two market prices of risk ($\lambda_r, \lambda_l$) and the **Two-Factor Bond Pricing PDE** [PDF1: 23, 24]:
+                        To eliminate both sources of randomness ($\mathrm{d}W_1, \mathrm{d}W_2$), we construct a portfolio using three bonds of different maturities [PDF1: 21]. Under no-arbitrage, the consistency determinant of the 3x2 matrix must equal zero, yielding two market prices of risk ($\lambda_r, \lambda_l$) and the <strong>Two-Factor Bond Pricing PDE</strong> [PDF1: 23, 24]:
                         $$\frac{\partial V}{\partial t} + \frac{1}{2}w^2 \frac{\partial^2 V}{\partial r^2} + \rho w q \frac{\partial^2 V}{\partial r \partial l} + \frac{1}{2}q^2 \frac{\partial^2 V}{\partial l^2} + (u - \lambda_r w)\frac{\partial V}{\partial r} + (p - \lambda_l q)\frac{\partial V}{\partial l} - r V = 0$$
-                        * **Brennan &amp; Schwartz Model (1982):** Mean-reverts short rate $r$ to consolidations long-rate $l$ [PDF1: 25]. Due to lognormal form, no analytical pricing solutions exist, and simulations can blow up.
-                        * **Fong &amp; Vasicek (1991):** Short-rate variance $\xi$ follows its own mean-reverting square-root process.
-                        * **Longstaff &amp; Schwartz (1992):** Models two independent square-root factors ($x, y$), expressing the spot rate linearly: $r = c x + d y$ [PDF1: 25].
+                        * <strong>Brennan &amp; Schwartz Model (1982):</strong> Mean-reverts short rate $r$ to consolidations long-rate $l$ [PDF1: 25]. Due to lognormal form, no analytical pricing solutions exist, and simulations can blow up.
+                        * <strong>Fong &amp; Vasicek (1991):</strong> Short-rate variance $\xi$ follows its own mean-reverting square-root process.
+                        * <strong>Longstaff &amp; Schwartz (1992):</strong> Models two independent square-root factors ($x, y$), expressing the spot rate linearly: $r = c x + d y$ [PDF1: 25].
                     </p>
                 </div>
             </div>
@@ -342,8 +342,8 @@
         const outEl = document.getElementById('outM6L2Mc');
         outEl.innerHTML = `
             Initial Rate: <strong>${(r0*100).toFixed(0)}%</strong>. Volatility: <strong>${(vol*100).toFixed(0)}%</strong>.<br>
-            - **Vasicek model:** Breached the $0.0\\%$ negative boundary **${breaches} times** due to Normal distribution characteristics.<br>
-            - **CIR model:** Remained strictly positive as the diffusion coefficient $\\sqrt{r}$ shrinks near $0$, pulling rates back dynamically.
+            - <strong>Vasicek model:</strong> Breached the $0.0\\%$ negative boundary <strong>${breaches} times</strong> due to Normal distribution characteristics.<br>
+            - <strong>CIR model:</strong> Remained strictly positive as the diffusion coefficient $\\sqrt{r}$ shrinks near $0$, pulling rates back dynamically.
         `;
         if (typeof window.safeTypeset === 'function') {
             window.safeTypeset([outEl]);
@@ -409,7 +409,7 @@
         const outEl = document.getElementById('outM6L2Affine');
         outEl.innerHTML = `
             Model selected: <strong>${model.toUpperCase()}</strong>. Short Rate $r_0$: <strong>${(r0*100).toFixed(0)}%</strong>. Reversion $\\gamma$: <strong>${gamma.toFixed(1)}</strong>.<br>
-            Changes in mean reversion and initial rates deform the term structure, generating **upward sloping**, **flat**, or **inverted** yield curves.
+            Changes in mean reversion and initial rates deform the term structure, generating <strong>upward sloping</strong>, <strong>flat</strong>, or <strong>inverted</strong> yield curves.
         `;
         if (typeof window.safeTypeset === 'function') {
             window.safeTypeset([outEl]);
@@ -489,7 +489,7 @@
         outEl.innerHTML = `
             Two-Factor Correlation $\\rho$: <strong>${rho.toFixed(1)}</strong>. consol Volatility: <strong>${(volL*100).toFixed(0)}%</strong>.<br>
             - Short-rate path (Green) mean-reverts dynamically to the long-term consol rate (Red).<br>
-            - This dual randomness framework allows for **tilt, steepening, and twists** in the yield curve that single-factor models cannot mathematically represent.
+            - This dual randomness framework allows for <strong>tilt, steepening, and twists</strong> in the yield curve that single-factor models cannot mathematically represent.
         `;
         if (typeof window.safeTypeset === 'function') {
             window.safeTypeset([outEl]);

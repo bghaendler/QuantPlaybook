@@ -24,7 +24,7 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
                 <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem;">The Volatility Taxonomy</h3>
                 <p style="font-size: 0.9rem; line-height: 1.6; color: #4b5563; margin-bottom: 1.25rem;">
-                    Dr. Paul Wilmott frames volatility as the central unknown parameter in options pricing. Black-Scholes is an elegant model precisely because it has **exactly one unknown parameter**. With zero unknowns, trade would cease due to perfect agreement; with too many, the model becomes unusable.
+                    Dr. Paul Wilmott frames volatility as the central unknown parameter in options pricing. Black-Scholes is an elegant model precisely because it has <strong>exactly one unknown parameter</strong>. With zero unknowns, trade would cease due to perfect agreement; with too many, the model becomes unusable.
                 </p>
 
                 <!-- Grid of 4 Volatilities -->
@@ -32,7 +32,7 @@
                     <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
                         <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 1rem;">1. Actual / Local Volatility ($\sigma_a$)</h4>
                         <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin: 0;">
-                            The instantaneous random "noise" in a financial instrument's SDE: $dS = \mu S dt + \sigma_a S dX$. It exists purely at an instant, has **no associated time scale**, cannot be directly observed, and must be forecast over the option's entire life.
+                            The instantaneous random "noise" in a financial instrument's SDE: $dS = \mu S dt + \sigma_a S dX$. It exists purely at an instant, has <strong>no associated time scale</strong>, cannot be directly observed, and must be forecast over the option's entire life.
                         </p>
                     </div>
                     <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
@@ -44,7 +44,7 @@
                     <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
                         <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: #8b5cf6; font-size: 1rem;">3. Implied Volatility ($\sigma_i$)</h4>
                         <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin: 0;">
-                            The volatility backed out of current option market prices using the Black-Scholes formula. It is associated with a single timescale: **expiration**. It is influenced by supply/demand crash insurance motives, rather than reflecting a pure physical forecast.
+                            The volatility backed out of current option market prices using the Black-Scholes formula. It is associated with a single timescale: <strong>expiration</strong>. It is influenced by supply/demand crash insurance motives, rather than reflecting a pure physical forecast.
                         </p>
                     </div>
                     <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
@@ -88,7 +88,7 @@
                         $$\text{Vega} = \frac{\partial V}{\partial \sigma} = S \sqrt{T-t} N'(d_1)$$
                     </p>
                     <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
-                        Dr. Paul Wilmott labels Vega a **"bastard Greek"** because it is mathematically inconsistent: it involves differentiating the Black-Scholes formula with respect to a parameter ($\sigma$) that the formula's very SDE derivation assumes to be **constant**.
+                        Dr. Paul Wilmott labels Vega a <strong>"bastard Greek"</strong> because it is mathematically inconsistent: it involves differentiating the Black-Scholes formula with respect to a parameter ($\sigma$) that the formula's very SDE derivation assumes to be <strong>constant</strong>.
                     </p>
                     <div style="background: rgba(239, 68, 68, 0.05); padding: 1rem; border-radius: 8px; border-left: 4px solid #ef4444; font-size: 0.82rem; line-height: 1.5; color: #991b1b; margin-top: 0.5rem;">
                         <strong>Analogy:</strong> Differentiating the Black-Scholes formula with respect to volatility $\sigma$ is conceptually equivalent to differentiating the area of a circle ($A = \pi r^2$) with respect to $\pi$. Despite this inconsistency, Vega is a critical tool used to manage residual volatility risks in exotic books.
@@ -123,7 +123,7 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
                 <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Term Structure Calibration &amp; "Un-averaging"</h3>
                 <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
-                    If we assume the market is right, we can reconcile different implied volatilities for different expirations by modeling a **time-dependent, deterministic actual volatility** $\sigma_a(t)$.
+                    If we assume the market is right, we can reconcile different implied volatilities for different expirations by modeling a <strong>time-dependent, deterministic actual volatility</strong> $\sigma_a(t)$.
                     Under this framework, the implied volatility is the root mean square average of the time-varying variance:
                     $$\sigma_i(T; t^*)^2 = \frac{1}{T - t^*} \int_{t^*}^{T} \sigma_a(\tau)^2 d\tau$$
                 </p>
@@ -143,7 +143,7 @@
                     <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
                         <strong style="color:var(--accent);">Numerical Instability</strong>
                         <p style="margin:0.25rem 0 0 0; font-size:0.8rem;">
-                            Because implied volatility represents a smoothed average, backing out local volatility is an **inverse problem**. Differentiation amplifies noise, causing mild ripples in market quotes to produce extremely jagged, unstable, or negative local volatility curves.
+                            Because implied volatility represents a smoothed average, backing out local volatility is an <strong>inverse problem</strong>. Differentiation amplifies noise, causing mild ripples in market quotes to produce extremely jagged, unstable, or negative local volatility curves.
                         </p>
                     </div>
                     <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
@@ -164,14 +164,14 @@
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Volatility Skews, Smiles &amp; Frowns</h3>
                     <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
-                        Implied volatility is not flat; it varies significantly with strike $E$. In equity markets, we observe a downward sloping **skew** (fear of sudden crashes). In FX markets, we often observe a symmetric **smile** (expectations of large jumps in either direction) or a **frown**.
+                        Implied volatility is not flat; it varies significantly with strike $E$. In equity markets, we observe a downward sloping <strong>skew</strong> (fear of sudden crashes). In FX markets, we often observe a symmetric <strong>smile</strong> (expectations of large jumps in either direction) or a <strong>frown</strong>.
                     </p>
 
                     <div style="background: var(--metric-bg); padding: 1.1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 0.5rem; font-size:0.82rem; line-height:1.5;">
                         <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.9rem; text-align:center;">The Supply &amp; Demand Insurance Analog</h4>
                         <p style="margin:0; color:#4b5563;">
-                            Just like car insurance premiums cover profit margins, business costs, and crash probability (making premium costs higher than actuarial replication), deep out-of-the-money puts are priced by **supply, demand, crash hedging, and fat-tail risk**. 
-                            We cannot extract a pure physical probability from implied volatility because Black-Scholes packs all market frictions into a single parameter: **volatility**.
+                            Just like car insurance premiums cover profit margins, business costs, and crash probability (making premium costs higher than actuarial replication), deep out-of-the-money puts are priced by <strong>supply, demand, crash hedging, and fat-tail risk</strong>. 
+                            We cannot extract a pure physical probability from implied volatility because Black-Scholes packs all market frictions into a single parameter: <strong>volatility</strong>.
                         </p>
                     </div>
                 </div>
@@ -506,13 +506,13 @@
             elOutcome.innerHTML = `
                 <strong>Strategy: Hedging with Actual Volatility ($\sigma_a$)</strong><br>
                 Theoretical guaranteed profit: <strong>$${guaranteedProfitVal.toFixed(2)}</strong> (represented by $V(\\sigma_a) - V(\\sigma_i)$).<br>
-                <span style="color:var(--accent); font-weight:700;">Wilmott Insight:</span> By hedging with the actual volatility, you are replicating a short position in a <em>correctly priced</em> option, perfectly canceling out the terminal payout. The paths are highly volatile during the lifetime of the option (exhibiting random mark-to-market fluctuations due to the $\mu - r$ drift terms), but converge to the exact same **deterministic final profit** at expiration!
+                <span style="color:var(--accent); font-weight:700;">Wilmott Insight:</span> By hedging with the actual volatility, you are replicating a short position in a <em>correctly priced</em> option, perfectly canceling out the terminal payout. The paths are highly volatile during the lifetime of the option (exhibiting random mark-to-market fluctuations due to the $\mu - r$ drift terms), but converge to the exact same <strong>deterministic final profit</strong> at expiration!
             `;
         } else {
             elOutcome.innerHTML = `
                 <strong>Strategy: Hedging with Implied Volatility ($\sigma_i$)</strong><br>
                 Accumulated profit SDE: $d\Pi = \\frac{1}{2}(\\sigma_a^2 - \\sigma_i^2) S^2 \\Gamma^i dt$<br>
-                <span style="color:#8b5cf6; font-weight:700;">Wilmott Insight:</span> By hedging with implied volatility, you balance the daily random fluctuations of option pricing with the stock. The portfolio's increment is **strictly positive at every step** (since $\\sigma_a > \\sigma_i$ and $\\Gamma \\ge 0$). However, the final profit is **highly path-dependent and uncertain** because option Gamma is non-constant and peaks severely near the strike!
+                <span style="color:#8b5cf6; font-weight:700;">Wilmott Insight:</span> By hedging with implied volatility, you balance the daily random fluctuations of option pricing with the stock. The portfolio's increment is <strong>strictly positive at every step</strong> (since $\\sigma_a > \\sigma_i$ and $\\Gamma \\ge 0$). However, the final profit is <strong>highly path-dependent and uncertain</strong> because option Gamma is non-constant and peaks severely near the strike!
             `;
         }
 

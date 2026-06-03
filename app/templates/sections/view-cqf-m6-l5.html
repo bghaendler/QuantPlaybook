@@ -85,9 +85,9 @@
                 <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
                     Since the spot rate $r(t)$ is independent of maturity $T$, its derivative vanishes ($\frac{\partial r}{\partial T} = 0$). By defining the forward rate volatility as $\nu(t, T) \equiv -\frac{\partial \sigma(t, T)}{\partial T}$, we obtain:
                     $$\sigma(t, T) = -\int_t^T \nu(t, s) \, \mathrm{d}s$$
-                    Substituting this back yields the **HJM Drift Condition SDE** under $\mathbb{Q}$:
+                    Substituting this back yields the <strong>HJM Drift Condition SDE</strong> under $\mathbb{Q}$:
                     $$\mathrm{d}f(t, T) = \left( \nu(t, T)\int_t^T \nu(t, s)\mathrm{d}s \right) \mathrm{d}t + \nu(t, T)\mathrm{d}W_t^{\mathbb{Q}}$$
-                    This is a critical result: **in an arbitrage-free model, the drift of the forward rate is completely determined by its volatility structure.**
+                    This is a critical result: <strong>in an arbitrage-free model, the drift of the forward rate is completely determined by its volatility structure.</strong>
                 </p>
 
                 <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6;">
@@ -95,7 +95,7 @@
                     <p style="margin:0; color:#4b5563;">
                         Because the spot rate is $r(t) = f(t, t)$, integrating the forward SDE yields a drift that contains the history of volatility and Brownian movements from the initial time $t^*$ to the current time $t$:
                         $$\mathrm{d}r(t) = \left[ \frac{\partial f(t^*, t)}{\partial t} - \frac{\partial \mu(t, s)}{\partial s}\Big|_{s=t} + \int_{t^*}^t \left( \sigma(s, t)\frac{\partial^2 \sigma(s, t)}{\partial t^2} + \left(\frac{\partial \sigma(s, t)}{\partial t}\right)^2 \right)\mathrm{d}s - \int_{t^*}^t \frac{\partial^2 \sigma(s, t)}{\partial t^2}\mathrm{d}W_s \right]\mathrm{d}t - \frac{\partial \sigma(t, s)}{\partial s}\Big|_{s=t} \mathrm{d}W_t$$
-                        This structural "memory" means the spot rate is non-Markovian. A system shock cannot be undone by an equal and opposite shock. Binomial trees grow exponentially ("bushy"), making finite differences unfeasible and requiring **Monte Carlo simulation** for pricing exotics.
+                        This structural "memory" means the spot rate is non-Markovian. A system shock cannot be undone by an equal and opposite shock. Binomial trees grow exponentially ("bushy"), making finite differences unfeasible and requiring <strong>Monte Carlo simulation</strong> for pricing exotics.
                     </p>
                 </div>
             </div>
@@ -108,7 +108,7 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
                 <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Musiela Parameterization (Constant Tenor)</h3>
                 <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
-                    In calendar time $T$, the maturity date is constant, so the modeled rate represents a shorter-term asset every day. The **Musiela Parameterization** shifts maturity to constant tenor (time-to-maturity) $\tau = T - t$. Using the multi-variable chain rule:
+                    In calendar time $T$, the maturity date is constant, so the modeled rate represents a shorter-term asset every day. The <strong>Musiela Parameterization</strong> shifts maturity to constant tenor (time-to-maturity) $\tau = T - t$. Using the multi-variable chain rule:
                     $$\mathrm{d}\bar{f}(t, \tau) = \left( \bar{\nu}(t, \tau)\int_0^\tau \bar{\nu}(t, s) \, \mathrm{d}s + \frac{\partial \bar{f}(t, \tau)}{\partial \tau} \right) \mathrm{d}t + \bar{\nu}(t, \tau) \mathrm{d}W_t^{\mathbb{Q}}$$
                     The term $\frac{\partial \bar{f}}{\partial \tau}$ represents the slope of the yield curve, correcting for "rolling down the curve" as calendar time passes.
                 </p>
@@ -322,7 +322,7 @@
         const outEl = document.getElementById('outM6L5Curve');
         outEl.innerHTML = `
             Level Vol: <strong>${(vol1*100).toFixed(2)}%</strong>. Twist Vol: <strong>${(vol2*100).toFixed(2)}%</strong>.<br>
-            - **HJM Multi-Factor Evolution:** Level shift (PC1) shifts the entire curve upward/downward, while Twist shift (PC2) changes the yield curve slope, demonstrating full-curve modeling consistency.
+            - <strong>HJM Multi-Factor Evolution:</strong> Level shift (PC1) shifts the entire curve upward/downward, while Twist shift (PC2) changes the yield curve slope, demonstrating full-curve modeling consistency.
         `;
         if (typeof window.safeTypeset === 'function') {
             window.safeTypeset([outEl]);
@@ -431,8 +431,8 @@
         const outEl = document.getElementById('outM6L5Jacobi');
         outEl.innerHTML = `
             Rotations Completed: <strong>${iter}</strong>.<br>
-            - **Extracted Eigenvalues (Diagonal):** $\\lambda_i = [${eigenvalues.join(', ')}]$.<br>
-            - **Convergence Proof:** The off-diagonal sum of squares decays rapidly toward **0.00**, confirming that Jacobi rotations diagonalize the symmetric covariance matrix.
+            - <strong>Extracted Eigenvalues (Diagonal):</strong> $\\lambda_i = [${eigenvalues.join(', ')}]$.<br>
+            - <strong>Convergence Proof:</strong> The off-diagonal sum of squares decays rapidly toward <strong>0.00</strong>, confirming that Jacobi rotations diagonalize the symmetric covariance matrix.
         `;
         if (typeof window.safeTypeset === 'function') {
             window.safeTypeset([outEl]);
@@ -503,9 +503,9 @@
         const outEl = document.getElementById('outM6L5Conv');
         outEl.innerHTML = `
             Maturity ($T$): <strong>${T.toFixed(1)}Y</strong>. Simulations ($N$): <strong>${N}</strong>.<br>
-            - **Analytical ZCB Price:** <strong>${analyticalZcb.toFixed(5)}</strong>.<br>
-            - **HJM Monte Carlo Price:** <strong>${mcZcb.toFixed(5)}</strong>.<br>
-            - **Convergence:** The running average (Red line) converges cleanly to the analytical price as paths increase.
+            - <strong>Analytical ZCB Price:</strong> <strong>${analyticalZcb.toFixed(5)}</strong>.<br>
+            - <strong>HJM Monte Carlo Price:</strong> <strong>${mcZcb.toFixed(5)}</strong>.<br>
+            - <strong>Convergence:</strong> The running average (Red line) converges cleanly to the analytical price as paths increase.
         `;
         if (typeof window.safeTypeset === 'function') {
             window.safeTypeset([outEl]);

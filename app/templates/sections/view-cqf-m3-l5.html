@@ -25,7 +25,7 @@
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">The Fully Implicit Finite Difference Method</h3>
                     <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
-                        Unlike the explicit scheme (where three known option prices at time step $k$ resolve to one price at step $k+1$), the **Fully Implicit Method** reverses the relationship: a single known option price at step $k$ relates to three unknown option prices at the next backward step $k+1$.
+                        Unlike the explicit scheme (where three known option prices at time step $k$ resolve to one price at step $k+1$), the <strong>Fully Implicit Method</strong> reverses the relationship: a single known option price at step $k$ relates to three unknown option prices at the next backward step $k+1$.
                     </p>
                     <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
                         This is achieved by evaluating all spatial derivative approximations (Delta and Gamma) at the advanced, unknown time step $k+1$ rather than the current time step $k$. This produces a linear system of simultaneous equations.
@@ -34,7 +34,7 @@
                     <div style="background: var(--metric-bg); padding: 1.15rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 0.5rem;">
                         <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Unconditional Stability</h4>
                         <p style="font-size: 0.8rem; line-height: 1.5; color: #4b5563; margin: 0;">
-                            The fully implicit scheme is accurate to first order in time and second order in space: $\mathcal{O}(\delta t, \delta S^2)$. Crucially, the scheme is **unconditionally stable**, meaning that error perturbations decay exponentially regardless of the grid spacing step sizes $\delta t$ and $\delta S$. No Von Neumann stability constraints exist!
+                            The fully implicit scheme is accurate to first order in time and second order in space: $\mathcal{O}(\delta t, \delta S^2)$. Crucially, the scheme is <strong>unconditionally stable</strong>, meaning that error perturbations decay exponentially regardless of the grid spacing step sizes $\delta t$ and $\delta S$. No Von Neumann stability constraints exist!
                         </p>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
                     <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 0;">
                         <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.9rem; text-align:center;">Tridiagonal Coefficient Matrix</h4>
                         <p style="font-size: 0.78rem; line-height: 1.5; color: #4b5563; margin: 0;">
-                            The simultaneous system forms a **tridiagonal matrix** $\mathbf{A} \mathbf{v}^{k+1} = \mathbf{v}^k$:
+                            The simultaneous system forms a <strong>tridiagonal matrix</strong> $\mathbf{A} \mathbf{v}^{k+1} = \mathbf{v}^k$:
                             $$A = \begin{pmatrix} 
                             b_0 & c_0 & 0 & \dots & 0 \\ 
                             a_1 & b_1 & c_1 & & \vdots \\ 
@@ -73,7 +73,7 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
                 <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Crank-Nicolson Method</h3>
                 <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1.25rem;">
-                    Developed by John Crank and Phyllis Nicolson, this method takes an **equally weighted average** of the explicit and fully implicit schemes, effectively evaluating spatial derivatives at the half time step $k + 1/2$. It uses three known option prices at step $k$ and three unknown prices at step $k+1$ simultaneously:
+                    Developed by John Crank and Phyllis Nicolson, this method takes an <strong>equally weighted average</strong> of the explicit and fully implicit schemes, effectively evaluating spatial derivatives at the half time step $k + 1/2$. It uses three known option prices at step $k$ and three unknown prices at step $k+1$ simultaneously:
                 </p>
 
                 <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-family:var(--font-family-sans); margin-bottom:1.5rem;">
@@ -88,13 +88,13 @@
                     <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border);">
                         <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Second-Order Accuracy</h4>
                         <p style="font-size: 0.8rem; margin: 0; line-height: 1.5;">
-                            Because of its symmetric temporal centering, Crank-Nicolson achieves **second-order accuracy in both variables**: $\mathcal{O}(\delta t^2, \delta S^2)$. This is a significant improvement over the first-order temporal accuracy of both the explicit and fully implicit schemes.
+                            Because of its symmetric temporal centering, Crank-Nicolson achieves <strong>second-order accuracy in both variables</strong>: $\mathcal{O}(\delta t^2, \delta S^2)$. This is a significant improvement over the first-order temporal accuracy of both the explicit and fully implicit schemes.
                         </p>
                     </div>
                     <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border);">
                         <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Stability &amp; Solvers</h4>
                         <p style="font-size: 0.8rem; margin: 0; line-height: 1.5;">
-                            Crank-Nicolson is **unconditionally stable** (no step constraints). Like the implicit method, it produces a tridiagonal matrix system $\mathbf{M}_L \mathbf{v}^{k+1} = \mathbf{M}_R \mathbf{v}^k$ at each marching step, which must be solved using specialized linear algebra.
+                            Crank-Nicolson is <strong>unconditionally stable</strong> (no step constraints). Like the implicit method, it produces a tridiagonal matrix system $\mathbf{M}_L \mathbf{v}^{k+1} = \mathbf{M}_R \mathbf{v}^k$ at each marching step, which must be solved using specialized linear algebra.
                         </p>
                     </div>
                 </div>
@@ -109,7 +109,7 @@
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">1. LU Factorization: Direct Thomas Algorithm</h3>
                     <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.5rem;">
-                        To solve the tridiagonal matrix equation $\mathbf{M}\mathbf{v} = \mathbf{q}$, computing the inverse $\mathbf{M}^{-1}$ is highly inefficient and should never be done in practice. Instead, we use **LU Decomposition** (Thomas Algorithm), factoring $\mathbf{M} = \mathbf{L}\mathbf{U}$ into lower bidiagonal $\mathbf{L}$ (unit diagonal) and upper bidiagonal $\mathbf{U}$:
+                        To solve the tridiagonal matrix equation $\mathbf{M}\mathbf{v} = \mathbf{q}$, computing the inverse $\mathbf{M}^{-1}$ is highly inefficient and should never be done in practice. Instead, we use <strong>LU Decomposition</strong> (Thomas Algorithm), factoring $\mathbf{M} = \mathbf{L}\mathbf{U}$ into lower bidiagonal $\mathbf{L}$ (unit diagonal) and upper bidiagonal $\mathbf{U}$:
                     </p>
 
                     <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border); font-family:var(--font-family-sans); margin-bottom:1rem; font-size: 0.82rem; line-height: 1.5;">
@@ -121,9 +121,9 @@
                         $$l_i = \frac{A_i}{d_{i-1}}, \quad u_{i-1} = C_{i-1}, \quad d_i = 1 + B_i - l_i u_{i-1}$$
                         Once $\mathbf{L}$ and $\mathbf{U}$ are resolved, we solve $\mathbf{L}\mathbf{U}\mathbf{v} = \mathbf{q}$ in two fast sweeps:
                         <br>
-                        1. **Forward Substitution** (solve $\mathbf{L}\mathbf{w} = \mathbf{q}$):
+                        1. <strong>Forward Substitution</strong> (solve $\mathbf{L}\mathbf{w} = \mathbf{q}$):
                            $$w_1 = q_1, \quad w_i = q_i - l_i w_{i-1}$$
-                        2. **Backward Substitution** (solve $\mathbf{U}\mathbf{v} = \mathbf{w}$):
+                        2. <strong>Backward Substitution</strong> (solve $\mathbf{U}\mathbf{v} = \mathbf{w}$):
                            $$v_{I-1} = \frac{w_{I-1}}{d_{I-1}}, \quad v_i = \frac{w_i - u_i v_{i+1}}{d_i}$$
                     </div>
                 </div>
@@ -135,9 +135,9 @@
                     <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.5rem;">
                         SOR is an indirect iterative technique that accelerates convergence. It builds upon two foundational iterative methods:
                         <br><br>
-                        - **Jacobi Method**: Each new iteration uses exclusively the values from the previous iteration step $n$.
+                        - <strong>Jacobi Method</strong>: Each new iteration uses exclusively the values from the previous iteration step $n$.
                         <br>
-                        - **Gauss-Seidel Method**: Incorporates recently updated values from the current iteration $n+1$ as they become available.
+                        - <strong>Gauss-Seidel Method</strong>: Incorporates recently updated values from the current iteration $n+1$ as they become available.
                     </p>
 
                     <div style="background: var(--metric-bg); padding: 0.85rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 0.5rem; font-size: 0.78rem; line-height: 1.4;">
@@ -165,7 +165,7 @@
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Advanced Time-Stepping Schemes</h3>
                     <p style="font-size: 0.85rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
-                        The general **$\theta$-method** represents time-stepping as a weighted average between the explicit and fully implicit schemes using parameter $\theta \in [0, 1]$:
+                        The general <strong>$\theta$-method</strong> represents time-stepping as a weighted average between the explicit and fully implicit schemes using parameter $\theta \in [0, 1]$:
                     </p>
                     
                     <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1rem; text-align:center;">
@@ -179,7 +179,7 @@
                     </ul>
 
                     <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563; margin: 0;">
-                        **Douglas Schemes**: By choosing a specific $\theta$ weight, Douglas schemes achieve fourth-order accuracy in space and second-order in time ($\mathcal{O}(\delta S^4, \delta t^2)$) for the exact same computational effort as Crank-Nicolson.
+                        <strong>Douglas Schemes</strong>: By choosing a specific $\theta$ weight, Douglas schemes achieve fourth-order accuracy in space and second-order in time ($\mathcal{O}(\delta S^4, \delta t^2)$) for the exact same computational effort as Crank-Nicolson.
                     </p>
                 </div>
             </div>
@@ -196,12 +196,12 @@
                         <p style="font-size: 0.78rem; line-height: 1.4; color: #4b5563; margin: 0;">
                             The mixed partial derivative term is approximated using central differences in both directions:
                             $$\frac{\partial^2 V}{\partial S \partial r} \approx \frac{V_{i+1, j+1}^k - V_{i+1, j-1}^k - V_{i-1, j+1}^k + V_{i-1, j-1}^k}{4 \delta S \delta r}$$
-                            This requires a **9-point grid stencil** rather than the standard 3-point or 5-point stencils. If correlation is zero, this mixed term vanishes, reducing the grid stencil requirements back to 5 points.
+                            This requires a <strong>9-point grid stencil</strong> rather than the standard 3-point or 5-point stencils. If correlation is zero, this mixed term vanishes, reducing the grid stencil requirements back to 5 points.
                         </p>
                     </div>
 
                     <p style="font-size: 0.8rem; line-height: 1.5; color: #4b5563; margin: 0;">
-                        Stochastic interest rates in this multi-factor framework are typically modeled using the **Vasicek** or **Cox-Ingersoll-Ross (CIR)** models.
+                        Stochastic interest rates in this multi-factor framework are typically modeled using the <strong>Vasicek</strong> or <strong>Cox-Ingersoll-Ross (CIR)</strong> models.
                     </p>
                 </div>
             </div>
@@ -263,11 +263,11 @@
                             <br>
                             - Iteration 4: $x = 0.225, \, y = 0.306, \, z = -0.494$
                             <br>
-                            **SDD Verification**:
+                            <strong>SDD Verification</strong>:
                             Row 1: $|8| > |-1| + |1| = 2$ (SDD). Row 2: $|10| > |2| + |-1| = 3$ (SDD). Row 3: $|5| > |-1| + |-1| = 2$ (SDD).
                             The matrix is strictly diagonally dominant, guaranteeing convergence.
                             <br>
-                            **Infinite Norm Error Ratio (It 3 to 4)**:
+                            <strong>Infinite Norm Error Ratio (It 3 to 4)</strong>:
                             $$\frac{\|\mathbf{x}^{(4)} - \mathbf{x}^{(3)}\|_{\infty}}{\|\mathbf{x}^{(3)}\|_{\infty}} = \frac{\|(0.001, 0, 0)\|_{\infty}}{\|0.494\|_{\infty}} = \frac{0.001}{0.494} \approx 0.00202$$
                         </div>
                     </details>

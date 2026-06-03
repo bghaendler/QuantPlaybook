@@ -49,7 +49,7 @@
                 <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
                 <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
                     <p><strong>Theoretical Explanation:</strong></p>
-                    <p>In practice, we prefer to minimize the difference between the **market implied volatilities** and the **model implied volatilities** ($\sum (\hat{\sigma}_n^\theta - \sigma_n)^2$) because volatilities are standardized and comparable across maturities. However, inverting the Black or Bachelier pricing formula numerically at every step of the optimizer is computationally expensive.</p>
+                    <p>In practice, we prefer to minimize the difference between the <strong>market implied volatilities</strong> and the <strong>model implied volatilities</strong> ($\sum (\hat{\sigma}_n^\theta - \sigma_n)^2$) because volatilities are standardized and comparable across maturities. However, inverting the Black or Bachelier pricing formula numerically at every step of the optimizer is computationally expensive.</p>
                     <p>To avoid numerical inversion, we apply a first-order Taylor expansion of the pricing function $C_n(\sigma)$ around the market implied vol $\sigma_n$:</p>
                     <p style="text-align: center;">$$ \hat{C}_n^\theta \approx C_n + \text{vega}_n (\hat{\sigma}_n^\theta - \sigma_n) $$</p>
                     <p>Rearranging this yields an analytical expression for the implied volatility error:</p>
@@ -169,7 +169,7 @@
                         <li>The forward LIBOR rates $F(0, T_{i-1}, T_i)$ for each reset period, which are derived directly from the discount factors.</li>
                         <li>The ATM strike rate $K$, which is the par swap rate and is also determined by the discount curve.</li>
                     </ul>
-                    <p>If we only have the cap price and the ATM strike rate, we cannot compute the implied volatility because we lack the discount factors and forward rates for each period in the cap strip. We need the entire **discount curve** to obtain these parameters consistently. Thus, we need the cap price and the discount curve.</p>
+                    <p>If we only have the cap price and the ATM strike rate, we cannot compute the implied volatility because we lack the discount factors and forward rates for each period in the cap strip. We need the entire <strong>discount curve</strong> to obtain these parameters consistently. Thus, we need the cap price and the discount curve.</p>
                     <p style="margin-bottom: 0; font-weight: 600; color: #16a34a;">Correct Option: The cap price and the discount curve.</p>
                 </div>
             </details>
@@ -221,7 +221,7 @@
                 </table>
             </div>
             <p style="font-size: 1.1rem; color: var(--text-color); line-height: 1.6; margin-bottom: 1.5rem;">
-                Consider now a **1-factor Gaussian HJM model** with the volatility specification:
+                Consider now a <strong>1-factor Gaussian HJM model</strong> with the volatility specification:
                 $$ \sigma(t, T) = e^{-\beta(T-t)}v $$
                 Calibrate the volatility parameters $\beta$ and $v$ to these cap prices weighted by their corresponding Black vegas (weighted least squares).
             </p>
@@ -248,7 +248,7 @@
                 <summary style="font-size: 0.95rem; font-weight: 600; color: #475569; padding: 0.75rem 1.25rem; background: var(--sidebar-bg); cursor: pointer; border-radius: 8px;">Show Mathematical Solution & Derivation</summary>
                 <div style="padding: 1.5rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-size: 1rem; color: var(--text-color); line-height: 1.75;">
                     <p><strong>Step-by-Step Calibration Solution:</strong></p>
-                    <p>1. **Construct Discount Curve $P(0, T_k)$:** Since $F(0, T, T+0.5)$ are simple forward rates, we calculate discount factors sequentially using $P(0, T_i) = \frac{P(0, T_{i-1})}{1 + 0.5 F(0, T_{i-1}, T_i)}$:</p>
+                    <p>1. <strong>Construct Discount Curve $P(0, T_k)$:</strong> Since $F(0, T, T+0.5)$ are simple forward rates, we calculate discount factors sequentially using $P(0, T_i) = \frac{P(0, T_{i-1})}{1 + 0.5 F(0, T_{i-1}, T_i)}$:</p>
                     <ul style="font-family: monospace; padding-left: 1.5rem; margin-bottom: 1rem;">
                         <li>$P(0, 0.5) = 1 / 1.03 = 0.970874$</li>
                         <li>$P(0, 1.0) = 0.970874 / 1.04 = 0.933532$</li>
@@ -259,14 +259,14 @@
                         <li>$P(0, 3.5) = 0.771694 / 1.045 = 0.738463$</li>
                         <li>$P(0, 4.0) = 0.738463 / 1.045 = 0.706664$</li>
                     </ul>
-                    <p>2. **Determine ATM Strike Rates (Par Swap Rates):**</p>
+                    <p>2. <strong>Determine ATM Strike Rates (Par Swap Rates):</strong></p>
                     <ul style="padding-left: 1.5rem; margin-bottom: 1rem;">
                         <li>1Y ATM strike $K_1 = F(0, 0.5, 1.0) = 8.00\%$</li>
                         <li>2Y ATM strike $K_2 = \frac{P(0, 0.5) - P(0, 2.0)}{0.5 (P(0, 1.0) + P(0, 1.5) + P(0, 2.0))} = 8.97\%$</li>
                         <li>3Y ATM strike $K_3 = 9.35\%$</li>
                         <li>4Y ATM strike $K_4 = 9.26\%$</li>
                     </ul>
-                    <p>3. **Minimize Vega-Weighted Price Errors:** We solve the non-linear optimization problem to minimize the vega-weighted errors:
+                    <p>3. <strong>Minimize Vega-Weighted Price Errors:</strong> We solve the non-linear optimization problem to minimize the vega-weighted errors:
                        $$\text{Objective}(\theta) = \sum_{M=1}^4 \left( \frac{\hat{C}_M^{HJM}(v, \beta) - C_M^{Market}}{\text{vega}_M^{Black}} \right)^2$$
                        The optimizer yields the calibrated parameters:
                        $$ v \approx 0.02935 \approx 0.03 \quad (3.00\%) $$

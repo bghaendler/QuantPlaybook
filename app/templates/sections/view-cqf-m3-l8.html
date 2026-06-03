@@ -36,7 +36,7 @@
                         <p style="font-size: 0.78rem; line-height: 1.5; color: #4b5563; margin: 0;">
                             Let $S = E[S] + \epsilon$, where $E[\epsilon] = 0$. Expanding $f(S)$ about $E[S]$:
                             $$E[f(S)] \approx E\left[ f(E[S]) + \epsilon f'(E[S]) + \frac{1}{2}\epsilon^2 f''(E[S]) \right] = f(E[S]) + \frac{1}{2} f''(E[S]) E[\epsilon^2]$$
-                            The expected value of the function is greater than the function of the expected value by the **convexity adjustment**:
+                            The expected value of the function is greater than the function of the expected value by the <strong>convexity adjustment</strong>:
                             $$\text{Convexity Adjustment} \approx \frac{1}{2} f''(E[S]) \sigma^2$$
                             This is the origin of the $\frac{1}{2}\sigma^2 S^2 \Gamma$ term in the Black-Scholes PDE!
                         </p>
@@ -73,7 +73,7 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
                 <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Kelly Criterion (Optimal Bet Sizing)</h3>
                 <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
-                    Formulated by John Kelly Jr. in the context of information theory, the **Kelly Criterion** solves the question: *what fraction of wealth should be wagered repeatedly to maximize long-term geometric wealth growth?*
+                    Formulated by John Kelly Jr. in the context of information theory, the <strong>Kelly Criterion</strong> solves the question: *what fraction of wealth should be wagered repeatedly to maximize long-term geometric wealth growth?*
                     It contrasts with Markowitz's static modern portfolio theory by prioritizing repeated compounding growth over one-period risk/reward.
                 </p>
 
@@ -100,7 +100,7 @@
                     <div style="background:var(--metric-bg); padding:1rem; border-radius:8px; border:1px solid var(--card-border);">
                         <strong style="color:var(--accent);">"Half-Kelly" Risk Reduction</strong>
                         <p style="margin:0.25rem 0 0 0; font-size:0.8rem;">
-                            Because parameters $\mu$ and $\sigma$ are highly uncertain, many quant practitioners implement the **"Half-Kelly"** strategy: betting exactly half of the Kelly optimal fraction ($f = 0.5 f^*$). This retains $75\%$ of the optimal geometric growth rate while dramatically reducing volatility by $50\%$.
+                            Because parameters $\mu$ and $\sigma$ are highly uncertain, many quant practitioners implement the <strong>"Half-Kelly"</strong> strategy: betting exactly half of the Kelly optimal fraction ($f = 0.5 f^*$). This retains $75\%$ of the optimal geometric growth rate while dramatically reducing volatility by $50\%$.
                         </p>
                     </div>
                 </div>
@@ -115,7 +115,7 @@
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Behavioral Happiness &amp; Prospect Theory</h3>
                     <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
-                        Kahneman &amp; Tversky's foundational Prospect Theory demonstrates that the human response to gains and losses is highly asymmetric: **losses are felt approximately twice as strongly as equivalent gains** ($\alpha = 2$ pain-aversion coefficient).
+                        Kahneman &amp; Tversky's foundational Prospect Theory demonstrates that the human response to gains and losses is highly asymmetric: <strong>losses are felt approximately twice as strongly as equivalent gains</strong> ($\alpha = 2$ pain-aversion coefficient).
                     </p>
                     <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
                         If we define daily or monthly happiness $H(R)$ as $R$ (for gains $R>0$) and $\alpha R$ (for losses $R<0$), evaluating the expected happiness over a viewing interval $\tau$ yields the closed-form integral solution:
@@ -129,12 +129,12 @@
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Misery of High-Frequency Viewing</h3>
                     <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
-                        Because short-term noise dominates over the drift on short time horizons, **investors who observe their portfolios at high frequency (daily/weekly) will on average be unhappy**, even when the portfolio generates positive annual returns!
+                        Because short-term noise dominates over the drift on short time horizons, <strong>investors who observe their portfolios at high frequency (daily/weekly) will on average be unhappy</strong>, even when the portfolio generates positive annual returns!
                     </p>
                     <div style="background:var(--metric-bg); padding:0.85rem; border-radius:6px; border-left:3px solid var(--accent); font-size:0.75rem; line-height:1.4; color:#374151;">
                         For typical S&amp;P 500 parameters ($\mu = 8\%$, $\sigma = 15\%$), a positive expected happiness requires:
                         $$\tau > 0.27 \text{ years (approx. 3 months)}$$
-                        * **Key Rule**: A typical investor should only look at their P&L **quarterly** to remain emotionally positive. If they insist on viewing **monthly**, the portfolio Sharpe Ratio must exceed **$0.97$**!
+                        * <strong>Key Rule</strong>: A typical investor should only look at their P&L <strong>quarterly</strong> to remain emotionally positive. If they insist on viewing <strong>monthly</strong>, the portfolio Sharpe Ratio must exceed <strong>$0.97$</strong>!
                     </div>
                 </div>
             </div>
@@ -147,20 +147,20 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
                 <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Discrete Hedging Errors &amp; Transaction Costs</h3>
                 <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
-                    In a real-world setting, continuous rebalancing is impossible, forcing hedging to occur at discrete steps $\delta t$. Under discrete steps, the stock move is $\delta S = \sigma S \phi \sqrt{\delta t}$. The difference between the actual realized Gamma profit $\frac{1}{2}\delta S^2 \Gamma$ and the expected Black-Scholes profit $\frac{1}{2}\sigma^2 S^2 \Gamma \delta t$ creates the **discrete hedging error**:
+                    In a real-world setting, continuous rebalancing is impossible, forcing hedging to occur at discrete steps $\delta t$. Under discrete steps, the stock move is $\delta S = \sigma S \phi \sqrt{\delta t}$. The difference between the actual realized Gamma profit $\frac{1}{2}\delta S^2 \Gamma$ and the expected Black-Scholes profit $\frac{1}{2}\sigma^2 S^2 \Gamma \delta t$ creates the <strong>discrete hedging error</strong>:
                     $$\text{Error} \approx \frac{1}{2}\sigma^2 S^2 \Gamma \delta t (\phi^2 - 1) \quad \text{where } \phi \sim \mathcal{N}(0, 1)$$
-                    Since $E[\phi^2] = 1$, the Black-Scholes model **works on average**, but the error is stochastic at any single step.
+                    Since $E[\phi^2] = 1$, the Black-Scholes model <strong>works on average</strong>, but the error is stochastic at any single step.
                 </p>
 
                 <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); margin-bottom:1.25rem; font-size:0.85rem; line-height:1.6;">
                     <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Leland's Non-linear Transaction Costs PDE</h4>
                     <p style="margin:0; color:#4b5563;">
-                        If rehedging at steps $\delta t$ incurs proportional stock transaction costs $\kappa |\nu| S$ (where $\kappa$ is cost percent), subtracting these costs from the expected portfolio change yields **Leland's Non-linear PDE**:
+                        If rehedging at steps $\delta t$ incurs proportional stock transaction costs $\kappa |\nu| S$ (where $\kappa$ is cost percent), subtracting these costs from the expected portfolio change yields <strong>Leland's Non-linear PDE</strong>:
                         $$\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} - \kappa \sigma S^2 \sqrt{\frac{2}{\pi \delta t}} \left| \frac{\partial^2 V}{\partial S^2} \right| + rS\frac{\partial V}{\partial S} - rV = 0$$
-                        For a single-signed Gamma book, this non-linear term can be internalized by using a **modified Leland Volatility**:
+                        For a single-signed Gamma book, this non-linear term can be internalized by using a <strong>modified Leland Volatility</strong>:
                         $$\check{\sigma}^2 = \sigma^2 \left( 1 - 2 K \text{ sgn}(\Gamma) \sqrt{\frac{2}{\pi}} \right) \quad \text{where } K = \frac{\kappa}{\sigma\sqrt{\delta t}}$$
-                        - **Long Gamma ($\Gamma > 0$)**: Leland Volatility is **lower** ($\check{\sigma} < \sigma$), option value is **reduced**.
-                        - **Short Gamma ($\Gamma < 0$)**: Leland Volatility is **higher** ($\hat{\sigma} > \sigma$), option value is **increased** (compensation for transaction costs).
+                        - <strong>Long Gamma ($\Gamma > 0$)</strong>: Leland Volatility is <strong>lower</strong> ($\check{\sigma} < \sigma$), option value is <strong>reduced</strong>.
+                        - <strong>Short Gamma ($\Gamma < 0$)</strong>: Leland Volatility is <strong>higher</strong> ($\hat{\sigma} > \sigma$), option value is <strong>increased</strong> (compensation for transaction costs).
                     </p>
                 </div>
             </div>
@@ -186,7 +186,7 @@
                     <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border);">
                         <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: #8b5cf6; font-size: 0.95rem; text-align:center;">2. Linear Benchmark Relationships</h4>
                         <p style="font-size: 0.8rem; line-height: 1.5; color: #4b5563; margin: 0;">
-                            The relationship between individual asset returns and index returns becomes strictly linear in the tails. We define the **crash coefficient** ($\kappa_i$) to measure individual movements:
+                            The relationship between individual asset returns and index returns becomes strictly linear in the tails. We define the <strong>crash coefficient</strong> ($\kappa_i$) to measure individual movements:
                             $$\text{If index moves by } x\%, \text{ the } i\text{-th asset moves by } \kappa_i x\%.$$
                         </p>
                     </div>
@@ -196,7 +196,7 @@
                     <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Collapse of Dimensions</h4>
                     In normal markets, the portfolio value is a function of multiple independent variables:
                     $$\Pi_{\text{Normal}} = F(x_1, x_2, \dots, x_N)$$
-                    In extreme markets, this collapses to a function of a **single variable** $x$ (index return) weighted by crash coefficients:
+                    In extreme markets, this collapses to a function of a <strong>single variable</strong> $x$ (index return) weighted by crash coefficients:
                     $$\Pi_{\text{Crash}} = \bar{F}(x; \kappa_1, \kappa_2, \dots, \kappa_N)$$
                 </div>
             </div>

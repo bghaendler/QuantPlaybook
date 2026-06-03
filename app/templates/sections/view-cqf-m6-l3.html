@@ -41,7 +41,7 @@
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Snapshot vs. Historical</h3>
                     <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
-                        To achieve exact curve fitting, models require infinite degrees of freedom, which is attained by making parameters **time-dependent** [PDF1: 7]. 
+                        To achieve exact curve fitting, models require infinite degrees of freedom, which is attained by making parameters <strong>time-dependent</strong> [PDF1: 7]. 
                         <strong>Snapshot Calibration:</strong> Fitting these time-dependent parameters to the market prices at one specific instant in time [PDF1: 5].
                         <strong>divided differences Note:</strong> Dr. Ahmad recommends numerical divided differences over fitting continuous splines for discretized market pricing calibrations [PDF1: 14].
                     </p>
@@ -334,7 +334,7 @@
         const outEl = document.getElementById('outM6L3Calib');
         outEl.innerHTML = `
             Vol parameter ($c$): <strong>${(c*100).toFixed(0)}%</strong>. Reversion ($\\gamma$): <strong>${gamma.toFixed(1)}</strong>.<br>
-            - **Leibniz's Calibration:** Theoretical yields (Red dashes) snap **100% perfectly** to the market benchmark curve (Green) due to the calibrated time-dependent drift $\\eta^*(t)$.
+            - <strong>Leibniz's Calibration:</strong> Theoretical yields (Red dashes) snap <strong>100% perfectly</strong> to the market benchmark curve (Green) due to the calibrated time-dependent drift $\\eta^*(t)$.
         `;
         if (typeof window.safeTypeset === 'function') {
             window.safeTypeset([outEl]);
@@ -391,8 +391,8 @@
         const outEl = document.getElementById('outM6L3Reg');
         outEl.innerHTML = `
             Model Type: <strong>${betaType.toUpperCase()}</strong>. Intercept Coefficient ($\\nu$): <strong>${nu.toFixed(2)}</strong>.<br>
-            - **Linear Regression Slope:** Displays a slope of **${betaType === 'vasicek' ? '0.0' : (betaType === 'cir' ? '1.0' : '2.0')}** (corresponding to $2\\beta$).<br>
-            - **Historical Analysis:** Replicating the 1985-1997 US LIBOR rate bucketing yields a slope of $\\approx 2.0$, confirming a **log-normal process** ($\\beta \\approx 1$) and disproving constant/Vasicek volatility.
+            - <strong>Linear Regression Slope:</strong> Displays a slope of <strong>${betaType === 'vasicek' ? '0.0' : (betaType === 'cir' ? '1.0' : '2.0')}</strong> (corresponding to $2\\beta$).<br>
+            - <strong>Historical Analysis:</strong> Replicating the 1985-1997 US LIBOR rate bucketing yields a slope of $\\approx 2.0$, confirming a <strong>log-normal process</strong> ($\\beta \\approx 1$) and disproving constant/Vasicek volatility.
         `;
         if (typeof window.safeTypeset === 'function') {
             window.safeTypeset([outEl]);
@@ -461,7 +461,7 @@
         const outEl = document.getElementById('outM6L3Drift');
         outEl.innerHTML = `
             Fitted Target Mean ($\\bar{r}$): <strong>${(theta*100).toFixed(0)}%</strong>. Lognormal dispersion ($a$): <strong>${a.toFixed(1)}</strong>.<br>
-            - The data-derived SDE incorporates non-linear mean-reversion via the **$\\log(r/\\bar{r})$ term** in the drift.<br>
+            - The data-derived SDE incorporates non-linear mean-reversion via the <strong>$\\log(r/\\bar{r})$ term</strong> in the drift.<br>
             - Rates are pulled back dynamically without requiring linear coefficients, and are mathematically prevented from breaching the zero boundary.
         `;
         if (typeof window.safeTypeset === 'function') {
