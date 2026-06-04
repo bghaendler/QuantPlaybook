@@ -1,41 +1,293 @@
 <div id="view-cqf-mp-calculus-11" style="display: none;">
     <header style="margin-bottom: 2rem;">
-        
         <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.1 Mathematical Shorthand &amp; Number Systems</h1>
         <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Rigorous mathematical notation, logic symbols, and set descriptions used in quantitative finance.</div>
     </header>
 
-    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700;">1.1.1 Logic Shorthand Notation</h3>
-        <p>Mathematical proofs and derivations utilize concise symbolic logic shorthand to represent statements efficiently. In continuous asset path modeling and probability fields, these symbols form the building blocks of rigorous theorems:</p>
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; background: var(--metric-bg); padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.9rem; line-height: 1.5;">
-            <div>
-                <strong>&exist;</strong> : there exists (existential quantifiers)<br>
-                <strong>&forall;</strong> : for all (universal quantifiers)<br>
-                <strong>&there4;</strong> : therefore (logical consequence)<br>
-                <strong>&because;</strong> : because (logical premise)
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700;">1.1.1 Logic Shorthand Notation</h3>
+            <p>Mathematical proofs and derivations utilize concise symbolic logic shorthand to represent statements efficiently. In continuous asset path modeling and probability fields, these symbols form the building blocks of rigorous theorems:</p>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; background: var(--metric-bg); padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.9rem; line-height: 1.5; margin-bottom: 1rem;">
+                <div>
+                    <strong>&exist;</strong> : there exists (existential)<br>
+                    <strong>&forall;</strong> : for all (universal)<br>
+                    <strong>&there4;</strong> : therefore<br>
+                    <strong>&because;</strong> : because
+                </div>
+                <div>
+                    <strong>&rArr;</strong> : implies<br>
+                    <strong>s.t.</strong> : such that<br>
+                    <strong>&iff;</strong> : if and only if<br>
+                    <strong>&in;</strong> : element of
+                </div>
             </div>
-            <div>
-                <strong>&rArr;</strong> : which gives / implies<br>
-                <strong>s.t.</strong> : such that (conditional clause)<br>
-                <strong>&iff;</strong> : if and only if (equivalence)<br>
-                <strong>&in;</strong> : element of (set membership)
-            </div>
+            <p style="font-size: 0.9rem; color: #6b7280; line-height: 1.5;">Example statement <em>"For all real positive volatilities $\sigma$, there exists a unique derivative value $V$ such that the Black-Scholes PDE holds"</em> is written as:</p>
+            <p style="font-family: monospace; font-size: 0.85rem; font-weight: 700; background: var(--code-bg); padding: 0.5rem; border-radius: 4px; overflow-x: auto; white-space: nowrap;">$\forall \sigma \in \mathbb{R}^+, \exists ! V \text{ s.t. } \frac{\partial V}{\partial t} + r S \frac{\partial V}{\partial S} + \frac{1}{2} \sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} - rV = 0$</p>
         </div>
-        <p style="margin-top: 1rem;">E.g. We write the statement <em>"For all real volatility parameters $\sigma$, there exists a unique asset price $S$ such that the Black-Scholes PDE is satisfied"</em> as:</p>
-        <p style="text-align: center; font-family: monospace; font-size: 0.95rem; font-weight: 700;">$\forall \sigma \in \mathbb{R}^+, \exists ! S \text{ s.t. } \frac{\partial V}{\partial t} + r S \frac{\partial V}{\partial S} + \frac{1}{2} \sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} - rV = 0$.</p>
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> Mathematical shorthand symbols act like programming code variables and operators. They allow complex, wordy logical rules to be condensed into short, unambiguous lines of mathematical code.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+                <li style="margin-bottom: 1rem;"><strong>Why it matters:</strong> Reading derivatives math can feel like learning a foreign language. Recognizing symbols like $\forall$ (for all) and $\exists$ (there exists) helps you map out boundary conditions quickly.</li>
+                <li style="margin-bottom: 0;"><strong>Usage in Proofs:</strong> Allows quants to state assumptions, boundaries, and model definitions cleanly in options and derivative theorems.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">1.1.2 Number Systems &amp; Fields</h3>
-        <p>Real-world quant modeling relies on specific number fields designed to represent different financial concepts:</p>
-        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
-            <li><strong>Natural Numbers ($\mathbb{N}$):</strong> $\{0, 1, 2, 3, \dots\}$ — Used to index discrete monitoring dates or steps $t_k$ in Monte Carlo simulations.</li>
-            <li><strong>Integers ($\mathbb{Z}$):</strong> $\{0, \pm 1, \pm 2, \dots\}$ — Represents countable asset state units, contract sizes, or portfolio position holdings.</li>
-            <li><strong>Rationals ($\mathbb{Q}$):</strong> $\{p/q : p,q \in \mathbb{Z}\}$ — Represents discrete price grid spaces in Finite Difference Schemes.</li>
-            <li><strong>Irrationals ($\mathbb{Q}$'):</strong> $\{\sqrt{2}, \pi, e\}$ — Drive continuous distributions. Euler's number $e$ forms the foundation of continuous discounting and Brownian drift.</li>
-            <li><strong>Reals ($\mathbb{R}$):</strong> Union of all rational and irrational fields. Volatilities, spot prices, interest rates, and stochastic paths reside here.</li>
-            <li><strong>Complex ($\mathbb{C}$):</strong> $\{x + iy : i = \sqrt{-1}\}$ — Forms the mathematical backbone of Characteristic Functions, Fourier Inversion, and FFT pricing methods (e.g. Heston Model).</li>
-        </ul>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">1.1.2 Number Systems &amp; Fields</h3>
+            <p>Real-world quant modeling relies on specific number fields designed to represent different financial concepts:</p>
+            <ul style="padding-left: 1.2rem; font-size: 0.92rem; line-height: 1.7; margin-bottom: 0;">
+                <li><strong>Natural Numbers ($\mathbb{N}$):</strong> $\{0, 1, 2, \dots\}$ &mdash; Used to index discrete monitoring dates or steps $t_k$ in Monte Carlo simulations.</li>
+                <li><strong>Integers ($\mathbb{Z}$):</strong> $\{0, \pm 1, \pm 2, \dots\}$ &mdash; Represents contract sizes or portfolio position units.</li>
+                <li><strong>Rationals ($\mathbb{Q}$):</strong> $\{p/q : p,q \in \mathbb{Z}\}$ &mdash; Represents discrete price grid spaces in Finite Difference Schemes.</li>
+                <li><strong>Irrationals ($\mathbb{Q}$'):</strong> $\{\sqrt{2}, \pi, e\}$ &mdash; Drive continuous distributions. Euler's number $e$ forms the foundation of continuous compounding.</li>
+                <li><strong>Reals ($\mathbb{R}$):</strong> Union of all rational and irrational fields. Volatilities, spot prices, and rates reside here.</li>
+                <li><strong>Complex ($\mathbb{C}$):</strong> $\{x + iy\}$ &mdash; Backbone of Characteristic Functions and FFT pricing methods (e.g. Heston Model).</li>
+            </ul>
+        </div>
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> Different fields correspond to different financial scenarios. We don't just use decimals (reals); we use integers for counting contracts, rationals for grid divisions, and complex numbers for advanced option pricing models.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+                <li style="margin-bottom: 1rem;"><strong>Euler's Constant ($e$):</strong> Forms the baseline for all continuous compounding calculations and stochastic asset paths.</li>
+                <li style="margin-bottom: 0;"><strong>Complex Numbers in Finance:</strong> Even though stock prices aren't imaginary, complex numbers ($\mathbb{C}$) are essential for solving options under stochastic volatility (like the Heston model) because they simplify the integration of probability density curves using Fourier transforms.</li>
+            </ul>
+        </div>
     </div>
+
+    <!-- Interactive Set Theory / Number Systems Venn Diagram Sandbox -->
+    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
+        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1.1.3 Interactive Number Systems Sandbox</h3>
+        <p>Type in a number or select a predefined value. The interactive Euler/Venn diagram dynamically highlights the nested subsets the number belongs to and describes its application in quantitative finance:</p>
+
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; align-items: start;">
+                <!-- Controls Column -->
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div>
+                        <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.5rem;">Input Number / Constant:</label>
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                            <input id="numSysInput" type="text" value="3.1415" style="width: 60%; padding: 0.35rem;" oninput="runNumSysSimulation()">
+                            <select id="numSysPreset" onchange="applyNumSysPreset()" style="width: 40%; padding: 0.35rem;">
+                                <option value="3.1415">Preset: Pi (&pi;)</option>
+                                <option value="5">Preset: 5</option>
+                                <option value="-12">Preset: -12</option>
+                                <option value="3/4">Preset: 3/4</option>
+                                <option value="2.718">Preset: Euler (e)</option>
+                                <option value="2+3i">Preset: 2 + 3i</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px; padding: 0.75rem; font-size: 0.85rem; line-height: 1.6;">
+                        <div style="border-bottom: 1px solid var(--card-border); padding-bottom: 0.35rem; margin-bottom: 0.5rem;">
+                            <strong>Parsed Type:</strong> <span id="numSysParsedType" style="color: #ec4899; font-weight: bold;">Irrational Number</span>
+                        </div>
+                        <div style="border-bottom: 1px solid var(--card-border); padding-bottom: 0.35rem; margin-bottom: 0.5rem;">
+                            <strong>Member Sets:</strong> <span id="numSysMemberSets" style="font-weight: bold;">R', R, C</span>
+                        </div>
+                        <div>
+                            <strong>Quantitative Finance Use Case:</strong>
+                            <p id="numSysUseCase" style="font-size: 0.82rem; color: #6b7280; margin: 0.25rem 0 0 0;">
+                                Constants like &pi; drive normal distribution parameters and probability densities for Black-Scholes.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom 2D Nesting Diagram Canvas -->
+                <div style="background: #0f172a; border-radius: 8px; border: 1px solid var(--card-border); padding: 1rem;">
+                    <canvas id="numSysCanvas" width="400" height="400" style="width: 100%; height: 320px; max-width: 400px; display: block; margin: 0 auto; background: #0f172a;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        (function() {
+            window.applyNumSysPreset = function() {
+                const selectVal = document.getElementById('numSysPreset').value;
+                document.getElementById('numSysInput').value = selectVal;
+                runNumSysSimulation();
+            };
+
+            window.runNumSysSimulation = function() {
+                const rawInput = document.getElementById('numSysInput').value.trim();
+
+                let memberN = false;
+                let memberZ = false;
+                let memberQ = false;
+                let memberIr = false;
+                let memberR = false;
+                let memberC = false;
+                let parsedTypeStr = "";
+                let useCaseStr = "";
+
+                // Parsing check logic
+                if (/^[0-9]+$/.test(rawInput)) {
+                    // Positive integer / Natural number
+                    memberN = true;
+                    memberZ = true;
+                    memberQ = true;
+                    memberR = true;
+                    memberC = true;
+                    parsedTypeStr = "Natural Number (Non-negative Integer)";
+                    useCaseStr = "Indices steps, Monte Carlo periods, discrete sampling frequencies, contract durations.";
+                } else if (/^-[0-9]+$/.test(rawInput)) {
+                    // Negative integer
+                    memberZ = true;
+                    memberQ = true;
+                    memberR = true;
+                    memberC = true;
+                    parsedTypeStr = "Negative Integer";
+                    useCaseStr = "Short stock contract positions, net cash flow outflows, liability units.";
+                } else if (/^-?[0-9]+\/[0-9]+$/.test(rawInput)) {
+                    // Fraction
+                    memberQ = true;
+                    memberR = true;
+                    memberC = true;
+                    parsedTypeStr = "Rational Number (Fraction)";
+                    useCaseStr = "Step grid sizing parameters in Finite Difference methods, precise contract weights.";
+                } else if (/(\+|-)?[0-9.]+(\+|-)[0-9.]+i/i.test(rawInput) || /^-?[0-9.]+i/i.test(rawInput) || /i/i.test(rawInput)) {
+                    // Complex
+                    memberC = true;
+                    parsedTypeStr = "Complex Number";
+                    useCaseStr = "Used in characteristic function integrals for Fourier transform options pricing (e.g. Heston, Bates models).";
+                } else {
+                    // Float / Constants
+                    const floatVal = parseFloat(rawInput);
+                    if (isNaN(floatVal)) {
+                        // Treat as general string constant / complex stub
+                        memberC = true;
+                        parsedTypeStr = "General Field Identifier";
+                        useCaseStr = "Variable constants representing asset variables, drift factors, or volatility metrics.";
+                    } else {
+                        // Check if it represents Pi or Euler
+                        const isIrrational = (Math.abs(floatVal - Math.PI) < 1e-4 || Math.abs(floatVal - Math.E) < 1e-4 || rawInput.includes("3.14") || rawInput.includes("2.718") || rawInput.includes("e") || rawInput.includes("pi"));
+                        memberR = true;
+                        memberC = true;
+                        if (isIrrational) {
+                            memberIr = true;
+                            parsedTypeStr = "Irrational Real Number";
+                            useCaseStr = "Euler's constant e drives log-normal returns and discounting. Pi (3.1415...) is essential in continuous normal probability integrations.";
+                        } else {
+                            memberQ = true;
+                            parsedTypeStr = "Rational Real Number";
+                            useCaseStr = "Continuously variable interest rates, historical volatilities, asset prices, and option deltas.";
+                        }
+                    }
+                }
+
+                // Generate member list text
+                let list = [];
+                if (memberN) list.push("ℕ (Natural)");
+                if (memberZ) list.push("ℤ (Integer)");
+                if (memberQ) list.push("ℚ (Rational)");
+                if (memberIr) list.push("ℚ' (Irrational)");
+                if (memberR) list.push("ℝ (Real)");
+                if (memberC) list.push("ℂ (Complex)");
+                document.getElementById('numSysMemberSets').innerText = list.join(", ");
+                document.getElementById('numSysParsedType').innerText = parsedTypeStr;
+                document.getElementById('numSysUseCase').innerText = useCaseStr;
+
+                drawNumSysVenn(memberN, memberZ, memberQ, memberIr, memberR, memberC);
+            };
+
+            function drawNumSysVenn(mN, mZ, mQ, mIr, mR, mC) {
+                const canvas = document.getElementById('numSysCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const cx = canvas.width / 2;
+                const cy = canvas.height / 2;
+
+                // Nested rings layout
+                // 1. Complex Ring (largest)
+                ctx.fillStyle = mC ? "rgba(139, 92, 246, 0.1)" : "rgba(139, 92, 246, 0.02)";
+                ctx.strokeStyle = mC ? "#8b5cf6" : "#4b5563";
+                ctx.lineWidth = mC ? 3 : 1.5;
+                ctx.beginPath();
+                ctx.arc(cx, cy, 140, 0, 2*Math.PI);
+                ctx.fill();
+                ctx.stroke();
+                ctx.fillStyle = mC ? "#a78bfa" : "#6b7280";
+                ctx.font = "bold 13px sans-serif";
+                ctx.fillText("ℂ (Complex Numbers)", cx - 130, cy - 90);
+
+                // 2. Real Ring
+                ctx.fillStyle = mR ? "rgba(244, 63, 94, 0.1)" : "rgba(244, 63, 94, 0.02)";
+                ctx.strokeStyle = mR ? "#f43f5e" : "#4b5563";
+                ctx.lineWidth = mR ? 3 : 1.5;
+                ctx.beginPath();
+                ctx.arc(cx + 10, cy + 10, 110, 0, 2*Math.PI);
+                ctx.fill();
+                ctx.stroke();
+                ctx.fillStyle = mR ? "#fb7185" : "#6b7280";
+                ctx.fillText("ℝ (Reals)", cx - 80, cy - 65);
+
+                // 3. Rational / Irrational split inside Real Ring
+                // Let's divide the space inside Real Ring. Left is Rational, Right is Irrational
+                // We'll draw two intersecting or separate circles inside Reals
+                // Rational circle
+                ctx.fillStyle = mQ ? "rgba(16, 185, 129, 0.1)" : "rgba(16, 185, 129, 0.02)";
+                ctx.strokeStyle = mQ ? "#10b981" : "#4b5563";
+                ctx.lineWidth = mQ ? 3 : 1.5;
+                ctx.beginPath();
+                ctx.arc(cx - 15, cy + 25, 75, 0, 2*Math.PI);
+                ctx.fill();
+                ctx.stroke();
+                ctx.fillStyle = mQ ? "#34d399" : "#6b7280";
+                ctx.fillText("ℚ (Rationals)", cx - 80, cy + 5);
+
+                // Irrational circle
+                ctx.fillStyle = mIr ? "rgba(245, 158, 11, 0.1)" : "rgba(245, 158, 11, 0.02)";
+                ctx.strokeStyle = mIr ? "#f59e0b" : "#4b5563";
+                ctx.lineWidth = mIr ? 3 : 1.5;
+                ctx.beginPath();
+                ctx.arc(cx + 70, cy + 25, 40, 0, 2*Math.PI);
+                ctx.fill();
+                ctx.stroke();
+                ctx.fillStyle = mIr ? "#fbbf24" : "#6b7280";
+                ctx.font = "bold 11px sans-serif";
+                ctx.fillText("ℚ' (Irrationals)", cx + 45, cy + 25);
+
+                // 4. Integers inside Rational circle
+                ctx.fillStyle = mZ ? "rgba(59, 130, 246, 0.1)" : "rgba(59, 130, 246, 0.02)";
+                ctx.strokeStyle = mZ ? "#3b82f6" : "#4b5563";
+                ctx.lineWidth = mZ ? 3 : 1.5;
+                ctx.beginPath();
+                ctx.arc(cx - 20, cy + 35, 50, 0, 2*Math.PI);
+                ctx.fill();
+                ctx.stroke();
+                ctx.fillStyle = mZ ? "#60a5fa" : "#6b7280";
+                ctx.font = "bold 12px sans-serif";
+                ctx.fillText("ℤ (Integers)", cx - 60, cy + 45);
+
+                // 5. Naturals inside Integer circle
+                ctx.fillStyle = mN ? "rgba(236, 72, 153, 0.1)" : "rgba(236, 72, 153, 0.02)";
+                ctx.strokeStyle = mN ? "#ec4899" : "#4b5563";
+                ctx.lineWidth = mN ? 3 : 1.5;
+                ctx.beginPath();
+                ctx.arc(cx - 25, cy + 45, 30, 0, 2*Math.PI);
+                ctx.fill();
+                ctx.stroke();
+                ctx.fillStyle = mN ? "#f472b6" : "#6b7280";
+                ctx.font = "bold 11px sans-serif";
+                ctx.fillText("ℕ (Naturals)", cx - 50, cy + 50);
+            }
+
+            setTimeout(() => {
+                if (document.getElementById('numSysInput')) runNumSysSimulation();
+            }, 100);
+        })();
+    </script>
 </div>
