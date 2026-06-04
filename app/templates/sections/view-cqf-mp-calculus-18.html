@@ -1,27 +1,39 @@
 <div id="view-cqf-mp-calculus-18" style="display: none;">
     <header style="margin-bottom: 2rem;">
-        
         <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.8 Higher-Order Derivatives &amp; Leibniz Rule</h1>
         <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Recursive derivatives, the general Leibniz product formula, factorials, and function singularities.</div>
     </header>
 
     <!-- Navigation Tabs -->
     <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
-        <button id="tabCalc18Theory" onclick="switchCalc18Tab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Theory</button>
-        <button id="tabCalc18Exercises" onclick="switchCalc18Tab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Solutions</button>
+        <button id="tabCalc18Theory" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Theory</button>
+        <button id="tabCalc18Exercises" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Solutions</button>
     </div>
 
     <!-- Tab: Core Theory -->
     <div id="secCalc18Theory" style="display: block;">
-        <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-            <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">1.8.1 Higher-Order Derivatives</h3>
-            <p>Higher-order derivatives are obtained by repeatedly applying the differentiation operator: $f^{(n)}(x) = \frac{d}{dx}[f^{(n-1)}(x)]$. For an $n$-th degree polynomial, the $(n+1)$-th derivative is zero.</p>
-            <p><strong>Leibniz Rule (Product Derivatives):</strong> Generalizes the single-variable product rule to evaluate the $n$-th derivative of a product of two differentiable functions $y = uv$:</p>
-            <p style="text-align: center; font-size: 0.98rem; font-weight: 700; margin: 0.6rem 0;">
-                $$D^n(uv) = \sum_{r=0}^{n} \binom{n}{r} D^r u \, D^{n-r} v \quad \text{where} \quad \binom{n}{r} = \frac{n!}{r!(n-r)!}$$
-            </p>
-            <p>If one function is a simple polynomial, its higher derivatives eventually vanish, truncating the infinite sum into a finite sequence of terms.</p>
-            <p><strong>Singularities:</strong> Points where a function is mathematically undefined or its derivatives tend to infinity. For example, $f(x) = \frac{1}{x-2}$ is singular at $x=2$ (representing an essential vertical asymptote).</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+            <!-- Left Side: Mathematical Content -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">1.8.1 Higher-Order Derivatives</h3>
+                <p>Higher-order derivatives are obtained by repeatedly applying the differentiation operator: $f^{(n)}(x) = \frac{d}{dx}[f^{(n-1)}(x)]$. For an $n$-th degree polynomial, the $(n+1)$-th derivative is zero.</p>
+                <p><strong>Leibniz Rule (Product Derivatives):</strong> Generalizes the single-variable product rule to evaluate the $n$-th derivative of a product of two differentiable functions $y = uv$:</p>
+                <p style="text-align: center; font-size: 0.98rem; font-weight: 700; margin: 0.6rem 0;">
+                    $$D^n(uv) = \sum_{r=0}^{n} \binom{n}{r} D^r u \, D^{n-r} v \quad \text{where} \quad \binom{n}{r} = \frac{n!}{r!(n-r)!}$$
+                </p>
+                <p style="margin-bottom: 0;">If one function is a simple polynomial, its higher derivatives eventually vanish, truncating the infinite sum into a finite sequence of terms.</p>
+                <p style="margin-top: 0.75rem; margin-bottom: 0;"><strong>Singularities:</strong> Points where a function is mathematically undefined or its derivatives tend to infinity. For example, $f(x) = \frac{1}{x-2}$ is singular at $x=2$ (representing an essential vertical asymptote).</p>
+            </div>
+            <!-- Right Side: Plain English Notes -->
+            <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+                <p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> Higher-order derivatives track changes of changes (like velocity changing to acceleration). The Leibniz rule organizes the calculus of multiplying changing rates.</p>
+                <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+                    <li style="margin-bottom: 1rem;"><strong>Acceleration &amp; Momentum:</strong> In quantitative finance, the first derivative is your position's sensitivity (Delta), and the second derivative is the rate of change of that sensitivity (Gamma).</li>
+                    <li style="margin-bottom: 1rem;"><strong>The Leibniz Rule:</strong> This works exactly like the binomial expansion $(a+b)^n$. Instead of powers, we use derivative orders. If one function is a simple polynomial (like $x^3$), the calculation stops quickly because its high-order derivatives become zero.</li>
+                    <li style="margin-bottom: 0;"><strong>Singularities:</strong> These are "black holes" in your functions (like dividing by zero). Derivatives blow up to infinity here, which signals extreme volatility or model breakdown in finance.</li>
+                </ul>
+            </div>
         </div>
 
         <!-- Interactive Leibniz Laboratory -->
@@ -36,11 +48,11 @@
                         <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
                             <div>
                                 <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Derivative Order $N$:</label>
-                                <input id="calc18InputN" type="number" min="1" max="5" value="3" oninput="calculateInteractiveLeibniz()" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
+                                <input id="calc18InputN" type="number" min="1" max="5" value="3" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
                             </div>
                             <div>
                                 <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Coefficient $a$ (in $e^{ax}$):</label>
-                                <input id="calc18InputA" type="number" value="1.0" step="0.2" min="-2.0" max="2.0" oninput="calculateInteractiveLeibniz()" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
+                                <input id="calc18InputA" type="number" value="1.0" step="0.2" min="-2.0" max="2.0" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
                             </div>
                         </div>
                         <div style="font-size: 0.85rem; line-height: 1.6; color: var(--text-color); background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid #8b5cf6; margin-bottom: 0.5rem; max-height: 220px; overflow-y: auto;">
@@ -50,8 +62,8 @@
                     </div>
 
                     <!-- Right Column: Graph Canvas -->
-                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
-                        <canvas id="calc18Canvas" width="400" height="280" style="width: 100%; height: 280px; background: #000; border-radius: 6px;"></canvas>
+                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: #0f172a; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
+                        <canvas id="calc18Canvas" width="400" height="280" style="width: 100%; height: 280px; background: #0f172a; border-radius: 6px;"></canvas>
                         <div style="position: absolute; bottom: 10px; right: 15px; font-size: 0.72rem; color: #a1a1aa; display: flex; gap: 0.75rem;">
                             <span><span style="color: #0ea5e9;">■</span> $y(x)$</span>
                             <span><span style="color: #ec4899;">■</span> $y^{(N)}(x)$</span>
@@ -94,11 +106,13 @@
     <!-- Script Block -->
     <script>
         (function() {
-            window.switchCalc18Tab = function(tab) {
+            function switchCalc18Tab(tab) {
                 const tabTheo = document.getElementById('tabCalc18Theory');
                 const tabExer = document.getElementById('tabCalc18Exercises');
                 const secTheo = document.getElementById('secCalc18Theory');
                 const secExer = document.getElementById('secCalc18Exercises');
+
+                if (!tabTheo || !tabExer || !secTheo || !secExer) return;
 
                 if (tab === 'theory') {
                     tabTheo.style.color = '#8b5cf6';
@@ -116,7 +130,7 @@
                     secExer.style.display = 'block';
                     secTheo.style.display = 'none';
                 }
-            };
+            }
 
             const factorial = (num) => {
                 if (num <= 1) return 1;
@@ -130,11 +144,16 @@
                 return factorial(n) / (factorial(r) * factorial(n - r));
             };
 
-            window.calculateInteractiveLeibniz = function() {
-                const n = parseInt(document.getElementById('calc18InputN').value);
-                const a = parseFloat(document.getElementById('calc18InputA').value);
+            function calculateInteractiveLeibniz() {
+                const inputN = document.getElementById('calc18InputN');
+                const inputA = document.getElementById('calc18InputA');
                 const elFormula = document.getElementById('calc18OutputFormula');
                 const elResult = document.getElementById('calc18OutputResult');
+
+                if (!inputN || !inputA || !elFormula || !elResult) return;
+
+                const n = parseInt(inputN.value);
+                const a = parseFloat(inputA.value);
 
                 if (isNaN(n) || isNaN(a) || n < 1 || n > 5) {
                     elResult.innerHTML = "Please enter valid N (1 to 5) and a.";
@@ -145,7 +164,7 @@
 
                 let html = "";
                 for (let r = 0; r <= n; r++) {
-                    if (r > 3) continue; // terms are zero because u = x^3 only has non-zero derivatives up to r=3
+                    if (r > 3) continue; 
                     const coeff = nCr(n, r);
 
                     let derivU = "";
@@ -169,19 +188,22 @@
                         window.MathJax.typesetPromise([parent]);
                     }
                 }
-            };
+            }
 
-            window.drawLeibnizGraph = function() {
+            function drawLeibnizGraph() {
                 const canvas = document.getElementById('calc18Canvas');
-                if (!canvas) return;
+                const inputN = document.getElementById('calc18InputN');
+                const inputA = document.getElementById('calc18InputA');
+                if (!canvas || !inputN || !inputA) return;
+
                 const ctx = canvas.getContext('2d');
-                const n = parseInt(document.getElementById('calc18InputN').value);
-                const a = parseFloat(document.getElementById('calc18InputA').value);
+                const n = parseInt(inputN.value);
+                const a = parseFloat(inputA.value);
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 // Grid lines & axes
-                ctx.strokeStyle = '#27272a';
+                ctx.strokeStyle = '#1e293b';
                 ctx.lineWidth = 1;
                 for (let i = 0; i <= canvas.width; i += 40) {
                     ctx.beginPath();
@@ -204,7 +226,7 @@
                 const toCanvasY = (y) => canvas.height - ((y - yMin) / (yMax - yMin)) * canvas.height;
 
                 // Draw X and Y Axes
-                ctx.strokeStyle = '#52525b';
+                ctx.strokeStyle = '#475569';
                 ctx.lineWidth = 1.5;
                 ctx.beginPath();
                 ctx.moveTo(0, toCanvasY(0));
@@ -232,9 +254,6 @@
                 ctx.stroke();
 
                 // 2. Plot N-th Derivative Function y^(N) (Magenta)
-                // We can construct y^(N) directly using Leibniz Rule terms:
-                // y^(N) = sum_{r=0}^N nCr(N, r) * u^(r) * v^(N-r)
-                // where u = x^3, v = e^{ax}
                 const getDerivN = (x, order) => {
                     let sum = 0;
                     for (let r = 0; r <= order; r++) {
@@ -268,11 +287,27 @@
                     }
                 }
                 ctx.stroke();
-            };
+            }
 
-            setTimeout(() => {
-                if (document.getElementById('calc18InputN')) calculateInteractiveLeibniz();
-            }, 100);
+            function setupListeners() {
+                const tabTheo = document.getElementById('tabCalc18Theory');
+                const tabExer = document.getElementById('tabCalc18Exercises');
+                const inputN = document.getElementById('calc18InputN');
+                const inputA = document.getElementById('calc18InputA');
+
+                if (tabTheo && tabExer && inputN && inputA) {
+                    tabTheo.addEventListener('click', () => switchCalc18Tab('theory'));
+                    tabExer.addEventListener('click', () => switchCalc18Tab('exercises'));
+                    inputN.addEventListener('input', calculateInteractiveLeibniz);
+                    inputA.addEventListener('input', calculateInteractiveLeibniz);
+                    calculateInteractiveLeibniz();
+                } else {
+                    setTimeout(setupListeners, 100);
+                }
+            }
+
+            setupListeners();
         })();
     </script>
 </div>
+
