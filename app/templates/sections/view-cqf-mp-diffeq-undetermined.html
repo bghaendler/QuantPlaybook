@@ -1,50 +1,72 @@
 <div id="view-cqf-mp-diffeq-undetermined" style="display: none;">
     <header style="margin-bottom: 2rem;">
-        
         <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Non-Homogeneous Case - Method of Undetermined Coefficients</h1>
         <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Guided guesswork methods for finding particular integrals, exponential/polynomial/trigonometric RHS, and failure case overrides.</div>
     </header>
 
-    <!-- General Framework Card -->
-    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1. Particular Solutions &amp; Linearity</h3>
-        <p>For a non-homogeneous differential equation $Ly = g(x)$, the complete general solution is composed of two distinct components:</p>
-        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$y = y_c + y_p$$</p>
-        <p>where $y_c$ solves the homogeneous equation $Ly = 0$, and $y_p$ is a particular solution satisfying $Ly_p = g(x)$. Substituting $y_c + y_p$ into the operator confirms linearity: $L(y_c + y_p) = L(y_c) + L(y_p) = 0 + g(x) = g(x)$.</p>
-    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+            <!-- General Framework Card -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1. Particular Solutions &amp; Linearity</h3>
+                <p>For a non-homogeneous differential equation $Ly = g(x)$, the complete general solution is composed of two distinct components:</p>
+                <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$y = y_c + y_p$$</p>
+                <p>where $y_c$ solves the homogeneous equation $Ly = 0$, and $y_p$ is a particular solution satisfying $Ly_p = g(x)$. Substituting $y_c + y_p$ into the operator confirms linearity: $L(y_c + y_p) = L(y_c) + L(y_p) = 0 + g(x) = g(x)$.</p>
+            </div>
 
-    <!-- Trial Solution Methods -->
-    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">2. Standard RHS Trial Functions</h3>
-        <p>The Method of Undetermined Coefficients is a guided guesswork approach where the form of the trial solution $y_p$ is determined by the mathematical category of the right-hand side function $g(x)$:</p>
+            <!-- Trial Solution Methods -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">2. Standard RHS Trial Functions</h3>
+                <p>The Method of Undetermined Coefficients is a guided guesswork approach where the form of the trial solution $y_p$ is determined by the mathematical category of the right-hand side function $g(x)$:</p>
 
-        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">
-            <strong style="color: var(--accent);">Category A: Exponential RHS $g(x) = M e^{kx}$</strong>
-            <p style="margin: 0.25rem 0;">Trial Solution: $y_p = C e^{kx}$ (provided $k$ is not a root of the auxiliary equation).</p>
-            <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #6b7280;"><em>Example:</em> For $y'' - 5y' + 6y = 3e^{5x}$, try $y_p = Ce^{5x}$. Subbing in yields $C = 1/14 \implies y_p = (1/14)e^{5x}$.</p>
+                <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">
+                    <strong style="color: var(--accent);">Category A: Exponential RHS $g(x) = M e^{kx}$</strong>
+                    <p style="margin: 0.25rem 0;">Trial Solution: $y_p = C e^{kx}$ (provided $k$ is not a root of the auxiliary equation).</p>
+                    <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #6b7280;"><em>Example:</em> For $y'' - 5y' + 6y = 3e^{5x}$, try $y_p = Ce^{5x}$. Subbing in yields $C = 1/14 \implies y_p = (1/14)e^{5x}$.</p>
 
-            <strong style="display: block; margin-top: 1rem; color: #10b981;">Category B: Polynomial RHS $g(x) = P_n(x)$</strong>
-            <p style="margin: 0.25rem 0;">Trial Solution: A general polynomial of the same degree: $y_p = p_0 + p_1 x + \dots + p_n x^n$.</p>
-            <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #6b7280;"><em>Example:</em> For $y'' - 5y' + 6y = x^2$, try $y_p = p_0 + p_1 x + p_2 x^2$. Substituting and equating coefficients yields $p_2 = 1/2$, $p_1 = -3/2$, and $p_0 = 7/4$.</p>
+                    <strong style="display: block; margin-top: 1rem; color: #10b981;">Category B: Polynomial RHS $g(x) = P_n(x)$</strong>
+                    <p style="margin: 0.25rem 0;">Trial Solution: A general polynomial of the same degree: $y_p = p_0 + p_1 x + \dots + p_n x^n$.</p>
+                    <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #6b7280;"><em>Example:</em> For $y'' - 5y' + 6y = x^2$, try $y_p = p_0 + p_1 x + p_2 x^2$. Substituting and equating coefficients yields $p_2 = 1/2$, $p_1 = -3/2$, and $p_0 = 7/4$.</p>
 
-            <strong style="display: block; margin-top: 1rem; color: var(--warning);">Category C: Trigonometric RHS $g(x) = M \cos\omega x$ or $N \sin\omega x$</strong>
-            <p style="margin: 0.25rem 0;">Trial Solution: Both sine and cosine must always be included together: $y_p = a \cos\omega x + b \sin\omega x$.</p>
-            <p style="margin: 0.25rem 0; font-size: 0.88rem; color: var(--text-color);"><em>Euler's Complex Shortcut:</em> Recognize $\cos\omega x = \text{Re}(e^{i\omega x})$. Solve for the complex particular solution using trial $y_p = K e^{i\omega x}$, then extract the real part. This is mathematically much more efficient.</p>
+                    <strong style="display: block; margin-top: 1rem; color: var(--warning);">Category C: Trigonometric RHS $g(x) = M \cos\omega x$ or $N \sin\omega x$</strong>
+                    <p style="margin: 0.25rem 0;">Trial Solution: Both sine and cosine must always be included together: $y_p = a \cos\omega x + b \sin\omega x$.</p>
+                    <p style="margin: 0.25rem 0; font-size: 0.88rem; color: var(--text-color);"><em>Euler's Complex Shortcut:</em> Recognize $\cos\omega x = \text{Re}(e^{i\omega x})$. Solve for the complex particular solution using trial $y_p = K e^{i\omega x}$, then extract the real part. This is mathematically much more efficient.</p>
+                </div>
+            </div>
+
+            <!-- The Failure Case Overrides -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">3. Overcoming the Failure Case</h3>
+                <p>A <strong>failure case</strong> arises when the exponential parameter $k$ in $g(x)$ is already a root of the auxiliary equation, meaning it appears in the complementary function $y_c$. Substituting the standard trial solution would yield zero on the left-hand side, making it impossible to match the right-hand side.</p>
+                
+                <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color); margin-top: 1rem;">
+                    <strong>The Correction Principle:</strong>
+                    <p style="margin: 0.5rem 0;">We scale the standard trial solution by multiplying it by $x$ to achieve linear independence:</p>
+                    $$\text{New Trial } y_p = x \cdot \left( C e^{kx} \right)$$
+                    <p style="margin: 0.5rem 0;">If $k$ is a double repeated root of the auxiliary equation, we scale the trial solution by multiplying by $x^2$:</p>
+                    $$\text{New Trial } y_p = x^2 \cdot \left( C e^{kx} \right)$$
+                    <p style="margin: 0.5rem 0; color: #10b981; font-weight: bold;">General Rule: The multiplying power of $x$ corresponds exactly to the multiplicity of the root.</p>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <!-- The Failure Case Overrides -->
-    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">3. Overcoming the Failure Case</h3>
-        <p>A <strong>failure case</strong> arises when the exponential parameter $k$ in $g(x)$ is already a root of the auxiliary equation, meaning it appears in the complementary function $y_c$. Substituting the standard trial solution would yield zero on the left-hand side, making it impossible to match the right-hand side.</p>
-        
-        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color); margin-top: 1rem;">
-            <strong>The Correction Principle:</strong>
-            <p style="margin: 0.5rem 0;">We scale the standard trial solution by multiplying it by $x$ to achieve linear independence:</p>
-            $$\text{New Trial } y_p = x \cdot \left( C e^{kx} \right)$$
-            <p style="margin: 0.5rem 0;">If $k$ is a double repeated root of the auxiliary equation, we scale the trial solution by multiplying by $x^2$:</p>
-            $$\text{New Trial } y_p = x^2 \cdot \left( C e^{kx} \right)$$
-            <p style="margin: 0.5rem 0; color: #10b981; font-weight: bold;">General Rule: The multiplying power of $x$ corresponds exactly to the multiplicity of the root.</p>
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> When an equation is driven by an active right-hand side force ($g(x)$), we must find a specific solution ($y_p$) to balance it.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+                <li style="margin-bottom: 1rem;"><strong>Complementary vs. Particular:</strong> The general solution is a team effort:
+                    <br>• The **Complementary Function ($y_c$)** handles the background physics of the system.
+                    <br>• The **Particular Integral ($y_p$)** forces the system to react to the driving input.
+                </li>
+                <li style="margin-bottom: 1rem;"><strong>RHS Matching Guesswork:</strong> We guess $y_p$ to match the shape of the driving force:
+                    <br>• If it's an exponential $e^{kx}$, guess $C e^{kx}$.
+                    <br>• If it's a polynomial $x^n$, guess a general polynomial of the same degree.
+                    <br>• If it's a sine or cosine, guess a mix of sines and cosines ($A \cos x + B \sin x$) because derivatives swap them.
+                </li>
+                <li style="margin-bottom: 0;"><strong>The Failure Case Trap:</strong> If your guess ($e^{kx}$) is already in the complementary function ($y_c$), plugging it in yields $0$. This makes it impossible to solve. We break this conflict by multiplying our trial guess by $x$ (or $x^2$ for double roots), shifting it into a new independent dimension.</li>
+            </ul>
         </div>
     </div>
 
@@ -58,7 +80,7 @@
                 <!-- Controls -->
                 <div>
                     <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Exponential parameter ($k$):</label>
-                    <input type="range" id="diffeqUndetSliderK" min="0" max="3" value="2" step="1" oninput="runDiffeqUndeterminedSimulation()" style="width: 100%; margin-bottom: 1rem;">
+                    <input type="range" id="diffeqUndetSliderK" min="0" max="3" value="2" step="1" style="width: 100%; margin-bottom: 1rem;">
                     <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: -0.75rem; margin-bottom: 1.25rem; color: #6b7280;">
                         <span>0 (Polynomial constant)</span>
                         <span id="diffeqUndetKVal" style="font-weight: bold; color: var(--accent);">k = 2</span>
@@ -77,8 +99,8 @@
                 </div>
 
                 <!-- Custom 2D Line Chart Canvas -->
-                <div style="background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 1rem;">
-                    <canvas id="diffeqUndetCanvas" width="320" height="200" style="width: 100%; height: 200px; display: block;"></canvas>
+                <div style="background: #0f172a; border-radius: 8px; border: 1px solid var(--card-border); padding: 1rem;">
+                    <canvas id="diffeqUndetCanvas" width="320" height="200" style="width: 100%; height: 200px; display: block; background: #0f172a;"></canvas>
                 </div>
             </div>
         </div>
@@ -87,8 +109,10 @@
     <!-- Script Block -->
     <script>
         (function() {
-            window.runDiffeqUndeterminedSimulation = function() {
-                const k = parseInt(document.getElementById('diffeqUndetSliderK').value);
+            function runDiffeqUndeterminedSimulation() {
+                const sliderK = document.getElementById('diffeqUndetSliderK');
+                if (!sliderK) return;
+                const k = parseInt(sliderK.value);
                 document.getElementById('diffeqUndetKVal').innerText = `k = ${k}`;
 
                 let classText = '';
@@ -119,7 +143,7 @@
                         window.MathJax.typesetPromise([parent]);
                     }
                 }
-            };
+            }
 
             function drawUndeterminedGraph(k, isFailure) {
                 const canvas = document.getElementById('diffeqUndetCanvas');
@@ -147,7 +171,7 @@
                 }
 
                 // Grid lines
-                ctx.strokeStyle = '#222';
+                ctx.strokeStyle = '#1e293b';
                 ctx.lineWidth = 1;
                 ctx.beginPath();
                 ctx.moveTo(margin, getCY(0));
@@ -183,9 +207,17 @@
                 ctx.stroke();
             }
 
-            setTimeout(() => {
-                if (document.getElementById('diffeqUndetSliderK')) runDiffeqUndeterminedSimulation();
-            }, 100);
+            function setupListeners() {
+                const sliderK = document.getElementById('diffeqUndetSliderK');
+                if (sliderK) {
+                    sliderK.addEventListener('input', runDiffeqUndeterminedSimulation);
+                    runDiffeqUndeterminedSimulation();
+                } else {
+                    setTimeout(setupListeners, 100);
+                }
+            }
+
+            setupListeners();
         })();
     </script>
 </div>

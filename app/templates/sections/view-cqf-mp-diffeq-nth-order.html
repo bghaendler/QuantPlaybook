@@ -1,63 +1,72 @@
 <div id="view-cqf-mp-diffeq-nth-order" style="display: none;">
     <header style="margin-bottom: 2rem;">
-        
         <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">General Nth Order Linear Homogeneous Equations</h1>
         <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Extension of constant coefficient linear differential operators to arbitrary orders, polynomial roots, and worked higher-order cases.</div>
     </header>
 
-    <!-- General Framework -->
-    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1. General Nth Order Homogeneous Formulation</h3>
-        <p>The general form of an $n^{\text{th}}$-order linear homogeneous differential equation with constant coefficients is:</p>
-        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$a_n \frac{d^n y}{dx^n} + a_{n-1} \frac{d^{n-1} y}{dx^{n-1}} + \dots + a_1 \frac{dy}{dx} + a_0 y = 0$$</p>
-        <p>Substituting the trial exponential form $y = e^{\lambda x}$ produces an $n^{\text{th}}$-degree polynomial <strong>Auxiliary Equation</strong>:</p>
-        <p style="text-align: center; font-size: 1.15rem; font-weight: bold; color: var(--accent);">$$a_n \lambda^n + a_{n-1} \lambda^{n-1} + \dots + a_1 \lambda + a_0 = 0$$</p>
-        <p>Solving the differential equation reduces entirely to finding the roots of this polynomial.</p>
-    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+            <!-- General Framework -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1. General Nth Order Homogeneous Formulation</h3>
+                <p>The general form of an $n^{\text{th}}$-order linear homogeneous differential equation with constant coefficients is:</p>
+                <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$a_n \frac{d^n y}{dx^n} + a_{n-1} \frac{d^{n-1} y}{dx^{n-1}} + \dots + a_1 \frac{dy}{dx} + a_0 y = 0$$</p>
+                <p>Substituting the trial exponential form $y = e^{\lambda x}$ produces an $n^{\text{th}}$-degree polynomial <strong>Auxiliary Equation</strong>:</p>
+                <p style="text-align: center; font-size: 1.15rem; font-weight: bold; color: var(--accent);">$$a_n \lambda^n + a_{n-1} \lambda^{n-1} + \dots + a_1 \lambda + a_0 = 0$$</p>
+                <p>Solving the differential equation reduces entirely to finding the roots of this polynomial.</p>
+            </div>
 
-    <!-- The Three Root Cases for Nth Order -->
-    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">2. Three Root Cases &amp; Solution Construction</h3>
-        
-        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">
-            <strong style="color: var(--accent);">Case 1: $n$ Distinct Roots</strong>
-            <p style="margin: 0.25rem 0;">Each distinct real root $\lambda_i$ generates an independent solution $e^{\lambda_i x}$. The general solution is a linear combination of all $n$ terms:</p>
-            $$y = c_1 e^{\lambda_1 x} + c_2 e^{\lambda_2 x} + \dots + c_n e^{\lambda_n x}$$
+            <!-- The Three Root Cases for Nth Order -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">2. Three Root Cases &amp; Solution Construction</h3>
+                
+                <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">
+                    <strong style="color: var(--accent);">Case 1: $n$ Distinct Roots</strong>
+                    <p style="margin: 0.25rem 0;">Each distinct real root $\lambda_i$ generates an independent solution $e^{\lambda_i x}$. The general solution is a linear combination of all $n$ terms:</p>
+                    $$y = c_1 e^{\lambda_1 x} + c_2 e^{\lambda_2 x} + \dots + c_n e^{\lambda_n x}$$
 
-            <strong style="display: block; margin-top: 1rem; color: #10b981;">Case 2: $r$-Fold Repeated Real Root</strong>
-            <p style="margin: 0.25rem 0;">When a root $\lambda$ repeats $r$ times ($r \le n$), it generates $r$ linearly independent solutions by scaling with increasing powers of $x$. Only the repeated roots are scaled; all other roots are treated separately:</p>
-            $$y = \left( c_1 + c_2 x + c_3 x^2 + \dots + c_r x^{r-1} \right) e^{\lambda x}$$
+                    <strong style="display: block; margin-top: 1rem; color: #10b981;">Case 2: $r$-Fold Repeated Real Root</strong>
+                    <p style="margin: 0.25rem 0;">When a root $\lambda$ repeats $r$ times ($r \le n$), it generates $r$ linearly independent solutions by scaling with increasing powers of $x$. Only the repeated roots are scaled; all other roots are treated separately:</p>
+                    $$y = \left( c_1 + c_2 x + c_3 x^2 + \dots + c_r x^{r-1} \right) e^{\lambda x}$$
 
-            <strong style="display: block; margin-top: 1rem; color: var(--warning);">Case 3: $r$-Fold Repeated Complex Conjugate Roots</strong>
-            <p style="margin: 0.25rem 0;">When a complex root pair $p \pm iq$ is repeated $r$ times, the solutions take the form of $e^{px}$ multiplied by combinations of cosine and sine terms, with each repetition introducing an additional factor of $x$:</p>
-            $$y = e^{px} \left[ \left( A_1 + A_2 x + \dots + A_r x^{r-1} \right)\cos qx + \left( B_1 + B_2 x + \dots + B_r x^{r-1} \right)\sin qx \right]$$
+                    <strong style="display: block; margin-top: 1rem; color: var(--warning);">Case 3: $r$-Fold Repeated Complex Conjugate Roots</strong>
+                    <p style="margin: 0.25rem 0;">When a complex root pair $p \pm iq$ is repeated $r$ times, the solutions take the form of $e^{px}$ multiplied by combinations of cosine and sine terms, with each repetition introducing an additional factor of $x$:</p>
+                    $$y = e^{px} \left[ \left( A_1 + A_2 x + \dots + A_r x^{r-1} \right)\cos qx + \left( B_1 + B_2 x + \dots + B_r x^{r-1} \right)\sin qx \right]$$
+                </div>
+            </div>
+
+            <!-- Worked Polynomial Examples -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">3. Worked Polynomial Examples</h3>
+                
+                <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">
+                    <strong>Worked Example 1: Fourth-Order Equation with Distinct Roots</strong>
+                    <p style="margin: 0.25rem 0;">Find general solution for $\lambda^4 - 5\lambda^2 + 6 = 0$. Factoring:</p>
+                    $$(\lambda^2 - 2)(\lambda^2 - 3) = 0 \implies \lambda = \pm\sqrt{2}, \quad \lambda = \pm\sqrt{3}$$
+                    <p style="color: #10b981; font-weight: bold; margin-top: 0.25rem;">$$y = c_1 e^{\sqrt{2}x} + c_2 e^{-\sqrt{2}x} + c_3 e^{\sqrt{3}x} + c_4 e^{-\sqrt{3}x}$$</p>
+
+                    <strong style="display: block; margin-top: 1rem;">Worked Example 2: Sixth-Order Equation with Repeated Root</strong>
+                    <p style="margin: 0.25rem 0;">Find general solution for $\lambda^6 - 5\lambda^4 = 0 \implies \lambda^4(\lambda^2 - 5) = 0$:</p>
+                    <ul style="padding-left: 1.2rem; margin: 0.25rem 0;">
+                        <li>$\lambda = 0$ is a fourfold repeated root ($r = 4$), generating: $1, x, x^2, x^3$ (since $e^{0x} = 1$).</li>
+                        <li>$\lambda = \pm\sqrt{5}$ are distinct roots, contributing $e^{\sqrt{5}x}$ and $e^{-\sqrt{5}x}$.</li>
+                    </ul>
+                    <p style="color: #10b981; font-weight: bold; margin-top: 0.25rem;">$$y = c_1 + c_2 x + c_3 x^2 + c_4 x^3 + c_5 e^{\sqrt{5}x} + c_6 e^{-\sqrt{5}x}$$</p>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <!-- Worked Polynomial Examples -->
-    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">3. Worked Polynomial Examples</h3>
-        
-        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">
-            <strong>Worked Example 1: Fourth-Order Equation with Distinct Roots</strong>
-            <p style="margin: 0.25rem 0;">Find general solution for $\lambda^4 - 5\lambda^2 + 6 = 0$. Factoring:</p>
-            $$(\lambda^2 - 2)(\lambda^2 - 3) = 0 \implies \lambda = \pm\sqrt{2}, \quad \lambda = \pm\sqrt{3}$$
-            <p style="color: #10b981; font-weight: bold; margin-top: 0.25rem;">$$y = c_1 e^{\sqrt{2}x} + c_2 e^{-\sqrt{2}x} + c_3 e^{\sqrt{3}x} + c_4 e^{-\sqrt{3}x}$$</p>
-
-            <strong style="display: block; margin-top: 1rem;">Worked Example 2: Sixth-Order Equation with Repeated Root</strong>
-            <p style="margin: 0.25rem 0;">Find general solution for $\lambda^6 - 5\lambda^4 = 0 \implies \lambda^4(\lambda^2 - 5) = 0$:</p>
-            <ul style="padding-left: 1.2rem; margin: 0.25rem 0;">
-                <li>$\lambda = 0$ is a fourfold repeated root ($r = 4$), generating: $1, x, x^2, x^3$ (since $e^{0x} = 1$).</li>
-                <li>$\lambda = \pm\sqrt{5}$ are distinct roots, contributing $e^{\sqrt{5}x}$ and $e^{-\sqrt{5}x}$.</li>
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> Solving higher-order equations (3rd order, 4th order, and beyond) works exactly like solving second-order ones—we just factor larger polynomials.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+                <li style="margin-bottom: 1rem;"><strong>Polynomial Roots:</strong> Replacing derivatives with powers of $\lambda$ turns a high-order calculus equation into an $N$-th degree algebra polynomial. The roots of this polynomial dictate the shape of your solutions.</li>
+                <li style="margin-bottom: 1rem;"><strong>Distinct Roots:</strong> Every distinct real root gives you a clean exponential term $e^{\lambda_i x}$.</li>
+                <li style="margin-bottom: 1rem;"><strong>Repeated Roots:</strong> If a root repeats, you can't just list it twice because the solutions must be independent. You make them independent by multiplying the repeated terms by increasing powers of $x$ (e.g. $(c_1 + c_2 x + c_3 x^2) e^{\lambda x}$).</li>
+                <li style="margin-bottom: 0;"><strong>Repeated Complex Roots:</strong> If a complex wave root repeats, its sines and cosines get scaled by increasing powers of $x$ too (e.g. $x e^{px} \cos qx$), representing growing oscillations.</li>
             </ul>
-            <p style="color: #10b981; font-weight: bold; margin-top: 0.25rem;">$$y = c_1 + c_2 x + c_3 x^2 + c_4 x^3 + c_5 e^{\sqrt{5}x} + c_6 e^{-\sqrt{5}x}$$</p>
-
-            <strong style="display: block; margin-top: 1rem;">Worked Example 3: Fourth-Order Equation with Repeated Complex Roots</strong>
-            <p style="margin: 0.25rem 0;">Find general solution for $(\lambda^2 + 1)^2 = 0 \implies \lambda = \pm i$ are twofold repeated roots:</p>
-            <ul style="padding-left: 1.2rem; margin: 0.25rem 0;">
-                <li>Here, $p = 0$, $q = 1$, and multiplicity $r = 2$.</li>
-            </ul>
-            <p style="color: #10b981; font-weight: bold; margin-top: 0.25rem;">$$y = (A + Bx)\cos x + (C + Dx)\sin x$$</p>
         </div>
     </div>
 
@@ -71,7 +80,7 @@
                 <!-- Controls -->
                 <div>
                     <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Root magnitude ($r$):</label>
-                    <input type="range" id="diffeqNthSliderR" min="0.5" max="2.5" value="1.2" step="0.1" oninput="runDiffeqNthOrderSimulation()" style="width: 100%; margin-bottom: 1rem;">
+                    <input type="range" id="diffeqNthSliderR" min="0.5" max="2.5" value="1.2" step="0.1" style="width: 100%; margin-bottom: 1rem;">
                     <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: -0.75rem; margin-bottom: 1.25rem; color: #6b7280;">
                         <span>0.5</span>
                         <span id="diffeqNthRVal" style="font-weight: bold; color: var(--accent);">r = 1.2</span>
@@ -85,8 +94,8 @@
                 </div>
 
                 <!-- Custom 2D Line Chart Canvas -->
-                <div style="background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 1rem;">
-                    <canvas id="diffeqNthCanvas" width="320" height="200" style="width: 100%; height: 200px; display: block;"></canvas>
+                <div style="background: #0f172a; border-radius: 8px; border: 1px solid var(--card-border); padding: 1rem;">
+                    <canvas id="diffeqNthCanvas" width="320" height="200" style="width: 100%; height: 200px; display: block; background: #0f172a;"></canvas>
                 </div>
             </div>
         </div>
@@ -95,8 +104,10 @@
     <!-- Script Block -->
     <script>
         (function() {
-            window.runDiffeqNthOrderSimulation = function() {
-                const r = parseFloat(document.getElementById('diffeqNthSliderR').value);
+            function runDiffeqNthOrderSimulation() {
+                const sliderR = document.getElementById('diffeqNthSliderR');
+                if (!sliderR) return;
+                const r = parseFloat(sliderR.value);
                 document.getElementById('diffeqNthRVal').innerText = `r = ${r.toFixed(1)}`;
                 document.getElementById('diffeqNthFormula').innerText = `y = 1 + e^{${r.toFixed(1)}x} + e^{-${r.toFixed(1)}x}`;
 
@@ -108,7 +119,7 @@
                         window.MathJax.typesetPromise([parent]);
                     }
                 }
-            };
+            }
 
             function drawNthOrderGraph(r) {
                 const canvas = document.getElementById('diffeqNthCanvas');
@@ -136,7 +147,7 @@
                 }
 
                 // Grid lines
-                ctx.strokeStyle = '#222';
+                ctx.strokeStyle = '#1e293b';
                 ctx.lineWidth = 1;
                 ctx.beginPath();
                 ctx.moveTo(margin, canvas.height - bottomMargin);
@@ -164,9 +175,17 @@
                 ctx.stroke();
             }
 
-            setTimeout(() => {
-                if (document.getElementById('diffeqNthSliderR')) runDiffeqNthOrderSimulation();
-            }, 100);
+            function setupListeners() {
+                const sliderR = document.getElementById('diffeqNthSliderR');
+                if (sliderR) {
+                    sliderR.addEventListener('input', runDiffeqNthOrderSimulation);
+                    runDiffeqNthOrderSimulation();
+                } else {
+                    setTimeout(setupListeners, 100);
+                }
+            }
+
+            setupListeners();
         })();
     </script>
 </div>

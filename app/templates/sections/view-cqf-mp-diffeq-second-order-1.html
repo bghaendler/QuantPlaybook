@@ -1,60 +1,80 @@
 <div id="view-cqf-mp-diffeq-second-order-1" style="display: none;">
     <header style="margin-bottom: 2rem;">
-        
         <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Second Order Ordinary Differential Equations - Special Cases &amp; Operator Theory</h1>
         <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Decomposition of special cases, operator notation, linear independence, vector spaces, and complementary/particular splits.</div>
     </header>
 
-    <!-- General Second Order Form & Special Cases -->
-    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1. General Form &amp; Decomposition of Special Cases</h3>
-        <p>The most general form of a second-order ODE can be written implicitly as $F(x, y, y', y'') = 0$. When one or more terms are explicitly absent, we can decompose the equation into a sequential system of first-order equations:</p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+            <!-- General Second Order Form & Special Cases -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1. General Form &amp; Decomposition of Special Cases</h3>
+                <p>The most general form of a second-order ODE can be written implicitly as $F(x, y, y', y'') = 0$. When one or more terms are explicitly absent, we can decompose the equation into a sequential system of first-order equations:</p>
 
-        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">
-            <strong>Case A: Both $y'$ and $y$ are missing: $y'' = f(x)$</strong>
-            <p style="margin: 0.25rem 0;">Solved by direct double integration. For example, if $y'' = 4x$:</p>
-            $$y' = 2x^2 + C \implies y = \frac{2}{3}x^3 + Cx + D$$
-            <p style="font-style: italic; color: #6b7280; margin: 0.25rem 0;">Every second-order ODE solution must contain exactly two arbitrary constants of integration.</p>
+                <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">
+                    <strong>Case A: Both $y'$ and $y$ are missing: $y'' = f(x)$</strong>
+                    <p style="margin: 0.25rem 0;">Solved by direct double integration. For example, if $y'' = 4x$:</p>
+                    $$y' = 2x^2 + C \implies y = \frac{2}{3}x^3 + Cx + D$$
+                    <p style="font-style: italic; color: #6b7280; margin: 0.25rem 0;">Every second-order ODE solution must contain exactly two arbitrary constants of integration.</p>
 
-            <strong style="display: block; margin-top: 1rem;">Case B: Variable $y$ is missing: $y'' = f(x, y')$</strong>
-            <p style="margin: 0.25rem 0;">Introduce substitution $p = y'$, which means $y'' = p'$. This converts the second-order equation into a first-order equation in $p$:</p>
-            $$\frac{dp}{dx} = f(x, p)$$
-            <p style="margin: 0.25rem 0;">Once $p(x)$ is solved, recover $y$ via integration: $y = \int p(x)\,dx$.</p>
+                    <strong style="display: block; margin-top: 1rem;">Case B: Variable $y$ is missing: $y'' = f(x, y')$</strong>
+                    <p style="margin: 0.25rem 0;">Introduce substitution $p = y'$, which means $y'' = p'$. This converts the second-order equation into a first-order equation in $p$:</p>
+                    $$\frac{dp}{dx} = f(x, p)$$
+                    <p style="margin: 0.25rem 0;">Once $p(x)$ is solved, recover $y$ via integration: $y = \int p(x)\,dx$.</p>
 
-            <strong style="display: block; margin-top: 1rem;">Case C: Independent variable $x$ is missing: $y'' = f(y)$</strong>
-            <p style="margin: 0.25rem 0;">Using substitution $p = y'$, because $x$ is missing, we use the chain rule to rewrite the second derivative:</p>
-            $$y'' = \frac{dp}{dx} = \frac{dp}{dy}\frac{dy}{dx} = p \frac{dp}{dy}$$
-            <p style="margin: 0.25rem 0;">This transforms the ODE into a first-order separable equation in terms of variables $p$ and $y$:</p>
-            $$p \frac{dp}{dy} = f(y)$$
+                    <strong style="display: block; margin-top: 1rem;">Case C: Independent variable $x$ is missing: $y'' = f(y)$</strong>
+                    <p style="margin: 0.25rem 0;">Using substitution $p = y'$, because $x$ is missing, we use the chain rule to rewrite the second derivative:</p>
+                    $$y'' = \frac{dp}{dx} = \frac{dp}{dy}\frac{dy}{dx} = p \frac{dp}{dy}$$
+                    <p style="margin: 0.25rem 0;">This transforms the ODE into a first-order separable equation in terms of variables $p$ and $y$:</p>
+                    $$p \frac{dp}{dy} = f(y)$$
+                </div>
+            </div>
+
+            <!-- Differential Operator Notation -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">2. Nth Order Linear Equations &amp; Operator Notation</h3>
+                <p>Using the differential operator notation where $D \equiv d/dx$, we can express an $n^{\text{th}}$-order linear differential equation compactly as:</p>
+                <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$Ly = g(x)$$</p>
+                <p>where $L$ is a linear differential operator. The linearity of $L$ is defined by two fundamental algebraic properties:</p>
+                <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+                    <li>Constants factor out: $L(c y) = c L(y)$</li>
+                    <li>Linearity over sums: $L(y_1 + y_2) = L(y_1) + L(y_2)$</li>
+                </ul>
+                <p>The general solution to a non-homogeneous equation $Ly = g(x)$ is the sum of two distinct components:</p>
+                <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$y = y_c + y_p$$</p>
+                <p style="font-size: 0.92rem; color: #6b7280; text-align: center;">Where $y_c$ (Complementary Function) solves the homogeneous system $Ly = 0$, and $y_p$ (Particular Integral) solves the non-homogeneous equation $Ly = g(x)$.</p>
+            </div>
+
+            <!-- Homogeneous vector space -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">3. Homogeneous Solution &amp; Vector Space Properties</h3>
+                <p>Because the operator $L$ is linear, the set of all solutions to the homogeneous equation $Ly = 0$ forms a <strong>vector space</strong>. This means that if $y_1$ and $y_2$ are solutions, any linear combination $c_1 y_1 + c_2 y_2$ is also a solution.</p>
+                
+                <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6; margin-bottom: 0;">
+                    <li>A set of functions is <strong>linearly dependent</strong> if a linear combination of them can equal zero with not all coefficients being zero, meaning one function can be expressed in terms of the others.</li>
+                    <li style="margin-top: 0.5rem;">A set of functions is <strong>linearly independent</strong> if the only way the linear combination can equal zero is for all coefficients to be zero.</li>
+                </ul>
+            </div>
         </div>
-    </div>
 
-    <!-- Differential Operator Notation -->
-    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">2. Nth Order Linear Equations &amp; Operator Notation</h3>
-        <p>Using the differential operator notation where $D \equiv d/dx$, we can express an $n^{\text{th}}$-order linear differential equation compactly as:</p>
-        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$Ly = g(x)$$</p>
-        <p>where $L$ is a linear differential operator. The linearity of $L$ is defined by two fundamental algebraic properties:</p>
-        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
-            <li>Constants factor out: $L(c y) = c L(y)$</li>
-            <li>Linearity over sums: $L(y_1 + y_2) = L(y_1) + L(y_2)$</li>
-        </ul>
-        <p>The general solution to a non-homogeneous equation $Ly = g(x)$ is the sum of two distinct components:</p>
-        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$y = y_c + y_p$$</p>
-        <p style="font-size: 0.92rem; color: #6b7280; text-align: center;">Where $y_c$ (Complementary Function) solves the homogeneous system $Ly = 0$, and $y_p$ (Particular Integral) solves the non-homogeneous equation $Ly = g(x)$.</p>
-    </div>
-
-    <!-- Homogeneous vector space -->
-    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">3. Homogeneous Solution &amp; Vector Space Properties</h3>
-        <p>Because the operator $L$ is linear, the set of all solutions to the homogeneous equation $Ly = 0$ forms a <strong>vector space</strong>. This means that if $y_1$ and $y_2$ are solutions, any linear combination $c_1 y_1 + c_2 y_2$ is also a solution.</p>
-        
-        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
-            <li>A set of functions is <strong>linearly dependent</strong> if a linear combination of them can equal zero with not all coefficients being zero, meaning one function can be expressed in terms of the others.</li>
-            <li style="margin-top: 0.5rem;">A set of functions is <strong>linearly independent</strong> if the only way the linear combination can equal zero is for all coefficients to be zero.</li>
-        </ul>
-        <p>An $n^{\text{th}}$-order homogeneous ODE has exactly $n$ linearly independent solutions. The general solution of the homogeneous equation is formed by taking a linear combination of all $n$ independent solutions:</p>
-        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$y_c = c_1 y_1 + c_2 y_2 + \dots + c_n y_n$$</p>
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> Second-order differential equations are equations containing a second derivative ($y''$), which measures the acceleration of a changing system.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+                <li style="margin-bottom: 1rem;"><strong>Decomposing Missing Variables:</strong> If an equation is missing a variable, we can simplify it:
+                    <br>• If both $y$ and $y'$ are missing (e.g. $y'' = x$), just integrate twice.
+                    <br>• If $y$ is missing (e.g. $y'' + y' = x$), substitute $p = y'$. Since $y'' = p'$, this reduces the equation to a first-order one in terms of $p$.
+                    <br>• If $x$ is missing (e.g. $y'' + y = 0$), substitute $p = y'$ and write $y''$ as $p \frac{dp}{dy}$ using the Chain Rule. This makes it a first-order separable equation.
+                </li>
+                <li style="margin-bottom: 1rem;"><strong>Linear Operators ($L$):</strong> We represent the action of taking derivatives as a linear operator $L$ (like a function machine). Since $L$ is linear, we can split non-homogeneous equations ($Ly = g(x)$) into two parts:
+                    <br>• The **Complementary Function ($y_c$)**: The general background solution where $Ly = 0$.
+                    <br>• The **Particular Integral ($y_p$)**: The specific solution to handle the active driving force $g(x)$.
+                </li>
+                <li style="margin-bottom: 0;"><strong>Linear Independence:</strong> Since $Ly=0$ is linear, its solutions form a vector space. A second-order equation has exactly 2 linearly independent base solutions (solutions that cannot be written as simple multiples of each other, like $\sin x$ and $\cos x$). The general solution is a linear combination of these two bases.</li>
+            </ul>
+        </div>
     </div>
 
     <!-- Interactive Case B Substitution Sandbox -->
@@ -67,7 +87,7 @@
                 <!-- Controls -->
                 <div>
                     <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Constant ($C_1$):</label>
-                    <input type="range" id="diffeq21SliderC1" min="-5" max="5" value="2" step="0.5" oninput="runDiffeqSecondOrder1Simulation()" style="width: 100%; margin-bottom: 1rem;">
+                    <input type="range" id="diffeq21SliderC1" min="-5" max="5" value="2" step="0.5" style="width: 100%; margin-bottom: 1rem;">
                     <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: -0.75rem; margin-bottom: 1.25rem; color: #6b7280;">
                         <span>-5</span>
                         <span id="diffeq21C1Val" style="font-weight: bold; color: var(--accent);">C1 = 2</span>
@@ -81,8 +101,8 @@
                 </div>
 
                 <!-- Custom 2D Line Chart Canvas -->
-                <div style="background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 1rem;">
-                    <canvas id="diffeq21Canvas" width="320" height="200" style="width: 100%; height: 200px; display: block;"></canvas>
+                <div style="background: #0f172a; border-radius: 8px; border: 1px solid var(--card-border); padding: 1rem;">
+                    <canvas id="diffeq21Canvas" width="320" height="200" style="width: 100%; height: 200px; display: block; background: #0f172a;"></canvas>
                 </div>
             </div>
         </div>
@@ -91,8 +111,10 @@
     <!-- Script Block -->
     <script>
         (function() {
-            window.runDiffeqSecondOrder1Simulation = function() {
-                const c1 = parseFloat(document.getElementById('diffeq21SliderC1').value);
+            function runDiffeqSecondOrder1Simulation() {
+                const sliderC1 = document.getElementById('diffeq21SliderC1');
+                if (!sliderC1) return;
+                const c1 = parseFloat(sliderC1.value);
                 document.getElementById('diffeq21C1Val').innerText = `C1 = ${c1}`;
                 document.getElementById('diffeq21PFormula').innerText = `p(x) = x^3/5 + (${c1})/x^2`;
 
@@ -104,7 +126,7 @@
                         window.MathJax.typesetPromise([parent]);
                     }
                 }
-            };
+            }
 
             function drawSecondOrder1Graph(c1) {
                 const canvas = document.getElementById('diffeq21Canvas');
@@ -132,7 +154,7 @@
                 }
 
                 // Grid lines
-                ctx.strokeStyle = '#222';
+                ctx.strokeStyle = '#1e293b';
                 ctx.lineWidth = 1;
                 ctx.beginPath();
                 ctx.moveTo(margin, getCY(0));
@@ -160,15 +182,23 @@
                 ctx.stroke();
 
                 // Title
-                ctx.fillStyle = '#888';
-                ctx.font = '9px sans-serif';
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '9px monospace';
                 ctx.textAlign = 'center';
                 ctx.fillText(`Decomposed Solution y(x) (C2 = 0)`, canvas.width / 2, topMargin);
             }
 
-            setTimeout(() => {
-                if (document.getElementById('diffeq21SliderC1')) runDiffeqSecondOrder1Simulation();
-            }, 100);
+            function setupListeners() {
+                const sliderC1 = document.getElementById('diffeq21SliderC1');
+                if (sliderC1) {
+                    sliderC1.addEventListener('input', runDiffeqSecondOrder1Simulation);
+                    runDiffeqSecondOrder1Simulation();
+                } else {
+                    setTimeout(setupListeners, 100);
+                }
+            }
+
+            setupListeners();
         })();
     </script>
 </div>
