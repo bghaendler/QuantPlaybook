@@ -868,38 +868,7 @@
             display: none !important;
         }
 
-        /* Dynamic Progress Bar Styling */
-        .module-progress-container {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.1rem 0.6rem 0.4rem 0.6rem;
-            margin-top: -0.15rem;
-            margin-bottom: 0.4rem;
-        }
 
-        .module-progress-bar {
-            flex: 1;
-            height: 4px;
-            background: var(--sidebar-border);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .module-progress-fill {
-            height: 100%;
-            background: #10b981;
-            width: 0%;
-            transition: width 0.3s ease;
-            border-radius: 2px;
-        }
-
-        .module-progress-text {
-            font-size: 0.68rem;
-            color: #94a3b8;
-            font-weight: 600;
-            white-space: nowrap;
-        }
 
         .badge {
             font-size: 0.65rem;
@@ -5144,54 +5113,7 @@
                 navItem.prepend(chk);
             });
 
-            // 3. Inject micro progress bars into details categories (Level 1, 2, 3)
-            document.querySelectorAll('.sidebar details').forEach(details => {
-                const summary = details.querySelector('summary');
-                if (!summary) return;
 
-                // Ensure we don't double inject
-                if (details.querySelector('.module-progress-container')) return;
-
-                const progressContainer = document.createElement('div');
-                progressContainer.className = 'module-progress-container';
-                progressContainer.innerHTML = `
-                    <div class="module-progress-bar">
-                        <div class="module-progress-fill"></div>
-                    </div>
-                    <span class="module-progress-text">0% Complete</span>
-                `;
-                
-                // Insert right after summary tag
-                summary.insertAdjacentElement('afterend', progressContainer);
-            });
-
-            // 4. Update calculations for all visual progress bars
-            function updateAllModuleProgress() {
-                document.querySelectorAll('.sidebar details').forEach(details => {
-                    const fill = details.querySelector('.module-progress-fill');
-                    const text = details.querySelector('.module-progress-text');
-                    if (!fill || !text) return;
-
-                    // Get all nav items inside this details element (recursively)
-                    const items = details.querySelectorAll('.nav-item');
-                    if (items.length === 0) {
-                        details.querySelector('.module-progress-container').style.display = 'none';
-                        return;
-                    }
-
-                    const checkedCount = Array.from(items).filter(item => {
-                        const chk = item.querySelector('.progress-chk');
-                        return chk && chk.classList.contains('checked');
-                    }).length;
-
-                    const percentage = Math.round((checkedCount / items.length) * 100);
-                    fill.style.width = `${percentage}%`;
-                    text.innerText = `${checkedCount}/${items.length} (${percentage}%)`;
-                });
-            }
-
-            // Run initial calculations
-            updateAllModuleProgress();
 
             // ─── 5. Mark WIP / Pending items in red ────────────────────────────
             // A) Every nav-item whose href is "#pending" is not yet built
