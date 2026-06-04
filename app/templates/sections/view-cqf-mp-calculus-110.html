@@ -1,31 +1,43 @@
 <div id="view-cqf-mp-calculus-110" style="display: none;">
     <header style="margin-bottom: 2rem;">
-        
         <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.10 Definite Integrals &amp; Substitution Pitfalls</h1>
         <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Integral bounds mapping, dummy variables, substitution theorems, and non-invertible transformation traps.</div>
     </header>
 
     <!-- Navigation Tabs -->
     <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
-        <button id="tabCalc110Theory" onclick="switchCalc110Tab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Theory</button>
-        <button id="tabCalc110Exercises" onclick="switchCalc110Tab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Solutions</button>
+        <button id="tabCalc110Theory" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Theory</button>
+        <button id="tabCalc110Exercises" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Solutions</button>
     </div>
 
     <!-- Tab: Core Theory -->
     <div id="secCalc110Theory" style="display: block;">
-        <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-            <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1.10.1 Definite Integrals &amp; Substitution Rule</h3>
-            <p>The definite integral $\int_a^b f(x)dx$ represents the signed geometric area under $f(x)$ bounded by the interval $[a, b]$. Because the variable of integration is bound by the limits, it acts strictly as a dummy variable:</p>
-            <p style="text-align: center; font-weight: 700; margin: 0.5rem 0;">
-                $$\int_a^b f(x)dx = \int_a^b f(y)dy = \int_a^b f(\theta)d\theta$$
-            </p>
-            <p><strong>The Substitution Rule:</strong> Differentiable variable changes require transforming the integration bounds. If $z = g(x) \implies dz = g'(x)dx$:</p>
-            <p style="text-align: center; font-size: 0.98rem; font-weight: 700; margin: 0.5rem 0;">
-                $$\int_a^b f(g(x))g'(x)dx = \int_{g(a)}^{g(b)} f(z)dz$$
-            </p>
-            <div style="background: rgba(245, 158, 11, 0.05); border-left: 4px solid #f59e0b; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
-                <strong style="color: #b45309;">⚠️ CRITICAL ACADEMIC WARNING: The Non-Invertibility Trap</strong><br>
-                Substitutions like $z = x^2$ fail on symmetric intervals containing the origin (e.g. $[-1, 1]$) because the derivative $\frac{dz}{dx} = 2x$ vanishes at $x=0$. This breaks the mathematical assumption of bijectivity (one-to-one mapping) for the transformation, collapsing the boundary limits ($g(-1) = g(1) = 1$) to yield a false zero result. Always verify that $g'(x) \ne 0$ on the entire integration range.
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+            <!-- Left Side: Mathematical Content -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">1.10.1 Definite Integrals &amp; Substitution Rule</h3>
+                <p>The definite integral $\int_a^b f(x)dx$ represents the signed geometric area under $f(x)$ bounded by the interval $[a, b]$. Because the variable of integration is bound by the limits, it acts strictly as a dummy variable:</p>
+                <p style="text-align: center; font-weight: 700; margin: 0.5rem 0;">
+                    $$\int_a^b f(x)dx = \int_a^b f(y)dy = \int_a^b f(\theta)d\theta$$
+                </p>
+                <p><strong>The Substitution Rule:</strong> Differentiable variable changes require transforming the integration bounds. If $z = g(x) \implies dz = g'(x)dx$:</p>
+                <p style="text-align: center; font-size: 0.98rem; font-weight: 700; margin: 0.5rem 0;">
+                    $$\int_a^b f(g(x))g'(x)dx = \int_{g(a)}^{g(b)} f(z)dz$$
+                </p>
+                <div style="background: rgba(245, 158, 11, 0.05); border-left: 4px solid #f59e0b; padding: 1rem; border-radius: 6px; margin: 1rem 0 0 0;">
+                    <strong style="color: #b45309;">⚠️ CRITICAL ACADEMIC WARNING: The Non-Invertibility Trap</strong><br>
+                    Substitutions like $z = x^2$ fail on symmetric intervals containing the origin (e.g. $[-1, 1]$) because the derivative $\frac{dz}{dx} = 2x$ vanishes at $x=0$. This breaks the mathematical assumption of bijectivity (one-to-one mapping) for the transformation, collapsing the boundary limits ($g(-1) = g(1) = 1$) to yield a false zero result. Always verify that $g'(x) \ne 0$ on the entire integration range.
+                </div>
+            </div>
+            <!-- Right Side: Plain English Notes -->
+            <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+                <p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> Definite integration sums up infinitesimally thin slices of area under a curve. If we swap variables (substitution), we must carefully map the boundaries too.</p>
+                <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+                    <li style="margin-bottom: 1rem;"><strong>Dummy Variables:</strong> When evaluating a definite integral, the integration variable (like $x$, $y$, or $\theta$) is just a temporary place-holder. Once you plug in the bounds, the variable disappears, leaving a constant value.</li>
+                    <li style="margin-bottom: 1rem;"><strong>Substitution Rule:</strong> This is the reverse of the Chain Rule. When you change variables (e.g. replacing a complex expression with $z$), you must adjust the "dx" width factor to "dz" and change the starting/ending limits to match the new $z$ coordinates.</li>
+                    <li style="margin-bottom: 0;"><strong>The Non-Invertibility Trap:</strong> If your substitution folds the curve over itself (like $z=x^2$ folding negative $x$ values onto positive $z$ values), you lose the direction of the area. On symmetric ranges like $[-1, 1]$, the limits collide to become $1$ to $1$, making the math report a fake "zero" area unless you split the range.</li>
+                </ul>
             </div>
         </div>
 
@@ -41,11 +53,11 @@
                         <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
                             <div>
                                 <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Lower bound $a$:</label>
-                                <input id="calc110InputA" type="number" value="-1.0" step="0.1" min="-2.0" max="2.0" oninput="calculateInteractiveIntegral()" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
+                                <input id="calc110InputA" type="number" value="-1.0" step="0.1" min="-2.0" max="2.0" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
                             </div>
                             <div>
                                 <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Upper bound $b$:</label>
-                                <input id="calc110InputB" type="number" value="1.0" step="0.1" min="-2.0" max="2.0" oninput="calculateInteractiveIntegral()" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
+                                <input id="calc110InputB" type="number" value="1.0" step="0.1" min="-2.0" max="2.0" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
                             </div>
                         </div>
                         <div style="font-size: 0.85rem; line-height: 1.6; color: var(--text-color); background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid #f59e0b; margin-bottom: 0.5rem;">
@@ -56,9 +68,9 @@
                     </div>
 
                     <!-- Right Column: Visual Area Graph -->
-                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
-                        <canvas id="calc110Canvas" width="400" height="240" style="width: 100%; height: 240px; background: #000; border-radius: 6px;"></canvas>
-                        <div style="position: absolute; bottom: 8px; right: 12px; font-size: 0.68rem; color: #a1a1aa; display: flex; gap: 0.5rem; background: rgba(0,0,0,0.8); padding: 2px 6px; border-radius: 4px;">
+                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: #0f172a; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
+                        <canvas id="calc110Canvas" width="400" height="240" style="width: 100%; height: 240px; background: #0f172a; border-radius: 6px;"></canvas>
+                        <div style="position: absolute; bottom: 8px; right: 12px; font-size: 0.68rem; color: #a1a1aa; display: flex; gap: 0.5rem; background: rgba(15,23,42,0.8); padding: 2px 6px; border-radius: 4px;">
                             <span><span style="color: #f59e0b;">■</span> Integrand $2x e^{x^2}$</span>
                             <span><span style="color: rgba(245, 158, 11, 0.3);">■</span> Shaded Area</span>
                         </div>
@@ -98,11 +110,13 @@
     <!-- Script Block -->
     <script>
         (function() {
-            window.switchCalc110Tab = function(tab) {
+            function switchCalc110Tab(tab) {
                 const tabTheo = document.getElementById('tabCalc110Theory');
                 const tabExer = document.getElementById('tabCalc110Exercises');
                 const secTheo = document.getElementById('secCalc110Theory');
                 const secExer = document.getElementById('secCalc110Exercises');
+
+                if (!tabTheo || !tabExer || !secTheo || !secExer) return;
 
                 if (tab === 'theory') {
                     tabTheo.style.color = '#f59e0b';
@@ -120,15 +134,19 @@
                     secExer.style.display = 'block';
                     secTheo.style.display = 'none';
                 }
-            };
+            }
 
-            window.calculateInteractiveIntegral = function() {
-                const a = parseFloat(document.getElementById('calc110InputA').value);
-                const b = parseFloat(document.getElementById('calc110InputB').value);
-
+            function calculateInteractiveIntegral() {
+                const inputA = document.getElementById('calc110InputA');
+                const inputB = document.getElementById('calc110InputB');
                 const elBounds = document.getElementById('calc110OutputBounds');
                 const elVal = document.getElementById('calc110OutputVal');
                 const elStatus = document.getElementById('calc110OutputStatus');
+
+                if (!inputA || !inputB || !elBounds || !elVal || !elStatus) return;
+
+                const a = parseFloat(inputA.value);
+                const b = parseFloat(inputB.value);
 
                 if (isNaN(a) || isNaN(b)) {
                     return;
@@ -158,17 +176,22 @@
                         window.MathJax.typesetPromise([parent]);
                     }
                 }
-            };
+            }
 
-            window.drawIntegrationGraph = function(a, b) {
+            function drawIntegrationGraph() {
                 const canvas = document.getElementById('calc110Canvas');
-                if (!canvas) return;
+                const inputA = document.getElementById('calc110InputA');
+                const inputB = document.getElementById('calc110InputB');
+                if (!canvas || !inputA || !inputB) return;
+
+                const a = parseFloat(inputA.value);
+                const b = parseFloat(inputB.value);
                 const ctx = canvas.getContext('2d');
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 // Grid
-                ctx.strokeStyle = '#27272a';
+                ctx.strokeStyle = '#1e293b';
                 ctx.lineWidth = 1;
                 for (let i = 0; i <= canvas.width; i += 40) {
                     ctx.beginPath();
@@ -190,7 +213,7 @@
                 const toCanvasY = (y) => canvas.height - ((y - yMin) / (yMax - yMin)) * canvas.height;
 
                 // Axes
-                ctx.strokeStyle = '#52525b';
+                ctx.strokeStyle = '#475569';
                 ctx.lineWidth = 1.5;
                 ctx.beginPath();
                 ctx.moveTo(0, toCanvasY(0));
@@ -253,11 +276,26 @@
                 ctx.lineTo(toCanvasX(b), canvas.height);
                 ctx.stroke();
                 ctx.setLineDash([]);
-            };
+            }
 
-            setTimeout(() => {
-                if (document.getElementById('calc110InputA')) calculateInteractiveIntegral();
-            }, 100);
+            function setupListeners() {
+                const tabTheo = document.getElementById('tabCalc110Theory');
+                const tabExer = document.getElementById('tabCalc110Exercises');
+                const inputA = document.getElementById('calc110InputA');
+                const inputB = document.getElementById('calc110InputB');
+
+                if (tabTheo && tabExer && inputA && inputB) {
+                    tabTheo.addEventListener('click', () => switchCalc110Tab('theory'));
+                    tabExer.addEventListener('click', () => switchCalc110Tab('exercises'));
+                    inputA.addEventListener('input', calculateInteractiveIntegral);
+                    inputB.addEventListener('input', calculateInteractiveIntegral);
+                    calculateInteractiveIntegral();
+                } else {
+                    setTimeout(setupListeners, 100);
+                }
+            }
+
+            setupListeners();
         })();
     </script>
 </div>

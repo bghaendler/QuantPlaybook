@@ -1,29 +1,41 @@
 <div id="view-cqf-mp-calculus-111" style="display: none;">
     <header style="margin-bottom: 2rem;">
-        
         <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">1.11 Complex Algebra &amp; Euler Proofs</h1>
         <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Complex conjugates, polar expansions, Euler's formula proofs, and complex trigonometric integration.</div>
     </header>
 
     <!-- Navigation Tabs -->
     <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
-        <button id="tabCalc111Theory" onclick="switchCalc111Tab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Theory</button>
-        <button id="tabCalc111Exercises" onclick="switchCalc111Tab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Solutions</button>
+        <button id="tabCalc111Theory" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Theory</button>
+        <button id="tabCalc111Exercises" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Solutions</button>
     </div>
 
     <!-- Tab: Core Theory -->
     <div id="secCalc111Theory" style="display: block;">
-        <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-            <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1.11.1 Complex Algebra &amp; Identity</h3>
-            <p>For any complex number $z = x + iy \in \mathbb{C}$ (where $i = \sqrt{-1}$), its complex conjugate is defined as $\bar{z} = x - iy$. Key algebraic relations include:</p>
-            <div style="background: var(--metric-bg); padding: 0.8rem 1rem; border-radius: 8px; font-family: monospace; font-size: 0.88rem; line-height: 1.5; margin: 0.75rem 0;">
-                • Re z = (z + z̄) / 2 &nbsp;&nbsp;&nbsp; • Im z = (z - z̄) / (2i)<br>
-                • z z̄ = |z|² = x² + y² &nbsp; • |z₁ z₂| = |z₁| |z₂|
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+            <!-- Left Side: Mathematical Content -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1.11.1 Complex Algebra &amp; Identity</h3>
+                <p>For any complex number $z = x + iy \in \mathbb{C}$ (where $i = \sqrt{-1}$), its complex conjugate is defined as $\bar{z} = x - iy$. Key algebraic relations include:</p>
+                <div style="background: var(--metric-bg); padding: 0.8rem 1rem; border-radius: 8px; font-family: monospace; font-size: 0.88rem; line-height: 1.5; margin: 0.75rem 0;">
+                    • Re z = (z + z̄) / 2 &nbsp;&nbsp;&nbsp; • Im z = (z - z̄) / (2i)<br>
+                    • z z̄ = |z|² = x² + y² &nbsp; • |z₁ z₂| = |z₁| |z₂|
+                </div>
+                <p><strong>Euler's Series Expansion Proof:</strong> Substituting $x = i\theta$ in the Maclaurin series of $e^x$ and grouping real/imaginary parts proves Euler's formula:</p>
+                <p style="text-align: center; font-size: 0.92rem; font-weight: 700; margin: 0.5rem 0;">
+                    $$e^{i\theta} = \sum_{n=0}^{\infty} \frac{(i\theta)^n}{n!} = \sum_{even} \frac{(-1)^k \theta^{2k}}{(2k)!} + i\sum_{odd} \frac{(-1)^k \theta^{2k+1}}{(2k+1)!} = \cos\theta + i\sin\theta$$
+                </p>
             </div>
-            <p><strong>Euler's Series Expansion Proof:</strong> Substituting $x = i\theta$ in the Maclaurin series of $e^x$ and grouping real/imaginary parts proves Euler's formula:</p>
-            <p style="text-align: center; font-size: 0.92rem; font-weight: 700; margin: 0.5rem 0;">
-                $$e^{i\theta} = \sum_{n=0}^{\infty} \frac{(i\theta)^n}{n!} = \sum_{even} \frac{(-1)^k \theta^{2k}}{(2k)!} + i\sum_{odd} \frac{(-1)^k \theta^{2k+1}}{(2k+1)!} = \cos\theta + i\sin\theta$$
-            </p>
+            <!-- Right Side: Plain English Notes -->
+            <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+                <p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> Complex numbers expand coordinates into a two-dimensional grid (real vs. imaginary) which lets us model wave rotation, frequency, and circular cycles with ease.</p>
+                <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+                    <li style="margin-bottom: 1rem;"><strong>Conjugate &amp; Distance:</strong> The complex conjugate ($\bar{z}$) is the vertical mirror reflection across the real line. Multiplying any complex number by its conjugate yields a real number equal to its absolute square distance from the origin ($r^2$).</li>
+                    <li style="margin-bottom: 1rem;"><strong>Euler's Expansion:</strong> By substituting imaginary exponents into the infinite series for $e^x$, the even powers group to form the formula for $\cos\theta$ and the odd powers group to form the formula for $\sin\theta$.</li>
+                    <li style="margin-bottom: 0;"><strong>Polar Coordinate Rotation:</strong> Representing numbers as $r e^{i\theta}$ simplifies multiplication enormously: you simply multiply the lengths ($r$) and add the rotation angles ($\theta$).</li>
+                </ul>
+            </div>
         </div>
 
         <!-- Interactive Laboratory -->
@@ -38,11 +50,11 @@
                         <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
                             <div>
                                 <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Real part $x$:</label>
-                                <input id="calc111InputX" type="number" value="2.0" step="0.2" min="-4.0" max="4.0" oninput="calculateInteractiveComplex()" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
+                                <input id="calc111InputX" type="number" value="2.0" step="0.2" min="-4.0" max="4.0" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
                             </div>
                             <div>
                                 <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Imaginary part $y$:</label>
-                                <input id="calc111InputY" type="number" value="2.0" step="0.2" min="-4.0" max="4.0" oninput="calculateInteractiveComplex()" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
+                                <input id="calc111InputY" type="number" value="2.0" step="0.2" min="-4.0" max="4.0" style="width: 60px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
                             </div>
                         </div>
                         <div style="font-size: 0.85rem; line-height: 1.6; color: var(--text-color); background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid #ec4899; margin-bottom: 0.5rem;">
@@ -56,9 +68,9 @@
                     </div>
 
                     <!-- Right: Argand Plane Canvas -->
-                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
-                        <canvas id="calc111Canvas" width="400" height="240" style="width: 100%; height: 240px; background: #000; border-radius: 6px;"></canvas>
-                        <div style="position: absolute; bottom: 8px; right: 12px; font-size: 0.68rem; color: #a1a1aa; display: flex; gap: 0.5rem; background: rgba(0,0,0,0.8); padding: 2px 6px; border-radius: 4px;">
+                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: #0f172a; border-radius: 8px; border: 1px solid var(--card-border); padding: 0.5rem; position: relative;">
+                        <canvas id="calc111Canvas" width="400" height="240" style="width: 100%; height: 240px; background: #0f172a; border-radius: 6px;"></canvas>
+                        <div style="position: absolute; bottom: 8px; right: 12px; font-size: 0.68rem; color: #a1a1aa; display: flex; gap: 0.5rem; background: rgba(15,23,42,0.8); padding: 2px 6px; border-radius: 4px;">
                             <span>Re (Horizontal)</span>
                             <span>Im (Vertical)</span>
                         </div>
@@ -99,11 +111,13 @@
     <!-- Script Block -->
     <script>
         (function() {
-            window.switchCalc111Tab = function(tab) {
+            function switchCalc111Tab(tab) {
                 const tabTheo = document.getElementById('tabCalc111Theory');
                 const tabExer = document.getElementById('tabCalc111Exercises');
                 const secTheo = document.getElementById('secCalc111Theory');
                 const secExer = document.getElementById('secCalc111Exercises');
+
+                if (!tabTheo || !tabExer || !secTheo || !secExer) return;
 
                 if (tab === 'theory') {
                     tabTheo.style.color = '#ec4899';
@@ -121,15 +135,19 @@
                     secExer.style.display = 'block';
                     secTheo.style.display = 'none';
                 }
-            };
+            }
 
-            window.calculateInteractiveComplex = function() {
-                const x = parseFloat(document.getElementById('calc111InputX').value);
-                const y = parseFloat(document.getElementById('calc111InputY').value);
-
+            function calculateInteractiveComplex() {
+                const inputX = document.getElementById('calc111InputX');
+                const inputY = document.getElementById('calc111InputY');
                 const elMod = document.getElementById('calc111OutputModulus');
                 const elArg = document.getElementById('calc111OutputArg');
                 const elPolar = document.getElementById('calc111OutputPolar');
+
+                if (!inputX || !inputY || !elMod || !elArg || !elPolar) return;
+
+                const x = parseFloat(inputX.value);
+                const y = parseFloat(inputY.value);
 
                 if (isNaN(x) || isNaN(y)) {
                     return;
@@ -151,17 +169,24 @@
                         window.MathJax.typesetPromise([parent]);
                     }
                 }
-            };
+            }
 
-            window.drawComplexPlane = function(x, y, r, theta) {
+            function drawComplexPlane() {
                 const canvas = document.getElementById('calc111Canvas');
-                if (!canvas) return;
+                const inputX = document.getElementById('calc111InputX');
+                const inputY = document.getElementById('calc111InputY');
+                if (!canvas || !inputX || !inputY) return;
+
+                const x = parseFloat(inputX.value);
+                const y = parseFloat(inputY.value);
+                const r = Math.sqrt(x * x + y * y);
+                const theta = Math.atan2(y, x);
                 const ctx = canvas.getContext('2d');
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 // Grid
-                ctx.strokeStyle = '#27272a';
+                ctx.strokeStyle = '#1e293b';
                 ctx.lineWidth = 1;
                 for (let i = 0; i <= canvas.width; i += 40) {
                     ctx.beginPath();
@@ -184,7 +209,7 @@
                 const toCanvasY = (imag) => centerY - imag * scale;
 
                 // Draw Real and Imaginary Axes
-                ctx.strokeStyle = '#52525b';
+                ctx.strokeStyle = '#475569';
                 ctx.lineWidth = 1.5;
                 ctx.beginPath();
                 ctx.moveTo(0, centerY);
@@ -194,7 +219,7 @@
                 ctx.stroke();
 
                 // Draw Modulus Radius Dashed Circle
-                ctx.strokeStyle = '#27272a';
+                ctx.strokeStyle = '#1e293b';
                 ctx.lineWidth = 1.0;
                 ctx.setLineDash([4, 4]);
                 ctx.beginPath();
@@ -224,11 +249,26 @@
                 ctx.beginPath();
                 ctx.arc(toCanvasX(x), toCanvasY(y), 5.5, 0, 2 * Math.PI);
                 ctx.fill();
-            };
+            }
 
-            setTimeout(() => {
-                if (document.getElementById('calc111InputX')) calculateInteractiveComplex();
-            }, 100);
+            function setupListeners() {
+                const tabTheo = document.getElementById('tabCalc111Theory');
+                const tabExer = document.getElementById('tabCalc111Exercises');
+                const inputX = document.getElementById('calc111InputX');
+                const inputY = document.getElementById('calc111InputY');
+
+                if (tabTheo && tabExer && inputX && inputY) {
+                    tabTheo.addEventListener('click', () => switchCalc111Tab('theory'));
+                    tabExer.addEventListener('click', () => switchCalc111Tab('exercises'));
+                    inputX.addEventListener('input', calculateInteractiveComplex);
+                    inputY.addEventListener('input', calculateInteractiveComplex);
+                    calculateInteractiveComplex();
+                } else {
+                    setTimeout(setupListeners, 100);
+                }
+            }
+
+            setupListeners();
         })();
     </script>
 </div>
