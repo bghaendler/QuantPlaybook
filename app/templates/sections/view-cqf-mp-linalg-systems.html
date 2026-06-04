@@ -1,87 +1,124 @@
 <div id="view-cqf-mp-linalg-systems" style="display: none;">
     <header style="margin-bottom: 2rem;">
-        
         <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Solving Linear Systems</h1>
         <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Augmented matrices, Gaussian elimination, elementary row operations, and classification of linear system solutions.</div>
     </header>
 
-    <!-- Augmented Matrix Setup -->
-    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1. Augmented Matrix Notation</h3>
-        <p>A system of $n$ linear equations in $n$ unknowns can be compactly represented and solved using an <strong>augmented matrix</strong>, grouping the coefficient matrix $\mathbf{A}$ and the constant vector $\underline{b}$:</p>
-        <p style="text-align: center;">
-            $$\begin{pmatrix} 
-            a_{11} & a_{12} & \dots & a_{1n} & \big| & b_1 \\ 
-            a_{21} & a_{22} & \dots & a_{2n} & \big| & b_2 \\ 
-            \vdots & \vdots & \ddots & \vdots & \big| & \vdots \\ 
-            a_{n1} & a_{n2} & \dots & a_{nn} & \big| & b_n 
-            \end{pmatrix}$$
-        </p>
-    </div>
-
-    <!-- Row Operations and Echelon forms -->
-    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">2. Elementary Row Operations</h3>
-        <p>To solve the system, we apply <strong>elementary row operations</strong> to reduce the augmented matrix into <strong>echelon form</strong> (where the number of leading zeros increases row-by-row). These row operations are guaranteed not to alter the solution of the linear system:</p>
-
-        <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">
-            <strong style="color: var(--accent);">[ER₁] Row Interchange:</strong>
-            <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #6b7280;">Interchange the $i^{\text{th}}$ and $j^{\text{th}}$ rows:</p>
-            $$R_i \leftrightarrow R_j$$
-
-            <strong style="display: block; margin-top: 1rem; color: #10b981;">[ER₂] Scalar Multiplication:</strong>
-            <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #6b7280;">Multiply the $i^{\text{th}}$ row by a non-zero constant $k$:</p>
-            $$R_i \to k R_i \quad (k \ne 0)$$
-
-            <strong style="display: block; margin-top: 1rem; color: var(--warning);">[ER₃] Row Addition:</strong>
-            <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #6b7280;">Replace the $i^{\text{th}}$ row by itself plus $k$ times the $j^{\text{th}}$ row:</p>
-            $$R_i \to R_i + k R_j$$
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1. Augmented Matrix Notation</h3>
+            <p>A system of $n$ linear equations in $n$ unknowns can be compactly represented and solved using an <strong>augmented matrix</strong>, grouping the coefficient matrix $\mathbf{A}$ and the constant vector $\underline{b}$:</p>
+            <p style="text-align: center;">
+                $$\begin{pmatrix} 
+                a_{11} & a_{12} & \dots & a_{1n} & \big| & b_1 \\ 
+                a_{21} & a_{22} & \dots & a_{2n} & \big| & b_2 \\ 
+                \vdots & \vdots & \ddots & \vdots & \big| & \vdots \\ 
+                a_{n1} & a_{n2} & \dots & a_{nn} & \big| & b_n 
+                \end{pmatrix}$$
+            </p>
+        </div>
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> An augmented matrix is just a shorthand way to write a system of equations without repeating the variable names ($x, y, z$). It lines up the coefficients on the left and the answers on the right, separated by a vertical bar.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+                <li style="margin-bottom: 1rem;"><strong>Clean Bookkeeping:</strong> Isolating the numbers from the symbols allows us to perform purely arithmetic operations on the grid grid layout.</li>
+                <li style="margin-bottom: 0;"><strong>Computer Friendly:</strong> This standardized array format is how algorithms parse, store, and solve systems of equations.</li>
+            </ul>
         </div>
     </div>
 
-    <!-- Solution Classification -->
-    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">3. Classification of Linear Systems</h3>
-        <p>Let $E$ be the number of non-zero rows in echelon form (equations) and $n$ the number of unknowns:</p>
-        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
-            <li><strong>Inconsistent (No Solution):</strong> Occurs when the equations contradict each other, resulting in an echelon line containing zeros on the left but a non-zero constant on the right (e.g. $0 = -3$).</li>
-            <li><strong>Consistent:</strong>
-                <ul style="padding-left: 1.2rem; margin-top: 0.35rem;">
-                    <li><strong>Unique Solution:</strong> Occurs when $E = n$ (exactly one unique coordinate intersection).</li>
-                    <li><strong>Infinite Solutions:</strong> Occurs when $E < n$, introducing $n - E$ <strong>free variables</strong> (degree of freedom).</li>
-                </ul>
-            </li>
-        </ul>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">2. Elementary Row Operations</h3>
+            <p>To solve the system, we apply <strong>elementary row operations</strong> to reduce the augmented matrix into <strong>echelon form</strong> (where the number of leading zeros increases row-by-row). These row operations are guaranteed not to alter the solution of the linear system:</p>
+
+            <div style="background: var(--code-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color: var(--text-color);">
+                <strong style="color: var(--accent);">[ER₁] Row Interchange:</strong> $R_i \leftrightarrow R_j$
+                <br><strong style="color: #10b981; display: inline-block; margin-top: 0.5rem;">[ER₂] Scalar Multiplication:</strong> $R_i \to k R_i \quad (k \ne 0)$
+                <br><strong style="color: var(--warning); display: inline-block; margin-top: 0.5rem;">[ER₃] Row Addition:</strong> $R_i \to R_i + k R_j$
+            </div>
+        </div>
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> Think of row operations as legal moves in a game. You can swap equations, scale them, or combine them. As long as you perform these operations uniformly, the final solution coordinates remain completely identical.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+                <li style="margin-bottom: 1rem;"><strong>Gaussian Elimination:</strong> A systematic recipe that uses these three moves to clear out variables row by row, working from bottom-left to top-right.</li>
+                <li style="margin-bottom: 0;"><strong>Back Substitution:</strong> Once the system is in upper-triangular echelon form, we immediately solve for the last variable, then plug it back in to solve for the previous ones.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">3. Classification of Linear Systems</h3>
+            <p>Let $E$ be the number of non-zero rows in echelon form (equations) and $n$ the number of unknowns:</p>
+            <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6; margin-bottom: 0;">
+                <li><strong>Inconsistent (No Solution):</strong> Occurs when the equations contradict each other, resulting in an echelon line containing zeros on the left but a non-zero constant on the right (e.g. $0 = -3$).</li>
+                <li><strong>Consistent:</strong>
+                    <ul style="padding-left: 1.2rem; margin-top: 0.35rem;">
+                        <li><strong>Unique Solution:</strong> Occurs when $E = n$ (exactly one unique coordinate intersection).</li>
+                        <li><strong>Infinite Solutions:</strong> Occurs when $E < n$, introducing $n - E$ <strong>free variables</strong> (degrees of freedom).</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> In two dimensions, linear equations represent straight lines. Solving the system is simply finding where these lines meet.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+                <li style="margin-bottom: 1rem;"><strong>Unique Solution:</strong> The lines cross at exactly one intersection point.</li>
+                <li style="margin-bottom: 1rem;"><strong>No Solution:</strong> The lines are perfectly parallel and will never touch.</li>
+                <li style="margin-bottom: 0;"><strong>Infinite Solutions:</strong> The lines lie exactly on top of each other, meaning every point along the line is a valid solution.</li>
+            </ul>
+        </div>
     </div>
 
     <!-- Interactive Gaussian Elimination solver -->
     <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
         <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">4. Interactive Gaussian Elimination Solver</h3>
-        <p>Input equations $ax + by = p$ and $cx + dy = q$ to solve them using Gaussian elimination row operations in real-time:</p>
+        <p>Input equations $ax + by = p$ and $cx + dy = q$ to solve them using Gaussian elimination row operations and visualize their intersection in real-time:</p>
 
         <div style="background: var(--metric-bg); border: 1px solid var(--card-border); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans);">
-            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; align-items: start;">
                 <!-- Controls -->
-                <div>
-                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Equation 1 coefficients ($ax + by = p$):</label>
-                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-                        <input id="linalgSysA" type="number" value="2" style="width: 33%; padding: 0.35rem;" oninput="runLinAlgSystemsSimulation()">
-                        <input id="linalgSysB" type="number" value="3" style="width: 33%; padding: 0.35rem;" oninput="runLinAlgSystemsSimulation()">
-                        <input id="linalgSysP" type="number" value="8" style="width: 33%; padding: 0.35rem;" oninput="runLinAlgSystemsSimulation()">
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div>
+                        <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Equation 1 coefficients ($ax + by = p$):</label>
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                            <input id="linalgSysA" type="number" step="0.5" value="2" style="width: 33%; padding: 0.35rem;" oninput="runLinAlgSystemsSimulation()">
+                            <input id="linalgSysB" type="number" step="0.5" value="3" style="width: 33%; padding: 0.35rem;" oninput="runLinAlgSystemsSimulation()">
+                            <input id="linalgSysP" type="number" step="0.5" value="8" style="width: 33%; padding: 0.35rem;" oninput="runLinAlgSystemsSimulation()">
+                        </div>
+
+                        <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Equation 2 coefficients ($cx + dy = q$):</label>
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                            <input id="linalgSysC" type="number" step="0.5" value="4" style="width: 33%; padding: 0.35rem;" oninput="runLinAlgSystemsSimulation()">
+                            <input id="linalgSysD" type="number" step="0.5" value="-1" style="width: 33%; padding: 0.35rem;" oninput="runLinAlgSystemsSimulation()">
+                            <input id="linalgSysQ" type="number" step="0.5" value="9" style="width: 33%; padding: 0.35rem;" oninput="runLinAlgSystemsSimulation()">
+                        </div>
                     </div>
 
-                    <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Equation 2 coefficients ($cx + dy = q$):</label>
-                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-                        <input id="linalgSysC" type="number" value="4" style="width: 33%; padding: 0.35rem;" oninput="runLinAlgSystemsSimulation()">
-                        <input id="linalgSysD" type="number" value="-1" style="width: 33%; padding: 0.35rem;" oninput="runLinAlgSystemsSimulation()">
-                        <input id="linalgSysQ" type="number" value="9" style="width: 33%; padding: 0.35rem;" oninput="runLinAlgSystemsSimulation()">
+                    <!-- Live Results -->
+                    <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); border-left: 4px solid #10b981;">
+                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">SOLVER STATUS &amp; COORDINATES</div>
+                        <div id="linalgSysStatus" style="font-size: 1.05rem; font-weight: 700; color: #10b981; margin-top: 0.5rem; line-height: 1.5;">Unique solution found:<br>x = 2.50, y = 1.00</div>
                     </div>
                 </div>
 
-                <!-- Live Results -->
-                <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); border-left: 4px solid #10b981;">
-                    <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">SOLVER STATUS &amp; COORDINATES</div>
-                    <div id="linalgSysStatus" style="font-size: 1.1rem; font-weight: 700; color: #10b981; margin-top: 0.5rem;">Unique solution found:<br>x = 2.50, y = 1.00</div>
+                <!-- Custom 2D Canvas -->
+                <div style="background: #0f172a; border-radius: 8px; border: 1px solid var(--card-border); padding: 1rem; position: relative;">
+                    <canvas id="linalgSysCanvas" width="400" height="400" style="width: 100%; height: 320px; max-width: 400px; display: block; margin: 0 auto; background: #0f172a;"></canvas>
+                    <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.75rem; font-size: 0.75rem; color: #94a3b8; justify-content: center;">
+                        <span style="display: inline-flex; align-items: center; gap: 0.25rem;"><span style="display: inline-block; width: 12px; height: 3px; background: #3b82f6; border-radius: 1px;"></span> Equation 1</span>
+                        <span style="display: inline-flex; align-items: center; gap: 0.25rem;"><span style="display: inline-block; width: 12px; height: 3px; background: #f59e0b; border-radius: 1px;"></span> Equation 2</span>
+                        <span style="display: inline-flex; align-items: center; gap: 0.25rem;"><span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #ec4899;"></span> Intersection</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -102,21 +139,28 @@
                 const det = a * d - b * c;
                 const statusEl = document.getElementById('linalgSysStatus');
 
+                let solutionX = 0;
+                let solutionY = 0;
+                let hasUniqueSolution = false;
+                let hasInfiniteSolutions = false;
+
                 if (Math.abs(det) < 0.0001) {
-                    // Check inconsistency or infinite
-                    // Scaled constants check
                     const scaleFactor = (a !== 0) ? c / a : (b !== 0 ? d / b : 0);
                     const consistent = Math.abs(q - p * scaleFactor) < 0.0001;
                     if (consistent) {
                         statusEl.innerHTML = `<span style="color: var(--warning)">Infinite solutions (Dependent system)</span>`;
+                        hasInfiniteSolutions = true;
                     } else {
                         statusEl.innerHTML = `<span style="color: #ef4444">Inconsistent (No solution)</span>`;
                     }
                 } else {
-                    const x = (p * d - b * q) / det;
-                    const y = (a * q - p * c) / det;
-                    statusEl.innerHTML = `Unique solution found:<br><strong style="font-size: 1.25rem;">x = ${x.toFixed(2)}, y = ${y.toFixed(2)}</strong>`;
+                    solutionX = (p * d - b * q) / det;
+                    solutionY = (a * q - p * c) / det;
+                    statusEl.innerHTML = `Unique solution found:<br><strong style="font-size: 1.15rem;">x = ${solutionX.toFixed(2)}, y = ${solutionY.toFixed(2)}</strong>`;
+                    hasUniqueSolution = true;
                 }
+
+                drawSystemsGraph(a, b, p, c, d, q, hasUniqueSolution, hasInfiniteSolutions, solutionX, solutionY);
 
                 const parent = document.getElementById('view-cqf-mp-linalg-systems');
                 if (parent && parent.style.display !== 'none') {
@@ -125,6 +169,127 @@
                     }
                 }
             };
+
+            function drawSystemsGraph(a, b, p, c, d, q, hasUniqueSolution, hasInfiniteSolutions, solX, solY) {
+                const canvas = document.getElementById('linalgSysCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const originX = canvas.width / 2;
+                const originY = canvas.height / 2;
+
+                // Dynamic scale to fit lines and intersection
+                let maxVal = 5;
+                if (hasUniqueSolution) {
+                    maxVal = Math.max(Math.abs(solX), Math.abs(solY), 4);
+                }
+                const scale = (Math.min(canvas.width, canvas.height) / 2) / (maxVal * 1.35);
+
+                // Grid background lines
+                ctx.strokeStyle = '#1e293b';
+                ctx.lineWidth = 1;
+                ctx.fillStyle = '#64748b';
+                ctx.font = '10px monospace';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                const step = Math.ceil(maxVal / 4) || 1;
+                for (let v = -step * 5; v <= step * 5; v += step) {
+                    if (Math.abs(v) < 1e-5) continue;
+                    const px = originX + v * scale;
+                    ctx.beginPath();
+                    ctx.moveTo(px, 0);
+                    ctx.lineTo(px, canvas.height);
+                    ctx.stroke();
+                    ctx.fillText(v.toFixed(1), px, originY + 12);
+
+                    const py = originY - v * scale;
+                    ctx.beginPath();
+                    ctx.moveTo(0, py);
+                    ctx.lineTo(canvas.width, py);
+                    ctx.stroke();
+                    ctx.fillText(v.toFixed(1), originX - 15, py);
+                }
+
+                // Axis lines
+                ctx.strokeStyle = '#475569';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(0, originY);
+                ctx.lineTo(canvas.width, originY);
+                ctx.moveTo(originX, 0);
+                ctx.lineTo(originX, canvas.height);
+                ctx.stroke();
+
+                // Helper to plot a line: coeffX * x + coeffY * y = target
+                function drawEquationLine(coeffX, coeffY, target, color) {
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 2.5;
+                    ctx.beginPath();
+
+                    // If coeffY is zero, it's a vertical line x = target / coeffX
+                    if (Math.abs(coeffY) < 1e-5) {
+                        if (Math.abs(coeffX) > 1e-5) {
+                            const valX = target / coeffX;
+                            const px = originX + valX * scale;
+                            ctx.moveTo(px, 0);
+                            ctx.lineTo(px, canvas.height);
+                            ctx.stroke();
+                        }
+                        return;
+                    }
+
+                    // Otherwise solve for y at left/right edges of graph
+                    // x_val ranges from -maxVal to +maxVal
+                    const xStart = -maxVal * 2;
+                    const yStart = (target - coeffX * xStart) / coeffY;
+                    const xEnd = maxVal * 2;
+                    const yEnd = (target - coeffX * xEnd) / coeffY;
+
+                    ctx.moveTo(originX + xStart * scale, originY - yStart * scale);
+                    ctx.lineTo(originX + xEnd * scale, originY - yEnd * scale);
+                    ctx.stroke();
+                }
+
+                // Draw line 1
+                drawEquationLine(a, b, p, '#3b82f6');
+
+                // Draw line 2 (make it dashed if infinite/dependent, or distinct color)
+                if (hasInfiniteSolutions) {
+                    ctx.setLineDash([4, 4]);
+                    drawEquationLine(c, d, q, '#f59e0b');
+                    ctx.setLineDash([]);
+                } else {
+                    drawEquationLine(c, d, q, '#f59e0b');
+                }
+
+                // Draw intersection point
+                if (hasUniqueSolution) {
+                    const pX = originX + solX * scale;
+                    const pY = originY - solY * scale;
+
+                    ctx.fillStyle = '#ec4899';
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.arc(pX, pY, 6, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // Coordinate label
+                    ctx.font = 'bold 11px sans-serif';
+                    ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+                    const label = `(${solX.toFixed(2)}, ${solY.toFixed(2)})`;
+                    const textWidth = ctx.measureText(label).width;
+                    ctx.fillRect(pX + 8, pY - 14, textWidth + 6, 16);
+
+                    ctx.fillStyle = '#ffffff';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(label, pX + 11, pY - 6);
+                }
+            }
 
             setTimeout(() => {
                 if (document.getElementById('linalgSysA')) runLinAlgSystemsSimulation();
