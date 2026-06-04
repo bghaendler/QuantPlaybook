@@ -5,43 +5,76 @@
         <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">The characteristic equation, diagonalisation of symmetric matrices, invertibility criteria, and strict diagonal dominance.</div>
     </header>
 
-    <!-- Eigen problem definition -->
-    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1. The Eigenvalue Problem</h3>
-        <p>If $\mathbf{A}$ is an $N \times N$ square matrix, the eigenvalue problem is to find a scalar $\lambda$ (<strong>eigenvalue</strong>) and a non-trivial vector $\underline{v}$ (<strong>eigenvector</strong>) such that:</p>
-        <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$\mathbf{A}\underline{v} = \lambda\underline{v} \quad \implies \quad (\mathbf{A} - \lambda\mathbf{I})\underline{v} = \underline{0}$$</p>
-        <p>A non-trivial solution exists if and only if the determinant of $(\mathbf{A} - \lambda\mathbf{I})$ is zero, which is the <strong>characteristic equation</strong>:</p>
-        <p style="text-align: center; font-size: 1.15rem; font-weight: bold; color: var(--accent);">$$\det(\mathbf{A} - \lambda\mathbf{I}) = 0$$</p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">1. The Eigenvalue Problem</h3>
+            <p>If $\mathbf{A}$ is an $N \times N$ square matrix, the eigenvalue problem is to find a scalar $\lambda$ (<strong>eigenvalue</strong>) and a non-trivial vector $\underline{v}$ (<strong>eigenvector</strong>) such that:</p>
+            <p style="text-align: center; font-size: 1.15rem; font-weight: bold;">$$\mathbf{A}\underline{v} = \lambda\underline{v} \quad \implies \quad (\mathbf{A} - \lambda\mathbf{I})\underline{v} = \underline{0}$$</p>
+            <p>A non-trivial solution exists if and only if the determinant of $(\mathbf{A} - \lambda\mathbf{I})$ is zero, which is the <strong>characteristic equation</strong>:</p>
+            <p style="text-align: center; font-size: 1.15rem; font-weight: bold; color: var(--accent);">$$\det(\mathbf{A} - \lambda\mathbf{I}) = 0$$</p>
+        </div>
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> When you transform a vector with a matrix, it usually rotates and stretches. But for certain special directions (the eigenvectors), the matrix behaves just like a simple number multiplier (the eigenvalues)—meaning the vector does not rotate at all; it only stretches!</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+                <li style="margin-bottom: 1rem;"><strong>Matrix Simplification:</strong> Converts complex matrix multiplication into simple scalar multiplication, making high-dimensional problems dramatically easier to solve.</li>
+                <li style="margin-bottom: 0;"><strong>Intuition:</strong> Imagine stretching a sheet of rubber diagonally. Most points move in curves, but points along the diagonal stretch line move in straight lines. Those straight lines are the eigenvectors.</li>
+            </ul>
+        </div>
     </div>
 
-    <!-- Real Symmetric Properties -->
-    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">2. Properties of Real Symmetric Matrices</h3>
-        <p>Real symmetric matrices ($\mathbf{A} = \mathbf{A}^{\mathrm{T}}$) possess extremely powerful algebraic properties that are heavily leveraged in quantitative asset pricing and covariance structures:</p>
-        <ol style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
-            <li>All eigenvalues of a real symmetric matrix are guaranteed to be real.</li>
-            <li>Eigenvectors corresponding to distinct eigenvalues are mutually <strong>orthogonal</strong>.</li>
-            <li>The matrix can be <strong>diagonalised</strong> using an orthogonal matrix $\mathbf{P}$ (formed by placing the normalized eigenvectors of $\mathbf{A}$ as columns):
-                $$\mathbf{A} = \mathbf{P}\mathbf{D}\mathbf{P}^{\mathrm{T}} \quad \text{or} \quad \mathbf{P}^{\mathrm{T}}\mathbf{A}\mathbf{P} = \mathbf{D}$$
-                where $\mathbf{D}$ is the diagonal eigenvalue matrix:
-                $$\mathbf{D} = \begin{pmatrix} \lambda_1 & 0 & \dots & 0 \\ 0 & \lambda_2 & \dots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \dots & \lambda_n \end{pmatrix}$$
-            </li>
-        </ol>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">2. Properties of Real Symmetric Matrices</h3>
+            <p>Real symmetric matrices ($\mathbf{A} = \mathbf{A}^{\mathrm{T}}$) possess extremely powerful algebraic properties that are heavily leveraged in quantitative asset pricing and covariance structures:</p>
+            <ol style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+                <li>All eigenvalues of a real symmetric matrix are guaranteed to be real.</li>
+                <li>Eigenvectors corresponding to distinct eigenvalues are mutually <strong>orthogonal</strong>.</li>
+                <li>The matrix can be <strong>diagonalised</strong> using an orthogonal matrix $\mathbf{P}$ (formed by placing the normalized eigenvectors of $\mathbf{A}$ as columns):
+                    $$\mathbf{A} = \mathbf{P}\mathbf{D}\mathbf{P}^{\mathrm{T}} \quad \text{or} \quad \mathbf{P}^{\mathrm{T}}\mathbf{A}\mathbf{P} = \mathbf{D}$$
+                    where $\mathbf{D}$ is the diagonal eigenvalue matrix:
+                    $$\mathbf{D} = \begin{pmatrix} \lambda_1 & 0 & \dots & 0 \\ 0 & \lambda_2 & \dots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \dots & \lambda_n \end{pmatrix}$$
+                </li>
+            </ol>
+        </div>
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> Symmetric matrices are the "golden child" of quantitative finance. They are always diagonalizable, their eigenvalues are guaranteed to be real numbers (no imaginary numbers), and their eigenvectors point in perfectly perpendicular (orthogonal) directions.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+                <li style="margin-bottom: 1rem;"><strong>Financial Risk Factor Isolation:</strong> Covariance matrices are symmetric. Eigendecomposition allows us to isolate independent risk factors (eigenvectors) and quantify how much portfolio variance each factor explains (eigenvalues).</li>
+                <li style="margin-bottom: 0;"><strong>Principal Component Analysis (PCA):</strong> Directly relies on this property to compress volatile yield curves or asset returns into a few dominant, perpendicular index drivers.</li>
+            </ul>
+        </div>
     </div>
 
-    <!-- Criteria for Invertibility -->
-    <div class="card" style="margin-bottom: 2rem; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">3. Criteria for Invertibility &amp; Diagonal Dominance</h3>
-        <p>A system of linear equations $\mathbf{A}\underline{x} = \underline{b}$ is uniquely solvable if and only if $\mathbf{A}$ is invertible. A square matrix $\mathbf{A}$ is invertible if:</p>
-        <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
-            <li>The determinant is non-zero ($|\mathbf{A}| \neq 0$).</li>
-            <li>All eigenvalues are non-zero ($\lambda_i \neq 0$ for all $i$).</li>
-            <li>It is <strong>strictly diagonally dominant</strong> (s.d.d.).</li>
-        </ul>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">3. Criteria for Invertibility &amp; Diagonal Dominance</h3>
+            <p>A system of linear equations $\mathbf{A}\underline{x} = \underline{b}$ is uniquely solvable if and only if $\mathbf{A}$ is invertible. A square matrix $\mathbf{A}$ is invertible if:</p>
+            <ul style="padding-left: 1.2rem; font-size: 0.95rem; line-height: 1.6;">
+                <li>The determinant is non-zero ($|\mathbf{A}| \neq 0$).</li>
+                <li>All eigenvalues are non-zero ($\lambda_i \neq 0$ for all $i$).</li>
+                <li>It is <strong>strictly diagonally dominant</strong> (s.d.d.).</li>
+            </ul>
 
-        <h4 style="color: var(--accent); margin-top: 1.5rem; margin-bottom: 0.5rem;">Strict Diagonal Dominance (s.d.d.):</h4>
-        <p>A matrix $\mathbf{A}$ with entries $A_{ij}$ is strictly diagonally dominant if the absolute value of each diagonal element is strictly greater than the sum of the absolute values of the remaining elements in that row:</p>
-        <p style="text-align: center; font-size: 1.15rem; font-weight: bold; color: var(--accent);">$$|A_{ii}| > \sum_{j \neq i} |A_{ij}| \quad \text{for all } i$$</p>
+            <h4 style="color: var(--accent); margin-top: 1.5rem; margin-bottom: 0.5rem;">Strict Diagonal Dominance (s.d.d.):</h4>
+            <p>A matrix $\mathbf{A}$ with entries $A_{ij}$ is strictly diagonally dominant if the absolute value of each diagonal element is strictly greater than the sum of the absolute values of the remaining elements in that row:</p>
+            <p style="text-align: center; font-size: 1.15rem; font-weight: bold; color: var(--accent);">$$|A_{ii}| > \sum_{j \neq i} |A_{ij}| \quad \text{for all } i$$</p>
+        </div>
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif;"><strong>The Big Picture:</strong> Invertibility means we can reverse the matrix operations to solve our equations. If an eigenvalue is zero, the matrix compresses a dimension flat (losing information forever), making inversion impossible.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem;">
+                <li style="margin-bottom: 1rem;"><strong>Invertibility Test:</strong> A non-zero determinant is the exact test, but checking eigenvalues is often more numerically stable.</li>
+                <li style="margin-bottom: 0;"><strong>Strict Diagonal Dominance (s.d.d.):</strong> A quick visual shortcut. If the diagonal entry in each row dominates the rest of that row, the matrix is guaranteed to be invertible and computationally easy to solve (e.g., when solving option pricing grids via Implicit Finite Difference schemes).</li>
+            </ul>
+        </div>
     </div>
 
     <!-- Interactive Eigendecomposition Explorer Sandbox -->
