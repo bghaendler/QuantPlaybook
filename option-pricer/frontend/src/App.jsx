@@ -10,6 +10,7 @@ import debounce from 'lodash.debounce';
 import MathWalkthrough from './components/MathWalkthrough';
 import SharedGreeks from './SharedGreeks';
 import VolatilitySurface from './components/VolatilitySurface';
+import { Analytics } from '@vercel/analytics/react';
 
 import { MODELS, CATEGORIES, getModelInputs } from './config/models';
 import './App.css';
@@ -470,6 +471,7 @@ const App = () => {
         </div>
 
       </div>
+      <Analytics />
     </div>
   );
 };
