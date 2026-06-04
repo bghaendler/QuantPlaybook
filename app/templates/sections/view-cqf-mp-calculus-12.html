@@ -43,7 +43,7 @@
                     <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
                         <div>
                             <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Select Function f(x):</label>
-                            <select id="mapFuncSelect" onchange="calculateInteractiveMapping()" style="padding: 0.35rem 0.5rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600; outline: none; cursor: pointer; width: 100%;">
+                            <select id="calc12MapFuncSelect" style="padding: 0.35rem 0.5rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-weight: 600; outline: none; cursor: pointer; width: 100%;">
                                 <option value="linear">1-1 Linear: 3x + 1</option>
                                 <option value="quadratic">Many-1 Quadratic: 2x² - 1</option>
                                 <option value="multivalued">One-Many: &plusmn;&radic;x (x &ge; 0)</option>
@@ -51,13 +51,13 @@
                         </div>
                         <div>
                             <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Input x:</label>
-                            <input id="mapFuncInputX" type="number" value="1.5" step="0.5" oninput="calculateInteractiveMapping()" style="width: 80px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
+                            <input id="calc12MapFuncInputX" type="number" value="1.5" step="0.5" style="width: 80px; padding: 0.35rem; font-size: 0.85rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 700;">
                         </div>
                     </div>
                     <div style="font-size: 0.88rem; line-height: 1.6; color: var(--text-color); background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border-left: 4px solid var(--accent);">
-                        <div id="mapOutputF"><strong>Mapping:</strong> f(1.5) = 5.5</div>
-                        <div id="mapOutputInv" style="margin-top: 0.25rem;"><strong>Inverse Mapping:</strong> f&sup1;(5.5) = 1.5</div>
-                        <div id="mapOutputStatus" style="font-weight: 700; color: #10b981; margin-top: 0.5rem;">Status: Valid One-to-One (1-1) Function</div>
+                        <div id="calc12MapOutputF"><strong>Mapping:</strong> f(1.5) = 5.5</div>
+                        <div id="calc12MapOutputInv" style="margin-top: 0.25rem;"><strong>Inverse Mapping:</strong> f&sup1;(5.5) = 1.5</div>
+                        <div id="calc12MapOutputStatus" style="font-weight: 700; color: #10b981; margin-top: 0.5rem;">Status: Valid One-to-One (1-1) Function</div>
                     </div>
                 </div>
 
@@ -124,12 +124,16 @@
     <!-- Script Block -->
     <script>
         (function() {
-            window.calculateInteractiveMapping = function() {
-                const fn = document.getElementById('mapFuncSelect').value;
-                const xVal = parseFloat(document.getElementById('mapFuncInputX').value);
-                const elF = document.getElementById('mapOutputF');
-                const elInv = document.getElementById('mapOutputInv');
-                const elStat = document.getElementById('mapOutputStatus');
+            function calculateInteractiveMapping() {
+                const fnSelect = document.getElementById('calc12MapFuncSelect');
+                const fnInputX = document.getElementById('calc12MapFuncInputX');
+                if (!fnSelect || !fnInputX) return;
+
+                const fn = fnSelect.value;
+                const xVal = parseFloat(fnInputX.value);
+                const elF = document.getElementById('calc12MapOutputF');
+                const elInv = document.getElementById('calc12MapOutputInv');
+                const elStat = document.getElementById('calc12MapOutputStatus');
 
                 if (isNaN(xVal)) {
                     elF.innerHTML = "<strong>Mapping:</strong> Please input a valid number!";
@@ -169,7 +173,6 @@
                         elStat.style.color = "#ef4444";
                     } else {
                         const root1 = Math.sqrt(xVal);
-                        const root2 = -root1;
                         elF.innerHTML = `<strong>Multivalued Relation (2 Branches):</strong> f(${xVal}) = +${root1.toFixed(2)} and -${root1.toFixed(2)}`;
                         elInv.innerHTML = `<strong>Inverse Mapping:</strong> f⁻¹(y) = y² (maps both back to x = ${xVal})`;
                         elStat.innerText = "Status: One-to-Many Relation (NOT a single-valued function!)";
@@ -185,9 +188,9 @@
                         window.MathJax.typesetPromise([parent]);
                     }
                 }
-            };
+            }
 
-            window.drawMappingGraph = function(fn, xVal) {
+            function drawMappingGraph(fn, xVal) {
                 const canvas = document.getElementById('calc12Canvas');
                 if (!canvas) return;
                 const ctx = canvas.getContext('2d');
@@ -198,7 +201,7 @@
                 const originY = canvas.height / 2;
 
                 const xMin = -5.0, xMax = 5.0;
-                const yMin = -5.0, yMax = 5.0; // Square coordinate bounds
+                const yMin = -5.0, yMax = 5.0; 
 
                 const toCanvasX = (x) => originX + (x * (canvas.width / (xMax - xMin)));
                 const toCanvasY = (y) => originY - (y * (canvas.height / (yMax - yMin)));
@@ -279,14 +282,13 @@
                 ctx.stroke();
 
                 // Draw Inverse Relation f^-1(x) (Red)
-                // Obtained geometrically by plotting (f(t), t) instead of (t, f(t))
                 ctx.strokeStyle = '#ef4444';
                 ctx.lineWidth = 2;
                 ctx.beginPath();
                 started = false;
                 for (let px = 0; px <= canvas.width; px++) {
                     const t = xMin + (px / canvas.width) * (xMax - xMin);
-                    const y = evalFn(t); // This is the input coordinates to the inverse
+                    const y = evalFn(t); 
                     if (isNaN(y) || y < xMin || y > xMax) {
                         started = false;
                         continue;
@@ -339,11 +341,24 @@
                         ctx.fill();
                     }
                 }
-            };
+            }
 
-            setTimeout(() => {
-                if (document.getElementById('mapFuncSelect')) calculateInteractiveMapping();
-            }, 100);
+            // Bind Event Listeners on Load/Setup
+            function setupListeners() {
+                const fnSelect = document.getElementById('calc12MapFuncSelect');
+                const fnInputX = document.getElementById('calc12MapFuncInputX');
+
+                if (fnSelect && fnInputX) {
+                    fnSelect.addEventListener('change', calculateInteractiveMapping);
+                    fnInputX.addEventListener('input', calculateInteractiveMapping);
+                    calculateInteractiveMapping();
+                } else {
+                    // Retry in case DOM isn't fully ready
+                    setTimeout(setupListeners, 100);
+                }
+            }
+
+            setupListeners();
         })();
     </script>
 </div>
