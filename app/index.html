@@ -12,8 +12,10 @@
             tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
             svg: { fontCache: 'global' },
             startup: {
+                typeset: false,
                 pageReady: () => {
-                    console.log('MathJax fully loaded. Deferring initial scanning to prevent race conditions.');
+                    console.log('MathJax fully loaded. Initializing without auto-typeset.');
+                    MathJax.startup.defaultPageReady();
                     if (window.onMathJaxReady) {
                         window.onMathJaxReady();
                     } else {
@@ -2424,11 +2426,6 @@
             if (window.MathJax && typeof MathJax.typesetPromise === 'function') {
                 mathJaxQueue = mathJaxQueue
                     .then(() => {
-                        try {
-                            MathJax.typesetClear(elements);
-                        } catch (e) {
-                            console.log('MathJax clear error:', e);
-                        }
                         return MathJax.typesetPromise(elements);
                     })
                     .catch(err => console.log('MathJax queued typesetting error:', err));
@@ -2472,8 +2469,14 @@
         };
 
         function showSection(section) {
+            if (_activeSection === section) return;
             const cfg = _sectionMap[section];
             if (!cfg) return;
+
+            // Sync URL hash
+            if (window.location.hash !== '#' + section) {
+                window.location.hash = '#' + section;
+            }
 
             // (Unified sidebar — no per-group visibility toggling needed)
             // 1. Hide the currently visible section
