@@ -7,13 +7,13 @@
 
     <!-- Navigation Tabs -->
     <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
-        <button id="tabLinAlgLectures" onclick="switchLinAlgTab('lectures')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Part Session Index</button>
-        <button id="tabLinAlgTheory" onclick="switchLinAlgTab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Core Linear Algebra Theory</button>
+        <button id="tabLinAlgTheory" onclick="switchLinAlgTab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Linear Algebra Theory</button>
+        <button id="tabLinAlgLectures" onclick="switchLinAlgTab('lectures')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Part Session Index</button>
         <button id="tabLinAlgSandbox" onclick="switchLinAlgTab('sandbox')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Eigenvalue Explorer</button>
     </div>
 
     <!-- Tab A: Video Lectures Directory -->
-    <div id="secLinAlgLectures" style="display: block;">
+    <div id="secLinAlgLectures" style="display: none;">
         <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 2rem; max-height: 500px; overflow-y: auto;">
             <!-- Video 1 -->
             <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
@@ -87,43 +87,106 @@
     </div>
 
     <!-- Tab B: Core Linear Algebra Theory -->
-    <div id="secLinAlgTheory" style="display: none;">
+    <div id="secLinAlgTheory" style="display: block;">
+        <div style="margin-bottom: 1.5rem; background: var(--accent-glow); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--accent); font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.5; color: var(--text-color);">
+            Linear Algebra is the mathematical foundation for modeling multidimensional systems. This cheat sheet consolidates key concepts: vector spaces, matrix representations, determinants, solving systems of linear equations, orthogonal operators, and eigendecomposition. In quantitative finance, these tools underpin portfolio optimization (mean-variance analysis), asset covariance structure modeling, and Principal Component Analysis (PCA) for yield curve dynamics.
+        </div>
+
         <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
-            <!-- Card 1: Eigenvalue Decomposition -->
+            <!-- Card 1: Vectors & Spaces -->
             <div class="card" style="margin-bottom: 0;">
-                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700;">1. Eigenvalue Decomposition</h3>
-                <p>A matrix $A$ acting on an eigenvector $\mathbf{v}$ simply scales it by eigenvalue $\lambda$:</p>
-                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
-                    $$A\mathbf{v} = \lambda\mathbf{v}$$
-                </p>
-                <p>Eigenvalues are roots of the characteristic polynomial:</p>
-                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
-                    $$\det(A - \lambda I) = 0$$
-                </p>
-                <p>If $A$ has $n$ linearly independent eigenvectors, it admits the decomposition:</p>
-                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
-                    $$A = PDP^{-1}$$
-                </p>
-                <p>where $D$ is the diagonal matrix of eigenvalues and $P$ is the matrix of eigenvectors.</p>
-                <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.75rem; padding-top: 0.5rem; border-top: 1px solid var(--card-border);">In quantitative finance, eigendecomposition is key for PCA and portfolio variance decomposition.</p>
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700;">1. Vectors, Inner Products &amp; Spaces</h3>
+                <p>Vectors in $\mathbb{R}^n$ represent directed quantities in $n$-dimensional space. We define the fundamental operations:</p>
+                <ul style="padding-left: 1.2rem; font-size: 0.88rem; line-height: 1.5; margin: 0.5rem 0;">
+                    <li><strong>Dot (Inner) Product:</strong> $\mathbf{u} \cdot \mathbf{v} = \sum_{i=1}^n u_i v_i = \mathbf{u}^T \mathbf{v}$. Geometrically, $\mathbf{u} \cdot \mathbf{v} = \|\mathbf{u}\| \|\mathbf{v}\| \cos\theta$.</li>
+                    <li><strong>Vector Norm (Length):</strong> $\|\mathbf{v}\| = \sqrt{\mathbf{v} \cdot \mathbf{v}} = \sqrt{\sum_{i=1}^n v_i^2}$.</li>
+                    <li><strong>Orthogonality:</strong> Two vectors are orthogonal iff their inner product is zero: $\mathbf{u} \cdot \mathbf{v} = 0 \iff \mathbf{u} \perp \mathbf{v}$ (i.e. $\theta = 90^\circ$).</li>
+                    <li><strong>Vector Projection:</strong> Projection of $\mathbf{u}$ onto $\mathbf{v}$ is: $\text{proj}_{\mathbf{v}}\mathbf{u} = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{v}\|^2}\mathbf{v}$.</li>
+                </ul>
+                <p><strong>Vector Spaces &amp; Bases:</strong> A set of vectors is <em>linearly independent</em> if no vector can be written as a linear combination of others. A <em>basis</em> of a space $V$ is a set of linearly independent vectors that span $V$. The number of vectors in the basis is the <em>dimension</em> of the space.</p>
             </div>
 
-            <!-- Card 2: Matrix Inverse & Linear Systems -->
+            <!-- Card 2: Matrices & Determinants -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">2. Matrices, Operations &amp; Determinants</h3>
+                    <p>An $m \times n$ matrix $A$ acts as a linear transformation mapping vectors from $\mathbb{R}^n$ to $\mathbb{R}^m$:</p>
+                    <ul style="padding-left: 1.2rem; font-size: 0.88rem; line-height: 1.5; margin: 0.5rem 0;">
+                        <li><strong>Matrix Multiplication:</strong> For $C = AB$, the entry $c_{ij}$ is the dot product of row $i$ of $A$ and column $j$ of $B$: $c_{ij} = \sum_{k} a_{ik} b_{kj}$.</li>
+                        <li><strong>Transpose ($A^T$):</strong> Swaps rows and columns: $(A^T)_{ij} = a_{ji}$. Symmetric matrices satisfy $A^T = A$. Skew-symmetric satisfy $A^T = -A$.</li>
+                        <li><strong>Trace ($\text{tr}(A)$):</strong> Sum of diagonal elements: $\text{tr}(A) = \sum_{i=1}^n a_{ii}$.</li>
+                        <li><strong>Determinant ($\det(A)$ or $|A|$):</strong> A scalar mapping of square matrices. For a $2\times 2$ matrix, $\det \begin{bmatrix} a & b \\ c & d \end{bmatrix} = ad - bc$.</li>
+                    </ul>
+                    <p><strong>Cofactor Expansion:</strong> For larger matrices, $\det(A) = \sum_{j=1}^n a_{ij} C_{ij}$ where the cofactor $C_{ij} = (-1)^{i+j} M_{ij}$ and $M_{ij}$ is the minor determinant formed by deleting row $i$ and column $j$. Geometrically, the determinant scales the hyper-volume of a unit parallelotope.</p>
+                </div>
+            </div>
+
+            <!-- Card 3: Systems of Linear Equations -->
             <div class="card" style="margin-bottom: 0;">
-                <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">2. Matrix Inverse &amp; Linear Systems</h3>
-                <p>For the system $A\mathbf{x} = \mathbf{b}$, the solution is obtained by inverting $A$:</p>
-                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
-                    $$\mathbf{x} = A^{-1}\mathbf{b}$$
+                <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">3. Systems of Linear Equations &amp; Gaussian Elimination</h3>
+                <p>A system of $m$ linear equations in $n$ variables can be written as $A\mathbf{x} = \mathbf{b}$:</p>
+                <div style="background: var(--metric-bg); padding: 0.75rem; border-radius: 6px; font-family: monospace; font-size: 0.85rem; margin-bottom: 1rem; line-height: 1.4; text-align: center;">
+                    a₁₁x₁ + a₁₂x₂ + ... + a₁ₙxₙ = b₁<br>
+                    a₂₁x₁ + a₂₂x₂ + ... + a₂ₙxₙ = b₂<br>
+                    ...<br>
+                    aₘ₁x₁ + aₘ₂x₂ + ... + aₘₙxₙ = bₘ
+                </div>
+                <p><strong>Gaussian Elimination:</strong> Performs row operations on the augmented matrix $[A | \mathbf{b}]$ to reduce it to row echelon form (REF):</p>
+                <ul style="padding-left: 1.2rem; font-size: 0.88rem; line-height: 1.5; margin: 0.5rem 0;">
+                    <li>Multiply a row by a non-zero scalar.</li>
+                    <li>Add/subtract a multiple of one row to another.</li>
+                    <li>Interchange two rows.</li>
+                </ul>
+                <p><strong>Rank and Solvability:</strong> The <em>rank</em> of $A$, $\text{rank}(A)$, is the number of non-zero rows in its REF. The system has:
+                <br>• <strong>No solution:</strong> $\text{rank}(A) < \text{rank}([A|\mathbf{b}])$ (inconsistent).
+                <br>• <strong>Unique solution:</strong> $\text{rank}(A) = \text{rank}([A|\mathbf{b}]) = n$.
+                <br>• <strong>Infinitely many solutions:</strong> $\text{rank}(A) = \text{rank}([A|\mathbf{b}]) < n$ (possesses $n - \text{rank}(A)$ free variables).</p>
+            </div>
+
+            <!-- Card 4: Inverse & Orthogonals -->
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">4. Matrix Inverses &amp; Orthogonal Operators</h3>
+                <p>A square matrix $A$ is invertible iff its determinant is non-zero ($\det(A) \neq 0$). The inverse satisfies $A A^{-1} = A^{-1} A = I$.</p>
+                <p><strong>Inverse Formula (Cofactor Method):</strong></p>
+                <p style="text-align: center; font-size: 1rem; font-weight: 700; margin: 0.5rem 0;">
+                    $$A^{-1} = \frac{1}{\det(A)} C^T = \frac{1}{\det(A)} \text{adj}(A)$$
                 </p>
-                <p>For a 2×2 matrix, the inverse is computed via the adjoint formula:</p>
-                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
-                    $$A^{-1} = \frac{1}{\det(A)} \cdot \text{adj}(A)$$
+                <p>where $C$ is the cofactor matrix and $C^T$ is the adjugate matrix.</p>
+                <p><strong>Orthogonal Matrices ($Q$):</strong> A square matrix is orthogonal if its transpose equals its inverse:</p>
+                <p style="text-align: center; font-size: 1rem; font-weight: 700; margin: 0.5rem 0;">
+                    $$Q^T Q = Q Q^T = I \implies Q^T = Q^{-1}$$
                 </p>
-                <p>where the determinant of $A = \begin{bmatrix} a & b \\ c & d \end{bmatrix}$ is:</p>
-                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
-                    $$\det(A) = ad - bc$$
-                </p>
-                <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.75rem; padding-top: 0.5rem; border-top: 1px solid var(--card-border);">Solving systems of linear equations appears in bond portfolio optimization and yield curve fitting.</p>
+                <p><strong>Properties of Orthogonal Transforms:</strong>
+                <br>• Rows/columns form an orthonormal basis: $\mathbf{q}_i \cdot \mathbf{q}_j = \delta_{ij}$.
+                <br>• Preserves inner products and lengths: $(Q\mathbf{u}) \cdot (Q\mathbf{v}) = \mathbf{u} \cdot \mathbf{v}$ and $\|Q\mathbf{v}\| = \|\mathbf{v}\|$.
+                <br>• The determinant is always $|Q| = \pm 1$ (representing rotations ($+1$) or reflections ($-1$)).</p>
+            </div>
+
+            <!-- Card 5: Eigenvalues & PCA -->
+            <div class="card" style="margin-bottom: 0; grid-column: span 2;">
+                <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">5. Eigenvalues, Diagonalization &amp; Principal Component Analysis (PCA)</h3>
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem;">
+                    <div>
+                        <p>A matrix $A$ acting on a non-zero eigenvector $\mathbf{v}$ simply scales it by eigenvalue $\lambda$:</p>
+                        <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+                            $$A\mathbf{v} = \lambda\mathbf{v} \implies (A - \lambda I)\mathbf{v} = \mathbf{0}$$
+                        </p>
+                        <p>Eigenvalues are roots of the characteristic equation $\det(A - \lambda I) = 0$. If $A$ has $n$ linearly independent eigenvectors, it can be diagonalized:</p>
+                        <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+                            $$A = P D P^{-1} \implies D = P^{-1} A P$$
+                        </p>
+                        <p>where $D = \text{diag}(\lambda_1, \dots, \lambda_n)$ and $P = [\mathbf{v}_1 | \dots | \mathbf{v}_n]$.</p>
+                        <p><strong>Spectral Theorem:</strong> If $A$ is a real symmetric matrix ($A = A^T$), its eigenvalues are real, and its eigenvectors can be chosen to be mutually orthogonal, meaning $P$ is an orthogonal matrix $Q$, yielding $A = Q D Q^T$.</p>
+                    </div>
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; font-size: 0.88rem; line-height: 1.5; border-left: 4px solid #ec4899;">
+                        <strong style="color: #ec4899; display: block; margin-bottom: 0.5rem;">Application: Covariance Matrices &amp; PCA</strong>
+                        In finance, the asset covariance matrix $\Sigma$ is symmetric and positive semi-definite ($\mathbf{x}^T \Sigma \mathbf{x} \ge 0$). Eigendecomposition yields orthogonal eigenvectors representing "Principal Components" (uncorrelated risk factors).
+                        <br><br>
+                        By sorting eigenvalues $\lambda_1 \ge \lambda_2 \ge \dots \ge \lambda_n$, the first few components explain the majority of portfolio variance:
+                        $$\text{Variance Explained} = \frac{\lambda_1 + \dots + \lambda_k}{\sum \lambda_i}$$
+                        This forms the mathematical basis for yield curve factor analysis (identifying Shift, Twist, and Butterfly movements).
+                    </div>
+                </div>
             </div>
         </div>
     </div>

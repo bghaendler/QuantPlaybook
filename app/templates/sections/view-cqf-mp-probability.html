@@ -14,6 +14,9 @@
 
     <!-- Tab B: Core Probability Theory -->
     <div id="secProbTheory" style="display: block;">
+        <div style="margin-bottom: 1.5rem; background: var(--accent-glow); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--accent); font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.5; color: var(--text-color);">
+            Probability and Statistics provide the framework for measuring uncertainty, describing random outcomes, and making inferential predictions from empirical data. This section reviews probability axioms, set diagrams, conditional probability, Bayes' rule, random variables, expectation algebra, probability distributions, Central Limit Theorem (CLT), and statistical methods (such as Maximum Likelihood Estimation and Time Series analysis).
+        </div>
         <div style="display: flex; flex-direction: column; gap: 2rem; margin-bottom: 2rem;">
             
             <!-- 1.1 Preliminaries -->
@@ -118,6 +121,50 @@
                         $X \sim N(\mu, \sigma^2)$ models continuous shifts:
                         $$f(x) = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$$
                         Z-transform: $Z = \frac{X-\mu}{\sigma} \sim N(0,1)$
+                </div>
+            </div>
+
+            <!-- 2.1 & 2.2 Statistics, Estimators & MLE -->
+            <div class="card" style="padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">2.1 &amp; 2.2 Statistics, Estimators &amp; Maximum Likelihood Estimation (MLE)</h3>
+                <p>Statistics deals with drawing inferences from samples of data drawn from an underlying population.</p>
+                <ul style="padding-left: 1.2rem; font-size: 0.92rem; line-height: 1.6;">
+                    <li><strong>Sample Mean ($\bar{X}$):</strong> An estimator for population mean $\mu$. It is unbiased because $\mathbb{E}[\bar{X}] = \mu$.
+                        $$\bar{X} = \frac{1}{n} \sum_{i=1}^n X_i$$
+                    </li>
+                    <li><strong>Sample Variance ($S^2$):</strong> An estimator for population variance $\sigma^2$. To ensure it is unbiased, we divide by $n-1$ (Bessel's Correction):
+                        $$S^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X})^2$$
+                    </li>
+                    <li><strong>Maximum Likelihood Estimation (MLE):</strong> Finds parameter values $\theta$ that maximize the probability density of observing the sample data $x_1, \dots, x_n$.
+                        We construct the Likelihood function $L(\theta) = \prod_{i=1}^n f(x_i; \theta)$, and solve by maximizing the Log-Likelihood:
+                        $$\ln L(\theta) = \sum_{i=1}^n \ln f(x_i; \theta) \implies \frac{d}{d\theta}\ln L(\theta) = 0$$
+                    </li>
+                </ul>
+                <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; font-size: 0.88rem; line-height: 1.5; margin-top: 1rem;">
+                    <strong>Academic Example (Normal Distribution MLE):</strong> For $X_i \sim N(\mu, \sigma^2)$, the log-likelihood is:
+                    $$\ln L(\mu, \sigma^2) = -\frac{n}{2}\ln(2\pi) - \frac{n}{2}\ln(\sigma^2) - \sum_{i=1}^n \frac{(x_i - \mu)^2}{2\sigma^2}$$
+                    Setting the partial derivatives to zero yields the MLE estimators: $\hat{\mu}_{\text{MLE}} = \bar{X}$ and $\hat{\sigma}^2_{\text{MLE}} = \frac{1}{n}\sum (x_i - \bar{X})^2$ (which is biased, illustrating that MLE estimators are asymptotically unbiased but may be biased in small samples).
+                </div>
+            </div>
+
+            <!-- 2.3 & 2.4 Regression, Correlation & Time Series -->
+            <div class="card" style="padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">2.3 &amp; 2.4 Simple Linear Regression &amp; Time Series Analysis</h3>
+                <p><strong>Simple Linear Regression:</strong> Models the relationship between dependent variable $Y$ and independent variable $X$ via a straight line plus error: $Y = \beta_0 + \beta_1 X + \epsilon$ where $\epsilon \sim N(0, \sigma^2)$. The ordinary least squares (OLS) estimates minimize the sum of squared residuals $\sum \epsilon_i^2$:</p>
+                <p style="text-align: center; font-size: 0.98rem; font-weight: 700; margin: 0.5rem 0;">
+                    $$\hat{\beta}_1 = \frac{\sum (X_i - \bar{X})(Y_i - \bar{Y})}{\sum (X_i - \bar{X})^2} = \frac{\text{Cov}(X,Y)}{\text{Var}(X)} \quad , \quad \hat{\beta}_0 = \bar{Y} - \hat{\beta}_1 \bar{X}$$
+                </p>
+                <p><strong>Pearson Correlation Coefficient ($r$):</strong> Standardizes covariance to $[-1, 1]$: $r = \frac{\text{Cov}(X,Y)}{\sigma_X \sigma_Y} = \hat{\beta}_1 \frac{\sigma_X}{\sigma_Y}$.</p>
+                
+                <p><strong>Time Series Analysis:</strong> A sequence of data points indexed in time. A time series is <strong>weakly stationary</strong> if its mean is constant and autocovariances depend only on the time lag $k$, not on absolute time. Key models include:</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.75rem;">
+                    <div style="background: var(--metric-bg); padding: 0.85rem; border-radius: 8px; font-size: 0.85rem;">
+                        <strong>Autoregressive model AR(p):</strong> Current value depends linearly on past values:
+                        $$X_t = c + \sum_{i=1}^p \phi_i X_{t-i} + \epsilon_t$$
+                    </div>
+                    <div style="background: var(--metric-bg); padding: 0.85rem; border-radius: 8px; font-size: 0.85rem;">
+                        <strong>Moving Average model MA(q):</strong> Current value depends on current and past white noise:
+                        $$X_t = \mu + \epsilon_t + \sum_{j=1}^q \theta_j \epsilon_{t-j}$$
                     </div>
                 </div>
             </div>

@@ -7,13 +7,13 @@
 
     <!-- Navigation Tabs -->
     <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
-        <button id="tabDiffEqLectures" onclick="switchDiffEqTab('lectures')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Part Session Index</button>
-        <button id="tabDiffEqTheory" onclick="switchDiffEqTab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Core ODE Theory</button>
+        <button id="tabDiffEqTheory" onclick="switchDiffEqTab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core ODE Theory</button>
+        <button id="tabDiffEqLectures" onclick="switchDiffEqTab('lectures')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Part Session Index</button>
         <button id="tabDiffEqSandbox" onclick="switchDiffEqTab('sandbox')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Phase Portrait Sandbox</button>
     </div>
 
     <!-- Tab A: Video Lecture Index -->
-    <div id="secDiffEqLectures" style="display: block;">
+    <div id="secDiffEqLectures" style="display: none;">
         <div style="max-height: 500px; overflow-y: auto;">
             <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 2rem;">
                 <!-- Video 1 -->
@@ -97,40 +97,127 @@
     </div>
 
     <!-- Tab B: Core ODE Theory -->
-    <div id="secDiffEqTheory" style="display: none;">
+    <div id="secDiffEqTheory" style="display: block;">
+        <div style="margin-bottom: 1.5rem; background: var(--accent-glow); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--accent); font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.5; color: var(--text-color);">
+            Differential Equations model how quantities evolve continuously. This cheat sheet consolidates key concepts and analytical solution methods: first-order separable and linear ODEs, second-order constant-coefficient systems, non-homogeneous trials, Cauchy-Euler variable coefficient equations, and introduces the PDEs and SDEs governing financial derivatives.
+        </div>
+
         <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
-            <!-- Card 1: First Order Separable ODE -->
+            <!-- Card 1: First-Order ODEs -->
             <div class="card" style="margin-bottom: 0;">
-                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700;">1. First Order Separable ODE</h3>
-                <p>A separable ODE can be written in the general form where both sides depend on a single variable:</p>
-                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
-                    $$\frac{dy}{dx} = f(x)\,g(y)$$
-                </p>
-                <p>Separating and integrating both sides yields:</p>
-                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
-                    $$\int \frac{1}{g(y)}\,dy = \int f(x)\,dx + C$$
-                </p>
-                <p>In finance, separable ODEs appear naturally in continuous-time growth models such as exponential asset decay, population dynamics, and simple interest rate models where the rate of change depends multiplicatively on the current state.</p>
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700;">1. First-Order Ordinary Differential Equations</h3>
+                <p>First-order ODEs involve only the first derivative $y'$. Analytical solution methods depend on the equation structure:</p>
+                <ul style="padding-left: 1.2rem; font-size: 0.88rem; line-height: 1.5; margin: 0.5rem 0;">
+                    <li><strong>Separable Equations:</strong> If $\frac{dy}{dx} = f(x)g(y)$, separate variables and integrate:
+                        $$\int \frac{1}{g(y)} dy = \int f(x) dx + C$$
+                    </li>
+                    <li><strong>Linear First-Order ODEs:</strong> In the standard form $y' + P(x)y = Q(x)$, we solve using an <strong>Integrating Factor</strong> $I(x) = e^{\int P(x) dx}$:
+                        $$\frac{d}{dx}[I(x)y] = I(x)Q(x) \implies y(x) = \frac{1}{I(x)} \left(\int I(x)Q(x) dx + C\right)$$
+                    </li>
+                    <li><strong>Exact Equations:</strong> $M(x,y)dx + N(x,y)dy = 0$ is exact if $\frac{\partial M}{\partial y} = \frac{\partial N}{\partial x}$, implying a potential function $\Psi(x,y) = C$ exists.</li>
+                </ul>
             </div>
 
-            <!-- Card 2: Second Order Constant Coefficient ODE -->
+            <!-- Card 2: Second-Order Homogeneous ODEs -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">2. Second-Order Constant Coefficient Homogeneous ODEs</h3>
+                    <p>Linear second-order homogeneous ODEs with constant coefficients take the form:</p>
+                    <p style="text-align: center; font-size: 1rem; font-weight: 700; margin: 0.5rem 0;">
+                        $$ay'' + by' + cy = 0$$
+                    </p>
+                    <p>We assume a solution of the form $y = e^{rx}$, leading to the quadratic <strong>auxiliary (characteristic) equation</strong> $ar^2 + br + c = 0$. The roots $r_1, r_2$ yield three distinct general solution structures:</p>
+                    <ul style="padding-left: 1.2rem; font-size: 0.88rem; line-height: 1.5; margin: 0.5rem 0;">
+                        <li><strong>Distinct Real Roots ($\Delta > 0$):</strong> Two real roots $r_1, r_2$:
+                            $$y = A e^{r_1 x} + B e^{r_2 x}$$
+                        </li>
+                        <li><strong>Repeated Root ($\Delta = 0$):</strong> One repeated root $r = -b/2a$:
+                            $$y = (A + Bx)e^{rx}$$
+                        </li>
+                        <li><strong>Complex Conjugate Roots ($\Delta < 0$):</strong> Roots $r = \alpha \pm i\beta$ (where $\alpha = -b/2a$, $\beta = \sqrt{-\Delta}/2a$):
+                            $$y = e^{\alpha x}(A \cos\beta x + B \sin\beta x)$$
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Card 3: Non-Homogeneous Second-Order ODEs -->
             <div class="card" style="margin-bottom: 0;">
-                <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700;">2. Second Order Constant Coefficient ODE</h3>
-                <p>The standard homogeneous second-order ODE with constant coefficients takes the form:</p>
-                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
-                    $$ay'' + by' + cy = 0$$
+                <h3 style="margin-top: 0; color: #10b981; font-family: var(--font-family-sans); font-weight: 700;">3. Non-Homogeneous ODEs &amp; Undetermined Coefficients</h3>
+                <p>For non-homogeneous equations $ay'' + by' + cy = f(x)$, the general solution is the sum of the complementary function $y_c$ (solving the homogeneous LHS) and a particular integral $y_p$ (solving the non-homogeneous RHS): $y = y_c + y_p$.</p>
+                <p><strong>Method of Undetermined Coefficients:</strong> We guess the form of $y_p$ based on the shape of $f(x)$:</p>
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 0.5rem; font-family: var(--font-family-sans);">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--card-border); text-align: left;">
+                            <th style="padding: 0.25rem 0.5rem; font-weight: 700; color: var(--text-color);">RHS function $f(x)$</th>
+                            <th style="padding: 0.25rem 0.5rem; font-weight: 700; color: var(--accent);">Particular Trial $y_p(x)$</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.4rem 0.5rem;">Polynomial: $p_n(x)$</td>
+                            <td style="padding: 0.4rem 0.5rem;">$A_n x^n + \dots + A_1 x + A_0$</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.4rem 0.5rem;">Exponential: $e^{kx}$</td>
+                            <td style="padding: 0.4rem 0.5rem;">$C e^{kx}$</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--card-border);">
+                            <td style="padding: 0.4rem 0.5rem;">Trig: $\cos(\omega x)$ or $\sin(\omega x)$</td>
+                            <td style="padding: 0.4rem 0.5rem;">$D \cos(\omega x) + E \sin(\omega x)$</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="margin-top: 0.75rem; font-size: 0.85rem; color: #b45309; font-weight: 600;">
+                    &lambda; CRITICAL FAILURE CASE: If any term in the guessed trial solution $y_p(x)$ is already present in the complementary function $y_c(x)$ (i.e. is a homogeneous solution), the trial fails! You must multiply the trial by $x$ (or $x^2$ for double repeated roots) to restore linear independence.
                 </p>
-                <p>The auxiliary (characteristic) equation is:</p>
-                <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.75rem 0;">
-                    $$ar^2 + br + c = 0$$
+            </div>
+
+            <!-- Card 4: Variable Coefficients & Cauchy-Euler -->
+            <div class="card" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; color: #f59e0b; font-family: var(--font-family-sans); font-weight: 700;">4. Variable Coefficients &amp; Cauchy-Euler Equations</h3>
+                <p>When coefficients depend on $x$, analytical solutions are harder to find. The notable exception is the <strong>Cauchy-Euler Equation</strong>:</p>
+                <p style="text-align: center; font-size: 1rem; font-weight: 700; margin: 0.5rem 0;">
+                    $$a x^2 y'' + b x y' + c y = 0$$
                 </p>
-                <p>The nature of the roots determines the solution form:</p>
-                <ul style="font-size: 0.92rem; line-height: 1.8; padding-left: 1.25rem;">
-                    <li><strong>Distinct real roots</strong> $r_1, r_2$: &nbsp; $y = Ae^{r_1 x} + Be^{r_2 x}$</li>
-                    <li><strong>Repeated root</strong> $r$: &nbsp; $y = (A + Bx)e^{rx}$</li>
-                    <li><strong>Complex roots</strong> $\alpha \pm i\beta$: &nbsp; $y = e^{\alpha x}(A\cos\beta x + B\sin\beta x)$</li>
+                <p>We assume a solution of the form $y = x^m \implies y' = m x^{m-1} \implies y'' = m(m-1) x^{m-2}$. Substituting these in yields the auxiliary equation:</p>
+                <p style="text-align: center; font-size: 1rem; font-weight: 700; margin: 0.5rem 0;">
+                    $$a m(m-1) + b m + c = 0 \implies a m^2 + (b - a)m + c = 0$$
+                </p>
+                <p>The roots $m_1, m_2$ determine the solution structure:</p>
+                <ul style="padding-left: 1.2rem; font-size: 0.88rem; line-height: 1.5; margin: 0.5rem 0;">
+                    <li><strong>Distinct Real Roots:</strong> $y = A x^{m_1} + B x^{m_2}$</li>
+                    <li><strong>Repeated Real Root ($m$):</strong> $y = (A + B \ln x)x^m$</li>
+                    <li><strong>Complex Roots ($\alpha \pm i\beta$):</strong> $y = x^\alpha [A \cos(\beta \ln x) + B \sin(\beta \ln x)]$</li>
                 </ul>
-                <p>These solutions underpin oscillatory pricing models in quantitative finance, including mean-reverting processes and damped vibration analogues used in portfolio risk analysis.</p>
+                <p style="font-size: 0.85rem; font-style: italic; margin-top: 0.5rem;">Alternatively, this can be transformed into a constant-coefficient equation by substituting $x = e^t$ ($t = \ln x$) and applying the chain rule.</p>
+            </div>
+
+            <!-- Card 5: PDE & SDE Intro -->
+            <div class="card" style="margin-bottom: 0; grid-column: span 2;">
+                <h3 style="margin-top: 0; color: #ec4899; font-family: var(--font-family-sans); font-weight: 700;">5. From ODEs to Partial (PDE) &amp; Stochastic (SDE) Differential Equations</h3>
+                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem;">
+                    <div>
+                        <p>In quantitative finance, assets fluctuate randomly rather than smoothly. To model this, we transition from ODEs to **Stochastic Differential Equations (SDEs)**. A standard SDE (such as Geometric Brownian Motion) is formulated as:</p>
+                        <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+                            $$dS_t = \mu S_t dt + \sigma S_t dW_t$$
+                        </p>
+                        <p>where $dW_t$ is a Brownian increment. Integrating SDEs requires **Itô's Lemma** (the stochastic equivalent of Taylor series expansion).</p>
+                        <p><strong>The Black-Scholes PDE:</strong> By constructing a risk-free portfolio matching derivative and underlying movements, we eliminate $dW_t$, yielding the famous deterministic Black-Scholes partial differential equation (PDE):</p>
+                        <p style="text-align: center; font-size: 1.05rem; font-weight: 700; margin: 0.5rem 0;">
+                            $$\frac{\partial V}{\partial t} + r S \frac{\partial V}{\partial S} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} - rV = 0$$
+                        </p>
+                    </div>
+                    <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; font-size: 0.88rem; line-height: 1.5; border-left: 4px solid #ec4899;">
+                        <strong style="color: #ec4899; display: block; margin-bottom: 0.5rem;">The Feynman-Kac Connection</strong>
+                        The Feynman-Kac formula bridges the gap between SDEs (probability/expectations) and PDEs (deterministic boundary value problems). It states that the solution to a parabolic PDE of the form:
+                        $$\frac{\partial u}{\partial t} + \mu(x,t)\frac{\partial u}{\partial x} + \frac{1}{2}\sigma^2(x,t)\frac{\partial^2 u}{\partial x^2} - r u = 0$$
+                        with terminal condition $u(x,T) = \psi(x)$ can be written as a conditional expectation:
+                        $$u(x,t) = \mathbb{E}_t \left[ e^{-r(T-t)} \psi(X_T) \,\Big|\, X_t = x \right]$$
+                        where $X_t$ follows the SDE $dX_t = \mu(X_t, t)dt + \sigma(X_t, t)dW_t$.
+                        This proves that option pricing can be solved **either** by finding analytical solutions to the BS-PDE or by simulating asset path averages (Monte Carlo).
+                    </div>
+                </div>
             </div>
         </div>
     </div>
