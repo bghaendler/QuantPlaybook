@@ -254,12 +254,25 @@ def calculate(payload: Dict[str, Any] = Body(...)):
         graph_data = engine.get_graph_data()
         heatmap_info = engine.get_heatmap_data()
         dist_data = engine.get_distribution_data()
+        vol_surfaces = engine.get_true_vol_surfaces()
+        gatheral = engine.get_gatheral_surfaces()
 
         return {
             **base_result,
             "graph_data": graph_data,
             "heatmap_data": heatmap_info['heatmap_data'],
             "heatmap_spots": heatmap_info['heatmap_spots'],
+            "spot_time_data": heatmap_info.get('spot_time_data'),
+            "spot_time_steps": heatmap_info.get('spot_time_steps'),
+            "vol_time_data": heatmap_info.get('vol_time_data'),
+            "vol_time_steps": heatmap_info.get('vol_time_steps'),
+            "vol_surface_strike": vol_surfaces['vol_surface_strike'],
+            "vol_surface_delta": vol_surfaces['vol_surface_delta'],
+            "gatheral_total_var": gatheral['total_variance'],
+            "gatheral_dual": gatheral['dual_surface'],
+            "gatheral_svi": gatheral['svi_fit'],
+            "gatheral_pdf": gatheral['pdf_arbitrage'],
+            "gatheral_dynamics": gatheral['dynamics'],
             "distribution_data": dist_data
         }
     except Exception as e:

@@ -415,6 +415,9 @@ const App = () => {
                   {activeTab === 'surface' && data.heatmap_data && (
                     <div style={{ flex: 1, width: '100%', height: '100%', minHeight: '350px', minWidth: 0, display: 'flex', flexDirection: 'column' }}>
                       <VolatilitySurface
+                        inputs={inputs}
+                        greeks={data.greeks}
+                        price={data.price}
                         heatmapData={data.heatmap_data}
                         heatmapSpots={data.heatmap_spots}
                         spotTimeData={data.spot_time_data}

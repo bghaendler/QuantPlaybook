@@ -1351,12 +1351,18 @@ class OptionEngine:
                 row.append(float(round(vol_sim * 100, 2))) # in percent
             delta_matrix.append(row)
             
-            distribution_data.append({
-                "x": float(round(x, 2)),
-                "y": float(round(y, 4)),
-                "fill": float(round(fill, 4))
-            })
-        return distribution_data
+        return {
+            "vol_surface_strike": {
+                "strikes": strike_steps.tolist(),
+                "tenors": tenor_labels,
+                "matrix": strike_matrix
+            },
+            "vol_surface_delta": {
+                "deltas": delta_labels,
+                "tenors": pick_tenor_labels,
+                "matrix": delta_matrix
+            }
+        }
 
     def get_gatheral_surfaces(self):
         # Common coordinates

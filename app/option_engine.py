@@ -47,6 +47,12 @@ class OptionEngine:
         # Custom input for RGW model
         self.time_dividend = float(inputs.get('time_dividend', 0.25))
         
+        # --- NEW: Capture Discrete Dividends for Escrowed model ---
+        self.div1_amt = float(inputs.get('div1_amt', 0.0))
+        self.div1_time = float(inputs.get('div1_time', 0.0))
+        self.div2_amt = float(inputs.get('div2_amt', 0.0))
+        self.div2_time = float(inputs.get('div2_time', 0.0))
+        
         # --- NEW: Capture Lambda for Executive Stock Options ---
         self.lamb = float(inputs.get('lambda', 0.0))
         
@@ -60,6 +66,14 @@ class OptionEngine:
 
         # Modified Bachelier shift parameter
         self.shift = float(inputs.get('shift', 0))
+
+        # Margrabe / Multi-Asset parameters
+        self.spot2 = float(inputs.get('spot2', 104.0))
+        self.vol2 = float(inputs.get('vol2', 0.12))
+        self.dividend2 = float(inputs.get('dividend2', 0.04))
+        self.correlation = float(inputs.get('correlation', 0.8))
+        self.q1 = float(inputs.get('q1', 1.0))
+        self.q2 = float(inputs.get('q2', 1.0))
 
         # Special handling for Black-76F (Deferred Settlement)
         # T_f is the time to payment, T is time to option expiry.
@@ -99,6 +113,9 @@ class OptionEngine:
             return self.r - self.q_or_rf
         elif self.model == 'brenner':
             # Brenner-Subrahmanyam: Input 'dividend' is explicitly 'b'
+            return self.q_or_rf
+        elif self.model == 'margrabe':
+            # Margrabe: Input 'dividend' is explicitly Asset 1 cost-of-carry 'b1'
             return self.q_or_rf
         elif self.model == 'black76f':
             # Black-76F (Futures with deferred settlement): underlying is Future, so b = 0
@@ -175,6 +192,127 @@ class OptionEngine:
         
         # 3. Final Value
         return survival_prob * bsm_price
+
+    def _margrabe_price(self, S1, S2, T, r, b1, b2, sigma1, sigma2, rho, q1=1.0, q2=1.0):
+        """
+        William Margrabe (1978) Exchange Option Pricing Model.
+        Values option to exchange asset 2 for asset 1.
+        Call Payoff: max(q1 * S1 - q2 * S2, 0)
+        Put Payoff: max(q2 * S2 - q1 * S1, 0)
+        """
+        N = norm.cdf
+        # Combined Volatility
+        sigma_hat = np.sqrt(max(1e-9, sigma1**2 + sigma2**2 - 2 * rho * sigma1 * sigma2))
+        
+        sqrt_T = np.sqrt(T)
+        d1 = (np.log((q1 * S1) / (q2 * S2)) + (b1 - b2 + 0.5 * sigma_hat**2) * T) / (sigma_hat * sqrt_T)
+        d2 = d1 - sigma_hat * sqrt_T
+        
+        if self.is_call == 1:
+            price = q1 * S1 * np.exp((b1 - r) * T) * N(d1) - q2 * S2 * np.exp((b2 - r) * T) * N(d2)
+        else:
+            price = q2 * S2 * np.exp((b2 - r) * T) * N(-d2) - q1 * S1 * np.exp((b1 - r) * T) * N(-d1)
+            
+        return price, sigma_hat, d1, d2
+
+    def _escrowed_dividend_price(self, S, K, T, r, sigma):
+        # Calculate PV of dividends occurring before expiry T
+        div_pv = 0.0
+        if self.div1_amt > 0 and self.div1_time < T:
+            div_pv += self.div1_amt * np.exp(-r * self.div1_time)
+        if self.div2_amt > 0 and self.div2_time < T:
+            div_pv += self.div2_amt * np.exp(-r * self.div2_time)
+            
+        S_adj = max(0.01, S - div_pv)
+        # Price is BSM using S_adj with b=r
+        price = self._generalized_bsm(S_adj, K, T, r, r, sigma)
+        return price, S_adj, div_pv
+
+    def _escrowed_dividend_greeks(self, S, K, T, r, sigma):
+        # Retrieve S_adj
+        _, S_adj, _ = self._escrowed_dividend_price(S, K, T, r, sigma)
+        # Greeks are BSM Greeks evaluated at S_adj with b=r
+        return self._analytical_greeks(S_adj, K, T, r, r, sigma)
+
+    def _hhl_vol_adjustment(self, S, T, r, sigma):
+        # Filter and sort dividends occurring before option maturity T
+        divs = []
+        if self.div1_amt > 0 and 0 < self.div1_time < T:
+            divs.append((self.div1_time, self.div1_amt))
+        if self.div2_amt > 0 and 0 < self.div2_time < T:
+            divs.append((self.div2_time, self.div2_amt))
+            
+        divs.sort(key=lambda x: x[0])
+        
+        if not divs:
+            return sigma
+            
+        # Variance adjustment formula
+        var_adj = 0.0
+        t_prev = 0.0
+        n = len(divs)
+        
+        for j in range(n):
+            t_j, _ = divs[j]
+            # Calculate sum_{i=j}^n D_i e^{-r t_i}
+            sum_div_pv = 0.0
+            for i in range(j, n):
+                t_i, D_i = divs[i]
+                sum_div_pv += D_i * np.exp(-r * t_i)
+                
+            denom = S - sum_div_pv
+            if denom <= 0.01:
+                denom = 0.01
+                
+            term = ((S * sigma) / denom) ** 2 * (t_j - t_prev)
+            var_adj += term
+            t_prev = t_j
+            
+        t_n = divs[-1][0]
+        var_adj += (sigma ** 2) * (T - t_n)
+        
+        return np.sqrt(max(1e-5, var_adj))
+
+    def _hhl_price(self, S, K, T, r, sigma):
+        # 1. S_adj is the same as escrowed dividend
+        _, S_adj, div_pv = self._escrowed_dividend_price(S, K, T, r, sigma)
+        # 2. sigma_adj
+        sigma_adj = self._hhl_vol_adjustment(S, T, r, sigma)
+        # 3. Price is BSM using S_adj and sigma_adj with b=r
+        price = self._generalized_bsm(S_adj, K, T, r, r, sigma_adj)
+        return price, S_adj, sigma_adj, div_pv
+
+    def _hhl_greeks(self, S, K, T, r, sigma):
+        _, S_adj, sigma_adj, _ = self._hhl_price(S, K, T, r, sigma)
+        # Greeks are BSM Greeks evaluated at S_adj, sigma_adj with b=r
+        return self._analytical_greeks(S_adj, K, T, r, r, sigma_adj)
+
+    def _bos_vandermark_price(self, S, K, T, r, b, sigma):
+        Xn = 0.0
+        Xf = 0.0
+        
+        # Filter and sort dividends occurring before option maturity T
+        divs = []
+        if self.div1_amt > 0 and 0 < self.div1_time < T:
+            divs.append((self.div1_time, self.div1_amt))
+        if self.div2_amt > 0 and 0 < self.div2_time < T:
+            divs.append((self.div2_time, self.div2_amt))
+            
+        for t_i, D_i in divs:
+            Xn += ((T - t_i) / T) * D_i * np.exp(-r * t_i)
+            Xf += (t_i / T) * D_i * np.exp(-r * t_i)
+            
+        S_adj = max(0.01, S - Xn)
+        K_adj = max(0.01, K + Xf * np.exp(r * T))
+        
+        # Price is BSM using S_adj, K_adj, and b
+        price = self._generalized_bsm(S_adj, K_adj, T, r, b, sigma)
+        return price, S_adj, K_adj, Xn, Xf
+
+    def _bos_vandermark_greeks(self, S, K, T, r, b, sigma):
+        _, S_adj, K_adj, _, _ = self._bos_vandermark_price(S, K, T, r, b, sigma)
+        # Greeks are standard BSM Greeks evaluated at S_adj and K_adj with cost of carry b
+        return self._analytical_greeks(S_adj, K_adj, T, r, b, sigma)
 
     def _black76f_price(self, F, K, T, T_f, r, sigma):
         """
@@ -882,12 +1020,61 @@ class OptionEngine:
             greeks['rho_lambda'] = -self.T * price 
             note = f"Exec Value (λ={self.lamb}): {price:.4f} | BSM Base: {price/survival_prob if survival_prob > 0 else 0:.4f}"
 
+        elif self.model == 'escrowed':
+            price, S_adj, div_pv = self._escrowed_dividend_price(self.S, self.K, self.T, self.r, self.sigma)
+            greeks = self._escrowed_dividend_greeks(self.S, self.K, self.T, self.r, self.sigma)
+            note = f"S_adj = {S_adj:.4f} (D PV = {div_pv:.4f})"
+
+        elif self.model == 'hhl':
+            price, S_adj, sigma_adj, div_pv = self._hhl_price(self.S, self.K, self.T, self.r, self.sigma)
+            greeks = self._hhl_greeks(self.S, self.K, self.T, self.r, self.sigma)
+            note = f"S_adj = {S_adj:.4f} | σ_adj = {sigma_adj*100:.2f}%"
+
+        elif self.model == 'bos_vandermark':
+            price, S_adj, K_adj, Xn, Xf = self._bos_vandermark_price(self.S, self.K, self.T, self.r, self.b, self.sigma)
+            greeks = self._bos_vandermark_greeks(self.S, self.K, self.T, self.r, self.b, self.sigma)
+            note = f"S_adj = {S_adj:.4f} | K_adj = {K_adj:.4f}"
+
+        elif self.model == 'margrabe':
+            price, sigma_hat, m_d1, m_d2 = self._margrabe_price(
+                self.S, self.spot2, self.T, self.r, self.b, self.dividend2,
+                self.sigma, self.vol2, self.correlation, self.q1, self.q2
+            )
+            wrapper = lambda s, t, v, r_in: self._margrabe_price(
+                s, self.spot2, t, r_in, self.b, self.dividend2,
+                v, self.vol2, self.correlation, self.q1, self.q2
+            )[0]
+            greeks = self._numerical_greeks(wrapper)
+            note = f"Margrabe: {price:.4f} | Combined σ = {sigma_hat*100:.2f}%"
+
         else:
             price = self._generalized_bsm(self.S, self.K, self.T, self.r, self.b, self.sigma)
             greeks = self._analytical_greeks(self.S, self.K, self.T, self.r, self.b, self.sigma)
             note = "Standard Valuation"
 
-        d1, d2 = self._d1_d2(self.S, self.K, self.T, self.b, self.sigma)
+        S_for_intermediates = self.S
+        K_for_intermediates = self.K
+        sigma_for_intermediates = self.sigma
+        b_for_d1_d2 = self.b
+
+        if self.model == 'escrowed':
+            _, S_adj, _ = self._escrowed_dividend_price(self.S, self.K, self.T, self.r, self.sigma)
+            S_for_intermediates = S_adj
+        elif self.model == 'hhl':
+            _, S_adj, sigma_adj, _ = self._hhl_price(self.S, self.K, self.T, self.r, self.sigma)
+            S_for_intermediates = S_adj
+            sigma_for_intermediates = sigma_adj
+        elif self.model == 'bos_vandermark':
+            _, S_adj, K_adj, _, _ = self._bos_vandermark_price(self.S, self.K, self.T, self.r, self.b, self.sigma)
+            S_for_intermediates = S_adj
+            K_for_intermediates = K_adj
+        elif self.model == 'margrabe':
+            S_for_intermediates = self.q1 * self.S
+            K_for_intermediates = self.q2 * self.spot2
+            sigma_for_intermediates = np.sqrt(max(1e-9, self.sigma**2 + self.vol2**2 - 2 * self.correlation * self.sigma * self.vol2))
+            b_for_d1_d2 = self.b - self.dividend2
+
+        d1, d2 = self._d1_d2(S_for_intermediates, K_for_intermediates, self.T, b_for_d1_d2, sigma_for_intermediates)
         Nd1 = norm.cdf(d1 if self.is_call==1 else -d1)
         Nd2 = norm.cdf(d2 if self.is_call==1 else -d2)
 
@@ -962,11 +1149,30 @@ class OptionEngine:
                 base_gr = self._analytical_greeks(s, self.K, self.T, self.r, self.b, self.sigma)
                 surv = np.exp(-self.lamb * self.T)
                 gr = {k: v * surv for k, v in base_gr.items()}
+            elif self.model == 'escrowed':
+                p, S_adj, div_pv = self._escrowed_dividend_price(s, self.K, self.T, self.r, self.sigma)
+                gr = self._escrowed_dividend_greeks(s, self.K, self.T, self.r, self.sigma)
+            elif self.model == 'hhl':
+                p, S_adj, sigma_adj, div_pv = self._hhl_price(s, self.K, self.T, self.r, self.sigma)
+                gr = self._hhl_greeks(s, self.K, self.T, self.r, self.sigma)
+            elif self.model == 'margrabe':
+                p, sigma_hat, _, _ = self._margrabe_price(
+                    s, self.spot2, self.T, self.r, self.b, self.dividend2,
+                    self.sigma, self.vol2, self.correlation, self.q1, self.q2
+                )
+                wrapper = lambda _s, _t, _v, _r: self._margrabe_price(
+                    _s, self.spot2, _t, _r, self.b, self.dividend2,
+                    _v, self.vol2, self.correlation, self.q1, self.q2
+                )[0]
+                gr = self._numerical_greeks(wrapper)
             else:
                 p = self._generalized_bsm(s, self.K, self.T, self.r, self.b, self.sigma)
                 gr = self._analytical_greeks(s, self.K, self.T, self.r, self.b, self.sigma)
             
-            payoff = max(0, s - self.K) if self.is_call == 1 else max(0, self.K - s)
+            if self.model == 'margrabe':
+                payoff = max(0, self.q1 * s - self.q2 * self.spot2) if self.is_call == 1 else max(0, self.q2 * self.spot2 - self.q1 * s)
+            else:
+                payoff = max(0, s - self.K) if self.is_call == 1 else max(0, self.K - s)
 
             points.append({
                 "spot": float(round(s, 2)),
@@ -984,48 +1190,85 @@ class OptionEngine:
             
         return points
     
+    def _price_at_parameters(self, s_sim, t_sim, v_sim):
+        if self.model == 'margrabe':
+            p, _, _, _ = self._margrabe_price(
+                s_sim, self.spot2, t_sim, self.r, self.b, self.dividend2,
+                v_sim, self.vol2, self.correlation, self.q1, self.q2
+            )
+        elif 'barrier' in self.model:
+            p = self._standard_barrier_option(s_sim, t_sim, v_sim, self.r)
+        elif self.model == 'black76f':
+            tf_sim = max(self.q_or_rf * (t_sim / self.T) if self.T > 0 else self.q_or_rf, t_sim)
+            p = self._black76f_price(s_sim, self.K, t_sim, tf_sim, self.r, v_sim)
+        elif self.model == 'brenner':
+            p = self._brenner_subrahmanyam(s_sim, t_sim, self.r, self.b, v_sim)
+        elif self.model == 'bachelier':
+            p = self._bachelier_price(s_sim, self.K, t_sim, self.r, self.b, v_sim)
+        elif self.model == 'sprenkle':
+            mu = self.r
+            p = self._sprenkle_price(s_sim, self.K, t_sim, mu, v_sim)
+        elif self.model == 'boness':
+            mu = self.r
+            p = self._boness_price(s_sim, self.K, t_sim, self.r, mu, v_sim)
+        elif self.model == 'mod_bachelier':
+            p = self._modified_bachelier_price(s_sim, self.K, t_sim, self.r, self.b, v_sim, self.shift)
+        elif self.model == 'bjerksund02':
+            p = self._bjerksund_stensland_2002(s_sim, self.K, t_sim, self.r, self.q_or_rf, v_sim)
+        elif self.model == 'mckean':
+            p = self._mckean_perpetual(s_sim, self.K, self.r, self.q_or_rf, v_sim)
+        elif self.model == 'roll_geske':
+            p = self._roll_geske_whaley(s_sim, self.K, t_sim, self.r, v_sim, self.q_or_rf, self.time_dividend)
+        elif self.model == 'villiger':
+            p = self._villiger_2005(s_sim, self.K, t_sim, self.r, v_sim, self.q_or_rf, self.time_dividend)
+        elif self.model == 'exec_stock':
+            p = self._jennergren_naslund(s_sim, self.K, t_sim, self.r, self.b, v_sim, self.lamb)
+        elif self.model == 'escrowed':
+            p, _, _ = self._escrowed_dividend_price(s_sim, self.K, t_sim, self.r, v_sim)
+        elif self.model == 'hhl':
+            p, _, _, _ = self._hhl_price(s_sim, self.K, t_sim, self.r, v_sim)
+        elif self.model == 'bos_vandermark':
+            p, _, _, _, _ = self._bos_vandermark_price(s_sim, self.K, t_sim, self.r, self.b, v_sim)
+        else:
+            p = self._generalized_bsm(s_sim, self.K, t_sim, self.r, self.b, v_sim)
+        return float(round(p, 4))
+    
     def get_heatmap_data(self):
-        heatmap_data = []
         vol_steps = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
         spot_steps = np.linspace(self.S * 0.8, self.S * 1.2, 8)
-
+        
+        # 1. Spot vs Vol
+        spot_vol_data = []
         for v_sim in vol_steps:
             row = []
             for s_sim in spot_steps:
-                if 'barrier' in self.model:
-                    p = self._standard_barrier_option(s_sim, self.T, v_sim, self.r)
-                elif self.model == 'black76f':
-                    p = self._black76f_price(s_sim, self.K, self.T, self.T_f, self.r, v_sim)
-                elif self.model == 'brenner':
-                    p = self._brenner_subrahmanyam(s_sim, self.T, self.r, self.b, v_sim)
-                elif self.model == 'bachelier':
-                    p = self._bachelier_price(s_sim, self.K, self.T, self.r, self.b, v_sim)
-                elif self.model == 'sprenkle':
-                    mu = self.r
-                    p = self._sprenkle_price(s_sim, self.K, self.T, mu, v_sim)
-                elif self.model == 'boness':
-                    mu = self.r
-                    p = self._boness_price(s_sim, self.K, self.T, self.r, mu, v_sim)
-                elif self.model == 'mod_bachelier':
-                    p = self._modified_bachelier_price(s_sim, self.K, self.T, self.r, self.b, v_sim, self.shift)
-                elif self.model == 'bjerksund02':
-                    p = self._bjerksund_stensland_2002(s_sim, self.K, self.T, self.r, self.q_or_rf, v_sim)
-                elif self.model == 'mckean':
-                    p = self._mckean_perpetual(s_sim, self.K, self.r, self.q_or_rf, v_sim)
-                elif self.model == 'roll_geske':
-                    p = self._roll_geske_whaley(s_sim, self.K, self.T, self.r, v_sim, self.q_or_rf, self.time_dividend)
-                elif self.model == 'villiger':
-                    p = self._villiger_2005(s_sim, self.K, self.T, self.r, v_sim, self.q_or_rf, self.time_dividend)
-                elif self.model == 'exec_stock':
-                    p = self._jennergren_naslund(s_sim, self.K, self.T, self.r, self.b, v_sim, self.lamb)
-                else:
-                    p = self._generalized_bsm(s_sim, self.K, self.T, self.r, self.b, v_sim)
-                row.append(float(round(p, 2)))
-            heatmap_data.append({"vol": int(v_sim * 100), "prices": row})
-        
+                row.append(self._price_at_parameters(s_sim, self.T, v_sim))
+            spot_vol_data.append({"vol": int(v_sim * 100), "prices": row})
+            
+        # 2. Spot vs Time
+        time_steps = [0.1, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
+        spot_time_data = []
+        for t_sim in time_steps:
+            row = []
+            for s_sim in spot_steps:
+                row.append(self._price_at_parameters(s_sim, t_sim, self.sigma))
+            spot_time_data.append({"time": t_sim, "prices": row})
+            
+        # 3. Vol vs Time
+        vol_time_data = []
+        for t_sim in time_steps:
+            row = []
+            for v_sim in vol_steps:
+                row.append(self._price_at_parameters(self.S, t_sim, v_sim))
+            vol_time_data.append({"time": t_sim, "prices": row})
+            
         return {
-            "heatmap_data": heatmap_data,
-            "heatmap_spots": [float(round(x, 2)) for x in spot_steps]
+            "heatmap_data": spot_vol_data,
+            "heatmap_spots": [float(round(x, 2)) for x in spot_steps],
+            "spot_time_data": spot_time_data,
+            "spot_time_steps": time_steps,
+            "vol_time_data": vol_time_data,
+            "vol_time_steps": vol_steps
         }
     
     def get_distribution_data(self):
@@ -1049,3 +1292,197 @@ class OptionEngine:
                 "fill": float(round(fill, 4))
             })
         return distribution_data
+
+    def get_true_vol_surfaces(self):
+        # 1. Vol Surface by Strike (Example 2 from article: 13 tenors x 21 strikes grid)
+        tenor_labels = ["1d","1w","2w","3w","1M","2M","3M","6M","9M","1y","18M","2y","3y"]
+        tenor_times = [1/365, 7/365, 14/365, 21/365, 1/12, 2/12, 3/12, 6/12, 9/12, 1.0, 1.5, 2.0, 3.0]
+        
+        strike_steps = np.linspace(self.S * 0.8, self.S * 1.2, 21)
+        
+        strike_matrix = []
+        for t in tenor_times:
+            row = []
+            for k in strike_steps:
+                # Vol smile formula with realistic skew (higher for low strikes) and term structure (flattening over time)
+                log_moneyness = np.log(k / self.S)
+                smile = 0.45 * (log_moneyness ** 2) - 0.08 * log_moneyness / (1.0 + 2.0 * t)
+                term_decay = -0.02 * np.sqrt(t)
+                vol_sim = self.sigma * (1.0 + smile + term_decay)
+                # Keep within realistic bounds
+                vol_sim = max(0.02, min(vol_sim, 1.5))
+                row.append(float(round(vol_sim * 100, 2))) # in percent
+            strike_matrix.append(row)
+            
+        # 2. Vol Surface by Delta (Example 3 from article: 9 tenors x 9 deltas grid)
+        delta_labels = ["10P", "20P", "30P", "40P", "ATM", "40C", "30C", "20C", "10C"]
+        delta_offsets = [-0.18, -0.12, -0.07, -0.03, 0.0, 0.03, 0.07, 0.12, 0.18] # offset factors of spot S
+        pick_tenor_labels = ["1M", "2M", "3M", "6M", "9M", "1y", "18M", "2y", "3y"]
+        pick_tenor_times = [1/12, 2/12, 3/12, 6/12, 9/12, 1.0, 1.5, 2.0, 3.0]
+        
+        delta_matrix = []
+        for t in pick_tenor_times:
+            row = []
+            for offset in delta_offsets:
+                # Map delta offset to equivalent strike factor
+                k_factor = 1.0 + offset
+                log_moneyness = np.log(k_factor)
+                smile = 0.45 * (log_moneyness ** 2) - 0.08 * log_moneyness / (1.0 + 2.0 * t)
+                term_decay = -0.02 * np.sqrt(t)
+                vol_sim = self.sigma * (1.0 + smile + term_decay)
+                vol_sim = max(0.02, min(vol_sim, 1.5))
+                row.append(float(round(vol_sim * 100, 2))) # in percent
+            delta_matrix.append(row)
+            
+        return {
+            "vol_surface_strike": {
+                "strikes": strike_steps.tolist(),
+                "tenors": tenor_labels,
+                "matrix": strike_matrix
+            },
+            "vol_surface_delta": {
+                "deltas": delta_labels,
+                "tenors": pick_tenor_labels,
+                "matrix": delta_matrix
+            }
+        }
+
+    def get_gatheral_surfaces(self):
+        # Common coordinates
+        log_moneyness = list(np.linspace(-0.3, 0.3, 15))
+        tenors = [0.1, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0]
+        
+        # 1. Total Implied Variance w = sigma_BS^2 * T
+        total_var_matrix = []
+        for t in tenors:
+            row = []
+            for y in log_moneyness:
+                smile = 0.5 * (y ** 2) - 0.08 * y / (1.0 + t)
+                vol_sim = self.sigma * (1.0 + smile)
+                w = (vol_sim ** 2) * t
+                row.append(float(round(w, 5)))
+            total_var_matrix.append(row)
+            
+        # 2. Dual-Surface: Implied vs Local (Dupire 1/2 Rule)
+        implied_matrix = []
+        local_matrix = []
+        for t in tenors:
+            row_imp = []
+            row_loc = []
+            for y in log_moneyness:
+                # Implied skew slope is 0.15
+                smile_imp = 0.4 * (y ** 2) - 0.15 * y / (1.0 + t)
+                vol_imp = self.sigma * (1.0 + smile_imp)
+                
+                # Local skew is twice as steep near T -> 0 (Dupire 1/2 Rule)
+                local_multiplier = 2.0 / (1.0 + np.sqrt(t))
+                smile_loc = 0.4 * (y ** 2) - 0.15 * local_multiplier * y
+                vol_loc = self.sigma * (1.0 + smile_loc)
+                
+                row_imp.append(float(round(vol_imp * 100, 2)))
+                row_loc.append(float(round(vol_loc * 100, 2)))
+            implied_matrix.append(row_imp)
+            local_matrix.append(row_loc)
+            
+        # 3. SVI Fit vs Bids/Asks
+        svi_matrix = []
+        simulated_bids = []
+        simulated_asks = []
+        for t in tenors:
+            row_svi = []
+            row_bid = []
+            row_ask = []
+            for y in log_moneyness:
+                # SVI parameters
+                a, b, rho, m, sigma_svi = 0.04, 0.1, -0.4, 0.0, 0.1
+                svi_var = a + b * (rho * (y - m) + np.sqrt((y - m)**2 + sigma_svi**2))
+                vol_svi = np.sqrt(max(0.0001, svi_var))
+                vol_percent = vol_svi * 100
+                row_svi.append(float(round(vol_percent, 2)))
+                
+                # Bids / Asks spreads (liquidity visualization)
+                spread = 1.8 + 2.5 * (y ** 2)
+                row_bid.append(float(round(vol_percent - spread, 2)))
+                row_ask.append(float(round(vol_percent + spread, 2)))
+            svi_matrix.append(row_svi)
+            simulated_bids.append(row_bid)
+            simulated_asks.append(row_ask)
+            
+        # 4. Breeden-Litzenberger Risk-Neutral PDF & Arbitrage Check
+        pdf_strikes = list(np.linspace(self.S * 0.7, self.S * 1.3, 15))
+        pdf_matrix = []
+        for t in tenors:
+            row_pdf = []
+            for k in pdf_strikes:
+                dist_from_atm = k - self.S
+                # Generate bell-shaped risk neutral probability density
+                width = self.S * 0.12 * np.sqrt(t)
+                pdf_val = (1.0 / (width * np.sqrt(2 * np.pi))) * np.exp(-(dist_from_atm**2) / (2 * (width**2)))
+                
+                # INTENTIONALLY INJECT BUTTERFLY ARBITRAGE (Negative PDF) at short tenor, extreme out-of-money calls
+                if t == 0.1 and k > self.S * 1.15:
+                    pdf_val = -0.008  # Flagged in red in the UI!
+                    
+                row_pdf.append(float(round(pdf_val, 6)))
+            pdf_matrix.append(row_pdf)
+            
+        # 5. Dynamic Forward Smiles: Local vs Stoch vs Jump-Diffusion
+        local_dyn = []
+        stoch_dyn = []
+        jump_dyn = []
+        for t in tenors:
+            row_loc = []
+            row_stoch = []
+            row_jmp = []
+            for y in log_moneyness:
+                # Local Vol: Smile flattens extremely rapidly (1 / t)
+                smile_loc = 0.5 * (y ** 2) / (1.0 + 10.0 * t) - 0.1 * y / (1.0 + 10.0 * t)
+                vol_loc = self.sigma * (1.0 + smile_loc)
+                
+                # Stochastic Vol: Forward smiles remain stable/sticky (1 / sqrt(t))
+                smile_stoch = 0.5 * (y ** 2) / (1.0 + np.sqrt(t)) - 0.1 * y / (1.0 + np.sqrt(t))
+                vol_stoch = self.sigma * (1.0 + smile_stoch)
+                
+                # Jumps: Preserves skew at short end T -> 0
+                smile_jmp = 0.5 * (y ** 2) - 0.15 * y / (0.1 + t)
+                vol_jmp = self.sigma * (1.0 + smile_jmp)
+                
+                row_loc.append(float(round(vol_loc * 100, 2)))
+                row_stoch.append(float(round(vol_stoch * 100, 2)))
+                row_jmp.append(float(round(vol_jmp * 100, 2)))
+            local_dyn.append(row_loc)
+            stoch_dyn.append(row_stoch)
+            jump_dyn.append(row_jmp)
+            
+        return {
+            "total_variance": {
+                "log_moneyness": [float(round(y, 4)) for y in log_moneyness],
+                "tenors": tenors,
+                "matrix": total_var_matrix
+            },
+            "dual_surface": {
+                "log_moneyness": [float(round(y, 4)) for y in log_moneyness],
+                "tenors": tenors,
+                "implied": implied_matrix,
+                "local": local_matrix
+            },
+            "svi_fit": {
+                "log_moneyness": [float(round(y, 4)) for y in log_moneyness],
+                "tenors": tenors,
+                "svi": svi_matrix,
+                "bids": simulated_bids,
+                "asks": simulated_asks
+            },
+            "pdf_arbitrage": {
+                "strikes": [float(round(k, 2)) for k in pdf_strikes],
+                "tenors": tenors,
+                "matrix": pdf_matrix
+            },
+            "dynamics": {
+                "log_moneyness": [float(round(y, 4)) for y in log_moneyness],
+                "tenors": tenors,
+                "local": local_dyn,
+                "stoch": stoch_dyn,
+                "jumps": jump_dyn
+            }
+        }

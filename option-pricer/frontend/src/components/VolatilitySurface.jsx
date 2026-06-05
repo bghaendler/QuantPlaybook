@@ -7,6 +7,9 @@ import createPlotlyComponent from 'react-plotly.js/factory';
 const Plot = (createPlotlyComponent.default || createPlotlyComponent)(Plotly);
 
 const VolatilitySurface = ({ 
+  inputs,
+  greeks,
+  price,
   heatmapData, 
   heatmapSpots,
   spotTimeData,
@@ -29,6 +32,21 @@ const VolatilitySurface = ({
   // Track dynamic smile paradigm state for Gatheral dynamics view
   const [dynModel, setDynModel] = useState('local');
 
+  // New comparison toggles
+  const [showRefPlane, setShowRefPlane] = useState(false);
+  const [showContractPoint, setShowContractPoint] = useState(true);
+  const [compareDynamics, setCompareDynamics] = useState(false);
+
+  // Extract current option parameters
+  const currentSpot = inputs?.spot ?? 100;
+  const currentStrike = inputs?.strike ?? 100;
+  const currentTenor = inputs?.time ?? 1;
+  const currentVolVal = inputs?.volatility ?? 0.2;
+  const volPct = currentVolVal <= 2 ? currentVolVal * 100 : currentVolVal;
+  const currentPrice = price ?? 0.0;
+  const currentDelta = greeks?.delta ?? 0.5;
+  const logMoneyness = Math.log(currentSpot / currentStrike);
+
   // Crisp Light Mode colors (fits white cards flawlessly)
   const gridColor = '#CBD5E1'; // Light grey modern grid lines
   const axisBgColor = '#F8FAFC';
@@ -36,7 +54,7 @@ const VolatilitySurface = ({
   const surfaceGridColor = 'rgba(15, 23, 42, 0.45)';
 
   // Build the traces array dynamically
-  let x, y, z, hoverTemplate;
+  let x, y, z;
   let traces = [];
   let xAxisTitle = 'Spot ($)';
   let yAxisTitle = 'Volatility (%)';
@@ -61,6 +79,7 @@ const VolatilitySurface = ({
       type: 'surface',
       showscale: false, 
       colorscale: 'Jet',
+      name: 'Implied Vol Surface',
       hovertemplate: '<b>Delta:</b> %{x}<br><b>Tenor:</b> %{y}<br><b>Implied Vol:</b> %{z:.2f}%<extra></extra>',
       contours: {
         x: { show: true, color: surfaceGridColor, width: 1, usecolormap: false },
@@ -68,6 +87,36 @@ const VolatilitySurface = ({
         z: { show: false }
       }
     }];
+
+    if (showRefPlane) {
+      const refZ = volSurfaceDelta.tenors.map(() => volSurfaceDelta.deltas.map(() => volPct));
+      traces.push({
+        x: volSurfaceDelta.deltas,
+        y: volSurfaceDelta.tenors,
+        z: refZ,
+        type: 'surface',
+        showscale: false,
+        opacity: 0.35,
+        colorscale: [[0, '#94A3B8'], [1, '#94A3B8']],
+        name: 'BSM Constant Vol',
+        hovertemplate: '<b>BSM Constant Vol:</b> %{z:.2f}%<extra></extra>',
+        contours: { x: { show: false }, y: { show: false }, z: { show: false } }
+      });
+    }
+
+    if (showContractPoint) {
+      traces.push({
+        x: [currentDelta],
+        y: [currentTenor],
+        z: [volPct],
+        type: 'scatter3d',
+        mode: 'markers',
+        name: 'Current Contract',
+        marker: { size: 8, color: '#10B981', opacity: 0.95, line: { color: '#FFFFFF', width: 2 } },
+        hovertemplate: '<b>Current Contract</b><br>Delta: %{x:.4f}<br>Tenor: %{y:.2f} yr<br>Vol: %{z:.2f}%<extra></extra>'
+      });
+    }
+
   } else if (dimMode === 'smile_strike' && volSurfaceStrike) {
     xAxisTitle = 'Strike ($)';
     yAxisTitle = 'Tenor / Maturity';
@@ -83,6 +132,7 @@ const VolatilitySurface = ({
       type: 'surface',
       showscale: false, 
       colorscale: 'Jet',
+      name: 'Implied Vol Surface',
       hovertemplate: '<b>Strike:</b> $%{x:.2f}<br><b>Tenor:</b> %{y}<br><b>Implied Vol:</b> %{z:.2f}%<extra></extra>',
       contours: {
         x: { show: true, color: surfaceGridColor, width: 1, usecolormap: false },
@@ -90,6 +140,36 @@ const VolatilitySurface = ({
         z: { show: false }
       }
     }];
+
+    if (showRefPlane) {
+      const refZ = volSurfaceStrike.tenors.map(() => volSurfaceStrike.strikes.map(() => volPct));
+      traces.push({
+        x: volSurfaceStrike.strikes,
+        y: volSurfaceStrike.tenors,
+        z: refZ,
+        type: 'surface',
+        showscale: false,
+        opacity: 0.35,
+        colorscale: [[0, '#94A3B8'], [1, '#94A3B8']],
+        name: 'BSM Constant Vol',
+        hovertemplate: '<b>BSM Constant Vol:</b> %{z:.2f}%<extra></extra>',
+        contours: { x: { show: false }, y: { show: false }, z: { show: false } }
+      });
+    }
+
+    if (showContractPoint) {
+      traces.push({
+        x: [currentStrike],
+        y: [currentTenor],
+        z: [volPct],
+        type: 'scatter3d',
+        mode: 'markers',
+        name: 'Current Contract',
+        marker: { size: 8, color: '#10B981', opacity: 0.95, line: { color: '#FFFFFF', width: 2 } },
+        hovertemplate: '<b>Current Contract</b><br>Strike: $%{x:.2f}<br>Tenor: %{y:.2f} yr<br>Vol: %{z:.2f}%<extra></extra>'
+      });
+    }
+
   } else if (dimMode === 'gatheral_total_var' && gatheralTotalVar) {
     xAxisTitle = 'Log-Moneyness (y)';
     yAxisTitle = 'Time to Expiry (T)';
@@ -105,6 +185,7 @@ const VolatilitySurface = ({
       type: 'surface',
       showscale: false,
       colorscale: 'Jet',
+      name: 'Total Var Surface',
       hovertemplate: '<b>Moneyness (y):</b> %{x:.2f}<br><b>Expiry (T):</b> %{y:.2f} Yrs<br><b>Total Var (w):</b> %{z:.5f}<extra></extra>',
       contours: {
         x: { show: true, color: surfaceGridColor, width: 1, usecolormap: false },
@@ -112,6 +193,38 @@ const VolatilitySurface = ({
         z: { show: false }
       }
     }];
+
+    const sigmaSq = (currentVolVal <= 2 ? currentVolVal : currentVolVal / 100) ** 2;
+
+    if (showRefPlane) {
+      const refZ = gatheralTotalVar.tenors.map(t => gatheralTotalVar.log_moneyness.map(() => sigmaSq * t));
+      traces.push({
+        x: gatheralTotalVar.log_moneyness,
+        y: gatheralTotalVar.tenors,
+        z: refZ,
+        type: 'surface',
+        showscale: false,
+        opacity: 0.35,
+        colorscale: [[0, '#94A3B8'], [1, '#94A3B8']],
+        name: 'BSM Plane (σ²T)',
+        hovertemplate: '<b>BSM Total Var (σ²T):</b> %{z:.5f}<extra></extra>',
+        contours: { x: { show: false }, y: { show: false }, z: { show: false } }
+      });
+    }
+
+    if (showContractPoint) {
+      traces.push({
+        x: [logMoneyness],
+        y: [currentTenor],
+        z: [sigmaSq * currentTenor],
+        type: 'scatter3d',
+        mode: 'markers',
+        name: 'Current Contract',
+        marker: { size: 8, color: '#10B981', opacity: 0.95, line: { color: '#FFFFFF', width: 2 } },
+        hovertemplate: '<b>Current Contract</b><br>Moneyness (y): %{x:.4f}<br>Tenor: %{y:.2f} yr<br>Total Var (w): %{z:.5f}<extra></extra>'
+      });
+    }
+
   } else if (dimMode === 'gatheral_dual' && gatheralDual) {
     xAxisTitle = 'Log-Moneyness (y)';
     yAxisTitle = 'Time to Expiry (T)';
@@ -130,7 +243,7 @@ const VolatilitySurface = ({
       showscale: false,
       colorscale: 'Jet',
       name: 'Implied Vol',
-      opacity: 0.9,
+      opacity: 0.85,
       hovertemplate: '<b>[Implied]</b><br>Moneyness: %{x:.2f}<br>Expiry: %{y:.2f}<br>IV: %{z:.1f}%<extra></extra>',
       contours: {
         x: { show: true, color: 'rgba(0,0,0,0.5)', width: 1, usecolormap: false },
@@ -146,13 +259,43 @@ const VolatilitySurface = ({
       showscale: false,
       colorscale: 'Hot',
       name: 'Local Vol (Dupire)',
-      opacity: 0.6,
+      opacity: 0.55,
       hovertemplate: '<b>[Local (Dupire)]</b><br>Moneyness: %{x:.2f}<br>Expiry: %{y:.2f}<br>LV: %{z:.1f}%<extra></extra>',
       contours: {
         x: { show: true, color: 'rgba(255,255,255,0.4)', width: 1, usecolormap: false },
         y: { show: true, color: 'rgba(255,255,255,0.4)', width: 1, usecolormap: false }
       }
     });
+
+    if (showRefPlane) {
+      const refZ = gatheralDual.tenors.map(() => gatheralDual.log_moneyness.map(() => volPct));
+      traces.push({
+        x: gatheralDual.log_moneyness,
+        y: gatheralDual.tenors,
+        z: refZ,
+        type: 'surface',
+        showscale: false,
+        opacity: 0.3,
+        colorscale: [[0, '#94A3B8'], [1, '#94A3B8']],
+        name: 'BSM Constant Vol',
+        hovertemplate: '<b>BSM Constant Vol:</b> %{z:.2f}%<extra></extra>',
+        contours: { x: { show: false }, y: { show: false }, z: { show: false } }
+      });
+    }
+
+    if (showContractPoint) {
+      traces.push({
+        x: [logMoneyness],
+        y: [currentTenor],
+        z: [volPct],
+        type: 'scatter3d',
+        mode: 'markers',
+        name: 'Current Contract',
+        marker: { size: 8, color: '#10B981', opacity: 0.95, line: { color: '#FFFFFF', width: 2 } },
+        hovertemplate: '<b>Current Contract</b><br>Moneyness (y): %{x:.4f}<br>Tenor: %{y:.2f} yr<br>Vol: %{z:.2f}%<extra></extra>'
+      });
+    }
+
   } else if (dimMode === 'gatheral_svi' && gatheralSvi) {
     xAxisTitle = 'Log-Moneyness (y)';
     yAxisTitle = 'Time to Expiry (T)';
@@ -170,7 +313,7 @@ const VolatilitySurface = ({
       type: 'surface',
       showscale: false,
       colorscale: 'Viridis',
-      opacity: 0.8,
+      opacity: 0.75,
       name: 'SVI Fit',
       hovertemplate: '<b>SVI Fit Vol:</b> %{z:.1f}%<extra></extra>',
       contours: {
@@ -201,8 +344,8 @@ const VolatilitySurface = ({
       x: bidsX, y: bidsY, z: bidsZ,
       type: 'scatter3d',
       mode: 'markers',
-      name: 'Bids',
-      marker: { size: 2.5, color: '#3B82F6', opacity: 0.9 },
+      name: 'Market Bids',
+      marker: { size: 2.2, color: '#3B82F6', opacity: 0.8 },
       hovertemplate: '<b>Market Bid:</b> %{z:.1f}%<extra></extra>'
     });
     
@@ -210,10 +353,40 @@ const VolatilitySurface = ({
       x: asksX, y: asksY, z: asksZ,
       type: 'scatter3d',
       mode: 'markers',
-      name: 'Asks',
-      marker: { size: 2.5, color: '#EF4444', opacity: 0.9 },
+      name: 'Market Asks',
+      marker: { size: 2.2, color: '#EF4444', opacity: 0.8 },
       hovertemplate: '<b>Market Ask:</b> %{z:.1f}%<extra></extra>'
     });
+
+    if (showRefPlane) {
+      const refZ = gatheralSvi.tenors.map(() => gatheralSvi.log_moneyness.map(() => volPct));
+      traces.push({
+        x: gatheralSvi.log_moneyness,
+        y: gatheralSvi.tenors,
+        z: refZ,
+        type: 'surface',
+        showscale: false,
+        opacity: 0.25,
+        colorscale: [[0, '#94A3B8'], [1, '#94A3B8']],
+        name: 'BSM Constant Vol',
+        hovertemplate: '<b>BSM Constant Vol:</b> %{z:.2f}%<extra></extra>',
+        contours: { x: { show: false }, y: { show: false }, z: { show: false } }
+      });
+    }
+
+    if (showContractPoint) {
+      traces.push({
+        x: [logMoneyness],
+        y: [currentTenor],
+        z: [volPct],
+        type: 'scatter3d',
+        mode: 'markers',
+        name: 'Current Contract',
+        marker: { size: 8, color: '#10B981', opacity: 0.95, line: { color: '#FFFFFF', width: 2 } },
+        hovertemplate: '<b>Current Contract</b><br>Moneyness (y): %{x:.4f}<br>Tenor: %{y:.2f} yr<br>Vol: %{z:.2f}%<extra></extra>'
+      });
+    }
+
   } else if (dimMode === 'gatheral_pdf' && gatheralPdf) {
     xAxisTitle = 'Strike ($)';
     yAxisTitle = 'Time to Expiry (T)';
@@ -235,12 +408,38 @@ const VolatilitySurface = ({
       type: 'surface',
       showscale: false,
       colorscale: [[0.0, '#3B82F6'], [1.0, '#EF4444']], // Blue = Valid, Red = Vertical Arbitrage!
+      name: 'PDF Density',
       hovertemplate: '<b>Strike:</b> $%{x:.1f}<br><b>Density:</b> %{z:.5f}<extra></extra>',
       contours: {
         x: { show: true, color: 'rgba(255,255,255,0.4)', width: 1 },
         y: { show: true, color: 'rgba(255,255,255,0.4)', width: 1 }
       }
     }];
+
+    if (showContractPoint) {
+      // Find closest strike/tenor index in grid to extract the simulated density value
+      let closestKIdx = 0, closestTIdx = 0;
+      let minKDiff = Infinity, minTDiff = Infinity;
+      gatheralPdf.strikes.forEach((k, idx) => {
+        if (Math.abs(k - currentStrike) < minKDiff) { minKDiff = Math.abs(k - currentStrike); closestKIdx = idx; }
+      });
+      gatheralPdf.tenors.forEach((t, idx) => {
+        if (Math.abs(t - currentTenor) < minTDiff) { minTDiff = Math.abs(t - currentTenor); closestTIdx = idx; }
+      });
+      const currentDensity = gatheralPdf.matrix[closestTIdx][closestKIdx];
+
+      traces.push({
+        x: [currentStrike],
+        y: [currentTenor],
+        z: [currentDensity],
+        type: 'scatter3d',
+        mode: 'markers',
+        name: 'Current Contract',
+        marker: { size: 8, color: '#10B981', opacity: 0.95, line: { color: '#FFFFFF', width: 2 } },
+        hovertemplate: '<b>Current Contract</b><br>Strike: $%{x:.2f}<br>Tenor: %{y:.2f} yr<br>PDF Density: %{z:.5f}<extra></extra>'
+      });
+    }
+
   } else if (dimMode === 'gatheral_dynamics' && gatheralDynamics) {
     xAxisTitle = 'Log-Moneyness (y)';
     yAxisTitle = 'Time to Expiry (T)';
@@ -267,12 +466,72 @@ const VolatilitySurface = ({
       type: 'surface',
       showscale: false,
       colorscale: 'Jet',
+      name: dynModel === 'stoch' ? 'Stochastic Vol' : (dynModel === 'jumps' ? 'Jump Diffusion' : 'Local Vol'),
+      opacity: compareDynamics ? 0.75 : 0.95,
       hovertemplate: '<b>Moneyness:</b> %{x:.2f}<br><b>Vol:</b> %{z:.1f}%<extra></extra>',
       contours: {
         x: { show: true, color: surfaceGridColor, width: 1 },
         y: { show: true, color: surfaceGridColor, width: 1 }
       }
     }];
+
+    if (compareDynamics) {
+      let compareZ = gatheralDynamics.stoch;
+      let compareName = 'Stochastic Vol';
+      if (dynModel === 'stoch') {
+        compareZ = gatheralDynamics.local;
+        compareName = 'Local Vol';
+      } else if (dynModel === 'jumps') {
+        compareZ = gatheralDynamics.stoch;
+        compareName = 'Stochastic Vol';
+      }
+
+      traces.push({
+        x: gatheralDynamics.log_moneyness,
+        y: gatheralDynamics.tenors,
+        z: compareZ,
+        type: 'surface',
+        showscale: false,
+        colorscale: 'Viridis',
+        opacity: 0.5,
+        name: `${compareName} (Comp)`,
+        hovertemplate: `<b>[${compareName}]</b><br>Moneyness: %{x:.2f}<br>Vol: %{z:.1f}%<extra></extra>`,
+        contours: {
+          x: { show: true, color: 'rgba(255,255,255,0.4)', width: 1 },
+          y: { show: true, color: 'rgba(255,255,255,0.4)', width: 1 }
+        }
+      });
+    }
+
+    if (showRefPlane) {
+      const refZ = gatheralDynamics.tenors.map(() => gatheralDynamics.log_moneyness.map(() => volPct));
+      traces.push({
+        x: gatheralDynamics.log_moneyness,
+        y: gatheralDynamics.tenors,
+        z: refZ,
+        type: 'surface',
+        showscale: false,
+        opacity: 0.25,
+        colorscale: [[0, '#94A3B8'], [1, '#94A3B8']],
+        name: 'BSM Constant Vol',
+        hovertemplate: '<b>BSM Constant Vol:</b> %{z:.2f}%<extra></extra>',
+        contours: { x: { show: false }, y: { show: false }, z: { show: false } }
+      });
+    }
+
+    if (showContractPoint) {
+      traces.push({
+        x: [logMoneyness],
+        y: [currentTenor],
+        z: [volPct],
+        type: 'scatter3d',
+        mode: 'markers',
+        name: 'Current Contract',
+        marker: { size: 8, color: '#10B981', opacity: 0.95, line: { color: '#FFFFFF', width: 2 } },
+        hovertemplate: '<b>Current Contract</b><br>Moneyness (y): %{x:.4f}<br>Tenor: %{y:.2f} yr<br>Vol: %{z:.2f}%<extra></extra>'
+      });
+    }
+
   } else if (dimMode === 'spot_time' && spotTimeData && spotTimeSteps) {
     x = heatmapSpots;
     y = spotTimeSteps; 
@@ -287,9 +546,40 @@ const VolatilitySurface = ({
     traces = [{
       x: x, y: y, z: z,
       type: 'surface',
-      showscale: false, colorscale: 'Jet', hovertemplate: hoverTemplate,
+      showscale: false, colorscale: 'Jet', name: 'Price Surface',
+      hovertemplate: '<b>Spot:</b> $%{x:.2f}<br><b>Tenor:</b> %{y:.2f}<br><b>Price:</b> $%{z:.4f}<extra></extra>',
       contours: { x: { show: true, color: surfaceGridColor }, y: { show: true, color: surfaceGridColor } }
     }];
+
+    if (showRefPlane) {
+      const refZ = spotTimeSteps.map(() => heatmapSpots.map(() => currentPrice));
+      traces.push({
+        x: heatmapSpots,
+        y: spotTimeSteps,
+        z: refZ,
+        type: 'surface',
+        showscale: false,
+        opacity: 0.25,
+        colorscale: [[0, '#94A3B8'], [1, '#94A3B8']],
+        name: 'Current Price Plane',
+        hovertemplate: '<b>Current Price:</b> $%{z:.4f}<extra></extra>',
+        contours: { x: { show: false }, y: { show: false }, z: { show: false } }
+      });
+    }
+
+    if (showContractPoint) {
+      traces.push({
+        x: [currentSpot],
+        y: [currentTenor],
+        z: [currentPrice],
+        type: 'scatter3d',
+        mode: 'markers',
+        name: 'Current Contract',
+        marker: { size: 8, color: '#10B981', opacity: 0.95, line: { color: '#FFFFFF', width: 2 } },
+        hovertemplate: '<b>Current Contract</b><br>Spot: $%{x:.2f}<br>Tenor: %{y:.2f} yr<br>Price: $%{z:.4f}<extra></extra>'
+      });
+    }
+
   } else if (dimMode === 'vol_time' && volTimeData && volTimeSteps) {
     x = volTimeSteps; 
     y = volTimeData.map(row => row.time); 
@@ -304,9 +594,43 @@ const VolatilitySurface = ({
     traces = [{
       x: x, y: y, z: z,
       type: 'surface',
-      showscale: false, colorscale: 'Jet', hovertemplate: hoverTemplate,
+      showscale: false, colorscale: 'Jet', name: 'Price Surface',
+      hovertemplate: '<b>Vol:</b> %{x:.0%}<br><b>Tenor:</b> %{y:.2f}<br><b>Price:</b> $%{z:.4f}<extra></extra>',
       contours: { x: { show: true, color: surfaceGridColor }, y: { show: true, color: surfaceGridColor } }
     }];
+
+    const stepVols = volTimeSteps;
+    const stepTenors = volTimeData.map(row => row.time);
+
+    if (showRefPlane) {
+      const refZ = stepTenors.map(() => stepVols.map(() => currentPrice));
+      traces.push({
+        x: stepVols,
+        y: stepTenors,
+        z: refZ,
+        type: 'surface',
+        showscale: false,
+        opacity: 0.25,
+        colorscale: [[0, '#94A3B8'], [1, '#94A3B8']],
+        name: 'Current Price Plane',
+        hovertemplate: '<b>Current Price:</b> $%{z:.4f}<extra></extra>',
+        contours: { x: { show: false }, y: { show: false }, z: { show: false } }
+      });
+    }
+
+    if (showContractPoint) {
+      traces.push({
+        x: [currentVolVal],
+        y: [currentTenor],
+        z: [currentPrice],
+        type: 'scatter3d',
+        mode: 'markers',
+        name: 'Current Contract',
+        marker: { size: 8, color: '#10B981', opacity: 0.95, line: { color: '#FFFFFF', width: 2 } },
+        hovertemplate: '<b>Current Contract</b><br>Vol: %{x:.0%}<br>Tenor: %{y:.2f} yr<br>Price: $%{z:.4f}<extra></extra>'
+      });
+    }
+
   } else {
     // Default: Spot vs Volatility Option Price
     x = heatmapSpots;
@@ -322,9 +646,42 @@ const VolatilitySurface = ({
     traces = [{
       x: x, y: y, z: z,
       type: 'surface',
-      showscale: false, colorscale: 'Jet', hovertemplate: hoverTemplate,
+      showscale: false, colorscale: 'Jet', name: 'Price Surface',
+      hovertemplate: '<b>Spot:</b> $%{x:.2f}<br><b>Vol:</b> %{y:.0%}<br><b>Price:</b> $%{z:.4f}<extra></extra>',
       contours: { x: { show: true, color: surfaceGridColor }, y: { show: true, color: surfaceGridColor } }
     }];
+
+    const stepSpots = heatmapSpots;
+    const stepVols = heatmapData.map(row => row.vol / 100);
+
+    if (showRefPlane) {
+      const refZ = stepVols.map(() => stepSpots.map(() => currentPrice));
+      traces.push({
+        x: stepSpots,
+        y: stepVols,
+        z: refZ,
+        type: 'surface',
+        showscale: false,
+        opacity: 0.25,
+        colorscale: [[0, '#94A3B8'], [1, '#94A3B8']],
+        name: 'Current Price Plane',
+        hovertemplate: '<b>Current Price:</b> $%{z:.4f}<extra></extra>',
+        contours: { x: { show: false }, y: { show: false }, z: { show: false } }
+      });
+    }
+
+    if (showContractPoint) {
+      traces.push({
+        x: [currentSpot],
+        y: [currentVolVal],
+        z: [currentPrice],
+        type: 'scatter3d',
+        mode: 'markers',
+        name: 'Current Contract',
+        marker: { size: 8, color: '#10B981', opacity: 0.95, line: { color: '#FFFFFF', width: 2 } },
+        hovertemplate: '<b>Current Contract</b><br>Spot: $%{x:.2f}<br>Vol: %{y:.0%}<br>Price: $%{z:.4f}<extra></extra>'
+      });
+    }
   }
 
   return (
@@ -363,6 +720,56 @@ const VolatilitySurface = ({
                 }}
               >Jumps (SVJ)</button>
             </div>
+          )}
+
+          {/* Custom Toggle Buttons for Surface Comparison */}
+          <button
+            onClick={() => setShowRefPlane(!showRefPlane)}
+            style={{
+              padding: '6px 12px', fontSize: '0.75rem', fontWeight: 600, border: '1px solid', cursor: 'pointer',
+              borderRadius: '8px',
+              backgroundColor: showRefPlane ? '#EEF2FF' : '#FFFFFF',
+              borderColor: showRefPlane ? '#6366F1' : '#CBD5E1',
+              color: showRefPlane ? '#4F46E5' : '#64748B',
+              transition: 'all 0.2s'
+            }}
+            title={dimMode.includes('spot_time') || dimMode.includes('vol_time') || dimMode === 'spot_vol'
+              ? "Overlay a flat contract price plane"
+              : "Overlay a flat constant Black-Scholes Volatility reference plane"}
+          >
+            Ref Plane
+          </button>
+          
+          <button
+            onClick={() => setShowContractPoint(!showContractPoint)}
+            style={{
+              padding: '6px 12px', fontSize: '0.75rem', fontWeight: 600, border: '1px solid', cursor: 'pointer',
+              borderRadius: '8px',
+              backgroundColor: showContractPoint ? '#EEF2FF' : '#FFFFFF',
+              borderColor: showContractPoint ? '#6366F1' : '#CBD5E1',
+              color: showContractPoint ? '#4F46E5' : '#64748B',
+              transition: 'all 0.2s'
+            }}
+            title="Mark the current Spot/Strike/Tenor option price or volatility coordinates on the surface"
+          >
+            Current Contract
+          </button>
+
+          {dimMode === 'gatheral_dynamics' && (
+            <button
+              onClick={() => setCompareDynamics(!compareDynamics)}
+              style={{
+                padding: '6px 12px', fontSize: '0.75rem', fontWeight: 600, border: '1px solid', cursor: 'pointer',
+                borderRadius: '8px',
+                backgroundColor: compareDynamics ? '#EEF2FF' : '#FFFFFF',
+                borderColor: compareDynamics ? '#6366F1' : '#CBD5E1',
+                color: compareDynamics ? '#4F46E5' : '#64748B',
+                transition: 'all 0.2s'
+              }}
+              title="Compare the selected model smile with another dynamic model smile"
+            >
+              Compare Models
+            </button>
           )}
 
           {/* Primary View Selector Dropdown */}
