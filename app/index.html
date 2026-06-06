@@ -20,15 +20,41 @@
                         let globalQueue = Promise.resolve();
 
                         MathJax.typesetPromise = function(elements) {
+                            let elementsToTypeset = elements;
+                            if (elementsToTypeset) {
+                                if (!Array.isArray(elementsToTypeset)) {
+                                    elementsToTypeset = [elementsToTypeset];
+                                }
+                                elementsToTypeset = elementsToTypeset.filter(el => {
+                                    if (el && el.id && el.id.startsWith('view-cqf-')) {
+                                        if (el.getAttribute('data-math-typeset') === 'true') {
+                                            return false;
+                                        }
+                                    }
+                                    return true;
+                                });
+                                if (elementsToTypeset.length === 0) {
+                                    return Promise.resolve();
+                                }
+                            }
+
                             globalQueue = globalQueue.then(() => {
-                                if (typeof MathJax.typesetClear === 'function' && elements) {
+                                if (typeof MathJax.typesetClear === 'function' && elementsToTypeset) {
                                     try {
-                                        MathJax.typesetClear(elements);
+                                        MathJax.typesetClear(elementsToTypeset);
                                     } catch (e) {
                                         console.warn('MathJax typesetClear error:', e);
                                     }
                                 }
-                                return originalTypesetPromise.call(MathJax, elements);
+                                return originalTypesetPromise.call(MathJax, elementsToTypeset).then(() => {
+                                    if (elementsToTypeset) {
+                                        elementsToTypeset.forEach(el => {
+                                            if (el && el.id && el.id.startsWith('view-cqf-')) {
+                                                el.setAttribute('data-math-typeset', 'true');
+                                            }
+                                        });
+                                    }
+                                });
                             }).catch(err => {
                                 console.warn('Queued MathJax typesetPromise error:', err);
                             });
