@@ -15,6 +15,19 @@
                 typeset: false,
                 pageReady: () => {
                     console.log('MathJax fully loaded. Initializing without auto-typeset.');
+                    if (MathJax.typesetPromise && typeof MathJax.typesetPromise === 'function') {
+                        const originalTypesetPromise = MathJax.typesetPromise;
+                        MathJax.typesetPromise = function(elements) {
+                            if (typeof MathJax.typesetClear === 'function' && elements) {
+                                try {
+                                    MathJax.typesetClear(elements);
+                                } catch (e) {
+                                    console.warn('MathJax typesetClear error:', e);
+                                }
+                            }
+                            return originalTypesetPromise.call(MathJax, elements);
+                        };
+                    }
                     MathJax.startup.defaultPageReady();
                     if (window.onMathJaxReady) {
                         window.onMathJaxReady();
