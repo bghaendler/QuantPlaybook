@@ -19,7 +19,7 @@
                         const originalTypesetPromise = MathJax.typesetPromise;
                         let globalQueue = Promise.resolve();
 
-                        MathJax.typesetPromise = function(elements) {
+                        const customTypesetPromise = function(elements) {
                             let elementsToTypeset = elements;
                             if (elementsToTypeset) {
                                 if (!Array.isArray(elementsToTypeset)) {
@@ -39,6 +39,20 @@
                             }
 
                             globalQueue = globalQueue.then(() => {
+                                if (elementsToTypeset) {
+                                    elementsToTypeset = elementsToTypeset.filter(el => {
+                                        if (el && el.id && el.id.startsWith('view-cqf-')) {
+                                            if (el.getAttribute('data-math-typeset') === 'true') {
+                                                return false;
+                                            }
+                                        }
+                                        return true;
+                                    });
+                                    if (elementsToTypeset.length === 0) {
+                                        return;
+                                    }
+                                }
+
                                 if (typeof MathJax.typesetClear === 'function' && elementsToTypeset) {
                                     try {
                                         MathJax.typesetClear(elementsToTypeset);
@@ -60,11 +74,22 @@
                             });
                             return globalQueue;
                         };
+
+                        Object.defineProperty(MathJax, 'typesetPromise', {
+                            value: customTypesetPromise,
+                            writable: true,
+                            configurable: true
+                        });
                     }
+
                     if (MathJax.typeset && typeof MathJax.typeset === 'function') {
-                        MathJax.typeset = function(elements) {
-                            MathJax.typesetPromise(elements);
-                        };
+                        Object.defineProperty(MathJax, 'typeset', {
+                            value: function(elements) {
+                                MathJax.typesetPromise(elements);
+                            },
+                            writable: true,
+                            configurable: true
+                        });
                     }
                     MathJax.startup.defaultPageReady();
                     if (window.onMathJaxReady) {
