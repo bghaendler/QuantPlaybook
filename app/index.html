@@ -2423,14 +2423,20 @@
         let pendingTypesets = [];
 
         window.safeTypeset = function(elements) {
+            const validElements = (elements || []).filter(el => el && el instanceof HTMLElement && document.body.contains(el));
+            if (validElements.length === 0) return;
+
             if (window.MathJax && typeof MathJax.typesetPromise === 'function') {
                 mathJaxQueue = mathJaxQueue
                     .then(() => {
-                        return MathJax.typesetPromise(elements);
+                        const stillValid = validElements.filter(el => el && document.body.contains(el));
+                        if (stillValid.length > 0) {
+                            return MathJax.typesetPromise(stillValid);
+                        }
                     })
                     .catch(err => console.log('MathJax queued typesetting error:', err));
             } else {
-                pendingTypesets.push(elements);
+                pendingTypesets.push(validElements);
             }
         };
 
