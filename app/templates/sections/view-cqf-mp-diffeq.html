@@ -8,90 +8,115 @@
     <!-- Navigation Tabs -->
     <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
         <button id="tabDiffEqTheory" onclick="switchDiffEqTab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core ODE Theory</button>
-        <button id="tabDiffEqLectures" onclick="switchDiffEqTab('lectures')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Part Session Index</button>
+        <button id="tabDiffEqExercises" onclick="switchDiffEqTab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Solutions Sheet</button>
         <button id="tabDiffEqSandbox" onclick="switchDiffEqTab('sandbox')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Phase Portrait Sandbox</button>
     </div>
 
-    <!-- Tab A: Video Lecture Index -->
-    <div id="secDiffEqLectures" style="display: none;">
-        <div style="max-height: 500px; overflow-y: auto;">
-            <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 2rem;">
-                <!-- Video 1 -->
-                <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
-                    <div>
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-                            <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Differential Equations - Introduction</h4>
-                            <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">25:40</span>
-                        </div>
-                        <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Types (ordinary, partial, stochastic), terminology (order, degree, linear/nonlinear), general vs particular solutions, initial/boundary value problems.</p>
-                    </div>
+    <!-- Tab A: Worked Solutions Sheet -->
+    <div id="secDiffEqExercises" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Problem 1: First-Order Linear ODE via Integrating Factor -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem 1: Solving First-Order Linear ODEs via Integrating Factor</h3>
+                <p>Solve the following first-order linear ordinary differential equation subject to the initial condition $y(1) = 2$:</p>
+                <p style="text-align: center; font-size: 1.1rem; margin: 0.75rem 0;">
+                    $$x \frac{dy}{dx} + 2y = x^2 \quad (x > 0)$$
+                </p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Convert to Standard Form:</strong>
+                            Divide the entire equation by $x$ to get the form $y' + P(x)y = Q(x)$:
+                            $$\frac{dy}{dx} + \frac{2}{x}y = x$$
+                            Here, $P(x) = \frac{2}{x}$ and $Q(x) = x$.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Find the Integrating Factor $I(x)$:</strong>
+                            $$I(x) = e^{\int P(x)dx} = e^{\int \frac{2}{x}dx} = e^{2\ln|x|} = e^{\ln(x^2)} = x^2 \quad (\text{since } x > 0)$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Multiply the Standard Equation by $I(x)$:</strong>
+                            $$x^2 \left(\frac{dy}{dx} + \frac{2}{x}y\right) = x^2 (x) \implies x^2 \frac{dy}{dx} + 2xy = x^3$$
+                            Notice that the left-hand side is exactly the derivative of the product $y \cdot I(x)$ via the product rule:
+                            $$\frac{d}{dx}\left[x^2 y\right] = x^3$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Integrate Both Sides:</strong>
+                            $$\int \frac{d}{dx}\left[x^2 y\right] dx = \int x^3 dx \implies x^2 y = \frac{x^4}{4} + C$$
+                            $$y(x) = \frac{x^2}{4} + \frac{C}{x^2}$$
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Apply the Initial Condition to Find $C$:</strong>
+                            Using $y(1) = 2$:
+                            $$2 = \frac{1^2}{4} + \frac{C}{1^2} \implies 2 = \frac{1}{4} + C \implies C = \frac{7}{4}$$
+                            Therefore, the particular solution is:
+                            $$y(x) = \frac{x^2}{4} + \frac{7}{4x^2}$$
+                        </li>
+                    </ol>
                 </div>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid var(--accent); padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. What is an Integrating Factor?</strong> Think of it as a mathematical "trick" that transforms a difficult equation where the rate of change ($y'$) and the current value ($y$) are mixed together into a clean, simple derivative of a product. By finding the magic multiplier ($x^2$), we undo the product rule of calculus.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. Why check the bounds?</strong> The math specifies $x > 0$. This ensures we don't divide by zero when simplifying, and it simplifies the absolute value out of the logarithm $\ln|x|$.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. General vs. Particular Solutions:</strong> The general solution includes $+ C$ because there are infinitely many curves that satisfy the differential equation. The initial condition $y(1)=2$ pins down the exact curve we care about, yielding the unique value of $C$.</p>
+                        <p style="margin: 0;"><strong>4. Financial application:</strong> This structure is highly reminiscent of term structure modeling and coupon-bearing bond dynamics, where cash flows and decay functions are combined over time.</p>
+                    </div>
+                </details>
+            </div>
 
-                <!-- Video 2 -->
-                <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
-                    <div>
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-                            <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Differential Equations - First Order ODEs</h4>
-                            <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">~20:00</span>
-                        </div>
-                        <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Missing variables, variable separable equations, linear equations solved using integrating factors.</p>
-                    </div>
+            <!-- Problem 2: Second-Order Homogeneous ODE -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem 2: Second-Order Homogeneous ODEs (Underdamped Case)</h3>
+                <p>Solve the following second-order initial value problem:</p>
+                <p style="text-align: center; font-size: 1.1rem; margin: 0.75rem 0;">
+                    $$y'' + 2y' + 5y = 0, \quad y(0) = 1, \quad y'(0) = 0$$
+                </p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Set up the Characteristic Equation:</strong>
+                            Assume a solution of the form $y = e^{rt}$. Substituting this into the ODE yields:
+                            $$r^2 + 2r + 5 = 0$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Solve for the Roots $r$:</strong>
+                            Using the quadratic formula:
+                            $$r = \frac{-2 \pm \sqrt{2^2 - 4(1)(5)}}{2(1)} = \frac{-2 \pm \sqrt{-16}}{2} = -1 \pm 2i$$
+                            Here we have complex conjugate roots where the real part $\alpha = -1$ and the imaginary part $\beta = 2$.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Write the General Solution:</strong>
+                            For complex roots $\alpha \pm i\beta$, the general solution is:
+                            $$y(t) = e^{-t} (A \cos(2t) + B \sin(2t))$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Apply the Initial Conditions to Find $A$ and $B$:</strong>
+                            <br>• First, apply $y(0) = 1$:
+                            $$1 = e^0 (A \cos(0) + B \sin(0)) \implies A = 1$$
+                            <br>• Next, find the derivative $y'(t)$ to apply $y'(0) = 0$:
+                            $$y'(t) = -e^{-t} (A \cos(2t) + B \sin(2t)) + e^{-t} (-2A \sin(2t) + 2B \cos(2t))$$
+                            $$y'(0) = -1(A) + 1(2B) = -A + 2B$$
+                            $$0 = -1 + 2B \implies 2B = 1 \implies B = \frac{1}{2}$$
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Write the Particular Solution:</strong>
+                            $$y(t) = e^{-t} \left(\cos(2t) + \frac{1}{2} \sin(2t)\right)$$
+                        </li>
+                    </ol>
                 </div>
-
-                <!-- Video 3 -->
-                <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
-                    <div>
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-                            <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Differential Equations - Second Order ODEs Part 1</h4>
-                            <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">21:51</span>
-                        </div>
-                        <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Special cases, substitution methods, operator notation, complementary functions and particular integrals.</p>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid var(--accent); padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. What does a complex root mean physically?</strong> Complex roots mean the system oscillates. The imaginary part ($\beta = 2$) represents the frequency of the oscillation. The negative real part ($\alpha = -1$) acts as a damper or decay rate, causing the oscillations to gradually die out over time (underdamping).</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. The role of initial velocity:</strong> $y'(0) = 0$ means the system starts from rest. Because we start with a displacement of $y(0)=1$, the system immediately pulls back towards equilibrium, starting its decay-oscillation path.</p>
+                        <p style="margin: 0;"><strong>3. Financial connection:</strong> This math is identical to the damped oscillations found in economic models, interest rate cycles, or mean-reverting volatility corridors when perturbed by short-term shocks.</p>
                     </div>
-                </div>
-
-                <!-- Video 4 -->
-                <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
-                    <div>
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-                            <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Differential Equations - Second Order ODEs Part 2</h4>
-                            <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">23:46</span>
-                        </div>
-                        <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Auxiliary equation method: distinct real roots, repeated roots, complex conjugate roots.</p>
-                    </div>
-                </div>
-
-                <!-- Video 5 -->
-                <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
-                    <div>
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-                            <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Differential Equations - General Nth Order Equation</h4>
-                            <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">07:58</span>
-                        </div>
-                        <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Nth degree polynomial auxiliary equation, distinct/repeated/complex roots generating solution forms.</p>
-                    </div>
-                </div>
-
-                <!-- Video 6 -->
-                <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
-                    <div>
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-                            <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Differential Equations - Linear ODEs with Variable Coefficients, Euler Equation</h4>
-                            <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">18:05</span>
-                        </div>
-                        <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Cauchy-Euler equations, auxiliary equations, three solution cases, transformation to constant coefficient.</p>
-                    </div>
-                </div>
-
-                <!-- Video 7 -->
-                <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
-                    <div>
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-                            <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Differential Equations - Non Homogeneous Case: Method of Undetermined Coefficients</h4>
-                            <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">20:44</span>
-                        </div>
-                        <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Polynomial, exponential, trigonometric RHS, failure cases requiring modified trial solutions.</p>
-                    </div>
-                </div>
+                </details>
             </div>
         </div>
     </div>
@@ -287,34 +312,34 @@
             let diffEqChartInstance = null;
 
             window.switchDiffEqTab = function(tab) {
-                const tabLect = document.getElementById('tabDiffEqLectures');
+                const tabExer = document.getElementById('tabDiffEqExercises');
                 const tabTheo = document.getElementById('tabDiffEqTheory');
                 const tabSand = document.getElementById('tabDiffEqSandbox');
-                const secLect = document.getElementById('secDiffEqLectures');
+                const secExer = document.getElementById('secDiffEqExercises');
                 const secTheo = document.getElementById('secDiffEqTheory');
                 const secSand = document.getElementById('secDiffEqSandbox');
 
-                if (tab === 'lectures') {
-                    tabLect.style.color = 'var(--accent)';
-                    tabLect.style.borderBottomColor = 'var(--accent)';
+                if (tab === 'exercises') {
+                    tabExer.style.color = 'var(--accent)';
+                    tabExer.style.borderBottomColor = 'var(--accent)';
                     tabTheo.style.color = tabSand.style.color = '#6b7280';
                     tabTheo.style.borderBottomColor = tabSand.style.borderBottomColor = 'transparent';
-                    secLect.style.display = 'block';
+                    secExer.style.display = 'block';
                     secTheo.style.display = secSand.style.display = 'none';
                 } else if (tab === 'theory') {
                     tabTheo.style.color = 'var(--accent)';
                     tabTheo.style.borderBottomColor = 'var(--accent)';
-                    tabLect.style.color = tabSand.style.color = '#6b7280';
-                    tabLect.style.borderBottomColor = tabSand.style.borderBottomColor = 'transparent';
+                    tabExer.style.color = tabSand.style.color = '#6b7280';
+                    tabExer.style.borderBottomColor = tabSand.style.borderBottomColor = 'transparent';
                     secTheo.style.display = 'block';
-                    secLect.style.display = secSand.style.display = 'none';
+                    secExer.style.display = secSand.style.display = 'none';
                 } else {
                     tabSand.style.color = 'var(--accent)';
                     tabSand.style.borderBottomColor = 'var(--accent)';
-                    tabLect.style.color = tabTheo.style.color = '#6b7280';
-                    tabLect.style.borderBottomColor = tabTheo.style.borderBottomColor = 'transparent';
+                    tabExer.style.color = tabTheo.style.color = '#6b7280';
+                    tabExer.style.borderBottomColor = tabTheo.style.borderBottomColor = 'transparent';
                     secSand.style.display = 'block';
-                    secLect.style.display = secTheo.style.display = 'none';
+                    secExer.style.display = secTheo.style.display = 'none';
                     setTimeout(() => { updateDiffEqSandbox(); }, 50);
                 }
             };

@@ -8,83 +8,129 @@
     <!-- Navigation Tabs -->
     <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
         <button id="tabLinAlgTheory" onclick="switchLinAlgTab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Linear Algebra Theory</button>
-        <button id="tabLinAlgLectures" onclick="switchLinAlgTab('lectures')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Part Session Index</button>
-        <button id="tabLinAlgSandbox" onclick="switchLinAlgTab('sandbox')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Eigenvalue Explorer</button>
+        <button id="tabLinAlgSandbox" onclick="switchLinAlgTab('sandbox')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Eigenvalue Explorer Sandbox</button>
+        <button id="tabLinAlgExercises" onclick="switchLinAlgTab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Worked Solutions Sheet</button>
     </div>
 
-    <!-- Tab A: Video Lectures Directory -->
-    <div id="secLinAlgLectures" style="display: none;">
-        <div class="container" style="grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 2rem; max-height: 500px; overflow-y: auto;">
-            <!-- Video 1 -->
-            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-                        <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Introduction To Linear Algebra - Properties of Vectors</h4>
-                        <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">12:20</span>
-                    </div>
-                    <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Vector definitions, components, addition, scalar multiplication, dot products, norms, orthogonality.</p>
+    <!-- Tab A: Worked Solutions Sheet -->
+    <div id="secLinAlgExercises" style="display: none;">
+        <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <!-- Problem 1: Solving Systems of Linear Equations -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem 1: Solving Systems of Linear Equations via Gaussian Elimination</h3>
+                <p>Solve the following system of linear equations using Gaussian elimination, representing the row operations step-by-step:</p>
+                <p style="text-align: center; font-size: 1.1rem; margin: 0.75rem 0;">
+                    $$\begin{aligned}
+                    x + y + z &= 6 \\
+                    2x - y + z &= 3 \\
+                    x + 2y - z &= 2
+                    \end{aligned}$$
+                </p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Represent as an Augmented Matrix:</strong>
+                            $$\left[ \begin{array}{ccc|c} 1 & 1 & 1 & 6 \\ 2 & -1 & 1 & 3 \\ 1 & 2 & -1 & 2 \end{array} \right]$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Eliminate $x$ from the Second and Third Rows:</strong>
+                            Perform Row 2: $R_2 \to R_2 - 2R_1$:
+                            $$R_2 = [2 - 2(1), -1 - 2(1), 1 - 2(1) \mid 3 - 2(6)] = [0, -3, -1 \mid -9]$$
+                            Perform Row 3: $R_3 \to R_3 - R_1$:
+                            $$R_3 = [1 - 1, 2 - 1, -1 - 1 \mid 2 - 6] = [0, 1, -2 \mid -4]$$
+                            Our matrix is now:
+                            $$\left[ \begin{array}{ccc|c} 1 & 1 & 1 & 6 \\ 0 & -3 & -1 & -9 \\ 0 & 1 & -2 & -4 \end{array} \right]$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Swap Rows to Obtain a Pivot of 1:</strong>
+                            Swap Row 2 and Row 3 ($R_2 \leftrightarrow R_3$) for easier calculation:
+                            $$\left[ \begin{array}{ccc|c} 1 & 1 & 1 & 6 \\ 0 & 1 & -2 & -4 \\ 0 & -3 & -1 & -9 \end{array} \right]$$
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Eliminate $y$ from the Third Row:</strong>
+                            Perform Row 3: $R_3 \to R_3 + 3R_2$:
+                            $$R_3 = [0 + 3(0), -3 + 3(1), -1 + 3(-2) \mid -9 + 3(-4)] = [0, 0, -7 \mid -21]$$
+                            Our upper-triangular matrix is:
+                            $$\left[ \begin{array}{ccc|c} 1 & 1 & 1 & 6 \\ 0 & 1 & -2 & -4 \\ 0 & 0 & -7 & -21 \end{array} \right]$$
+                        </li>
+                        <li style="margin-bottom: 0;">
+                            <strong>Solve via Back-Substitution:</strong>
+                            <br>• From Row 3: $-7z = -21 \implies z = 3$.
+                            <br>• From Row 2: $y - 2z = -4 \implies y - 2(3) = -4 \implies y = 2$.
+                            <br>• From Row 1: $x + y + z = 6 \implies x + 2 + 3 = 6 \implies x = 1$.
+                            <br>The unique solution is $\mathbf{x} = \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}$.
+                        </li>
+                    </ol>
                 </div>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: var(--accent); font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid var(--accent); padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. Why use matrices for systems of equations?</strong> In quantitative finance, we often deal with hundreds of variables simultaneously (e.g. tracking weights of 100 stocks in a portfolio). Writing out algebraic equations like $x + y + z = 6$ gets messy. An augmented matrix bundles the coefficient grid and the answer vector into a single grid that computers can solve rapidly.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. What is Gaussian Elimination?</strong> Think of it as a systematic way of doing "elimination by addition/subtraction" that you learned in middle school, but standardized. We want to convert the matrix into an upper-triangular form—meaning we clear out the numbers in the bottom-left corner to create a staircase of zeros. This isolates the last variable ($z$), letting us solve it first.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. What is Back-Substitution?</strong> Once we clear the bottom row to $[0, 0, -7 \mid -21]$, we know exactly what $z$ is ($z = 3$). We then work our way *backwards* up the staircase: plug $z=3$ into the second row to find $y$, and finally plug both $y=2$ and $z=3$ into the top row to find $x$. It's a domino effect!</p>
+                        <p style="margin: 0;"><strong>4. How is this used in finance?</strong> This is the exact algorithm running under the hood when bootstrapping a yield curve. We have a set of cash bond prices and coupon rates (the matrix $A$) and we solve for the discount factors (the vector $\mathbf{x}$) that match the market prices (the vector $\mathbf{b}$).</p>
+                    </div>
+                </details>
             </div>
 
-            <!-- Video 2 -->
-            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-                        <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Introduction To Linear Algebra - Matrices</h4>
-                        <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">14:24</span>
+            <!-- Problem 2: Eigendecomposition -->
+            <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+                <h3 style="margin-top: 0; color: #8b5cf6; font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem 2: Eigenvalue Decomposition &amp; Diagonalization</h3>
+                <p>Find the eigenvalues and eigenvectors of the symmetric matrix $A = \begin{bmatrix} 3 & 2 \\ 2 & 0 \end{bmatrix}$ and verify its orthogonal diagonalization.</p>
+                <div style="background: var(--metric-bg); padding: 1rem 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Step-by-Step Mathematical Derivation:</strong>
+                    <ol style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Set up the Characteristic Equation:</strong>
+                            To find eigenvalues $\lambda$, solve $\det(A - \lambda I) = 0$:
+                            $$\det \begin{bmatrix} 3-\lambda & 2 \\ 2 & -\lambda \end{bmatrix} = 0 \implies (3-\lambda)(-\lambda) - (2)(2) = 0$$
+                            $$\lambda^2 - 3\lambda - 4 = 0 \implies (\lambda - 4)(\lambda + 1) = 0$$
+                            Thus, the eigenvalues are $\lambda_1 = 4$ and $\lambda_2 = -1$.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Compute the Eigenvector for $\lambda_1 = 4$:</strong>
+                            Solve $(A - 4I)\mathbf{v}_1 = \mathbf{0}$:
+                            $$\begin{bmatrix} 3-4 & 2 \\ 2 & 0-4 \end{bmatrix} \mathbf{v}_1 = \mathbf{0} \implies \begin{bmatrix} -1 & 2 \\ 2 & -4 \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}$$
+                            Both rows simplify to $-x + 2y = 0 \implies x = 2y$.
+                            Choosing $y = 1$ gives eigenvector $\mathbf{v}_1 = \begin{bmatrix} 2 \\ 1 \end{bmatrix}$.
+                            Normalized: $\mathbf{q}_1 = \frac{1}{\sqrt{5}} \begin{bmatrix} 2 \\ 1 \end{bmatrix}$.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Compute the Eigenvector for $\lambda_2 = -1$:</strong>
+                            Solve $(A - (-1)I)\mathbf{v}_2 = \mathbf{0} \implies (A + I)\mathbf{v}_2 = \mathbf{0}$:
+                            $$\begin{bmatrix} 3+1 & 2 \\ 2 & 0+1 \end{bmatrix} \mathbf{v}_2 = \mathbf{0} \implies \begin{bmatrix} 4 & 2 \\ 2 & 1 \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \end{bmatrix}$$
+                            Both rows simplify to $2x + y = 0 \implies y = -2x$.
+                            Choosing $x = 1$ gives eigenvector $\mathbf{v}_2 = \begin{bmatrix} 1 \\ -2 \end{bmatrix}$.
+                            Normalized: $\mathbf{q}_2 = \frac{1}{\sqrt{5}} \begin{bmatrix} 1 \\ -2 \end{bmatrix}$.
+                        </li>
+                        <li style="margin-bottom: 0.5rem;">
+                            <strong>Verify Orthogonality:</strong>
+                            Because $A$ is symmetric, eigenvectors belonging to distinct eigenvalues must be orthogonal:
+                            $$\mathbf{q}_1 \cdot \mathbf{q}_2 = \left(\frac{2}{\sqrt{5}}\right)\left(\frac{1}{\sqrt{5}}\right) + \left(\frac{1}{\sqrt{5}}\right)\left(-\frac{2}{\sqrt{5}}\right) = \frac{2}{5} - \frac{2}{5} = 0$$
+                            This confirms $\mathbf{q}_1 \perp \mathbf{q}_2$.
+                        </li>
+                        <li style="margin: 0;">
+                            <strong>Construct the Diagonalization:</strong>
+                            Let $Q = [\mathbf{q}_1 \mid \mathbf{q}_2] = \frac{1}{\sqrt{5}}\begin{bmatrix} 2 & 1 \\ 1 & -2 \end{bmatrix}$ and $D = \begin{bmatrix} 4 & 0 \\ 0 & -1 \end{bmatrix}$. Since $Q$ is orthogonal ($Q^T = Q^{-1}$), we have:
+                            $$A = Q D Q^T = \frac{1}{5} \begin{bmatrix} 2 & 1 \\ 1 & -2 \end{bmatrix} \begin{bmatrix} 4 & 0 \\ 0 & -1 \end{bmatrix} \begin{bmatrix} 2 & 1 \\ 1 & -2 \end{bmatrix} = \begin{bmatrix} 3 & 2 \\ 2 & 0 \end{bmatrix}$$
+                            Diagonalization is verified.
+                        </li>
+                    </ol>
+                </div>
+                <!-- Layman Breakdown -->
+                <details style="margin-top: 1rem; font-family: var(--font-family-sans);">
+                    <summary style="cursor: pointer; font-weight: 700; color: #8b5cf6; font-size: 0.88rem; outline: none; user-select: none;">Why do we do this? (Plain English Layman's Walkthrough)</summary>
+                    <div style="background: rgba(139, 92, 246, 0.04); border-left: 3px solid #8b5cf6; padding: 1rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-color);">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>1. What is an eigenvector?</strong> Usually, when you multiply a vector by a matrix, the vector gets rotated and stretched into a new direction. However, for every matrix, there are a few special directions where the vector *does not rotate at all*. It just gets stretched or shrunk along its original line. These special directions are <strong>eigenvectors</strong>, and the scaling factors are <strong>eigenvalues</strong>.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>2. What is Diagonalization?</strong> Diagonalization is like choosing a new coordinate system aligned perfectly with these eigenvectors. In this new coordinate system, the complicated matrix behaves like a simple diagonal matrix, where all off-diagonal entries are zero. It is the mathematical equivalent of uncoupling a complex system of interconnected gears so we can analyze each gear individually.</p>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>3. Why is real symmetry special?</strong> When a matrix is symmetric (like a reflection across the diagonal), its eigenvectors are guaranteed to be at exact right angles (orthogonal) to each other. This is called the <strong>Spectral Theorem</strong>. In 2D, this means the transformation stretches a circle into an ellipse along two perpendicular axes.</p>
+                        <p style="margin: 0;"><strong>4. How is this used in finance?</strong> This is the foundation of portfolio risk management. If we have a covariance matrix of stock returns, it is symmetric. Its eigenvalues represent the variance of uncorrelated risk factors (Principal Components). The eigenvector with the largest eigenvalue represents the "Market Factor" or the direction of maximum risk, while the smaller ones represent industry or stock-specific risks. This is how Principal Component Analysis (PCA) decomposes risk in bond yield curves!</p>
                     </div>
-                    <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Definitions, operations (addition, multiplication, transposition), symmetric/skew-symmetric, determinants, identity matrices.</p>
-                </div>
-            </div>
-
-            <!-- Video 3 -->
-            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-                        <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Introduction To Linear Algebra - Using Matrix Notation for Solving Linear Systems</h4>
-                        <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">14:10</span>
-                    </div>
-                    <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Gaussian elimination, augmented matrices, row operations, upper triangular form, back-substitution.</p>
-                </div>
-            </div>
-
-            <!-- Video 4 -->
-            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-                        <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Introduction To Linear Algebra - Matrix Inverse</h4>
-                        <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">07:00</span>
-                    </div>
-                    <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">$A \cdot A^{-1} = I$, 2×2 formula using determinant/adjoint, cofactors and minors for larger matrices.</p>
-                </div>
-            </div>
-
-            <!-- Video 5 -->
-            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-                        <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Introduction To Linear Algebra - Orthogonal Matrices</h4>
-                        <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">01:23</span>
-                    </div>
-                    <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Inverse equals transpose, rows and columns mutually orthogonal, dot products equal zero.</p>
-                </div>
-            </div>
-
-            <!-- Video 6 -->
-            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-                        <h4 style="margin: 0; font-family: var(--font-family-sans); font-weight: 700; font-size: 1rem; color: var(--text-color);">Introduction To Linear Algebra - Eigenvalues And Eigenvectors</h4>
-                        <span style="font-size: 0.75rem; background: var(--accent-glow); color: var(--accent); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-weight: 700;">20:12</span>
-                    </div>
-                    <p style="font-size: 0.85rem; color: #64748b; line-height: 1.5; margin: 0;">Characteristic polynomials, real symmetric matrices, distinct eigenvalues, orthogonal eigenvectors.</p>
-                </div>
-                <div style="margin-top: 1rem; font-size: 0.8rem; font-weight: 600; color: var(--accent); display: flex; align-items: center; gap: 0.25rem; cursor: pointer;" onclick="switchLinAlgTab('sandbox')">
-                    Interactive Sandbox Available &rarr;
-                </div>
+                </details>
             </div>
         </div>
-    </div>
 
     <!-- Tab B: Core Linear Algebra Theory -->
     <div id="secLinAlgTheory" style="display: block;">
@@ -256,34 +302,34 @@
             let linAlgChartInstance = null;
 
             window.switchLinAlgTab = function(tab) {
-                const tabLect = document.getElementById('tabLinAlgLectures');
+                const tabExer = document.getElementById('tabLinAlgExercises');
                 const tabTheo = document.getElementById('tabLinAlgTheory');
                 const tabSand = document.getElementById('tabLinAlgSandbox');
-                const secLect = document.getElementById('secLinAlgLectures');
+                const secExer = document.getElementById('secLinAlgExercises');
                 const secTheo = document.getElementById('secLinAlgTheory');
                 const secSand = document.getElementById('secLinAlgSandbox');
 
-                if (tab === 'lectures') {
-                    tabLect.style.color = 'var(--accent)';
-                    tabLect.style.borderBottomColor = 'var(--accent)';
+                if (tab === 'exercises') {
+                    tabExer.style.color = 'var(--accent)';
+                    tabExer.style.borderBottomColor = 'var(--accent)';
                     tabTheo.style.color = tabSand.style.color = '#6b7280';
                     tabTheo.style.borderBottomColor = tabSand.style.borderBottomColor = 'transparent';
-                    secLect.style.display = 'block';
+                    secExer.style.display = 'block';
                     secTheo.style.display = secSand.style.display = 'none';
                 } else if (tab === 'theory') {
                     tabTheo.style.color = 'var(--accent)';
                     tabTheo.style.borderBottomColor = 'var(--accent)';
-                    tabLect.style.color = tabSand.style.color = '#6b7280';
-                    tabLect.style.borderBottomColor = tabSand.style.borderBottomColor = 'transparent';
+                    tabExer.style.color = tabSand.style.color = '#6b7280';
+                    tabExer.style.borderBottomColor = tabSand.style.borderBottomColor = 'transparent';
                     secTheo.style.display = 'block';
-                    secLect.style.display = secSand.style.display = 'none';
+                    secExer.style.display = secSand.style.display = 'none';
                 } else {
                     tabSand.style.color = 'var(--accent)';
                     tabSand.style.borderBottomColor = 'var(--accent)';
-                    tabLect.style.color = tabTheo.style.color = '#6b7280';
-                    tabLect.style.borderBottomColor = tabTheo.style.borderBottomColor = 'transparent';
+                    tabExer.style.color = tabTheo.style.color = '#6b7280';
+                    tabExer.style.borderBottomColor = tabTheo.style.borderBottomColor = 'transparent';
                     secSand.style.display = 'block';
-                    secLect.style.display = secTheo.style.display = 'none';
+                    secExer.style.display = secTheo.style.display = 'none';
                     setTimeout(() => { runLinAlgSandbox(); }, 50);
                 }
             };
