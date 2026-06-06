@@ -1,58 +1,68 @@
 import asyncio
 from playwright.async_api import async_playwright
 
-async def main():
+async def run():
     async with async_playwright() as p:
+        # Launch browser in headless mode
         browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
-        
-        page.on("console", lambda msg: print(f"CONSOLE: {msg.text}"))
-        page.on("pageerror", lambda err: print(f"EXCEPTION: {err}"))
-        
-        print("Navigating...")
-        await page.goto("http://127.0.0.1:8000/#interest-rates")
-        await page.wait_for_timeout(2000)
-        
-        # Verify sizes of elements
-        eval_result = await page.evaluate("""() => {
-            const results = {};
-            const card1 = document.querySelector("div.card:has(#interestRatesChart)");
-            const card2 = document.querySelector("div.card:has(#moneyMarketChart)");
-            const canvas1 = document.getElementById("interestRatesChart");
-            const canvas2 = document.getElementById("discountCurveChart");
-            const canvas3 = document.getElementById("moneyMarketChart");
-            
-            results.card1_width = card1 ? card1.clientWidth : 0;
-            results.card2_width = card2 ? card2.clientWidth : 0;
-            results.canvas1_width = canvas1 ? canvas1.clientWidth : 0;
-            results.canvas2_width = canvas2 ? canvas2.clientWidth : 0;
-            results.canvas3_width = canvas3 ? canvas3.clientWidth : 0;
-            
-            return results;
-        }""")
-        
-        print("\n--- FIXED ELEMENT WIDTHS ---")
-        for k, v in eval_result.items():
-            print(f"{k}: {v}px")
-        print("----------------------------\n")
-        
-        # Capture updated card screenshots for visual validation
-        print("Taking screenshots...")
+
+        console_errors = []
+        console_messages = []
+
+        # Listen for console messages
+        def on_console(msg):
+            text = f"[{msg.type}] {msg.text}"
+            console_messages.append(text)
+            if msg.type == "error":
+                console_errors.append(msg.text)
+                print("BROWSER ERROR:", msg.text)
+            else:
+                print("BROWSER LOG:", msg.text)
+
+        page.on("console", on_console)
+
+        # 1. Load root page
+        print("--- Loading http://127.0.0.1:8000/ ---")
+        await page.goto("http://127.0.0.1:8000/", wait_until="load")
+        await asyncio.sleep(2)  # Wait for initial typesetting to settle
+
+        # 2. Go to #cqf-dashboard
+        print("--- Navigating to #cqf-dashboard ---")
+        await page.evaluate("showSection('cqf-dashboard')")
+        await asyncio.sleep(2)
+
+        # 3. Go to #cqf-mp-linalg
+        print("--- Navigating to #cqf-mp-linalg ---")
+        await page.evaluate("showSection('cqf-mp-linalg')")
+        await asyncio.sleep(2)
+
+        # 4. Click the Worked Solutions tab directly by ID
+        print("--- Clicking Worked Solutions tab ---")
         try:
-            card1 = page.locator("div.card:has(#interestRatesChart)")
-            await card1.screenshot(path="/Users/borjagarcia/.gemini/antigravity/brain/d9dbeba6-8a73-4599-b8c9-d0ebb942bc4b/fixed_term_structure_charts.png")
-            print("Saved fixed term structure charts screenshot")
+            await page.click("#tabLinAlgExercises")
+            print("Successfully clicked Worked Solutions Sheet tab!")
+            await asyncio.sleep(2)
         except Exception as e:
-            print(f"Error capturing card1: {e}")
-            
-        try:
-            card2 = page.locator("div.card:has(#moneyMarketChart)")
-            await card2.screenshot(path="/Users/borjagarcia/.gemini/antigravity/brain/d9dbeba6-8a73-4599-b8c9-d0ebb942bc4b/fixed_money_market_charts.png")
-            print("Saved fixed money market charts screenshot")
-        except Exception as e:
-            print(f"Error capturing card2: {e}")
-            
+            print("Failed to click tab:", e)
+
+        # 5. Go to #cqf-mp-calculus
+        print("--- Navigating to #cqf-mp-calculus ---")
+        await page.evaluate("showSection('cqf-mp-calculus')")
+        await asyncio.sleep(2)
+
+        # 6. Go to #interest-rates
+        print("--- Navigating to #interest-rates ---")
+        await page.evaluate("showSection('interest-rates')")
+        await asyncio.sleep(2)
+
         await browser.close()
 
-if __name__ == "__main__":
-    asyncio.run(main())
+        print("\n=== SUMMARY OF CONSOLE ERRORS ===")
+        if not console_errors:
+            print("No console errors detected! Pure success.")
+        else:
+            for err in console_errors:
+                print("-", err)
+
+asyncio.run(run())
