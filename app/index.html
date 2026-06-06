@@ -17,15 +17,27 @@
                     console.log('MathJax fully loaded. Initializing without auto-typeset.');
                     if (MathJax.typesetPromise && typeof MathJax.typesetPromise === 'function') {
                         const originalTypesetPromise = MathJax.typesetPromise;
+                        let globalQueue = Promise.resolve();
+
                         MathJax.typesetPromise = function(elements) {
-                            if (typeof MathJax.typesetClear === 'function' && elements) {
-                                try {
-                                    MathJax.typesetClear(elements);
-                                } catch (e) {
-                                    console.warn('MathJax typesetClear error:', e);
+                            globalQueue = globalQueue.then(() => {
+                                if (typeof MathJax.typesetClear === 'function' && elements) {
+                                    try {
+                                        MathJax.typesetClear(elements);
+                                    } catch (e) {
+                                        console.warn('MathJax typesetClear error:', e);
+                                    }
                                 }
-                            }
-                            return originalTypesetPromise.call(MathJax, elements);
+                                return originalTypesetPromise.call(MathJax, elements);
+                            }).catch(err => {
+                                console.warn('Queued MathJax typesetPromise error:', err);
+                            });
+                            return globalQueue;
+                        };
+                    }
+                    if (MathJax.typeset && typeof MathJax.typeset === 'function') {
+                        MathJax.typeset = function(elements) {
+                            MathJax.typesetPromise(elements);
                         };
                     }
                     MathJax.startup.defaultPageReady();
