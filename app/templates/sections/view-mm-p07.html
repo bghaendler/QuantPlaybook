@@ -1,0 +1,51 @@
+<div id="view-mm-p07" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Mathematical Methods in Financial Markets — Part 07</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Solving First-Order ODEs with Boundary Values</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Separable and linear first-order equations, the integrating factor, and how boundary/terminal conditions select the financially meaningful solution.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Separable Equations</h3>
+        <p>$\frac{dy}{dt} = g(t)h(y)$: separate and integrate, $\int \frac{dy}{h(y)} = \int g(t)\,dt + C$. The compounding account:</p>
+        $$\frac{dB}{dt} = r(t)B \;\Rightarrow\; B_t = B_0 \exp\!\left(\int_0^t r(s)\,ds\right),$$
+        <p>i.e. the discount factor $D(0,T) = e^{-\int_0^T r(s)ds}$ — the time-value of money is one separable ODE. Logistic-style saturating growth $\dot{y} = ky(M - y)$ handles adoption/AUM models; even GBM is "separable after Itô": $d\ln S = (\mu - \tfrac{1}{2}\sigma^2)dt + \sigma dW$.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Linear First Order: The Integrating Factor</h3>
+        <p>For $\frac{dy}{dt} + p(t)y = q(t)$, multiply by $I(t) = e^{\int p\,dt}$ so the left side becomes $(Iy)'$:</p>
+        $$y(t) = \frac{1}{I(t)}\left[\int I(s)q(s)\,ds + C\right].$$
+        <p>Marquee financial application — the <strong>Ornstein-Uhlenbeck/Vasicek solution</strong>: $dr = \kappa(\theta - r)dt + \sigma dW$ treated pathwise with integrating factor $e^{\kappa t}$:</p>
+        $$r_t = \theta + (r_0 - \theta)e^{-\kappa t} + \sigma\int_0^t e^{-\kappa(t - s)}\,dW_s,$$
+        <p>giving mean $\theta + (r_0 - \theta)e^{-\kappa t}$ and variance $\frac{\sigma^2}{2\kappa}(1 - e^{-2\kappa t})$ — mean reversion solved exactly with a first-order technique. The same trick solves expected values of most affine models.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Boundary &amp; Terminal Conditions</h3>
+        <p>The general solution carries a constant $C$; conditions pin it down — and in finance the condition <em>is</em> the contract:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Initial value:</strong> $B_0$ = today's account value; $r_0$ = today's short rate.</li>
+            <li><strong>Terminal value</strong> (finance's habit): bonds solve backwards from $P(T, T) = 1$; options from the payoff. The affine bond exponent $B(t,T)$ solves $\frac{dB}{dt} = \kappa B - 1$, $B(T,T) = 0$ ⇒ $B = \frac{1 - e^{-\kappa(T-t)}}{\kappa}$ — integrating factor + terminal condition.</li>
+            <li><strong>Boundary values in state:</strong> for ODEs in the spatial variable (perpetual options), conditions at $S \to 0$ / $S \to \infty$ and smooth pasting select among power solutions — Part 08's subject.</li>
+            <li>Existence/uniqueness (Picard-Lindelöf) requires Lipschitz $f$: CIR's $\sqrt{r}$ fails it at zero, which is precisely why CIR's boundary behavior (Feller condition $2\kappa\theta \ge \sigma^2$) needs special care.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Worked Example: Continuous Annuity</h3>
+        <p>An account earning rate $r$ with continuous withdrawals $w$: $\frac{dA}{dt} = rA - w$, $A_0$ given. Integrating factor $e^{-rt}$:</p>
+        $$A_t = \frac{w}{r} + \left(A_0 - \frac{w}{r}\right)e^{rt}.$$
+        <p>Read the threshold: if $A_0 > w/r$ the account grows forever; if $A_0 < w/r$ it hits zero at $t^* = \frac{1}{r}\ln\frac{w/r - A_0 e^{0}}{w/r - A_0}$... solving $A_{t^*} = 0$ gives the ruin time — retirement planning, endowment spending rules, and the deterministic skeleton of ALM in one linear ODE.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Separable: discount factors and growth laws. Linear + integrating factor: mean reversion solved exactly.</li>
+            <li>OU/Vasicek's full distribution drops out of one integrating-factor computation.</li>
+            <li>Finance fixes constants with <em>terminal</em> conditions — solve backwards from the contract.</li>
+            <li>Check Lipschitz/regularity before trusting uniqueness (CIR at zero is the standard counterexample).</li>
+        </ul>
+    </div>
+</div>

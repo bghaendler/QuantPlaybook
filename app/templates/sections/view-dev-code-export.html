@@ -1,0 +1,136 @@
+<div id="view-dev-code-export" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">📦 Code Export to Python Templates &amp; Excel</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Take a model home: NumPy-vectorized Python templates and native Excel formulas (no VBA) for the core pricers, parameterized with your inputs.</p>
+    </header>
+
+    <div class="card">
+        <h3>Configure</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;">
+            <div><label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Target</label>
+                <select id="codeExpTarget" onchange="genCodeExport()" style="width:100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);">
+                    <option value="py-vec">Python — vectorized pricer + smile grid</option>
+                    <option value="py-mc">Python — Monte Carlo with antithetics + control</option>
+                    <option value="excel">Excel — cell formulas (no VBA)</option>
+                </select></div>
+            <div><label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Spot</label>
+                <input id="codeExpS" type="number" value="100" oninput="genCodeExport()" style="width:100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);"></div>
+            <div><label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Strike</label>
+                <input id="codeExpK" type="number" value="100" oninput="genCodeExport()" style="width:100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);"></div>
+            <div><label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">T (years)</label>
+                <input id="codeExpT" type="number" value="1.0" step="0.25" oninput="genCodeExport()" style="width:100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);"></div>
+            <div><label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Rate</label>
+                <input id="codeExpR" type="number" value="0.05" step="0.005" oninput="genCodeExport()" style="width:100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);"></div>
+            <div><label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Vol</label>
+                <input id="codeExpV" type="number" value="0.20" step="0.01" oninput="genCodeExport()" style="width:100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);"></div>
+        </div>
+        <div style="display: flex; gap: 0.75rem; align-items: center;">
+            <button onclick="copyCodeExport()" style="padding: 0.45rem 1.2rem; border-radius: 8px; border: none; background: var(--accent); color: #fff; font-weight: 700; cursor: pointer;">Copy</button>
+            <span id="codeExpCopied" style="font-size: 0.8rem; color: #10b981;"></span>
+        </div>
+        <pre id="codeExpOut" style="margin-top: 1rem; background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.9rem; font-size: 0.75rem; overflow: auto; max-height: 480px; white-space: pre;"></pre>
+    </div>
+</div>
+
+<script>
+function genCodeExport() {
+    var target = document.getElementById('codeExpTarget').value;
+    var S = document.getElementById('codeExpS').value, K = document.getElementById('codeExpK').value;
+    var T = document.getElementById('codeExpT').value, r = document.getElementById('codeExpR').value;
+    var v = document.getElementById('codeExpV').value;
+    var code = '';
+    if (target === 'py-vec') {
+        code = '"""Vectorized Black-Scholes: price a whole strike/vol grid at once."""\n' +
+'import numpy as np\nfrom scipy.stats import norm\n\n' +
+'def bs_price(cp, S, K, T, r, sigma, q=0.0):\n' +
+'    """cp=+1/-1. All args broadcast (scalars or arrays)."""\n' +
+'    S, K, T, sigma = map(np.asarray, (S, K, T, sigma))\n' +
+'    sq = sigma * np.sqrt(T)\n' +
+'    d1 = (np.log(S / K) + (r - q + 0.5 * sigma**2) * T) / sq\n' +
+'    d2 = d1 - sq\n' +
+'    df_q, df_r = np.exp(-q * T), np.exp(-r * T)\n' +
+'    return cp * (S * df_q * norm.cdf(cp * d1) - K * df_r * norm.cdf(cp * d2))\n\n' +
+'S0, T, r, sigma = ' + S + ', ' + T + ', ' + r + ', ' + v + '\n\n' +
+'# One call --------------------------------------------------------------\n' +
+'print("ATM call:", bs_price(+1, S0, ' + K + ', T, r, sigma))\n\n' +
+'# A strike ladder in one shot --------------------------------------------\n' +
+'strikes = np.linspace(0.6 * S0, 1.4 * S0, 17)\n' +
+'calls = bs_price(+1, S0, strikes, T, r, sigma)\n' +
+'for k, c in zip(strikes, calls):\n' +
+'    print(f"K={k:7.2f}  C={c:8.4f}")\n\n' +
+'# Price across a (strike x vol) smile grid -------------------------------\n' +
+'vols = np.linspace(0.1, 0.4, 7)[:, None]      # column\n' +
+'grid = bs_price(+1, S0, strikes[None, :], T, r, vols)  # shape (7, 17)\n' +
+'print("grid shape:", grid.shape)\n';
+    } else if (target === 'py-mc') {
+        code = '"""Monte Carlo European pricer: antithetic variates + BS control variate."""\n' +
+'import numpy as np\nfrom math import log, sqrt, exp\nfrom scipy.stats import norm\n\n' +
+'S0, K, T, r, sigma = ' + S + ', ' + K + ', ' + T + ', ' + r + ', ' + v + '\n' +
+'n_pairs = 100_000\nrng = np.random.default_rng(0)\n\n' +
+'# Antithetic terminal prices ---------------------------------------------\n' +
+'Z = rng.standard_normal(n_pairs)\n' +
+'drift, diff = (r - 0.5 * sigma**2) * T, sigma * sqrt(T)\n' +
+'ST_p = S0 * np.exp(drift + diff * Z)\n' +
+'ST_m = S0 * np.exp(drift - diff * Z)\n' +
+'df = exp(-r * T)\n' +
+'pay = 0.5 * (np.maximum(ST_p - K, 0) + np.maximum(ST_m - K, 0)) * df\n\n' +
+'# Control variate: the discounted stock (E[ST]*df = S0) ------------------\n' +
+'ctrl = 0.5 * (ST_p + ST_m) * df\n' +
+'beta = np.cov(pay, ctrl)[0, 1] / np.var(ctrl)\n' +
+'est = pay - beta * (ctrl - S0)\n\n' +
+'price, se = est.mean(), est.std(ddof=1) / sqrt(n_pairs)\n\n' +
+'# Closed form for reference ----------------------------------------------\n' +
+'d1 = (log(S0 / K) + (r + 0.5 * sigma**2) * T) / (sigma * sqrt(T))\n' +
+'bs = S0 * norm.cdf(d1) - K * df * norm.cdf(d1 - sigma * sqrt(T))\n\n' +
+'print(f"MC  : {price:.4f}  (s.e. {se:.4f})")\n' +
+'print(f"BS  : {bs:.4f}   |error| = {abs(price - bs):.4f}")\n';
+    } else {
+        code = 'Excel Black-Scholes - paste values in A1:A5, formulas in B-column.\n' +
+'(Uses native NORM.S.DIST; no VBA required.)\n\n' +
+'    A            B\n' +
+'1   Spot         ' + S + '\n' +
+'2   Strike       ' + K + '\n' +
+'3   T (years)    ' + T + '\n' +
+'4   Rate         ' + r + '\n' +
+'5   Vol          ' + v + '\n\n' +
+'d1:\n' +
+'B7  =(LN(B1/B2)+(B4+B5^2/2)*B3)/(B5*SQRT(B3))\n\n' +
+'d2:\n' +
+'B8  =B7-B5*SQRT(B3)\n\n' +
+'Call price:\n' +
+'B9  =B1*NORM.S.DIST(B7,TRUE)-B2*EXP(-B4*B3)*NORM.S.DIST(B8,TRUE)\n\n' +
+'Put price (parity-consistent):\n' +
+'B10 =B2*EXP(-B4*B3)*NORM.S.DIST(-B8,TRUE)-B1*NORM.S.DIST(-B7,TRUE)\n\n' +
+'Greeks:\n' +
+'B11 =NORM.S.DIST(B7,TRUE)                                   (call delta)\n' +
+'B12 =NORM.S.DIST(B7,FALSE)/(B1*B5*SQRT(B3))                 (gamma)\n' +
+'B13 =B1*NORM.S.DIST(B7,FALSE)*SQRT(B3)/100                  (vega per 1 vol pt)\n' +
+'B14 =(-B1*NORM.S.DIST(B7,FALSE)*B5/(2*SQRT(B3))\n' +
+'      -B4*B2*EXP(-B4*B3)*NORM.S.DIST(B8,TRUE))/365          (theta per day)\n' +
+'B15 =B2*B3*EXP(-B4*B3)*NORM.S.DIST(B8,TRUE)/100             (rho per 1%)\n\n' +
+'Implied vol without VBA: set B5 as the variable, target B9 = market price\n' +
+'via Data > What-If Analysis > Goal Seek (or Solver for several at once).\n\n' +
+'GBM path simulation (for a quick chart): in C2 (C1 = ' + S + '):\n' +
+'C2  =C1*EXP((B$4-B$5^2/2)*(1/252)+B$5*SQRT(1/252)*NORM.S.INV(RAND()))\n' +
+'and fill down 252 rows for one trading year.\n';
+    }
+    document.getElementById('codeExpOut').textContent = code;
+}
+
+function copyCodeExport() {
+    var text = document.getElementById('codeExpOut').textContent;
+    function done() {
+        var el = document.getElementById('codeExpCopied');
+        el.textContent = 'Copied ✓';
+        setTimeout(function() { el.textContent = ''; }, 2000);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done);
+    } else {
+        var ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta); done();
+    }
+}
+setTimeout(genCodeExport, 400);
+</script>

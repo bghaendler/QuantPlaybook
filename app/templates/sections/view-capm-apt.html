@@ -1,0 +1,63 @@
+<div id="view-capm-apt" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">CAPM &amp; Arbitrage Pricing Theory (APT)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The two classical equilibrium answers to "what return should an asset earn?" — single-factor beta pricing versus multi-factor no-arbitrage pricing.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. CAPM: From Markowitz to Equilibrium</h3>
+        <p>If every investor holds a mean-variance efficient portfolio (Markowitz) and shares the same expectations, the aggregate market portfolio $M$ is itself efficient, and every asset's expected excess return is proportional to its covariance with the market:</p>
+        $$\mathbb{E}[R_i] - r_f = \beta_i \left(\mathbb{E}[R_M] - r_f\right), \qquad \beta_i = \frac{\operatorname{Cov}(R_i, R_M)}{\operatorname{Var}(R_M)}.$$
+        <p>This is the <strong>Security Market Line (SML)</strong>. Only <em>systematic</em> risk (covariance with the market) is rewarded; idiosyncratic risk is diversifiable and earns nothing.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. CML vs. SML — A Distinction Worth Marks</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;"></th><th style="padding: 0.5rem;">Capital Market Line</th><th style="padding: 0.5rem;">Security Market Line</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">x-axis</td><td style="padding: 0.5rem;">Total risk $\sigma$</td><td style="padding: 0.5rem;">Systematic risk $\beta$</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Applies to</td><td style="padding: 0.5rem;">Efficient portfolios only</td><td style="padding: 0.5rem;">All assets and portfolios</td></tr>
+                <tr><td style="padding: 0.5rem;">Equation</td><td style="padding: 0.5rem;">$\mathbb{E}[R_p] = r_f + \frac{\mathbb{E}[R_M]-r_f}{\sigma_M}\sigma_p$</td><td style="padding: 0.5rem;">$\mathbb{E}[R_i] = r_f + \beta_i(\mathbb{E}[R_M]-r_f)$</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.75rem;">An asset plotting above the SML has positive <strong>Jensen's alpha</strong> $\alpha_i = \mathbb{E}[R_i] - r_f - \beta_i(\mathbb{E}[R_M] - r_f)$ — the standard performance measure for active managers.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. APT: Pricing by No-Arbitrage (Ross, 1976)</h3>
+        <p>APT drops the equilibrium machinery and assumes only a <strong>linear factor structure</strong> for returns:</p>
+        $$R_i = \mathbb{E}[R_i] + \sum_{k=1}^{K} \beta_{ik} F_k + \epsilon_i,$$
+        <p>with mean-zero factors $F_k$ and idiosyncratic noise $\epsilon_i$ diversifiable across a large universe. If a well-diversified zero-cost portfolio with zero factor exposures could earn a non-zero return, that would be an arbitrage. Ruling this out forces expected returns to be linear in the betas:</p>
+        $$\mathbb{E}[R_i] = r_f + \sum_{k=1}^{K} \beta_{ik}\, \lambda_k,$$
+        <p>where $\lambda_k$ is the <strong>risk premium of factor $k$</strong>. CAPM is the special case $K = 1$ with the market as the sole factor.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Worked Example: Two-Factor APT</h3>
+        <p>Factors: industrial production (premium $\lambda_1 = 4\%$) and inflation surprise ($\lambda_2 = -1\%$), $r_f = 3\%$. A stock with $\beta_1 = 1.2$, $\beta_2 = 0.5$:</p>
+        $$\mathbb{E}[R] = 3\% + 1.2 \times 4\% + 0.5 \times (-1\%) = 7.3\%.$$
+        <p>If the market consensus forecast for the stock is $9\%$, it is cheap relative to its factor risks: a diversified long position hedged to zero factor exposure against correctly-priced assets captures the $1.7\%$ mispricing — the logic underlying modern <em>factor investing</em> and statistical arbitrage.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Empirical Standing</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>CAPM anomalies:</strong> the empirical SML is too flat (low-beta stocks earn too much — "betting against beta"); size, value, momentum and quality earn returns unexplained by beta.</li>
+            <li><strong>Fama-French:</strong> the 3-factor (market, SMB, HML) and 5-factor extensions are APT-style responses that absorb most anomalies.</li>
+            <li><strong>APT's weakness:</strong> it does not name the factors — selection is empirical (macro factors, statistical PCA factors, or characteristic-sorted portfolios).</li>
+            <li><strong>Usage today:</strong> CAPM survives as the discount-rate convention in corporate finance; APT survives as the intellectual foundation of every multi-factor risk model (Barra, Axioma) and smart-beta product.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>CAPM: one factor, equilibrium-derived; expected return is linear in market beta.</li>
+            <li>APT: many factors, arbitrage-derived; expected return is linear in factor betas.</li>
+            <li>Only systematic risk is priced in both; idiosyncratic risk diversifies away.</li>
+            <li>Alpha is the deviation from the SML/factor line — the active manager's target.</li>
+            <li>Modern factor models (Fama-French, Barra) are APT implementations.</li>
+        </ul>
+    </div>
+</div>

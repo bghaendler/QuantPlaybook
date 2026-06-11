@@ -1,0 +1,60 @@
+<div id="view-mm-p09" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Mathematical Methods in Financial Markets — Part 09</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Simulating Asset Randomness &amp; Brownian Paths</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">From uniform random numbers to Brownian motion to GBM paths: the simulation pipeline, done correctly, with the standard pitfalls flagged.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Pipeline: Uniforms → Normals → Paths</h3>
+        <ol style="line-height: 1.9;">
+            <li><strong>Uniforms:</strong> a quality PRNG (Mersenne Twister, PCG64) — never <code>rand()</code>; seed explicitly for reproducibility.</li>
+            <li><strong>Normals:</strong> inverse-CDF $Z = N^{-1}(U)$ (Acklam/AS241) — preferred, preserves low-discrepancy structure; Box-Muller as the classical alternative.</li>
+            <li><strong>Brownian increments:</strong> $\Delta W_i = \sqrt{\Delta t}\, Z_i$ — independent, $\mathcal{N}(0, \Delta t)$; cumulative sum gives the path.</li>
+            <li><strong>Correlated assets:</strong> Cholesky factor $L$ of the correlation matrix, $\Delta W^{corr} = L\,\Delta W^{indep}$.</li>
+        </ol>
+        <p>Properties to verify in any implementation: $W_0 = 0$, $\operatorname{Var}(W_t) = t$, increment independence (autocorrelation ≈ 0), and the $\sqrt{\Delta t}$ scaling — paths that look "too smooth" almost always scaled by $\Delta t$ by mistake.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Simulating GBM: Exact vs. Euler</h3>
+        <p><strong>Exact (always prefer for GBM):</strong> the SDE has a closed solution, so the discretization is exact at any step size:</p>
+        $$S_{t+\Delta t} = S_t \exp\!\left[\left(\mu - \tfrac{1}{2}\sigma^2\right)\Delta t + \sigma\sqrt{\Delta t}\, Z\right].$$
+        <p><strong>Euler-Maruyama (general SDEs):</strong> $S_{t+\Delta t} = S_t(1 + \mu\Delta t + \sigma\sqrt{\Delta t}Z)$ — strong order 0.5, weak order 1; can go negative; needed only when no exact scheme exists (then consider Milstein, adding $\tfrac{1}{2}\sigma\sigma'(Z^2 - 1)\Delta t$, strong order 1.0). For CIR-type square-root processes use full truncation or the exact noncentral-χ² sampler — naive Euler on $\sqrt{v}$ is the classic blow-up.</p>
+        <p>The $-\tfrac{1}{2}\sigma^2$ matters: omit it and your simulated $\mathbb{E}[S_T]$ is right but the <em>median</em> path and all log-statistics are biased — the single most common student bug.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. How Many Paths? Error Budgeting</h3>
+        <p>Monte Carlo standard error: $\text{SE} = s/\sqrt{N}$ — quote it with every estimate. Two distinct errors:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Statistical</strong> (paths): halving needs 4× paths; attack with antithetics, control variates, Sobol QMC.</li>
+            <li><strong>Discretization</strong> (steps): zero for exact GBM; $O(\Delta t)$ weak for Euler — refine steps only when the scheme is inexact or the payoff reads the path (barriers: use the Brownian-bridge crossing probability per interval rather than brute-force small steps).</li>
+        </ul>
+        <p>Path-dependent payoffs sample the path at contract dates — simulate on the fixing grid exactly, not on an arbitrary fine grid resampled.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Minimal Correct NumPy Reference</h3>
+        <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.8rem; font-size: 0.78rem; overflow-x: auto;">rng = np.random.default_rng(42)
+n_paths, n_steps = 100_000, 252
+dt = T / n_steps
+Z = rng.standard_normal((n_paths, n_steps))
+log_paths = np.cumsum((mu - 0.5*sigma**2)*dt + sigma*np.sqrt(dt)*Z, axis=1)
+S = S0 * np.exp(np.hstack([np.zeros((n_paths,1)), log_paths]))   # includes t=0
+payoff = np.maximum(S[:, -1] - K, 0)
+price  = np.exp(-r*T) * payoff.mean()
+se     = np.exp(-r*T) * payoff.std(ddof=1) / np.sqrt(n_paths)</pre>
+        <p style="font-size: 0.85rem; color: #64748b;">Vectorized (no Python loops), seeded, exact scheme, standard error reported — the four habits that separate production simulation from notebook simulation.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Pipeline: PRNG uniforms → inverse-CDF normals → $\sqrt{\Delta t}$-scaled increments → (Cholesky for correlation).</li>
+            <li>GBM has an exact scheme — use it; Euler/Milstein are for SDEs without one.</li>
+            <li>Never forget $-\frac{1}{2}\sigma^2$; never scale noise by $\Delta t$.</li>
+            <li>Budget statistical vs. discretization error separately; report the standard error always.</li>
+        </ul>
+    </div>
+</div>

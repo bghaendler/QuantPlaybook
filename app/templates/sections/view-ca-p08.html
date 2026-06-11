@@ -1,0 +1,49 @@
+<div id="view-ca-p08" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Complex Analysis for Quants — Part 08</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Cauchy-Riemann in Polar Coordinates</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The CR equations rewritten for $z = re^{i\theta}$: derivation by chain rule, the polar Laplacian, and why log and power functions are best handled in polar form.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Polar CR Equations</h3>
+        <p>With $f = u(r, \theta) + iv(r, \theta)$ and $x = r\cos\theta$, $y = r\sin\theta$, the chain rule transforms $u_x = v_y$, $u_y = -v_x$ into:</p>
+        $$\boxed{\;\frac{\partial u}{\partial r} = \frac{1}{r}\frac{\partial v}{\partial \theta}, \qquad \frac{\partial v}{\partial r} = -\frac{1}{r}\frac{\partial u}{\partial \theta}\;} \qquad (r \ne 0)$$
+        <p>with derivative $f'(z) = e^{-i\theta}\left(u_r + iv_r\right)$. The $1/r$ factors are the price of curvilinear coordinates (arc length along $\theta$ is $r\,d\theta$); the structure — each component's radial derivative tied to the other's angular derivative — is unchanged.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Functions Born Polar</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Logarithm:</strong> $\ln z = \ln r + i\theta$, so $u = \ln r$, $v = \theta$. Check: $u_r = 1/r = \frac{1}{r}v_\theta$ ✓, $v_r = 0 = -\frac{1}{r}u_\theta$ ✓ — holomorphic wherever $\theta$ is single-valued, i.e. off a <strong>branch cut</strong>; $f' = e^{-i\theta}/r = 1/z$.</li>
+            <li><strong>Powers:</strong> $z^\alpha = r^\alpha e^{i\alpha\theta}$ ⇒ $u = r^\alpha\cos\alpha\theta$, $v = r^\alpha\sin\alpha\theta$ — CR verified in two lines, for <em>any</em> real α (the fractional powers of MM Part 08's Cauchy-Euler solutions). In Cartesian coordinates the same check is a mess.</li>
+            <li><strong>$1/z$, $z^n$:</strong> immediate by the same pattern — polar CR is the natural habitat of everything with circular symmetry.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. The Polar Laplacian</h3>
+        <p>Combining the polar CR pair reproduces harmonicity in polar form:</p>
+        $$\nabla^2 u = u_{rr} + \frac{1}{r}u_r + \frac{1}{r^2}u_{\theta\theta} = 0.$$
+        <p>Separable solutions $u = R(r)\Theta(\theta)$ give $\Theta = \cos n\theta, \sin n\theta$ and the radial <strong>Cauchy-Euler equation</strong> $r^2R'' + rR' - n^2R = 0$ ⇒ $R = r^{\pm n}$ (and $\ln r$ for $n = 0$) — the same equidimensional ODE that priced perpetual options. The general disk solution $u = a_0 + \sum r^n(a_n\cos n\theta + b_n\sin n\theta)$ is a Fourier series in the angle with powers in the radius: summing it against boundary data yields the Poisson kernel of Part 07.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Branch Cuts: The Practical Lesson</h3>
+        <p>$\theta$ is only defined mod $2\pi$ — so $\ln z$ and $z^\alpha$ (α non-integer) need a chosen branch: conventionally $\theta \in (-\pi, \pi]$ with a cut along the negative real axis. Crossing the cut jumps $v = \theta$ by $2\pi$ — the function is holomorphic on the cut plane, not on any loop around the origin. Consequences a quant actually hits:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Heston's "little trap":</strong> the model's characteristic function contains a complex log; naive principal-branch evaluation makes the integrand discontinuous in $u$ and corrupts prices — the well-known fix (Albrecher et al.) reformulates to keep the argument off the cut.</li>
+            <li><strong>Library behavior:</strong> <code>log</code>/<code>sqrt</code> of complex arrays in NumPy use the principal branch — track winding manually when integrating along paths that circle singularities.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Polar CR: $u_r = \frac{1}{r}v_\theta$, $v_r = -\frac{1}{r}u_\theta$; $f' = e^{-i\theta}(u_r + iv_r)$.</li>
+            <li>$\ln z$ and $z^\alpha$ verify holomorphy trivially in polar form — and expose their branch cuts honestly.</li>
+            <li>The polar Laplacian separates into Fourier modes × Cauchy-Euler radial powers — disk problems solved.</li>
+            <li>Branch-cut discipline is production-relevant: the Heston complex-log discontinuity is the canonical pricing bug.</li>
+        </ul>
+    </div>
+</div>

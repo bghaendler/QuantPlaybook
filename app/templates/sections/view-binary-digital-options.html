@@ -1,0 +1,69 @@
+<div id="view-binary-digital-options" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Binary / Digital Options (Rubinstein-Reiner)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">All-or-nothing payoffs: the atoms from which every European payoff is built, their treacherous Greeks, and the Rubinstein-Reiner catalogue including barrier-triggered binaries.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Four Basic Digitals</h3>
+        <p>With generalized BSM inputs and $d_{1,2}$ as usual:</p>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Contract</th><th style="padding: 0.5rem;">Payoff at $T$</th><th style="padding: 0.5rem;">Price</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Cash-or-nothing call</td><td style="padding: 0.5rem;">$Q\cdot\mathbb{1}_{\{S_T > K\}}$</td><td style="padding: 0.5rem;">$Q e^{-rT} N(d_2)$</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Cash-or-nothing put</td><td style="padding: 0.5rem;">$Q\cdot\mathbb{1}_{\{S_T < K\}}$</td><td style="padding: 0.5rem;">$Q e^{-rT} N(-d_2)$</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Asset-or-nothing call</td><td style="padding: 0.5rem;">$S_T\cdot\mathbb{1}_{\{S_T > K\}}$</td><td style="padding: 0.5rem;">$S e^{(b-r)T} N(d_1)$</td></tr>
+                <tr><td style="padding: 0.5rem;">Asset-or-nothing put</td><td style="padding: 0.5rem;">$S_T\cdot\mathbb{1}_{\{S_T < K\}}$</td><td style="padding: 0.5rem;">$S e^{(b-r)T} N(-d_1)$</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.75rem;">The vanilla call is literally their difference — <em>asset-or-nothing minus $K$ cash-or-nothing</em>:</p>
+        $$c = S e^{(b-r)T}N(d_1) - K e^{-rT} N(d_2).$$
+        <p>This decomposition explains the two terms of Black-Scholes and identifies $N(d_2)$ as the risk-neutral exercise probability and $N(d_1)$ as the exercise probability under the stock measure.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Digitals as Derivatives of Vanillas</h3>
+        <p>A digital call is the limit of an infinitely tight call spread:</p>
+        $$\text{Digital}(K) = -\frac{\partial c}{\partial K} = \lim_{\epsilon \to 0} \frac{c(K - \epsilon) - c(K + \epsilon)}{2\epsilon}.$$
+        <p>Two crucial consequences: (i) digitals are <em>statically replicated</em> by call spreads — which is exactly how dealers hedge and price them; (ii) under a volatility smile the replication picks up a skew term:</p>
+        $$\text{Digital} = e^{-rT}N(d_2) - \underbrace{\text{vega} \times \frac{\partial \sigma}{\partial K}}_{\text{smile correction}},$$
+        <p>so with the usual negative equity skew, digital calls are worth <em>more</em> than the flat-vol formula suggests. Quoting digitals off flat Black-Scholes is a classic way to get picked off.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. The Greek Pathology</h3>
+        <p>Near expiry at the strike, the digital's delta is a spike of height $\sim Q/(S\sigma\sqrt{T})$ and its gamma flips sign across the strike. Hedging a short digital pinned at $K$ requires buying high/selling low on every cross — replication cost explodes. Desks therefore: hedge with the call spread (capping the Greeks at the spread width), widen the spread as expiry nears, and charge the width in the price. Barrier options inherit exactly this pathology at the barrier (a knock-out option contains a digital at the barrier level).</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Rubinstein-Reiner (1991): Barrier Binaries</h3>
+        <p>Rubinstein &amp; Reiner catalogued 28 binary variants including <strong>barrier-triggered</strong> ones, priceable in closed form from the joint law of $(S_T, \min/\max S_t)$ via the reflection principle. With barrier $H$, $\mu = (b - \sigma^2/2)/\sigma^2$, $\lambda = \sqrt{\mu^2 + 2r/\sigma^2}$:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>At-hit (one-touch, paid at touch):</strong> $Q\left[(H/S)^{\mu+\lambda}N(-z) + (H/S)^{\mu-\lambda}N(-z + 2\lambda\sigma\sqrt{T})\right]$, $z = \frac{\ln(S/H)}{\sigma\sqrt{T}} + \lambda\sigma\sqrt{T}$.</li>
+            <li><strong>At-expiry one-touch:</strong> cash paid at $T$ if the barrier was touched — discounted hit probability with drift adjustment.</li>
+            <li><strong>No-touch:</strong> $Q$ if the barrier is never touched = $Qe^{-rT}$ − one-touch(at expiry); the building block of range (double-no-touch) trades in FX.</li>
+        </ul>
+        <p>FX is the natural habitat: one-touches and double-no-touches are liquid enough there to be <em>inputs</em> for calibrating smile models (vanna-volga, stochastic-local-vol mixtures).</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Where Digitals Hide</h3>
+        <ul style="line-height: 1.8;">
+            <li>Structured products: autocall triggers, coupon barriers, range accruals are all digital strips.</li>
+            <li>Credit: a CDS is economically a recovery-adjusted digital on default.</li>
+            <li>Rates: digital caplets/floorlets in accrual notes; LIBOR-in-arrears convexity.</li>
+            <li>Any payoff kink or trigger ⇒ embedded digital ⇒ smile sensitivity + pin risk. Identify them before they identify you.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Cash-or-nothing = $Qe^{-rT}N(d_2)$; asset-or-nothing = $Se^{(b-r)T}N(d_1)$; vanillas are their difference.</li>
+            <li>Digital = −∂c/∂K = tight call spread: static replication and an unavoidable skew correction.</li>
+            <li>Greeks explode at the strike near expiry — hedge and price as a finite call spread.</li>
+            <li>Rubinstein-Reiner closed forms cover touch/no-touch via reflection-principle barrier mathematics.</li>
+            <li>Digitals are embedded throughout structured products — every trigger is one.</li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+<div id="view-asv-p02" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Asymptotics of Stochastic Volatility — Part 02</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">SABR Implied Volatility Smile Corrections</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">From the geometric backbone to the full Hagan formula: the correction terms, what each parameter does to the smile, and the modern fixes for the formula's known pathologies.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Full Hagan Expansion</h3>
+        <p>For general $\beta$ (CEV backbone $dF = \alpha F^\beta dW_1$), the industry formula is the Part 01 geometry times correction factors:</p>
+        $$\sigma_{BS}(K, T) \approx \frac{\alpha}{(FK)^{\frac{1-\beta}{2}}\left[1 + \frac{(1-\beta)^2}{24}\ln^2\frac{F}{K} + \dots\right]}\cdot\frac{\zeta}{\hat{x}(\zeta)}\cdot\left[1 + \left(\tfrac{(1-\beta)^2\alpha^2}{24(FK)^{1-\beta}} + \tfrac{\rho\beta\nu\alpha}{4(FK)^{\frac{1-\beta}{2}}} + \tfrac{2 - 3\rho^2}{24}\nu^2\right)T\right]$$
+        <p>Three blocks: the <strong>CEV/local-vol prefactor</strong> (backbone skew from β), the <strong>geometric factor</strong> $\zeta/\hat{x}$ (stochastic-vol smile from ρ, ν — Part 01), and the <strong>$O(T)$ correction</strong> (the heat-kernel $a_1$ term: drift of vol, vol-of-vol convexity, correlation adjustment).</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Parameter Anatomy (Trader's Reading)</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>α:</strong> overall level — ATM vol ≈ $\alpha/F^{1-\beta}$ to leading order; quoted-vol handle.</li>
+            <li><strong>β:</strong> backbone — how ATM vol moves <em>with F</em> ($\sigma_{ATM} \sim F^{\beta - 1}$): β = 1 sticky-log-normal, β = 0 normal/sticky-strike-ish; usually <em>fixed by convention</em> (0.5 rates, 1 FX/equity) because β and ρ are nearly unidentifiable from one smile.</li>
+            <li><strong>ρ:</strong> skew tilt — negative ρ steepens the put wing (spot-vol correlation).</li>
+            <li><strong>ν:</strong> smile curvature — convexity in both wings; the $\frac{2-3\rho^2}{24}\nu^2T$ term lifts ATM vol with maturity.</li>
+        </ul>
+        <p>Calibration: fix β; fit (α, ρ, ν) per maturity — α from ATM (a cubic in α via the bracketed term), ρ/ν from skew/curvature: fast, stable, near-orthogonal — the formula's enduring selling point.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Known Pathologies</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Negative density wings:</strong> the expansion is asymptotic, not arbitrage-free — at low strikes (especially low rates, β &lt; 1, large $\nu^2T$) the implied Black density $\partial^2C/\partial K^2$ goes negative; butterflies misprice.</li>
+            <li><strong>Zero/negative strikes:</strong> rates markets needed smiles through 0 — log-normal-based formulas fail structurally; shifted SABR (displace $F \to F + s$) and normal-vol variants are the production patch.</li>
+            <li><strong>Long maturities:</strong> $O(T)$ truncation drifts — ATM term-structure fits degrade beyond a few years at high ν (Part 03's large-time analysis explains the breakdown).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Modern Fixes</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Obloj/Berestycki refinements:</strong> corrected $\zeta$, $\hat x$ choices — consistent leading order, better wings at small cost.</li>
+            <li><strong>Hagan's arbitrage-free PDE SABR:</strong> solve the 1-D effective local-vol PDE for the density directly — no negative densities by construction; the formula becomes the PDE's initial guess.</li>
+            <li><strong>Antonov et al. exact zero-correlation SABR</strong> (and mapped ρ ≠ 0): closed-form via Bessel integrals — the accuracy benchmark.</li>
+            <li><strong>Practice:</strong> quote/calibrate with Hagan for speed; switch to PDE/exact for risk on wings and CMS-type payoffs that integrate the whole smile (their values are dominated by exactly the region where the formula lies).</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Hagan = CEV prefactor × hyperbolic backbone × $O(T)$ heat-kernel correction.</li>
+            <li>β backbone (fixed by convention), ρ skew, ν curvature, α level — near-orthogonal calibration is why SABR won.</li>
+            <li>Asymptotic ≠ arbitrage-free: negative wing densities, zero-strike failure, long-maturity drift are structural.</li>
+            <li>Shifted/normal variants, arbitrage-free PDE SABR and Antonov exact results are the production-grade repairs.</li>
+        </ul>
+    </div>
+</div>

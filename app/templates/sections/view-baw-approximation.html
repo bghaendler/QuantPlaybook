@@ -1,0 +1,60 @@
+<div id="view-baw-approximation" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Barone-Adesi &amp; Whaley Quadratic Approximation</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The 1987 workhorse: approximate the early-exercise premium by an ODE you can solve, bolt it onto the European price, and recover American values in microseconds.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Idea: Decompose and Approximate</h3>
+        <p>Write the American price as European plus early-exercise premium, $V_{Am} = V_{Eur} + \varepsilon(S, t)$. Since both $V_{Am}$ and $V_{Eur}$ satisfy the BS equation (in their regions), so does $\varepsilon$. Change variables to $\tau = T - t$, $h(\tau) = 1 - e^{-r\tau}$ and write $\varepsilon = h(\tau) f(S, h)$. The PDE for $f$ contains a term $\propto (1-h)\, \partial f/\partial h$ that is small both near expiry ($h \to 0$ multiplies it) and far from expiry ($\partial f/\partial h \to 0$). <strong>BAW's quadratic approximation drops it</strong>, leaving an Euler ODE in $S$:</p>
+        $$\tfrac{1}{2}\sigma^2 S^2 f'' + b S f' - \frac{r}{h} f = 0.$$
+    </div>
+
+    <div class="card">
+        <h3>2. Solving the ODE</h3>
+        <p>Solutions are powers $f = a S^q$ with $q$ from the quadratic (hence the name):</p>
+        $$q_{1,2} = \frac{-(N-1) \mp \sqrt{(N-1)^2 + 4M/h}}{2}, \qquad M = \frac{2r}{\sigma^2},\; N = \frac{2b}{\sigma^2}.$$
+        <p>For a call keep the growing root $q_2 > 1$ (premium increasing in $S$); for a put the negative root $q_1 < 0$. The American call approximation:</p>
+        $$C(S) = \begin{cases} c_{BS}(S) + A_2 \left(\dfrac{S}{S^*}\right)^{q_2}, & S < S^* \\[4pt] S - K, & S \ge S^* \end{cases}
+        \qquad A_2 = \frac{S^*}{q_2}\left(1 - e^{(b-r)T} N(d_1(S^*))\right).$$
+    </div>
+
+    <div class="card">
+        <h3>3. The Critical Price $S^*$</h3>
+        <p>$S^*$ comes from value matching <em>and</em> smooth pasting at the boundary, condensed into one nonlinear equation:</p>
+        $$S^* - K = c_{BS}(S^*) + \frac{S^*}{q_2}\left(1 - e^{(b-r)T} N(d_1(S^*))\right),$$
+        <p>solved by Newton iteration (BAW give a good analytical seed; convergence in 3–5 iterations). The put case mirrors with $S^{**}$, $q_1$, and $K - S$. Note for $b \ge r$ (e.g. no dividends) the call boundary is infinite — the formula correctly returns the European value.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Accuracy Profile</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Maturity</th><th style="padding: 0.5rem;">Typical error vs. accurate benchmark</th><th style="padding: 0.5rem;">Comment</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Short (&lt; 3m)</td><td style="padding: 0.5rem;">~0.01–0.05% </td><td style="padding: 0.5rem;">Excellent — dropped term vanishes as $h\to0$</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Medium (1y)</td><td style="padding: 0.5rem;">a few cents on $100</td><td style="padding: 0.5rem;">Acceptable for risk, marginal for pricing</td></tr>
+                <tr><td style="padding: 0.5rem;">Long (&gt; 3y, LEAPS)</td><td style="padding: 0.5rem;">can exceed 1%</td><td style="padding: 0.5rem;">Weakest regime — use Bjerksund-Stensland 2002 or Ju-Zhong</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.75rem;">Errors are largest at intermediate maturities/moneyness where the dropped $\partial f/\partial h$ term peaks. The approximation is not a bound — it can over- or under-price.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Why It Mattered (and Still Does)</h3>
+        <ul style="line-height: 1.8;">
+            <li>Pre-1987, American pricing meant slow binomial trees; BAW made real-time American quotes and Greeks feasible on 1980s hardware — it powered commodity/futures option desks (where $b < r$ makes calls genuinely American).</li>
+            <li>Still the default "fast American" in many libraries and risk engines; Greeks come analytically by differentiating the two-piece formula.</li>
+            <li>Successors: <strong>Ju-Zhong (1999)</strong> corrects the dropped term to second order; <strong>Bjerksund-Stensland</strong> takes a different (lower-bound) route — see next section.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>American = European + premium; the premium's PDE is reduced to a solvable Euler ODE by dropping one provably-small term.</li>
+            <li>Power solutions $S^{q}$ with $q$ from a quadratic; coefficient fixed by smooth pasting at a critical price $S^*$ found by Newton.</li>
+            <li>Very accurate short-dated, weakest for long maturities.</li>
+            <li>Speed is the point: closed-form-fast Americans for pricing, Greeks and calibration loops.</li>
+        </ul>
+    </div>
+</div>

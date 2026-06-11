@@ -1,0 +1,137 @@
+<div id="view-dev-sdk-exporter" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">SDK Code Exporter (C++ / Python / C# DLL)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Generate a self-contained generalized Black-Scholes pricer (price + Greeks) in your target language, ready to compile into a library or drop into a project.</p>
+    </header>
+
+    <div class="card">
+        <h3>Generator</h3>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem;">
+            <label style="font-size: 0.85rem; font-weight: 700;">Language:</label>
+            <select id="sdkExpLang" onchange="genSdkExport()" style="padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);">
+                <option value="cpp">C++17 (header-only, DLL-exportable)</option>
+                <option value="python">Python 3 (stdlib only)</option>
+                <option value="csharp">C# (.NET class library)</option>
+            </select>
+            <button onclick="copySdkExport()" style="padding: 0.45rem 1.2rem; border-radius: 8px; border: none; background: var(--accent); color: #fff; font-weight: 700; cursor: pointer;">Copy</button>
+            <span id="sdkExpCopied" style="font-size: 0.8rem; color: #10b981;"></span>
+        </div>
+        <pre id="sdkExpOut" style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.9rem; font-size: 0.74rem; overflow-x: auto; max-height: 480px; white-space: pre;"></pre>
+    </div>
+
+    <div class="card">
+        <h3>Packaging Notes</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>C++ → DLL/so:</strong> compile with <code>g++ -O2 -shared -fPIC -o libgbs.so gbs.cpp</code> (Linux) or export via <code>__declspec(dllexport)</code> + <code>extern "C"</code> on Windows for a flat C ABI callable from Excel/VBA, Python <code>ctypes</code>, or Java JNA.</li>
+            <li><strong>Python:</strong> no dependencies (uses <code>math.erf</code>); package with a <code>pyproject.toml</code> or vendor the single file.</li>
+            <li><strong>C#:</strong> build as a class library (<code>dotnet new classlib</code>) — usable from .NET apps or Excel-DNA add-ins.</li>
+            <li>The carry convention matches this app's pricer: <code>b = r</code> BSM · <code>b = r − q</code> Merton · <code>b = 0</code> Black-76 · <code>b = r − r_f</code> Garman-Kohlhagen.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+function genSdkExport() {
+    var lang = document.getElementById('sdkExpLang').value;
+    var code = '';
+    if (lang === 'cpp') {
+        code = '// gbs.hpp - Generalized Black-Scholes (carry b), price + Greeks. C++17.\n' +
+'#pragma once\n#include <cmath>\n\nnamespace gbs {\n\n' +
+'inline double norm_pdf(double x) { return 0.3989422804014327 * std::exp(-0.5 * x * x); }\n' +
+'inline double norm_cdf(double x) { return 0.5 * std::erfc(-x * 0.7071067811865476); }\n\n' +
+'struct Result { double price, delta, gamma, vega, theta, rho; };\n\n' +
+'// cp = +1 call, -1 put. b: cost of carry (r for BSM, r-q Merton, 0 Black-76, r-rf GK).\n' +
+'inline Result price(int cp, double S, double K, double T, double r, double b, double v) {\n' +
+'    const double sq = v * std::sqrt(T);\n' +
+'    const double d1 = (std::log(S / K) + (b + 0.5 * v * v) * T) / sq;\n' +
+'    const double d2 = d1 - sq;\n' +
+'    const double eb = std::exp((b - r) * T), er = std::exp(-r * T);\n' +
+'    Result out{};\n' +
+'    out.price = cp * (S * eb * norm_cdf(cp * d1) - K * er * norm_cdf(cp * d2));\n' +
+'    out.delta = cp * eb * norm_cdf(cp * d1);\n' +
+'    out.gamma = eb * norm_pdf(d1) / (S * sq);\n' +
+'    out.vega  = S * eb * norm_pdf(d1) * std::sqrt(T);           // per 1.0 of vol\n' +
+'    out.theta = -S * eb * norm_pdf(d1) * v / (2 * std::sqrt(T))\n' +
+'                - cp * (b - r) * S * eb * norm_cdf(cp * d1)\n' +
+'                - cp * r * K * er * norm_cdf(cp * d2);          // per year\n' +
+'    out.rho   = cp * K * T * er * norm_cdf(cp * d2);            // w.r.t. r (b fixed)\n' +
+'    return out;\n}\n\n} // namespace gbs\n\n' +
+'// Flat C ABI for DLL export (Excel/ctypes):\n' +
+'extern "C" double gbs_price(int cp, double S, double K, double T, double r, double b, double v) {\n' +
+'    return gbs::price(cp, S, K, T, r, b, v).price;\n}\n';
+    } else if (lang === 'python') {
+        code = '"""gbs.py - Generalized Black-Scholes (carry b), price + Greeks. Stdlib only."""\n' +
+'from dataclasses import dataclass\nfrom math import log, sqrt, exp, erfc, pi\n\n' +
+'def _pdf(x: float) -> float:\n    return exp(-0.5 * x * x) / sqrt(2 * pi)\n\n' +
+'def _cdf(x: float) -> float:\n    return 0.5 * erfc(-x / sqrt(2))\n\n' +
+'@dataclass\nclass Result:\n    price: float\n    delta: float\n    gamma: float\n    vega: float\n    theta: float\n    rho: float\n\n' +
+'def price(cp: int, S: float, K: float, T: float, r: float, b: float, v: float) -> Result:\n' +
+'    """cp=+1 call, -1 put. b: r (BSM) | r-q (Merton) | 0 (Black-76) | r-rf (GK)."""\n' +
+'    sq = v * sqrt(T)\n' +
+'    d1 = (log(S / K) + (b + 0.5 * v * v) * T) / sq\n' +
+'    d2 = d1 - sq\n' +
+'    eb, er = exp((b - r) * T), exp(-r * T)\n' +
+'    return Result(\n' +
+'        price=cp * (S * eb * _cdf(cp * d1) - K * er * _cdf(cp * d2)),\n' +
+'        delta=cp * eb * _cdf(cp * d1),\n' +
+'        gamma=eb * _pdf(d1) / (S * sq),\n' +
+'        vega=S * eb * _pdf(d1) * sqrt(T),\n' +
+'        theta=(-S * eb * _pdf(d1) * v / (2 * sqrt(T))\n' +
+'               - cp * (b - r) * S * eb * _cdf(cp * d1)\n' +
+'               - cp * r * K * er * _cdf(cp * d2)),\n' +
+'        rho=cp * K * T * er * _cdf(cp * d2),\n' +
+'    )\n\n' +
+'if __name__ == "__main__":\n' +
+'    res = price(+1, 100, 100, 1.0, 0.05, 0.05, 0.20)\n' +
+'    print(f"price={res.price:.6f} delta={res.delta:.6f} gamma={res.gamma:.6f}")\n';
+    } else {
+        code = '// Gbs.cs - Generalized Black-Scholes (carry b), price + Greeks. .NET 6+.\n' +
+'using System;\n\nnamespace Quant\n{\n' +
+'    public readonly record struct GbsResult(\n' +
+'        double Price, double Delta, double Gamma, double Vega, double Theta, double Rho);\n\n' +
+'    public static class Gbs\n    {\n' +
+'        private static double Pdf(double x) => Math.Exp(-0.5 * x * x) / Math.Sqrt(2 * Math.PI);\n\n' +
+'        private static double Cdf(double x)\n        {\n' +
+'            // Abramowitz-Stegun 26.2.17 via complementary erf approximation\n' +
+'            double t = 1.0 / (1.0 + 0.2316419 * Math.Abs(x));\n' +
+'            double poly = t * (0.319381530 + t * (-0.356563782 + t * (1.781477937\n' +
+'                         + t * (-1.821255978 + t * 1.330274429))));\n' +
+'            double nd = 1.0 - Pdf(Math.Abs(x)) * poly;\n' +
+'            return x >= 0 ? nd : 1.0 - nd;\n        }\n\n' +
+'        /// <summary>cp=+1 call, -1 put. b: r (BSM) | r-q (Merton) | 0 (Black-76) | r-rf (GK).</summary>\n' +
+'        public static GbsResult Price(int cp, double S, double K, double T, double r, double b, double v)\n        {\n' +
+'            double sq = v * Math.Sqrt(T);\n' +
+'            double d1 = (Math.Log(S / K) + (b + 0.5 * v * v) * T) / sq;\n' +
+'            double d2 = d1 - sq;\n' +
+'            double eb = Math.Exp((b - r) * T), er = Math.Exp(-r * T);\n' +
+'            double price = cp * (S * eb * Cdf(cp * d1) - K * er * Cdf(cp * d2));\n' +
+'            double delta = cp * eb * Cdf(cp * d1);\n' +
+'            double gamma = eb * Pdf(d1) / (S * sq);\n' +
+'            double vega  = S * eb * Pdf(d1) * Math.Sqrt(T);\n' +
+'            double theta = -S * eb * Pdf(d1) * v / (2 * Math.Sqrt(T))\n' +
+'                           - cp * (b - r) * S * eb * Cdf(cp * d1)\n' +
+'                           - cp * r * K * er * Cdf(cp * d2);\n' +
+'            double rho   = cp * K * T * er * Cdf(cp * d2);\n' +
+'            return new GbsResult(price, delta, gamma, vega, theta, rho);\n' +
+'        }\n    }\n}\n';
+    }
+    document.getElementById('sdkExpOut').textContent = code;
+}
+
+function copySdkExport() {
+    var text = document.getElementById('sdkExpOut').textContent;
+    function done() {
+        var el = document.getElementById('sdkExpCopied');
+        el.textContent = 'Copied ✓';
+        setTimeout(function() { el.textContent = ''; }, 2000);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done);
+    } else {
+        var ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta); done();
+    }
+}
+setTimeout(genSdkExport, 400);
+</script>

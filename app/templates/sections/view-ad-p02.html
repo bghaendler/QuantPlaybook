@@ -1,0 +1,61 @@
+<div id="view-ad-p02" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Algorithmic Adjoint Differentiation — Part 02</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Operator Overloading vs. Source-to-Source Compilers</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The two engineering routes to AD compared on speed, memory, intrusiveness and maintainability — and how production quant libraries actually choose.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Operator Overloading (OO)</h3>
+        <p>Replace the numeric type: <code>double</code> → <code>adouble</code> (an "active" type). Every arithmetic operator and math function is overloaded to additionally either propagate a tangent (forward mode, no tape) or <em>record the operation onto a tape</em> for later reversal (adjoint mode).</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Pros:</strong> minimal code change (templatize on the scalar type); naturally handles branches, loops, virtual calls — whatever executes gets differentiated; tools: dco/c++, CppAD, ADOL-C, Stan Math; Python autograd/JAX/PyTorch are OO at the tensor level.</li>
+            <li><strong>Cons:</strong> runtime overhead (each op does extra work + memory traffic); the <strong>tape</strong> can be huge (per-operation records — a Monte Carlo XVA run can tape billions of ops: Part 06's memory problem); blocks some compiler optimizations (vectorization through an opaque type).</li>
+            <li><strong>Typical overhead:</strong> well-engineered C++ OO adjoints run ~3–10× a double-only valuation; naive implementations 50×+ — implementation quality dominates the asymptotics.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Source-Code Transformation (SCT)</h3>
+        <p>A tool (or compiler pass) reads the program and <em>generates new source</em>: tangent-linear code (forward) or adjoint code with explicit reversal (Part 07's structure). Lineage: ADIFOR, Tapenade, OpenAD; modern incarnations: Enzyme (LLVM-level AD), JAX's XLA tracing (a hybrid: trace then compile).</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Pros:</strong> the generated code is plain code — the compiler optimizes it fully (vectorization, inlining); no per-op tape (control flow re-executed or recorded compactly); typically the fastest adjoints.</li>
+            <li><strong>Cons:</strong> the tool must parse and analyze your whole language subset — templates, pointers, virtual dispatch and external libraries are hard; build-system integration is invasive; debugging generated code is its own skill.</li>
+            <li>Best fit: numerical kernels with regular structure (PDE steppers, Monte Carlo loops) — exactly where the speed matters.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Side-by-Side</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;"></th><th style="padding: 0.45rem;">Overloading</th><th style="padding: 0.45rem;">Source transformation</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Adoption effort</td><td style="padding: 0.45rem;">Low (retype scalars)</td><td style="padding: 0.45rem;">High (toolchain + code discipline)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Speed</td><td style="padding: 0.45rem;">Good→very good</td><td style="padding: 0.45rem;">Best (compiler-optimized)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Memory</td><td style="padding: 0.45rem;">Tape-bound (checkpointing needed)</td><td style="padding: 0.45rem;">Leaner (structural reversal)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Dynamic control flow</td><td style="padding: 0.45rem;">Free (records what ran)</td><td style="padding: 0.45rem;">Hard (must reason statically)</td></tr>
+                <tr><td style="padding: 0.45rem;">External/closed libraries</td><td style="padding: 0.45rem;">Wrap with manual adjoints</td><td style="padding: 0.45rem;">Same — both need registered "custom derivatives"</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>4. How Production Systems Choose</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Banks' C++ libraries:</strong> predominantly OO (dco/c++-style) for adoption across million-line codebases — with hand-written adjoints for hot kernels and linear-algebra/solver primitives (the "symbolic adjoint of the solve, not of the solver iterations" rule: differentiate $Ax = b$ via $\bar{b} = A^{-\top}\bar{x}$, never through the LU steps).</li>
+            <li><strong>New code / research:</strong> JAX-style trace-and-compile gives OO ergonomics with SCT-class performance — increasingly the default for new quant models.</li>
+            <li><strong>Hybrid pattern (the practical answer):</strong> OO as the backbone; custom adjoints at module boundaries (curve build, root-finders, regressions); SCT/Enzyme for the few kernels where the last 5× matters.</li>
+            <li><strong>Validation either way:</strong> tangent-vs-bump and adjoint-vs-tangent dot-product tests ($\langle \dot{y}, \bar{y}\rangle = \langle \dot{x}, \bar{x}\rangle$) wired into CI — Part 11's discipline.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>OO retypes scalars and records a tape: easy in, memory-hungry, very dynamic-code-friendly.</li>
+            <li>SCT generates derivative source: fastest and leanest, but toolchain-invasive and static-analysis-bound.</li>
+            <li>Differentiate <em>mathematical</em> operations (solves, roots) symbolically at boundaries — never through iteration internals.</li>
+            <li>Production reality is hybrid: OO backbone + custom adjoints + compiled kernels, all under dot-product CI tests.</li>
+        </ul>
+    </div>
+</div>

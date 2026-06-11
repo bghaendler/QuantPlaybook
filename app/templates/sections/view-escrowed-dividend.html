@@ -1,0 +1,60 @@
+<div id="view-escrowed-dividend" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Escrowed Dividend Model</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Pricing options on stocks with known cash dividends: strip the dividends out, price on what remains — and understand the volatility distortion this convention creates.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Problem with Cash Dividends</h3>
+        <p>Black-Scholes wants a lognormal underlying, but a stock that drops by a fixed cash amount $D$ on the ex-dividend date is <em>not</em> lognormal: a proportional process cannot have an additive jump. Continuous yield $q$ (Merton) is fine for indices, but single stocks pay discrete, discretely-timed cash amounts. Some convention is needed, and the industry's oldest is the <strong>escrowed dividend</strong> model.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Escrowed Construction</h3>
+        <p>Split the stock into a riskless escrow holding the present value of dividends paid before option expiry, and a risky remainder:</p>
+        $$S_t = \underbrace{\sum_{t_i \le T} D_i e^{-r(t_i - t)}}_{\text{escrow}} + \tilde{S}_t, \qquad \tilde{S}_0 = S_0 - \sum_{t_i \le T} D_i e^{-r t_i}.$$
+        <p>Assume the <em>net</em> price $\tilde{S}$ follows GBM with volatility $\tilde\sigma$ and price European options by plain Black-Scholes on $\tilde{S}_0$:</p>
+        $$c = \tilde{S}_0\, N(d_1) - K e^{-rT} N(d_2), \qquad d_1 = \frac{\ln(\tilde{S}_0/K) + (r + \tilde\sigma^2/2)T}{\tilde\sigma\sqrt{T}}.$$
+        <p>At expiry $\tilde{S}_T = S_T$ (all pre-expiry dividends have been paid), so the payoff is correct; the model simply chooses <em>which</em> part of the stock is random.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. The Volatility Distortion</h3>
+        <p>Here is the catch: market volatility is observed on the <em>full</em> price $S$, but the model applies $\tilde\sigma$ to the smaller base $\tilde{S}$. Using the same number for both understates the dollar variance of the stock — increasingly so for long maturities with many dividends. The naive fix scales volatility:</p>
+        $$\tilde\sigma \approx \sigma \cdot \frac{S_0}{\tilde{S}_0},$$
+        <p>but this overshoots for dividends paid late in the option's life. Two standard refinements:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Haug-Haug-Lewis:</strong> time-weight each dividend's contribution to effective variance — dividends paid early reduce the risky base for almost the whole life; late dividends barely matter.</li>
+            <li><strong>Bos-Vandermark (2002):</strong> split each dividend into "near" and "far" parts ($D_i \frac{T - t_i}{T}$ adjusts spot, $D_i \frac{t_i}{T}$ adjusts strike) — a simple rule reproducing accurate prices to within basis points for typical schedules.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Alternatives Landscape</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Convention</th><th style="padding: 0.5rem;">Dynamics</th><th style="padding: 0.5rem;">Pros / Cons</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Escrowed (spot-adjusted)</td><td style="padding: 0.5rem;">GBM on $S - PV(D)$</td><td style="padding: 0.5rem;">Simple, closed-form; vol distortion, strike-dependent inconsistency</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Forward/yield (Merton $q$)</td><td style="padding: 0.5rem;">GBM with continuous yield</td><td style="padding: 0.5rem;">Clean for indices; wrong timing for single stocks</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Piecewise GBM with jumps</td><td style="padding: 0.5rem;">$S$ drops by $D_i$ at $t_i$</td><td style="padding: 0.5rem;">"True" model; no closed form — trees/FDM with node shifts</td></tr>
+                <tr><td style="padding: 0.5rem;">Proportional dividends</td><td style="padding: 0.5rem;">$S$ drops by $\delta_i S$</td><td style="padding: 0.5rem;">Preserves lognormality exactly; misstates fixed cash amounts</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.75rem;">Different conventions give <em>different implied vols from the same option price</em> — a real interoperability hazard when desks exchange vol marks. Long-dated single-stock books (and dividend derivatives desks) often blend: cash dividends for near years, proportional thereafter.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Interaction with Early Exercise</h3>
+        <p>The escrowed model is the substrate of <strong>Roll-Geske-Whaley</strong>: its lognormal net-of-dividend price is exactly what makes the compound-option mathematics work. For American puts, dividends <em>delay</em> exercise (holding the stock collects the drop), while for calls they create the only exercise dates — both effects priced on lattices built over the escrowed process with the dividend added back at node dates.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Escrowed model: GBM on $S_0 - PV(\text{dividends})$, plain BS thereafter — payoff-consistent and closed-form.</li>
+            <li>Applying full-stock vol to the reduced base understates risk; scale or use HHL / Bos-Vandermark adjustments.</li>
+            <li>Convention choice changes implied vols — document which dividend model your numbers assume.</li>
+            <li>Foundation for RGW Americans; lattices handle the general discrete-dividend case.</li>
+        </ul>
+    </div>
+</div>

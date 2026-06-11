@@ -1,0 +1,68 @@
+<div id="view-realized-implied-vol" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Realized vs. Implied Volatility Dynamics</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Two views of the same quantity: volatility measured from history versus volatility priced by the options market — and the premium that separates them.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Realized (Historical) Volatility</h3>
+        <p>The model-free measurement from observed returns. Using $n$ intraday or daily log-returns $r_i$ over a window:</p>
+        $$\text{RV} = \sqrt{\frac{252}{n}\sum_{i=1}^{n} r_i^2} \quad \text{(annualized, zero-mean convention)}.$$
+        <p>High-frequency realized variance (sum of squared 5-minute returns) converges to integrated variance $\int \sigma_t^2 dt$ as sampling frequency rises — until microstructure noise (bid-ask bounce) contaminates it; 5-minute sampling is the standard compromise. Range-based alternatives (Parkinson, Garman-Klass, Yang-Zhang) extract more information per day from OHLC data, with Parkinson's high-low estimator about 5× more efficient than close-to-close.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Implied Volatility</h3>
+        <p>The $\sigma$ that equates the Black-Scholes formula to the observed option price:</p>
+        $$C_{mkt} = C_{BS}(S, K, T, r, \sigma_{imp}).$$
+        <p>It is a <em>forward-looking, risk-neutral</em> quantity: the market's variance forecast plus compensation for bearing volatility risk. IV varies by strike (smile/skew) and maturity (term structure); a single options market therefore prices an entire surface $\sigma_{imp}(K, T)$. Model-free variance measures (the VIX) aggregate the surface:</p>
+        $$\text{VIX}^2 \approx \frac{2}{T}\,e^{rT} \int_0^\infty \frac{Q(K)}{K^2}\, dK,$$
+        <p>the replication cost of a variance swap from a strip of out-of-the-money options.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. The Volatility Risk Premium</h3>
+        <p>Systematically, implied exceeds subsequently-realized volatility:</p>
+        $$\text{VRP}_t = \sigma_{imp,t}^2 - \mathbb{E}_t[\text{RV}_{t \to t+T}^2] > 0 \;\text{ on average}.$$
+        <p>For the S&amp;P 500, implied vol has historically exceeded realized by ~2–4 vol points on average. Why? Buyers of options (crash protection) pay a premium to sellers who bear convexity risk concentrated in the worst states. Consequences:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Short-vol strategies</strong> (selling delta-hedged straddles, variance swaps) earn an insurance-like premium punctuated by severe drawdowns (Feb 2018 "Volmageddon", Mar 2020).</li>
+            <li>IV is a <em>biased but informative</em> forecast of RV: in forecasting regressions $RV = a + b\,IV + \epsilon$, $b < 1$ but IV usually subsumes historical predictors.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Dynamics: How the Two Interact</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Mean reversion:</strong> both series revert; vol-of-vol is itself volatile and spikes are faster than decays (up the escalator, down the elevator — inverted: vol jumps up, bleeds down).</li>
+            <li><strong>Spot-vol correlation:</strong> equity index IV moves inversely with spot (leverage effect), formalized by negative $\rho$ in stochastic-vol models and by the skew-stickiness of the surface.</li>
+            <li><strong>Term-structure regimes:</strong> contango (upward IV curve) in calm markets — short-dated IV below long-run mean; backwardation in stress.</li>
+            <li><strong>Gamma P&amp;L identity:</strong> a delta-hedged option earns $\tfrac{1}{2}\Gamma S^2(\sigma_{real}^2 - \sigma_{imp}^2)\,dt$ per instant — trading "realized vs. implied" is literally the P&amp;L of hedged option books.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>5. Practical Comparison</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;"></th><th style="padding: 0.5rem;">Realized Vol</th><th style="padding: 0.5rem;">Implied Vol</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Direction</td><td style="padding: 0.5rem;">Backward-looking</td><td style="padding: 0.5rem;">Forward-looking</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Measure</td><td style="padding: 0.5rem;">Physical $\mathbb{P}$</td><td style="padding: 0.5rem;">Risk-neutral $\mathbb{Q}$</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Granularity</td><td style="padding: 0.5rem;">One number per window</td><td style="padding: 0.5rem;">Full surface $(K, T)$</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Bias</td><td style="padding: 0.5rem;">Estimation noise</td><td style="padding: 0.5rem;">Risk premium (upward)</td></tr>
+                <tr><td style="padding: 0.5rem;">Use</td><td style="padding: 0.5rem;">Risk measurement, GARCH input</td><td style="padding: 0.5rem;">Pricing, hedging, sentiment</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>RV measures what happened ($\mathbb{P}$); IV prices what might happen ($\mathbb{Q}$) plus a risk premium.</li>
+            <li>IV &gt; subsequent RV on average — the volatility risk premium funds option sellers.</li>
+            <li>Delta-hedged option P&amp;L ∝ $\Gamma S^2(\sigma_{real}^2 - \sigma_{imp}^2)$: the spread is directly tradable.</li>
+            <li>VIX-style indices are model-free option-strip aggregates of implied variance.</li>
+            <li>Both series mean-revert; spikes are asymmetric and correlate negatively with equity returns.</li>
+        </ul>
+    </div>
+</div>

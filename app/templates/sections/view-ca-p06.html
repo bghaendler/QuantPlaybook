@@ -1,0 +1,53 @@
+<div id="view-ca-p06" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Complex Analysis for Quants — Part 06</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Cauchy-Riemann Differentiability Tests</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The pair of first-order PDEs that decide holomorphy: derivation, use as a test, and what they say geometrically.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Derivation: Two Directions Must Agree</h3>
+        <p>Write $f(z) = u(x,y) + iv(x,y)$. Compute $f'(z_0)$ approaching horizontally ($h = \Delta x$) and vertically ($h = i\Delta y$):</p>
+        $$f' = u_x + iv_x \qquad\text{and}\qquad f' = \frac{u_y + iv_y}{i} = v_y - iu_y.$$
+        <p>Equating real and imaginary parts gives the <strong>Cauchy-Riemann equations</strong>:</p>
+        $$\boxed{\;u_x = v_y, \qquad u_y = -v_x\;}$$
+        <p><strong>Test:</strong> if $u, v$ have continuous partials and satisfy CR on an open set, $f$ is holomorphic there (sufficiency needs the continuity); if CR fails anywhere, $f$ is not complex-differentiable there. When they hold: $f' = u_x + iv_x$.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Worked Checks</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>$f = z^2$:</strong> $u = x^2 - y^2$, $v = 2xy$ ⇒ $u_x = 2x = v_y$, $u_y = -2y = -v_x$ ✓ everywhere; $f' = 2x + i2y = 2z$.</li>
+            <li><strong>$f = e^z$:</strong> $u = e^x\cos y$, $v = e^x\sin y$ ⇒ CR holds everywhere; $f' = e^z$ — the exponential really is its own derivative in ℂ.</li>
+            <li><strong>$f = \bar{z}$:</strong> $u = x$, $v = -y$ ⇒ $u_x = 1 \ne -1 = v_y$ ✗ — nowhere holomorphic despite being perfectly smooth as a map of $\mathbb{R}^2$. Conjugation is the canonical non-example.</li>
+            <li><strong>$f = |z|^2$:</strong> $u = x^2 + y^2$, $v = 0$ ⇒ CR only at the origin — differentiable at one point, holomorphic nowhere (holomorphy needs an open set).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. The Wirtinger Shortcut: No $\bar{z}$ Allowed</h3>
+        <p>Define $\frac{\partial}{\partial\bar{z}} = \frac{1}{2}\left(\frac{\partial}{\partial x} + i\frac{\partial}{\partial y}\right)$. The CR equations compress to one line:</p>
+        $$\frac{\partial f}{\partial \bar{z}} = 0$$
+        <p>— holomorphic functions are exactly those with no $\bar{z}$-dependence. Practical scanning rule: expressions built from $z$ alone ($z^2$, $e^z$, $1/(z-a)$) pass; anything smuggling in $\bar z$, $|z|$, $\mathrm{Re}\,z$, $\arg z$ fails. This is also the form used in generalized (quasi-conformal) settings and in some SABR/heat-kernel literature.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Geometric and Analytic Consequences</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Orthogonal level curves:</strong> $\nabla u \cdot \nabla v = u_xv_x + u_yv_y = -u_xu_y + u_yu_x = 0$ — the families $u = $ const and $v = $ const always cross at right angles (the conformal grid of Part 04).</li>
+            <li><strong>Harmonicity:</strong> differentiating CR crosswise: $u_{xx} + u_{yy} = 0 = v_{xx} + v_{yy}$ — both components solve Laplace's equation (Part 07's subject).</li>
+            <li><strong>Jacobian:</strong> $\det J = u_xv_y - u_yv_x = u_x^2 + u_y^2 = |f'(z)|^2 \ge 0$ — holomorphic maps preserve orientation and scale areas by $|f'|^2$.</li>
+            <li><strong>Rigidity:</strong> if $f' \equiv 0$ on a connected open set, or if $|f|$ is constant, then $f$ is constant — first hints of the maximum-modulus principle.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>CR: $u_x = v_y$, $u_y = -v_x$ — necessary always; sufficient with continuous partials; then $f' = u_x + iv_x$.</li>
+            <li>$\bar z$, $|z|$, $\mathrm{Re}\,z$ in a formula ⇒ not holomorphic ($\partial f/\partial\bar z \ne 0$).</li>
+            <li>CR ⇒ orthogonal level sets, harmonic components, Jacobian $= |f'|^2$.</li>
+            <li>Holomorphy is a property of open sets, not points — $|z|^2$ is the standard trap.</li>
+        </ul>
+    </div>
+</div>

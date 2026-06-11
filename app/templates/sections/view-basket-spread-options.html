@@ -1,0 +1,63 @@
+<div id="view-basket-spread-options" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Basket &amp; Spread Options (Kirk's Approximation)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Options on portfolios and differences of assets: why sums of lognormals force approximation, and the moment-matching toolkit that prices them.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Common Problem</h3>
+        <p>Both products are options on a linear combination $B = \sum_i w_i S_i$ — positive weights for baskets, mixed signs for spreads. Under multivariate GBM, $B$ is a sum of correlated lognormals: <strong>no closed-form density exists</strong>. The toolbox: (i) match moments of $B$ to a tractable law; (ii) condition on a one-dimensional factor; (iii) integrate numerically (FFT/quadrature in low dimension); (iv) Monte Carlo with a geometric control.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Baskets: Lognormal Moment Matching</h3>
+        <p>The first two moments of $B_T$ are exact:</p>
+        $$M_1 = \sum_i w_i F_i, \qquad M_2 = \sum_{i,j} w_i w_j F_i F_j\, e^{\rho_{ij}\sigma_i\sigma_j T}, \qquad F_i = S_i e^{b_i T}.$$
+        <p>Fit a lognormal with $\sigma_B^2 T = \ln(M_2/M_1^2)$ and price with Black-76 on $M_1$ ("Levy approximation" for baskets). Refinements: shifted lognormal or Johnson distributions (capture skew), Ju's Taylor expansion, Curran-style conditioning on the geometric average — the most accurate analytic family. Accuracy is excellent for typical index baskets (similar vols, positive ρ); it degrades when weights are mixed-sign or dispersion is extreme. Note <strong>basket vol &lt; average vol</strong>: $\sigma_B \approx \sqrt{\bar\rho}\,\bar\sigma$ for similar assets — the diversification discount that makes basket options cheaper than baskets of options, with the gap = the price of correlation.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Spreads: Kirk's Approximation</h3>
+        <p>For $\max(F_1 - F_2 - K, 0)$ the basket trick fails ($B$ can be negative). Kirk (1995): group $F_2 + K$ and treat the ratio $Z = F_1/(F_2 + K)$ as lognormal. Then</p>
+        $$c \approx e^{-rT}\left[F_1 N(d_1) - (F_2 + K) N(d_2)\right],$$
+        $$\sigma_Z = \sqrt{\sigma_1^2 - 2\rho\sigma_1\sigma_2 W + \sigma_2^2 W^2}, \qquad W = \frac{F_2}{F_2 + K},$$
+        $$d_1 = \frac{\ln\left(F_1/(F_2+K)\right) + \sigma_Z^2 T/2}{\sigma_Z\sqrt{T}}, \qquad d_2 = d_1 - \sigma_Z\sqrt{T}.$$
+        <p>Exact at $K = 0$ (it <em>is</em> Margrabe); very accurate for $K$ small relative to $F_2$; biased for large strikes/vols because $F_2 + K$ (lognormal + constant) is not lognormal. Fixes: Bjerksund-Stensland (2006) spread formula (better boundary treatment), second-order corrections (Li-Deng-Zhou), or exact 2D quadrature:</p>
+        $$c = e^{-rT}\int \text{BS-call}\big(F_1 e^{\rho\sigma_1\sqrt{T} z - \rho^2\sigma_1^2T/2},\ K + F_2(z)\big)\, \phi(z)\, dz,$$
+        <p>conditioning on the second asset's driver — one numerical integral, machine-precision accurate.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Risk &amp; Correlation Skew</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Cega:</strong> baskets are long ρ in vol terms (higher correlation → higher basket vol → higher option value); spreads are short ρ. Equal and opposite books partially internalize.</li>
+            <li><strong>Correlation skew:</strong> equity correlations rise in sell-offs; a single flat ρ misprices OTM basket puts (too cheap) — index smiles embed exactly this, and dispersion desks trade the residual.</li>
+            <li><strong>Decomposition hedging:</strong> delta per asset from the approximation formulas is reliable; vega allocation across assets and the ρ mark are the judgment calls.</li>
+            <li>Energy spreads add a twist: legs with different units (heat rate) and seasonal vol surfaces per leg — Kirk runs per delivery month.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>5. Method Selection Guide</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Situation</th><th style="padding: 0.5rem;">Recommended</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Positive-weight basket, moderate dispersion</td><td style="padding: 0.5rem;">Lognormal moment match (Levy/Ju); Curran for precision</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Two-asset spread, small K</td><td style="padding: 0.5rem;">Kirk (speed) or Bjerksund-Stensland (accuracy)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Two-asset spread, large K or high vol</td><td style="padding: 0.5rem;">1D conditioning integral / 2D quadrature</td></tr>
+                <tr><td style="padding: 0.5rem;">Many assets, smiles, exotic features</td><td style="padding: 0.5rem;">Monte Carlo + geometric-basket control variate</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Sums of lognormals have no closed law — basket/spread pricing is approximation engineering.</li>
+            <li>Baskets: match $M_1, M_2$ to a lognormal; basket vol ≈ $\sqrt{\bar\rho}\,\bar\sigma$ — correlation is the discount.</li>
+            <li>Kirk: lognormal-shift trick, exact at $K=0$ (Margrabe), weakens as $K$ grows.</li>
+            <li>Conditioning integrals give near-exact spread prices at trivial cost — use them as benchmarks.</li>
+            <li>Cega signs: baskets long ρ, spreads short ρ; correlation skew is the systematic model risk.</li>
+        </ul>
+    </div>
+</div>

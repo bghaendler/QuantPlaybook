@@ -1,0 +1,44 @@
+<div id="view-sp-tarn" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Target Redemption Note (TARN)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">A note that dies when it has paid enough: coupons accumulate toward a target cap, redemption triggers on reaching it — and the path-dependent tail has a famous habit of biting.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Mechanics</h3>
+        <p>The note pays structured coupons $c_i$ (typically inverse floaters, FX-linked, or steepeners). A running total tracks them:</p>
+        $$Q_i = \sum_{j \le i} c_j, \qquad \text{redeem at par at the first } t_i \text{ with } Q_i \ge Q^{target}.$$
+        <p>Variants on the trigger payment: <em>exact</em> (final coupon trimmed to hit the target exactly), <em>capped</em> (no excess), or <em>full</em> (pay the whole final coupon). If the target is never reached, the note runs to maturity — usually repaying par but having paid meager coupons for years. The target (e.g. 10% cumulative on a 10-year note) is the marketing hook: "high coupons until you've earned 10%, then your money back early."</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Embedded Bet</h3>
+        <p>The investor is <strong>long the fast-redemption scenario</strong>: big early coupons → quick par redemption → high IRR. The bad state mirrors the autocallable's: coupons shrink (the linked rate moves against), the note <em>extends</em> to full maturity, paying nearly nothing while capital is trapped — duration explodes exactly in the adverse regime. The structure is a knock-out on cumulative coupons: each coupon payment burns down the remaining optionality, making the value strongly <strong>path-dependent</strong> (the running sum $Q$ is a state variable, like an Asian average or swing take).</p>
+    </div>
+
+    <div class="card">
+        <h3>3. The FX-TARF Episode</h3>
+        <p>The traded-product cousin — the <strong>Target Redemption Forward (TARF)</strong> — books a strip of FX forwards at better-than-market rates that knocks out once cumulative gains hit the target, but with <em>leveraged downside</em> (2:1 notional on losing fixings) and <em>no target protection on losses</em>: gains are capped by the knock-out, losses are not. Corporate hedgers in Asia (USD/CNH 2014-15, again 2022) and exporters worldwide accumulated TARFs for the rate enhancement; when spot trended through the strikes, losses compounded on doubled notionals for the full remaining schedule. The asymmetry — <strong>knock-out on the profitable side only</strong> — is the entire economics: the "enhanced rate" is premium from selling a strip of leveraged options that survive precisely when losing.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Pricing &amp; Risk</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>State variables:</strong> (market factor, cumulative coupon $Q$, time) — priced by Monte Carlo (industry default) or PDE/lattice with a $Q$-grid; LSMC if issuer-callable features coexist.</li>
+            <li><strong>Models:</strong> rate TARNs need full term-structure dynamics with smile (LMM-SABR / Cheyette); FX TARFs need stochastic-local-vol FX surfaces — the knock-out reads barrier-style smile dynamics on the <em>cumulative</em> process.</li>
+            <li><strong>Greeks:</strong> discontinuous at the target boundary (a digital on $Q$); vega and gamma concentrate just below target; delta can flip sign as the knock-out probability dominates the coupon value.</li>
+            <li><strong>XVA matters:</strong> extension scenarios coincide with the counterparty being deep out-of-the-money — wrong-way credit exposure is intrinsic to TARF books.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>TARN: structured coupons + automatic redemption when cumulative coupons hit a target.</li>
+            <li>The running coupon total is a genuine state variable — Asian-style path dependence with a digital boundary.</li>
+            <li>Good states end early (capped upside); bad states extend fully (uncapped duration/loss) — the TARF asymmetry.</li>
+            <li>FX TARFs with leveraged downside are the canonical corporate-hedging blow-up case study.</li>
+            <li>Simulation on smile-dynamic models with the $Q$-state, plus wrong-way XVA, is the pricing reality.</li>
+        </ul>
+    </div>
+</div>

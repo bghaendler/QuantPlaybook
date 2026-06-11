@@ -1,0 +1,58 @@
+<div id="view-sp-barrier-reverse-convertible" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Barrier Reverse Convertible (BRC)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The best-selling structured product: a reverse convertible whose short put only activates if the underlying crashes through a barrier — conditional protection, unconditional coupon.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Structure</h3>
+        <p>Like the classic RC — unconditional coupon $c$, term 6–24 months — but the equity risk is a <strong>down-and-in put</strong> with strike $K$ (≈ 100%) and barrier $H$ (typically 55–75% of spot):</p>
+        $$V_T = \begin{cases} N(1 + c), & \text{barrier never breached, or } S_T \ge K \\[4pt] N\frac{S_T}{K} + Nc, & \text{barrier breached and } S_T < K \end{cases}$$
+        <p>Decomposition: <strong>ZCB + short down-and-in put (DIP)</strong>. The DIP costs less than the vanilla put (only crash paths activate it), so the coupon is somewhat lower than a classic RC's — the difference buys the "conditional capital protection". Barrier styles: continuous (American, touch any time), daily close, or <strong>European</strong> (checked at maturity only — materially safer for the investor and increasingly the retail standard).</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Cliff Risk Profile</h3>
+        <ul style="line-height: 1.8;">
+            <li>While $H$ holds: bond-like, full coupon, par redemption — in backtests the barrier "never" breaks, which is exactly how it is sold.</li>
+            <li>On breach: the position <em>becomes</em> a vanilla short ATM-strike put — value gaps down by the protection's worth at the worst moment. Loss runs from $K$ down, not from $H$: a 61% barrier touch with $S_T = 65$ still loses 35% (plus coupon back).</li>
+            <li>The investor is short <strong>crash correlation with their own worst-case</strong>: barriers break in market-wide sell-offs, so BRC portfolios lose jointly, precisely when the holder's other assets fall.</li>
+            <li>Worst-of BRCs (2–3 underlyings, breach on <em>any</em>) dominate issuance: the down-and-in worst-of put is cheap (short correlation + short skew + barrier), funding headline coupons of 8–15% — and concentrating dispersion risk on the buyer.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Pricing &amp; Hedging (Desk View)</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Model:</strong> the DIP is smile-dynamics-sensitive — local vol overprices, pure stochastic vol underprices barrier hits; desks use calibrated <strong>SLV</strong> with barrier shifts for hedge slippage. Worst-of adds a (stochastic) correlation mark.</li>
+            <li><strong>Greeks near $H$:</strong> the short DIP gives the issuer's hedge book exploding gamma/delta at the barrier — hedge unwinds at breach ("barrier defense" flows) can accelerate the very move, a known market-microstructure effect in names with large BRC open interest.</li>
+            <li><strong>Vega sign flips</strong> with spot: far above the barrier the investor is mildly short vol; approaching it, violently so.</li>
+            <li><strong>Autocallable cousin:</strong> add early-redemption triggers and the BRC becomes the Phoenix/autocall family (next sections) — same risk core, plus callability.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Term-Sheet Anatomy (What Actually Matters)</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Term</th><th style="padding: 0.5rem;">Investor-friendly</th><th style="padding: 0.5rem;">Coupon-friendly (riskier)</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Barrier level</td><td style="padding: 0.5rem;">55–60%</td><td style="padding: 0.5rem;">70–80%</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Observation</td><td style="padding: 0.5rem;">European (final only)</td><td style="padding: 0.5rem;">Continuous/American</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Underlyings</td><td style="padding: 0.5rem;">Single index</td><td style="padding: 0.5rem;">Worst-of 3 volatile single names</td></tr>
+                <tr><td style="padding: 0.5rem;">Settlement</td><td style="padding: 0.5rem;">Cash</td><td style="padding: 0.5rem;">Physical (delivery of the worst share)</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.75rem;">Every coupon-friendly term is an extra option sold by the investor — the table <em>is</em> the pricing.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>BRC = ZCB + short down-and-in put: conditional protection that vanishes exactly in crashes.</li>
+            <li>Loss on breach measures from the strike, not the barrier — the cliff is the defining risk.</li>
+            <li>Worst-of + continuous barriers + volatile names = highest coupon = most options sold.</li>
+            <li>Desk pricing needs SLV + correlation + barrier shifts; investor analysis needs only the decomposition.</li>
+            <li>Barrier-defense hedging flows make large BRC strikes/barriers visible in the underlying's behavior.</li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+<div id="view-asv-p01" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Asymptotics of Stochastic Volatility — Part 01</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Hyperbolic Metrics &amp; Heat Kernels in SABR Toy Models</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The geometric heart of the SABR formula: stochastic volatility as Brownian motion on a hyperbolic surface, and short-time heat kernels as the asymptotic engine.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. SABR as Geometry</h3>
+        <p>The SABR model ($\beta = 1$ toy version):</p>
+        $$dF = \alpha F\,dW_1, \qquad d\alpha = \nu\,\alpha\,dW_2, \qquad d\langle W_1, W_2\rangle = \rho\,dt.$$
+        <p>The state $(F, \alpha)$ diffuses on a 2-D manifold whose natural (inverse-diffusion) metric is, after coordinates $x = \ln F$, $y = \alpha/\nu$:</p>
+        $$ds^2 \;\propto\; \frac{dx^2 - 2\rho\,dx\,dy + dy^2}{(1-\rho^2)\,y^2}$$
+        <p>— the <strong>hyperbolic plane $\mathbb{H}^2$</strong> (Poincaré upper half-plane metric, sheared by ρ). Stochastic volatility is literally Brownian motion on a negatively curved surface: the vol level $y$ scales distances, so moves are "cheap" when vol is high and "expensive" when low — the geometric reading of why smiles steepen as vol falls.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Heat Kernels and the Short-Time Expansion</h3>
+        <p>Transition densities solve the heat equation on the manifold; for small $t$ the <strong>Varadhan/heat-kernel expansion</strong> holds:</p>
+        $$p_t(z_0, z) \;\sim\; \frac{C}{t}\,\exp\!\left(-\frac{d^2(z_0, z)}{2t}\right)\big(a_0(z_0,z) + a_1 t + \dots\big),$$
+        <p>where $d(\cdot,\cdot)$ is the <strong>geodesic distance</strong> in the metric above. On $\mathbb{H}^2$ the geodesic distance is known in closed form (McKean's kernel) — and this is precisely why SABR admits an explicit asymptotic smile: implied vol at strike $K$ is, to leading order,</p>
+        $$\sigma_{BS}(K) \approx \frac{\ln(F/K)}{d\big((F,\alpha), \text{strike line}\big)}$$
+        <p>— log-moneyness over hyperbolic distance to the strike. Hagan's formula is this geometry plus correction terms $a_1$.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. The Toy Computation (ρ = 0 Sketch)</h3>
+        <p>For $\rho = 0$, the metric is the standard half-plane; the geodesic distance from $(x_0, y_0)$ to $(x, y)$ satisfies $\cosh d = 1 + \frac{(x - x_0)^2 + (y - y_0)^2}{2y_0y}$. Minimizing over the terminal vol $y$ (the option fixes only the strike $x = \ln K$) gives the effective distance; expanding for small total vol yields:</p>
+        $$\sigma_{BS}(K) \approx \alpha\,\frac{\zeta}{\hat{x}(\zeta)}, \qquad \zeta = \frac{\nu}{\alpha}\ln(F/K), \qquad \hat{x}(\zeta) = \ln\!\left(\frac{\sqrt{1 - 2\rho\zeta + \zeta^2} + \zeta - \rho}{1 - \rho}\right),$$
+        <p>— the backbone $\zeta/\hat x$ factor of the Hagan-Kumar-Lesniewski-Woodward formula, derived here as pure geometry. ATM ($\zeta \to 0$): $\sigma_{BS} \to \alpha$; the smile's curvature comes from the metric's curvature.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Why This Viewpoint Pays</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Validity limits become visible:</strong> heat-kernel asymptotics are <em>short-time</em>; Hagan's formula degrades at large $\nu^2T$ and low strikes (the famous negative-density wings) — geometry says where and why (Part 02 fixes; Part 03 contrasts large-time).</li>
+            <li><strong>Generality:</strong> any stochastic-vol model defines a metric; the same machinery gives leading-order smiles for CEV-SABR ($\beta < 1$ adds a drift/potential term), Heston-type models, and local-stochastic-vol hybrids.</li>
+            <li><strong>Unification:</strong> implied vol ≈ moneyness/geodesic-distance is the model-free skeleton of <em>all</em> short-maturity smile asymptotics (BBF formula in local vol: $\sigma_{BS}^{-1} = \int \sigma_{loc}^{-1}$ along the path — the 1-D geodesic).</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>SABR's state space is the hyperbolic plane; vol level rescales distance — smiles are curvature made visible.</li>
+            <li>Short-time densities follow Varadhan: $p \sim e^{-d^2/2t}$ with geodesic distance $d$ — implied vol ≈ moneyness/distance.</li>
+            <li>The $\zeta/\hat{x}(\zeta)$ backbone of Hagan's formula is the closed-form $\mathbb{H}^2$ geodesic computation.</li>
+            <li>Geometric origin ⇒ known limits: short-maturity validity, wing pathologies, and a template for any SV model.</li>
+        </ul>
+    </div>
+</div>

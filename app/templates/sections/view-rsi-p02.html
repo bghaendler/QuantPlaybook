@@ -1,0 +1,57 @@
+<div id="view-rsi-p02" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Risk-Sensitive Investing — Part 02</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Risk-Sensitive Control vs. Mean-Variance Optimization</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The risk-sensitive criterion — exponential-of-growth utility — as the dynamic, higher-moment-aware upgrade of Markowitz, and the precise sense in which it nests both Kelly and mean-variance.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Risk-Sensitive Criterion</h3>
+        <p>Maximize the long-run <strong>risk-adjusted growth rate</strong>:</p>
+        $$J_\theta = \liminf_{T\to\infty}\; -\frac{2}{\theta T}\,\ln\,\mathbb{E}\Big[e^{-\frac{\theta}{2}\ln W_T}\Big],$$
+        <p>with risk-sensitivity θ &gt; 0. Expanding the cumulant generating function for small θ:</p>
+        $$J_\theta \;\approx\; \underbrace{\text{growth rate}}_{\text{Kelly}} \;-\; \frac{\theta}{4}\,\underbrace{\text{variance of growth}}_{\text{penalty}} \;+\; O(\theta^2\,\text{higher cumulants}),$$
+        <p>— mean-variance <em>on log-wealth growth</em>, plus automatic penalties on skewness/kurtosis through the higher cumulants: the exponential never truncates the expansion. θ → 0 recovers Kelly (pure growth); larger θ behaves like an effective risk aversion γ = 1 + θ/2 (fractional Kelly — Part 03's bridge).</p>
+    </div>
+
+    <div class="card">
+        <h3>2. What It Fixes Relative to Markowitz</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;"></th><th style="padding: 0.45rem;">Mean-variance (one period)</th><th style="padding: 0.45rem;">Risk-sensitive control</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Horizon</td><td style="padding: 0.45rem;">Single period, then re-solved</td><td style="padding: 0.45rem;">Dynamic, infinite-horizon ergodic criterion</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Compounding</td><td style="padding: 0.45rem;">Arithmetic returns (ignores vol drag)</td><td style="padding: 0.45rem;">Log-wealth: $-\sigma^2/2$ drag priced in natively</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Higher moments</td><td style="padding: 0.45rem;">Absent (quadratic utility)</td><td style="padding: 0.45rem;">All cumulants penalized via the exponential</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Time consistency</td><td style="padding: 0.45rem;">Dynamic MV is time-inconsistent (pre-commitment vs. recursive)</td><td style="padding: 0.45rem;">Time-consistent by construction (it's an HJB)</td></tr>
+                <tr><td style="padding: 0.45rem;">Factor dynamics</td><td style="padding: 0.45rem;">Exogenous estimates</td><td style="padding: 0.45rem;">States in the control problem (hedging demands)</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>3. The Solution Structure (Bielecki-Pliska / Davis-Lleo)</h3>
+        <p>With affine factor dynamics $dx = (a + Ax)dt + \Lambda dW$ driving expected returns, the risk-sensitive HJB reduces to a <strong>matrix Riccati ODE</strong> — the same equation family as Kalman filters and affine term-structure models (MM Part 12's lineage). The optimal portfolio:</p>
+        $$\pi^*_t = \frac{1}{1 + \theta/2}\,\Sigma^{-1}\Big[(\mu(x_t) - r) \;+\; \text{(hedging term from the Riccati solution)}\Big],$$
+        <p>— a <em>scaled Merton weight plus a factor-hedging tilt</em>. Everything from Part 01 carries over with γ replaced by 1 + θ/2; the criterion's ergodic nature makes the weights stationary policies rather than horizon-dependent schedules (the Part 07 comparison).</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Practice Notes</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Calibrating θ:</strong> back it out from a target — long-run vol of the strategy, acceptable 10-year drawdown quantile, or matching a fractional-Kelly habit (θ = 2(1/f − 1) for fraction f) — more communicable than "γ = 3".</li>
+            <li><strong>Estimation risk dominates:</strong> $\Sigma^{-1}(\mu - r)$ amplifies μ errors exactly like Markowitz — the cure is identical (shrinkage, Black-Litterman priors: Part 04), the criterion does not exempt you.</li>
+            <li><strong>Where it shines:</strong> multi-period institutional mandates with factor predictability (the hedging demands are the value-add) and leverage-sensitive strategies (vol drag and tail cumulants priced natively — cf. Part 06's jump extensions).</li>
+            <li><strong>Diagnostics:</strong> simulate the policy and check the realized growth-vs-variance trade sits on the θ-frontier; off-frontier results flag mis-specified factor dynamics.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Risk-sensitive control = exponential utility on growth: Kelly minus θ/4 × growth variance minus higher-cumulant penalties.</li>
+            <li>It nests Kelly (θ→0) and behaves as fractional Kelly / CRRA with γ = 1 + θ/2 — one dial spans the family.</li>
+            <li>Affine factors ⇒ Riccati ODEs ⇒ Merton weights scaled and tilted by hedging demands; time-consistent, unlike dynamic MV.</li>
+            <li>θ is communicable via drawdown/vol targets; estimation risk still rules — pair with shrinkage/BL priors.</li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+<div id="view-sp-worst-of-phoenix" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Worst-Of Autocallable Phoenix</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The maximum-coupon configuration: every Phoenix trigger reads the worst of several underlyings — stacking correlation and dispersion premia on top of the autocall machine.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Structure</h3>
+        <p>A Phoenix autocallable (memory coupons at barrier $B$, autocall at $A$, European protection barrier $H$) where every observation evaluates the <strong>worst performer</strong> of a basket of $m$ underlyings (usually 2–4 stocks or indices):</p>
+        $$W_{t} = \min_{k=1..m} \frac{S^k_{t}}{S^k_0},$$
+        <p>coupon iff $W_{t_i} \ge B$, autocall iff $W_{t_i} \ge A$, and at maturity redemption $= N \cdot W_T$ if $W_T < H$ — typically settled physically in the worst share. One bad name out of three decides everything.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Why the Coupon Is So High</h3>
+        <p>The investor sells, simultaneously:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Volatility</strong> (each name's puts/digitals),</li>
+            <li><strong>Skew</strong> (the protection barrier loads on downside smiles),</li>
+            <li><strong>Correlation/dispersion:</strong> the worst-of is worth less (to the holder) the more the basket disperses; expected min of $m$ lognormals falls roughly with $\sigma\sqrt{(1-\rho)}$ — every notch of correlation <em>not</em> realized is investor loss, dealer gain. The implied correlation embedded at issue is typically <em>above</em> historical — the investor sells correlation cheap insurance-style,</li>
+            <li><strong>Forward volatility &amp; extension risk</strong> (the autocall kills good paths early).</li>
+        </ul>
+        <p>Stacked premia explain coupons of 10–18% p.a. on baskets of liquid names — and why realized outcomes have fat left tails: all the sold risks correlate in stress.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Selection &amp; Behavioral Pitfalls</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Basket construction:</strong> issuers favor high-vol, low-correlation mixes (e.g. a bank + a tech + an energy name) — optically diversified, but for a worst-of, diversification <em>hurts</em>: more independent names = more lottery tickets for one to crash.</li>
+            <li><strong>"All large caps" comfort:</strong> the relevant statistic is the worst single-name drawdown over the term — for 3 volatile names over 3 years, a 40%+ drawdown in at least one is closer to likely than rare.</li>
+            <li><strong>Survivorship marketing:</strong> backtests start after crashes; memory coupons mask interim stress until the barrier event converts the note into the worst stock at its lows.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Dealer-Side Risk</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Correlation books:</strong> dealers accumulate long-dispersion/short-correlation inventory from issuance and recycle via dispersion swaps, correlation swaps and index-vs-single-name vega — capacity limits feed back into issue terms.</li>
+            <li><strong>Cross-gamma between names:</strong> hedging the worst-of near barrier requires trading <em>each</em> name conditioned on the others — model risk concentrates in the joint smile (copula/SLV-correlation assumptions), not the marginals.</li>
+            <li><strong>Stress behavior:</strong> in a broad sell-off, correlation → 1: the dealer's long-dispersion hedge underperforms exactly as barriers approach, while vega flips — the 2020 autocall hedging losses across several houses were precisely this configuration.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>All triggers read the worst performer; one crashing name controls coupons, autocall and redemption.</li>
+            <li>The coupon stacks vol + skew + correlation + forward-vol premia — the most options sold per unit notional in retail.</li>
+            <li>For worst-of products, a "diversified" basket is riskier, not safer.</li>
+            <li>Pricing: Monte Carlo on multi-asset SLV with a correlation mark; the joint smile is the model risk.</li>
+            <li>Dealer dispersion inventory and stress correlation-convergence shape both terms and crisis dynamics.</li>
+        </ul>
+    </div>
+</div>

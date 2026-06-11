@@ -1,0 +1,60 @@
+<div id="view-arm-p03" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Advanced Risk Management — Part 03</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Non-Normal Distributions in Risk Assets</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The distributions that actually fit returns: Student-t, skewed families, mixtures and EVT tails — and how each reshapes the risk numbers built on them.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. How Returns Violate Normality</h3>
+        <p>Daily equity-index returns typically show excess kurtosis 5–30, skewness −0.3 to −1, and extreme days far beyond Gaussian reach — the August 1987-style "10σ+" events that a normal model prices at once-per-universe frequencies. Diagnostics that make it visible:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>QQ-plots</strong> against the normal: S-shaped departure in both tails (heavier), often asymmetric (left worse).</li>
+            <li><strong>Jarque-Bera / Anderson-Darling tests:</strong> reject normality at any sample size that matters — the question is never <em>if</em> but <em>how</em> non-normal.</li>
+            <li><strong>Aggregational Gaussianity:</strong> monthly returns look more normal than daily (CLT working through time) — tail modeling matters most exactly at risk-management horizons.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. The Working Distribution Families</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;">Family</th><th style="padding: 0.45rem;">Captures</th><th style="padding: 0.45rem;">Notes</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Student-t (ν ≈ 3–6)</td><td style="padding: 0.45rem;">Symmetric fat tails</td><td style="padding: 0.45rem;">Power tails $x^{-\nu-1}$; the default GARCH innovation; ν ≤ 4 ⇒ kurtosis infinite</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Skewed-t / NIG / hyperbolic</td><td style="padding: 0.45rem;">Tails + asymmetry</td><td style="padding: 0.45rem;">Lévy-class (NIG) families fit both wings separately</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Gaussian mixtures / regime-switching</td><td style="padding: 0.45rem;">Calm + crisis states</td><td style="padding: 0.45rem;">2 components already generate realistic kurtosis; interpretable (Part 06)</td></tr>
+                <tr><td style="padding: 0.45rem;">GPD tails (EVT)</td><td style="padding: 0.45rem;">Tail-only, beyond a threshold</td><td style="padding: 0.45rem;">Pickands-Balkema-de Haan: excesses → GPD; the rigorous high-quantile tool</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.6rem;">Two routes to fat tails — <em>unconditional</em> (a heavy-tailed law) vs. <em>conditional</em> (Gaussian innovations + stochastic volatility/GARCH): real data needs both (t-innovations <em>inside</em> a GARCH layer), since clustering alone underexplains tail thickness.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Impact on Risk Numbers</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>VaR scaling breaks:</strong> normal 99% VaR = 2.33σ; a t₄ at the same σ puts 99% VaR ≈ 3.0σ and 99.9% far beyond — the divergence grows with confidence level, i.e. exactly where regulation looks.</li>
+            <li><strong>ES vs. VaR gap widens:</strong> under normality ES₉₇.₅ ≈ VaR₉₉; under fat tails ES exceeds VaR by much more — one reason FRTB switched to ES.</li>
+            <li><strong>Square-root-of-time fails:</strong> $\sqrt{h}$ scaling assumes i.i.d. normality; clustering and tails make 10-day risk ≠ √10 × 1-day (typically more in stress).</li>
+            <li><strong>Cornish-Fisher quick fix:</strong> $z^{CF} = z + \frac{\gamma_1}{6}(z^2 - 1) + \frac{\gamma_2}{24}(z^3 - 3z) - \frac{\gamma_1^2}{36}(2z^3 - 5z)$ — moment-based quantile correction; usable to ~99%, unreliable beyond (use EVT there).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Fitting and Choosing</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>MLE for t/skew-t</strong> is routine; check ν stability across subsamples (Part 01's instability lens).</li>
+            <li><strong>EVT recipe:</strong> threshold at ~95th percentile via mean-excess-plot linearity, fit GPD ($\xi$ = tail index ≈ 0.2–0.4 for equities), extrapolate quantiles; mind the bias-variance trade in threshold choice (HFT Part 04's Hill discipline applies verbatim).</li>
+            <li><strong>Selection criterion:</strong> out-of-sample tail calibration — do 1% exceedances occur 1% of the time? (formal backtests in Part 07) — not AIC on the full density; risk cares only about the tail it quotes.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Returns are fat-tailed and left-skewed at risk horizons; normality fails hardest at high confidence levels.</li>
+            <li>Use t/skew-t bodies, GARCH conditioning, and GPD tails — conditional and unconditional heaviness are both real.</li>
+            <li>Fat tails widen VaR, widen the ES-VaR gap further, and break √t scaling — recompute, don't rescale.</li>
+            <li>Judge fits by out-of-sample tail coverage; Cornish-Fisher to ~99%, EVT beyond.</li>
+        </ul>
+    </div>
+</div>

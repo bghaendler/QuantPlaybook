@@ -1,0 +1,62 @@
+<div id="view-asv-p08" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Asymptotics of Stochastic Volatility — Part 08</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Large Deviation Principles in Option Pricing</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The unifying formalism behind every expansion in this series: rate functions, Varadhan and Gärtner-Ellis, and how LDP turns "rare event" into "computable exponent".</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The LDP Template</h3>
+        <p>A family $(X^\epsilon)$ satisfies a large deviation principle with rate function $I$ if, for nice sets $A$:</p>
+        $$\mathbb{P}(X^\epsilon \in A) \;\asymp\; \exp\!\Big(-\frac{1}{\epsilon}\inf_{x \in A} I(x)\Big), \qquad \epsilon \to 0.$$
+        <p>Probabilities of rare events decay exponentially, and <em>only the cheapest point of the set matters</em> ("the most likely of the unlikely paths"). The two production theorems:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Schilder/Freidlin-Wentzell:</strong> small-noise diffusion paths — $I(\phi) = \frac{1}{2}\int|\dot\phi - b(\phi)|^2/\sigma^2(\phi)\,dt$: rare events follow energy-minimizing (geodesic) paths — Part 01's geometry is this theorem.</li>
+            <li><strong>Gärtner-Ellis:</strong> from the limiting cumulant function $\Lambda(u) = \lim\epsilon\ln\mathbb{E}[e^{u X^\epsilon/\epsilon}]$, the rate is its Legendre transform $I = \Lambda^*$ — Part 03's large-time smile is this theorem.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Option Prices as Rare-Event Probabilities</h3>
+        <p>Deep OTM options <em>are</em> large deviation functionals: with $\epsilon = T$ (short time) or $\epsilon = 1/T$ (long time, scaled strikes):</p>
+        $$-\lim\,\epsilon\ln C(K) = I(k) \quad\Longrightarrow\quad \sigma_{BS}(k) = \frac{|k|}{\sqrt{2I(k)}}\;(\text{short time}),$$
+        <p>so the <strong>entire asymptotic smile is the rate function in disguise</strong>. The series in one diagram:</p>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;">Regime</th><th style="padding: 0.45rem;">LDP</th><th style="padding: 0.45rem;">Rate function = smile via</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">$T\to0$, SV (Parts 01–02)</td><td style="padding: 0.45rem;">Freidlin-Wentzell</td><td style="padding: 0.45rem;">$I = d^2/2$, geodesic distance on $\mathbb{H}^2$</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">$T\to\infty$ (Parts 03–04)</td><td style="padding: 0.45rem;">Gärtner-Ellis</td><td style="padding: 0.45rem;">$I = \Lambda^*$ from the limiting cumulant fn</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Jumps $T\to0$ (Part 05)</td><td style="padding: 0.45rem;">LDP fails at speed $1/T$ — one-jump events at $O(T)$</td><td style="padding: 0.45rem;">linear-in-T prices; modified (log-scale) rates</td></tr>
+                <tr><td style="padding: 0.45rem;">Wings, fixed T (Parts 05–06)</td><td style="padding: 0.45rem;">Moment/Cramér-type bounds</td><td style="padding: 0.45rem;">Lee's formula = exponential-moment LDP in strike</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>3. LDP as a Computational Device</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Saddlepoint pricing:</strong> the Lugannani-Rice/saddlepoint approximations of tail probabilities are the practical, finite-$\epsilon$ face of Gärtner-Ellis — used for CDO tranche losses, portfolio VaR (ARM connection) and quick wing quotes from any characteristic function.</li>
+            <li><strong>Importance sampling done right:</strong> the optimal exponential tilt for rare-event Monte Carlo is the LDP-optimal change of measure (tilt to make the rare event typical) — variance reduction by factors of 10³+ for deep barriers/far wings; the rate function tells you the tilt before any simulation.</li>
+            <li><strong>Optimal paths as diagnostics:</strong> the minimizing path (instanton) shows <em>how</em> the rare event happens — e.g. for a far OTM equity put under SV: vol spikes early, spot then dives — matching crash phenomenology and guiding stress-scenario design (reverse stress testing's mathematical cousin).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Limits of the Lens</h3>
+        <ul style="line-height: 1.8;">
+            <li>LDP gives <em>exponents</em>, not constants — a price known "up to subexponential factors" can still be off 2× in level: pair with heat-kernel prefactors (Part 01) or saddlepoint corrections for usable numbers.</li>
+            <li>Order-of-limits discipline (Part 03's warning): small-T-then-wing ≠ wing-then-small-T; every formula carries its regime.</li>
+            <li>Non-Markovian frontiers: rough volatility satisfies modified LDPs (rate functionals over fractional paths) reproducing the $T^{-0.4}$ skew — the active research edge extending exactly this framework.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>LDP: rare-event probabilities ≍ $e^{-I/\epsilon}$; only the cheapest path matters — geodesics and Legendre transforms compute $I$.</li>
+            <li>Asymptotic smiles <em>are</em> rate functions: Freidlin-Wentzell (short T), Gärtner-Ellis (long T), moment bounds (wings) — one framework, the whole series.</li>
+            <li>Saddlepoints and LDP-optimal importance sampling turn the theory into pricing and variance-reduction machinery.</li>
+            <li>Exponents need prefactors for production numbers; respect regimes; rough vol is this framework's frontier.</li>
+        </ul>
+    </div>
+</div>

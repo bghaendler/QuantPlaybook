@@ -1,0 +1,54 @@
+<div id="view-greeks-higher-order" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Higher-Order Greeks (Vanna, Volga, Charm, Color)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Second- and third-order sensitivities: how delta and vega themselves drift with spot, vol and time — the language of smile risk and hedge decay.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Zoo, Organized</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Greek</th><th style="padding: 0.5rem;">Definition</th><th style="padding: 0.5rem;">Closed form (BSM, carry $b$)</th><th style="padding: 0.5rem;">Reads as</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;"><strong>Vanna</strong></td><td style="padding: 0.5rem;">$\dfrac{\partial^2 V}{\partial S\, \partial \sigma} = \dfrac{\partial \Delta}{\partial \sigma}$</td><td style="padding: 0.5rem;">$-e^{(b-r)T}\phi(d_1)\dfrac{d_2}{\sigma}$</td><td style="padding: 0.5rem;">Delta's vol sensitivity / vega's spot sensitivity</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;"><strong>Volga</strong> (vomma)</td><td style="padding: 0.5rem;">$\dfrac{\partial^2 V}{\partial \sigma^2}$</td><td style="padding: 0.5rem;">$\text{Vega} \cdot \dfrac{d_1 d_2}{\sigma}$</td><td style="padding: 0.5rem;">Convexity in vol</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;"><strong>Charm</strong> (delta decay)</td><td style="padding: 0.5rem;">$\dfrac{\partial \Delta}{\partial t}$</td><td style="padding: 0.5rem;">$-e^{(b-r)T}\left[\phi(d_1)\dfrac{2(b-r)T - d_2\sigma\sqrt{T}}{2T\sigma\sqrt{T}} + (b-r)N(d_1)\right]$ (call)</td><td style="padding: 0.5rem;">How the hedge ages overnight</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;"><strong>Color</strong> (gamma decay)</td><td style="padding: 0.5rem;">$\dfrac{\partial \Gamma}{\partial t}$</td><td style="padding: 0.5rem;">$-\dfrac{e^{(b-r)T}\phi(d_1)}{2ST\sigma\sqrt{T}}\left[2(b-r)T + 1 + \dfrac{2(b-r)T - d_2\sigma\sqrt{T}}{\sigma\sqrt{T}}d_1\right]$</td><td style="padding: 0.5rem;">How gamma concentrates toward expiry</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;"><strong>Speed</strong></td><td style="padding: 0.5rem;">$\dfrac{\partial \Gamma}{\partial S}$</td><td style="padding: 0.5rem;">$-\dfrac{\Gamma}{S}\left(1 + \dfrac{d_1}{\sigma\sqrt{T}}\right)$</td><td style="padding: 0.5rem;">Gamma's skewness in spot</td></tr>
+                <tr><td style="padding: 0.5rem;"><strong>Zomma</strong></td><td style="padding: 0.5rem;">$\dfrac{\partial \Gamma}{\partial \sigma}$</td><td style="padding: 0.5rem;">$\Gamma \cdot \dfrac{d_1 d_2 - 1}{\sigma}$</td><td style="padding: 0.5rem;">Gamma's vol sensitivity</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>2. Vanna: The Skew Greek</h3>
+        <p>Vanna is positive for high-strike (OTM call) options and negative for low strikes: vol up moves call deltas toward ½ from both sides. A book that is delta-neutral but vanna-long gains delta as vol rises. Because equity vol rises when spot falls (negative spot-vol correlation), vanna couples directly to the <strong>skew</strong>: risk-reversals (long call / short put) are the canonical vanna trade, and the "vanna-volga" method prices first-generation FX exotics by charging for exactly this exposure. Dealer vanna positioning is a popular explanation of index pinning and "vanna flows" around option expiries.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Volga: The Smile-Curvature Greek</h3>
+        <p>Volga $= \text{Vega}\, d_1 d_2/\sigma$ is <em>positive for OTM and ITM options but ≈ 0 ATM</em> (where $d_1 d_2 < 0$ it can dip negative just around the money). Long wings = long volga = long vol-of-vol. This is why the smile exists at all under stochastic vol: OTM options carry convexity in $\sigma$ that flat-vol Black-Scholes does not price. Butterflies (long wings, short body) isolate volga; the FX market's quoted <strong>butterfly</strong> is its price.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Charm &amp; Color: Hedges That Age</h3>
+        <p>Charm tells a trader how today's delta hedge will be wrong tomorrow <em>even if nothing moves</em>: OTM option deltas bleed toward 0, ITM toward $\pm e^{(b-r)T}$. Material for overnight risk near expiry and for weekly-option market-makers (charm flows around expiries move index futures). Color is the same statement for gamma: gamma concentrates violently into the ATM strike as $T \to 0$, so a book that looks gamma-flat today can be dangerously peaked on expiry morning.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Taylor Expansion of P&amp;L</h3>
+        <p>The full second-order P&amp;L of an option book over $(\delta t, \delta S, \delta\sigma)$:</p>
+        $$\delta V \approx \Delta\,\delta S + \text{Vega}\,\delta\sigma + \Theta\,\delta t + \tfrac{1}{2}\Gamma\,\delta S^2 + \tfrac{1}{2}\text{Volga}\,\delta\sigma^2 + \text{Vanna}\,\delta S\,\delta\sigma + \text{Charm}\,\delta S\, \delta t + \dots$$
+        <p>Desk risk reports are exactly this expansion. Cross-terms matter: with equity spot-vol correlation ≈ −0.7, the vanna term $\text{Vanna} \times \delta S \delta\sigma$ is a systematic, not random, contribution — ignoring it biases hedged P&amp;L every day in the same direction.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Vanna = ∂Δ/∂σ — the skew/risk-reversal Greek; Volga = ∂²V/∂σ² — the smile-curvature/butterfly Greek.</li>
+            <li>Charm and color quantify overnight decay of delta and gamma hedges; critical near expiry.</li>
+            <li>Wings are long volga; ATM is nearly volga-flat — stochastic vol prices the wings up.</li>
+            <li>Second-order P&amp;L expansion with cross-terms is the desk's actual risk report.</li>
+            <li>Vanna-volga pricing charges BS prices for vanna and volga exposure to fit the FX smile.</li>
+        </ul>
+    </div>
+</div>

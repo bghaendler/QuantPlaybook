@@ -1,0 +1,52 @@
+<div id="view-ca-p15" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Complex Analysis for Quants — Part 15</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Residue Theorem &amp; Polynomial Contour Integration</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The grand assembly: loop integrals = 2πi × (sum of enclosed residues). Computation rules, worked rational-function examples, and the checklist that prevents the standard mistakes.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Theorem</h3>
+        <p>For $f$ holomorphic on and inside a simple closed (counterclockwise) contour $\gamma$ except at isolated singularities $z_1, \dots, z_k$ inside:</p>
+        $$\oint_\gamma f(z)\,dz = 2\pi i\sum_{j=1}^{k}\mathrm{Res}_{z_j} f.$$
+        <p>Proof in one breath: deform $\gamma$ into $k$ small circles (Part 10), Laurent-expand on each (Part 13), integrate term by term — only $a_{-1}$ survives (Part 09). Everything in the series so far is a lemma for this line.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Computing Residues</h3>
+        <ul style="line-height: 1.9;">
+            <li><strong>Simple pole:</strong> $\mathrm{Res}_{z_0} f = \lim_{z\to z_0}(z - z_0)f(z)$.</li>
+            <li><strong>Quotient shortcut</strong> ($f = g/h$, simple zero of $h$): $\mathrm{Res}_{z_0} = \dfrac{g(z_0)}{h'(z_0)}$ — the fastest and least error-prone rule; use it whenever possible.</li>
+            <li><strong>Pole of order $m$:</strong> $\mathrm{Res}_{z_0} = \dfrac{1}{(m-1)!}\lim_{z\to z_0}\dfrac{d^{m-1}}{dz^{m-1}}\bigl[(z - z_0)^m f(z)\bigr]$.</li>
+            <li><strong>Series extraction:</strong> multiply/divide known Taylor series and read the $z^{-1}$ coefficient — often easier than the derivative formula for order ≥ 3, and the only way at essential singularities.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Worked Rational Examples</h3>
+        <p><strong>(a)</strong> $\displaystyle\oint_{|z|=2}\frac{z^2}{(z-1)(z^2+9)}dz$: poles at $1, \pm 3i$; only $z = 1$ inside $|z| = 2$. Residue $= \frac{1}{10}$ ⇒ integral $= \frac{\pi i}{5}$.</p>
+        <p><strong>(b)</strong> $\displaystyle\oint_{|z|=4}\frac{z^2}{(z-1)(z^2+9)}dz$: now all three poles inside. By the quotient rule at $\pm 3i$: $\frac{z^2}{(z-1)\cdot 2z}\big|_{z=\pm3i} = \frac{\pm3i}{2(\pm3i - 1)}$. Sum of all residues $= \frac{1}{10} + \frac{9}{10} = 1$ ⇒ integral $= 2\pi i$. (Sanity check: for large $|z|$, $f \sim 1/z$, and $\oint z^{-1} = 2\pi i$ — the "residue at infinity" confirming the sum.)</p>
+        <p><strong>(c) Higher-order pole:</strong> $\displaystyle\oint_{|z|=1}\frac{e^{z}}{z^3}dz$: triple pole; residue = coefficient of $z^2$ in $e^z$ = $\frac{1}{2}$ ⇒ integral $= \pi i$. Series beats the double-derivative formula.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Error-Proofing Checklist</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Which poles are inside?</strong> Compute moduli against the contour radius — the #1 mistake is summing a pole that sits outside (or on!) the contour. Poles <em>on</em> the contour ⇒ principal values/indented contours, a different calculation.</li>
+            <li><strong>Orientation:</strong> clockwise traversal flips the sign ($-2\pi i\sum$).</li>
+            <li><strong>Cancel before classifying:</strong> common zeros of numerator/denominator change pole orders (Part 14).</li>
+            <li><strong>Cross-check:</strong> sum of <em>all</em> residues (including at ∞) of a rational function is 0; for $\deg(\text{denom}) \ge \deg(\text{num}) + 2$, the large-circle integral → 0 — free consistency tests, as in example (b).</li>
+            <li><strong>Numerical verification:</strong> parameterize and quadrature the contour (50 lines of NumPy) — the habit that catches algebra slips before they reach a pricing formula.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>$\oint f = 2\pi i \sum \mathrm{Res}$ over <em>enclosed</em> singularities — deformation + Laurent + the $z^{-1}$ integral, assembled.</li>
+            <li>Use $g/h'$ for simple poles, series extraction for high orders and essential points.</li>
+            <li>Always audit pole locations vs. the contour and the traversal direction.</li>
+            <li>The residues-sum-to-zero and decay checks (and quick numerical quadrature) make the calculus self-verifying.</li>
+        </ul>
+    </div>
+</div>

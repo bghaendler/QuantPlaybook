@@ -1,0 +1,58 @@
+<div id="view-cdo-copula" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">CDO Pricing &amp; Copula Correlation</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Tranching a portfolio of credits and pricing the slices: the Gaussian copula, base correlation, and the model that became a byword for model risk.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The CDO Structure</h3>
+        <p>A portfolio of $n$ credits (bonds, loans, or CDS — a "synthetic" CDO) is sliced by cumulative loss. A tranche with attachment $a$ and detachment $d$ absorbs portfolio losses in $[a, d]$:</p>
+        $$L_{tranche}(t) = \frac{\min(L(t), d) - \min(L(t), a)}{d - a}, \qquad L(t) = \frac{1}{n}\sum_i (1 - R_i)\,\mathbb{1}_{\{\tau_i \le t\}}.$$
+        <p>Equity (0–3%) takes first losses for a fat coupon; mezzanine (3–7%) next; senior/super-senior last. Pricing a tranche = computing the <strong>loss distribution</strong> of the portfolio at each payment date — which depends overwhelmingly on default <em>correlation</em>: single-name spreads pin expected loss, correlation decides how it is shared across tranches.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Gaussian Copula (Li, 2000)</h3>
+        <p>Glue marginal survival curves $Q_i(t)$ (bootstrapped from CDS) into a joint law via latent Gaussian factors. One-factor version:</p>
+        $$X_i = \sqrt{\rho}\, M + \sqrt{1 - \rho}\, Z_i, \qquad \tau_i \le t \iff X_i \le \Phi^{-1}\big(1 - Q_i(t)\big),$$
+        <p>with common factor $M$ and idiosyncratic $Z_i$. Conditional on $M$, defaults are independent with probability</p>
+        $$p_i(t \mid M) = \Phi\!\left(\frac{\Phi^{-1}(1 - Q_i(t)) - \sqrt{\rho}\, M}{\sqrt{1 - \rho}}\right),$$
+        <p>so the loss distribution is a one-dimensional integral over $M$ of (almost) binomial mixtures — computed by recursion or, in the <strong>large homogeneous portfolio (Vasicek)</strong> limit, in closed form. The same mathematics is the Basel IRB formula; tractability made it the universal market standard for index tranches (iTraxx/CDX).</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Correlation Smile &amp; Base Correlation</h3>
+        <p>Inverting market tranche prices for the single ρ that reprices each tranche (<strong>implied compound correlation</strong>) yields different ρ per tranche — a <em>correlation smile</em>, the smoking gun that the Gaussian copula is mis-specified (its tail dependence is zero: extreme joint defaults are too unlikely). The market's workaround, <strong>base correlation</strong>: quote ρ for equity tranches $[0, d]$ at each detachment $d$ and price any tranche as a difference of two base tranches. It interpolates cleanly but is a smile-quoting convention, not a model — it can even imply negative expected tranche losses if interpolated carelessly.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. What Went Wrong (2007-2008)</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Tail dependence:</strong> Gaussian factors → joint extreme defaults essentially impossible; real mortgage defaults were driven by one factor (house prices) with near-total dependence in the tail. Student-t or Clayton copulas (with tail dependence) price senior risk very differently.</li>
+            <li><strong>Correlation as a constant:</strong> ρ calibrated to benign history; realized correlation in stress → 1, exactly when senior tranches matter.</li>
+            <li><strong>CDO-squared opacity:</strong> tranches of tranches amplified parameter sensitivity beyond any calibration's resolution.</li>
+            <li><strong>The lesson is general:</strong> marginals can be perfectly calibrated while the dependence structure — the actual product — is guessed. Copula choice <em>is</em> the price of a correlation product.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>5. The Mathematics Worth Keeping</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Sklar's theorem:</strong> any joint law = marginals + copula $C(u_1, \dots, u_n)$ — the clean separation of calibration concerns; still the right framework, with better copulas.</li>
+            <li><strong>Conditional-independence factor trick:</strong> integrate out $M$ — reused in CVA, mortgage, and insurance portfolio models.</li>
+            <li><strong>Vasicek large-pool loss density:</strong> $f(x)$ with $\Phi^{-1}$ algebra — Basel capital, loan-book stress testing.</li>
+            <li>Post-crisis tranche markets (index tranches, bespoke CSOs are back since 2017) still quote Gaussian base correlation — now understood as a quoting convention with model risk explicitly reserved.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Tranches are options on portfolio loss; correlation allocates a fixed expected loss across the capital structure.</li>
+            <li>Gaussian copula: marginals from CDS + one-factor latent Gaussians ⇒ semi-analytic loss distributions.</li>
+            <li>Tranche-implied correlation smiles ⇒ base-correlation quoting, mirroring vol-smile practice.</li>
+            <li>Zero tail dependence was the fatal flaw: dependence structure, not marginals, is the product.</li>
+            <li>Sklar separation, factor conditioning and the Vasicek limit remain core tools across portfolio risk.</li>
+        </ul>
+    </div>
+</div>

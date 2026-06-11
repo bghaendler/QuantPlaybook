@@ -1,0 +1,53 @@
+<div id="view-compound-chooser-options" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Compound &amp; Chooser Options (Geske, Rubinstein)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Options on options: two layers of decision, bivariate normals, and the cheapest way to buy time before committing to a hedge.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Compound Options: The Four Types</h3>
+        <p>A compound option (Geske 1979) gives the right at $T_1$ to pay $K_1$ for an underlying option with strike $K_2$ expiring at $T_2 > T_1$: call-on-call, call-on-put, put-on-call, put-on-put. Exercise the outer call iff the inner option is then worth more than $K_1$, i.e. iff $S_{T_1} > S^*$ where $S^*$ solves</p>
+        $$c_{BS}(S^*, K_2, T_2 - T_1) = K_1.$$
+        <p>The call-on-call price needs the joint probability of exercise at both dates — a bivariate normal with correlation $\rho = \sqrt{T_1/T_2}$:</p>
+        $$C_{CoC} = S e^{(b-r)T_2} M(a_1, b_1; \rho) - K_2 e^{-rT_2} M(a_2, b_2; \rho) - K_1 e^{-rT_1} N(a_2),$$
+        $$a_{1,2} = \frac{\ln(S/S^*) + (b \pm \sigma^2/2)T_1}{\sigma\sqrt{T_1}}, \qquad b_{1,2} = \frac{\ln(S/K_2) + (b \pm \sigma^2/2)T_2}{\sigma\sqrt{T_2}}.$$
+    </div>
+
+    <div class="card">
+        <h3>2. Why Compounds Matter Beyond the Product</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Corporate finance is compound:</strong> in Merton's structural model, equity of a levered firm is a call on assets — so an equity <em>option</em> is a compound option on assets (Geske's stochastic-leverage extension generates realistic skew).</li>
+            <li><strong>Sequential investment:</strong> R&amp;D phases, staged ventures, licenses: each stage is a call on the next — the real-options workhorse.</li>
+            <li><strong>American calls with one dividend:</strong> Roll-Geske-Whaley is exactly compound mathematics.</li>
+            <li><strong>Hedging contingent exposure:</strong> bid on a contract you may not win → buy a call on the FX hedge rather than the hedge itself (cheaper; pay the second premium only if needed).</li>
+            <li><strong>Vol convexity:</strong> compounds are sensitive to forward vol and vol-of-vol — the inner option's future <em>vega</em> is part of today's underlying.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Chooser Options (Rubinstein 1991)</h3>
+        <p>A <strong>simple chooser</strong> ("as-you-like-it") lets the holder declare at $T_1$ whether the contract is a call or a put, both with strike $K$ and expiry $T_2$. By put-call parity the time-$T_1$ choice value is</p>
+        $$\max(c, p) = c + \max(0, p - c) = c + \max\left(0, K e^{-r(T_2 - T_1)} - S_{T_1} e^{(b-r)(T_2-T_1)}\right),$$
+        <p>so the chooser decomposes <em>exactly</em> into: <strong>one call (K, T₂) + one put with adjusted strike $Ke^{-r(T_2-T_1)}$ expiring at $T_1$</strong> (on the carry-adjusted asset). Hence a closed form with only univariate normals:</p>
+        $$V = c_{BS}(S, K, T_2) + p_{BS}\big(S e^{(b-r)(T_2-T_1)},\ K e^{-r(T_2-T_1)},\ T_1\big).$$
+        <p>A <strong>complex chooser</strong> (different strikes/expiries for the call and put branches) loses this trick and prices like a compound, with a critical $S^*$ and bivariate normals.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Chooser vs. Straddle</h3>
+        <p>A straddle holds call <em>and</em> put to expiry; the chooser must abandon one at $T_1$:</p>
+        $$\text{Chooser}(T_1 = 0) = \text{single option} \quad\le\quad \text{Chooser}(T_1) \nearrow \quad\le\quad \text{Chooser}(T_1 = T_2) = \text{straddle}.$$
+        <p>Price is increasing in the choice date. Typical numbers ($S = K = 100$, σ = 25%, T₂ = 1y): single option ≈ 12, chooser with $T_1$ = 6m ≈ 17–18, straddle ≈ 20. Use case: event risk of known timing but unknown direction (elections, verdicts, FDA decisions) at a discount to the straddle — you pay only for optionality up to the decision date.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Compound options: two exercise dates ⇒ critical price $S^*$ + bivariate normal with $\rho = \sqrt{T_1/T_2}$.</li>
+            <li>Geske's formula underlies equity-as-option corporate finance, staged real options, and RGW Americans.</li>
+            <li>Simple choosers decompose by parity into a call + maturity-adjusted put — univariate closed form.</li>
+            <li>Chooser value rises with the decision date, bounded by single option and straddle.</li>
+            <li>Both products load on forward volatility — quote them off a model with credible vol dynamics, not flat BS.</li>
+        </ul>
+    </div>
+</div>

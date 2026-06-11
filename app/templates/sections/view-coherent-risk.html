@@ -1,0 +1,59 @@
+<div id="view-coherent-risk" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Coherent Risk Measures &amp; Expected Shortfall</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">What properties should a risk number satisfy? The axiomatic framework of Artzner et al., why VaR fails it, and why Expected Shortfall became the regulatory standard.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Coherence Axioms (Artzner, Delbaen, Eber, Heath 1999)</h3>
+        <p>A risk measure $\rho(X)$ on portfolio loss/value $X$ is <strong>coherent</strong> if it satisfies four axioms:</p>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Axiom</th><th style="padding: 0.5rem;">Statement</th><th style="padding: 0.5rem;">Meaning</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;"><strong>Monotonicity</strong></td><td style="padding: 0.5rem;">$X_1 \le X_2 \Rightarrow \rho(X_1) \ge \rho(X_2)$</td><td style="padding: 0.5rem;">Better payoffs need less capital</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;"><strong>Translation invariance</strong></td><td style="padding: 0.5rem;">$\rho(X + c) = \rho(X) - c$</td><td style="padding: 0.5rem;">Adding cash reduces risk one-for-one</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;"><strong>Positive homogeneity</strong></td><td style="padding: 0.5rem;">$\rho(\lambda X) = \lambda \rho(X)$, $\lambda \ge 0$</td><td style="padding: 0.5rem;">Risk scales with position size</td></tr>
+                <tr><td style="padding: 0.5rem;"><strong>Subadditivity</strong></td><td style="padding: 0.5rem;">$\rho(X_1 + X_2) \le \rho(X_1) + \rho(X_2)$</td><td style="padding: 0.5rem;">Diversification never adds risk</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>2. Why VaR Is Not Coherent</h3>
+        <p>Value-at-Risk at level $\alpha$ is a quantile of the loss distribution $L$:</p>
+        $$\text{VaR}_\alpha(L) = \inf\{\ell : \mathbb{P}(L \le \ell) \ge \alpha\}.$$
+        <p>VaR satisfies the first three axioms but <strong>fails subadditivity</strong> for non-elliptical distributions. Classic counterexample: two independent defaultable bonds, each defaulting with probability 4% and losing 100 (else 0). At 95%:</p>
+        $$\text{VaR}_{95\%}(\text{each bond}) = 0, \qquad \text{VaR}_{95\%}(\text{both}) > 0,$$
+        <p>because the probability that <em>at least one</em> defaults is $1 - 0.96^2 \approx 7.8\% > 5\%$. Concentrating in one bond looks safer than diversifying — a perverse incentive. VaR also says nothing about <em>how bad</em> the tail is beyond the quantile, and tail sizes can be manipulated without moving the quantile.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Expected Shortfall (CVaR)</h3>
+        <p><strong>Expected Shortfall</strong> averages the tail beyond VaR:</p>
+        $$\text{ES}_\alpha(L) = \frac{1}{1-\alpha}\int_\alpha^1 \text{VaR}_u(L)\, du = \mathbb{E}\left[L \mid L \ge \text{VaR}_\alpha(L)\right] \;\;(\text{continuous } L).$$
+        <p>ES is coherent (subadditive for all distributions), tail-sensitive, and convex — which also makes ES-constrained portfolio optimization a tractable convex program (Rockafellar &amp; Uryasev's linearization). For a normal loss $L \sim \mathcal{N}(\mu, \sigma^2)$:</p>
+        $$\text{VaR}_\alpha = \mu + \sigma\, z_\alpha, \qquad \text{ES}_\alpha = \mu + \sigma\, \frac{\phi(z_\alpha)}{1-\alpha},$$
+        <p>e.g. at 97.5%: $z_\alpha = 1.96$, $\text{ES} = \mu + 2.34\,\sigma$. Under normality, $\text{ES}_{97.5\%} \approx \text{VaR}_{99\%}$ — exactly why Basel chose 97.5% ES to replace 99% VaR.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Regulatory Shift: FRTB</h3>
+        <p>The Fundamental Review of the Trading Book (Basel III/IV market-risk framework) replaced 99% 10-day VaR with <strong>97.5% liquidity-adjusted ES</strong>, computed over stressed periods with liquidity horizons from 10 to 120 days by risk factor. Motivations: tail-blindness of VaR in 2008, non-subadditivity, and gaming of quantile-based capital. Trade-off: ES estimates need more tail data (higher estimation variance) and ES is not <em>elicitable</em>, complicating direct backtesting — in practice the VaR levels underlying ES are backtested instead.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Spectral &amp; Distortion Generalizations</h3>
+        <p>ES is one member of the family of <strong>spectral risk measures</strong> $\rho_\phi(L) = \int_0^1 \phi(u)\,\text{VaR}_u(L)\,du$ with $\phi$ a non-decreasing weight function integrating to 1 — coherence is equivalent to weighting worse outcomes (weakly) more. ES uses a flat weight on the worst $(1-\alpha)$ tail; risk-averse users can choose weights increasing toward the worst outcomes. This unifies coherent measures with distortion measures from insurance pricing.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Coherence = monotonicity + translation invariance + homogeneity + subadditivity.</li>
+            <li>VaR violates subadditivity → can penalize diversification and ignores tail severity.</li>
+            <li>$\text{ES}_\alpha$ = average loss beyond VaR; coherent, convex, optimization-friendly.</li>
+            <li>Normal case: $\text{ES}_\alpha = \mu + \sigma\phi(z_\alpha)/(1-\alpha)$; ES@97.5% ≈ VaR@99%.</li>
+            <li>FRTB moved regulatory capital from VaR to stressed, liquidity-adjusted ES.</li>
+        </ul>
+    </div>
+</div>

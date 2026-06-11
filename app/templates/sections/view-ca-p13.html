@@ -1,0 +1,55 @@
+<div id="view-ca-p13" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Complex Analysis for Quants — Part 13</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Taylor vs. Laurent Expansions</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Series with negative powers: expanding around singularities, annuli of convergence, and the principal part that carries all the integration information.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Two Series, Two Geometries</h3>
+        <p><strong>Taylor</strong> (holomorphic at $z_0$): $f(z) = \sum_{n \ge 0} a_n(z - z_0)^n$ on a <em>disk</em> $|z - z_0| < R$, $R$ = distance to nearest singularity.</p>
+        <p><strong>Laurent</strong> (holomorphic on an annulus $r < |z - z_0| < R$):</p>
+        $$f(z) = \sum_{n=-\infty}^{\infty} a_n(z - z_0)^n, \qquad a_n = \frac{1}{2\pi i}\oint_\gamma \frac{f(z)}{(z - z_0)^{n+1}}\,dz.$$
+        <p>Negative powers (the <strong>principal part</strong>) encode behavior <em>at</em> the singularity; non-negative powers (the analytic part) the smooth remainder. The coefficient $a_{-1}$ — the <strong>residue</strong> — is the only one that survives loop integration (Part 09's $\oint z^n dz$), which is why Laurent series are the bridge to the residue theorem.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Same Function, Different Annuli</h3>
+        <p>$f(z) = \dfrac{1}{(z-1)(z-2)} = \dfrac{1}{z-2} - \dfrac{1}{z-1}$ has three distinct expansions around $z_0 = 0$:</p>
+        <ul style="line-height: 1.9;">
+            <li><strong>$|z| < 1$ (Taylor):</strong> $\;f = \sum_{n\ge0}\left(1 - 2^{-n-1}\right)z^n$ — geometric series both ways "outward".</li>
+            <li><strong>$1 < |z| < 2$ (Laurent):</strong> $\;f = -\sum_{n\ge1} z^{-n} - \sum_{n\ge0}\frac{z^n}{2^{n+1}}$ — expand $\frac{1}{z-1}$ in powers of $1/z$, $\frac{1}{z-2}$ in powers of $z$.</li>
+            <li><strong>$|z| > 2$:</strong> $\;f = \sum_{n\ge1}\frac{2^{n-1} - 1}{z^n}$ — both factors in powers of $1/z$.</li>
+        </ul>
+        <p>One function, three series, three regions — always state the annulus. The mechanical skill: rewrite each factor as $\frac{1}{a}\cdot\frac{1}{1 - z/a}$ (for $|z| < |a|$) or $\frac{1}{z}\cdot\frac{1}{1 - a/z}$ (for $|z| > |a|$) and use geometric series.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Reading Off Structure</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Finite principal part</strong> (terminates at $a_{-m}$): pole of order $m$ — e.g. $\frac{\cos z}{z^2} = \frac{1}{z^2} - \frac{1}{2} + \frac{z^2}{24} - \dots$ (double pole, residue 0!).</li>
+            <li><strong>Infinite principal part:</strong> essential singularity — $e^{1/z} = 1 + \frac{1}{z} + \frac{1}{2!z^2} + \dots$ (residue 1).</li>
+            <li><strong>No principal part:</strong> removable — $\frac{\sin z}{z} = 1 - \frac{z^2}{6} + \dots$ extends holomorphically.</li>
+        </ul>
+        <p>This classification (formalized next part) is read directly off the series — and the residue often falls out without any limit-taking: divide/multiply known Taylor series and collect the $z^{-1}$ coefficient.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Quant Sightings of Laurent Structure</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Generating functions on annuli:</strong> two-sided sequences (signal autocovariances $\gamma_k$, $k \in \mathbb{Z}$) have two-sided transforms $\sum \gamma_k z^k$ converging on an annulus around $|z| = 1$ — the Z-transform of time-series analysis <em>is</em> a Laurent series; causal/invertible factorizations (Wold, spectral factorization) are statements about which annulus.</li>
+            <li><strong>Partial fractions for pricing transforms:</strong> rational approximations of characteristic exponents (e.g. CIR bond ODE solutions) are expanded around their poles to locate damping limits.</li>
+            <li><strong>Asymptotic wings:</strong> the $|z| > 2$-type "expansion at infinity" is how one extracts large-strike behavior from transforms — the Lee moment formula's machinery in miniature.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Laurent = Taylor + negative powers, convergent on annuli; always declare which annulus.</li>
+            <li>Principal part = the singularity's fingerprint; $a_{-1}$ (the residue) is all that loop integrals see.</li>
+            <li>Build expansions from geometric series of partial fractions; read pole order/essentialness off the series.</li>
+            <li>Z-transforms of time series are Laurent series — annulus choices = causality/invertibility of ARMA models.</li>
+        </ul>
+    </div>
+</div>

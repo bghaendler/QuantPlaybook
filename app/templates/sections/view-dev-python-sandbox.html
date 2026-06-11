@@ -1,0 +1,111 @@
+<div id="view-dev-python-sandbox" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Live Python Sandbox (WebAssembly Notebook)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Run real Python — with NumPy — directly in your browser via Pyodide (CPython compiled to WebAssembly). Nothing is sent to any server.</p>
+    </header>
+
+    <div class="card">
+        <h3>Python Cell</h3>
+        <p style="font-size: 0.85rem; color: #64748b;">First run downloads the Pyodide runtime (~10 MB) from the CDN; subsequent runs are instant. <code>numpy</code> is loaded automatically. Use <code>print()</code> for output; the last expression's value is also displayed.</p>
+        <textarea id="pySandboxCode" spellcheck="false" style="width: 100%; height: 260px; font-family: monospace; font-size: 0.85rem; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); resize: vertical;">import numpy as np
+from math import log, sqrt, exp, erf
+
+def N(x):
+    return 0.5 * (1.0 + erf(x / sqrt(2.0)))
+
+def bsm_call(S, K, T, r, sigma):
+    d1 = (log(S/K) + (r + 0.5*sigma**2)*T) / (sigma*sqrt(T))
+    d2 = d1 - sigma*sqrt(T)
+    return S*N(d1) - K*exp(-r*T)*N(d2)
+
+# Price and a quick Monte Carlo check
+S, K, T, r, sigma = 100, 100, 1.0, 0.05, 0.20
+analytic = bsm_call(S, K, T, r, sigma)
+
+rng = np.random.default_rng(42)
+Z = rng.standard_normal(200_000)
+ST = S*np.exp((r - 0.5*sigma**2)*T + sigma*np.sqrt(T)*Z)
+mc = np.exp(-r*T)*np.maximum(ST - K, 0).mean()
+
+print(f"Black-Scholes analytic : {analytic:.4f}")
+print(f"Monte Carlo (200k)     : {mc:.4f}")</textarea>
+        <div style="display: flex; gap: 0.75rem; align-items: center; margin-top: 0.75rem;">
+            <button onclick="runPySandbox()" id="pySandboxRunBtn" style="padding: 0.5rem 1.5rem; border-radius: 8px; border: none; background: var(--accent); color: #fff; font-weight: 700; cursor: pointer;">&#9654; Run</button>
+            <button onclick="resetPySandbox()" style="padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid var(--input-border); background: transparent; color: var(--text-color); cursor: pointer;">Clear Output</button>
+            <span id="pySandboxStatus" style="font-size: 0.8rem; color: #64748b;">Runtime not loaded yet</span>
+        </div>
+        <pre id="pySandboxOut" style="margin-top: 1rem; background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.9rem; font-size: 0.85rem; min-height: 70px; white-space: pre-wrap; overflow-x: auto;"></pre>
+    </div>
+
+    <div class="card">
+        <h3>How It Works</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Pyodide</strong> is the CPython interpreter compiled to WebAssembly (Emscripten), running in the browser's sandbox with no installation and no server round-trips.</li>
+            <li>The scientific stack (NumPy, SciPy, pandas, matplotlib) is ported; packages load on demand from the CDN via <code>pyodide.loadPackage()</code>.</li>
+            <li>State persists between runs in this session — define a function in one run, call it in the next.</li>
+            <li>Limits: no native threads or raw sockets, ~2 GB memory, and heavy first-load — for production research, this complements (not replaces) a local environment.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+var pySandboxRuntime = null;
+var pySandboxLoading = false;
+
+function pySandboxSetStatus(msg) {
+    var el = document.getElementById('pySandboxStatus');
+    if (el) el.textContent = msg;
+}
+
+function resetPySandbox() {
+    document.getElementById('pySandboxOut').textContent = '';
+}
+
+async function ensurePySandbox() {
+    if (pySandboxRuntime) return pySandboxRuntime;
+    if (pySandboxLoading) throw new Error('Runtime is still loading, please wait...');
+    pySandboxLoading = true;
+    pySandboxSetStatus('Loading Pyodide runtime...');
+    if (!window.loadPyodide) {
+        await new Promise(function(resolve, reject) {
+            var s = document.createElement('script');
+            s.src = 'https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js';
+            s.onload = resolve;
+            s.onerror = function() { reject(new Error('Failed to load Pyodide from CDN (offline?)')); };
+            document.head.appendChild(s);
+        });
+    }
+    pySandboxRuntime = await loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.25.1/full/' });
+    pySandboxSetStatus('Loading numpy...');
+    await pySandboxRuntime.loadPackage('numpy');
+    pySandboxLoading = false;
+    pySandboxSetStatus('Runtime ready (Python ' + pySandboxRuntime.runPython('import sys; sys.version.split()[0]') + ' + numpy)');
+    return pySandboxRuntime;
+}
+
+async function runPySandbox() {
+    var out = document.getElementById('pySandboxOut');
+    var btn = document.getElementById('pySandboxRunBtn');
+    btn.disabled = true;
+    try {
+        var py = await ensurePySandbox();
+        var code = document.getElementById('pySandboxCode').value;
+        py.runPython('import sys, io; _sandbox_buf = io.StringIO(); sys.stdout = _sandbox_buf; sys.stderr = _sandbox_buf');
+        var result;
+        try {
+            result = await py.runPythonAsync(code);
+        } finally {
+            var captured = py.runPython('sys.stdout = sys.__stdout__; sys.stderr = sys.__stderr__; _sandbox_buf.getvalue()');
+            out.textContent = captured || '';
+        }
+        if (result !== undefined && result !== null && String(result) !== 'undefined') {
+            out.textContent += (out.textContent ? '\n' : '') + String(result);
+        }
+        if (!out.textContent) out.textContent = '(no output)';
+    } catch (err) {
+        out.textContent = 'Error: ' + (err && err.message ? err.message : String(err));
+    } finally {
+        btn.disabled = false;
+    }
+}
+</script>

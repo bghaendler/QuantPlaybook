@@ -1,0 +1,54 @@
+<div id="view-arm-p05" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Advanced Risk Management — Part 05</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Calculating Value-at-Risk via Historical Simulation</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The most-used VaR method in banking: full-revaluation on historical scenarios, step by step, with its weighting refinements and known blind spots.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Method in Five Steps</h3>
+        <ol style="line-height: 1.9;">
+            <li><strong>Window:</strong> collect the last $n$ (typically 250–500) daily risk-factor returns (prices, rates, vols).</li>
+            <li><strong>Scenarios:</strong> apply each historical day's return vector to <em>today's</em> factor levels — relative shifts for prices/vols, absolute for rates (choice matters near zero rates).</li>
+            <li><strong>Revalue:</strong> reprice today's portfolio under each scenario — full revaluation for nonlinear books (options through pricing models), sensitivities-based approximation only where linearity is verified.</li>
+            <li><strong>P&amp;L vector:</strong> $n$ hypothetical one-day P&amp;Ls — the empirical distribution.</li>
+            <li><strong>Quantile:</strong> 99% VaR = the 1% worst point (e.g. ~2.5th–3rd worst of 250; interpolate or take the order statistic per house convention). ES = average of losses beyond it.</li>
+        </ol>
+        <p>No distributional assumption, no correlation matrix — co-movements enter <em>through the historical vectors themselves</em>, fat tails and all (Part 03's problem partially self-solves). That is the method's entire appeal.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Worked Miniature</h3>
+        <p>Portfolio: $10m in an index, 250-day window. Worst five scenario P&amp;Ls (applying each day's index return to $10m): −$612k, −$498k, −$431k, −$396k, −$370k. Then 99% VaR ≈ the 2.5th worst ≈ <strong>$465k</strong> (interpolating 2nd–3rd), and ES₉₉ ≈ mean of the worst 2.5 ≈ <strong>$540k</strong>. Mechanics identical for 1,000 positions — the work is in the revaluation layer, not the statistics.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Refinements</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Exponential weighting (BRW):</strong> weight scenario $i$ (age $a_i$) by $\lambda^{a_i}(1-\lambda)/(1-\lambda^n)$, λ ≈ 0.99 — recent regimes dominate; cures the "stale calm window" lag at the cost of effective sample size.</li>
+            <li><strong>Filtered HS (Hull-White/Barone-Adesi):</strong> devolatilize returns by their day's GARCH/EWMA σ, then rescale by <em>today's</em> σ — combines empirical tail shape with current vol level; materially better backtests, now widespread.</li>
+            <li><strong>Stressed VaR / stressed ES:</strong> run the same engine on a fixed crisis window (e.g. 2008–09) — Basel 2.5/FRTB requirement; removes the procyclicality of rolling windows.</li>
+            <li><strong>Overlapping 10-day P&amp;Ls</strong> vs. √10 scaling: overlap induces autocorrelation in the sample but avoids the scaling fallacy (Part 03) — regulators accept both with care.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Blind Spots (Know What You Bought)</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>The window is the model:</strong> nothing worse than the worst day in the window can appear — 250 calm days produce a confident, useless VaR ("driving by the rear-view mirror"). Complement: stress tests + stressed ES.</li>
+            <li><strong>Quantile noise:</strong> the 99% point from 250 observations rests on ~2–3 order statistics — sampling error of ±30–50% is normal; report bands (bootstrap the scenario set).</li>
+            <li><strong>New risk factors</strong> (IPOs, new issues) lack history — proxying choices are silent model risk (Part 01).</li>
+            <li><strong>Ghost effects:</strong> a crisis day entering/leaving the window steps VaR discontinuously — explain the steps before the desk does.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>HS-VaR = today's book, yesterday's moves: empirical co-movements and tails for free, no covariance matrix.</li>
+            <li>Full revaluation for nonlinear books; the engineering lives in the repricing layer.</li>
+            <li>Filtered HS (devolatilize/revolatilize) is the highest-value refinement; stressed windows fix rear-view myopia.</li>
+            <li>Quote the sampling band — a 250-day 99% quantile is a 2-observation statistic, not a constant of nature.</li>
+        </ul>
+    </div>
+</div>

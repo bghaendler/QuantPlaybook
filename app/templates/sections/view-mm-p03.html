@@ -1,0 +1,51 @@
+<div id="view-mm-p03" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Mathematical Methods in Financial Markets — Part 03</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Taylor Series Approximations</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Local polynomial pictures of nonlinear functions — the engine behind Greeks, duration/convexity, Itô's lemma and every risk report you will ever read.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Expansion</h3>
+        $$f(x + h) = f(x) + f'(x)h + \frac{f''(x)}{2!}h^2 + \frac{f'''(x)}{3!}h^3 + \dots + \frac{f^{(n)}(x)}{n!}h^n + R_n,$$
+        <p>with Lagrange remainder $R_n = \frac{f^{(n+1)}(\xi)}{(n+1)!}h^{n+1}$ for some $\xi$ between $x$ and $x+h$ — the error is controlled by the <em>next</em> term's size. Workhorse series worth memorizing:</p>
+        $$e^h = 1 + h + \tfrac{h^2}{2} + \dots, \qquad \ln(1 + h) = h - \tfrac{h^2}{2} + \tfrac{h^3}{3} - \dots, \qquad \frac{1}{1-h} = 1 + h + h^2 + \dots \;(|h| < 1).$$
+        <p>$\ln(1+h) \approx h$ is why small simple returns ≈ log returns; the $-h^2/2$ correction is why they diverge for big moves (and where "volatility drag" comes from).</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Finance Is Second-Order Taylor</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Option P&amp;L:</strong> $\delta V \approx \Delta\,\delta S + \tfrac{1}{2}\Gamma\,\delta S^2 + \Theta\,\delta t + \text{Vega}\,\delta\sigma + \dots$ — the desk risk report is a truncated multivariate Taylor expansion; the cross-term $\partial^2 V/\partial S\partial\sigma$ is vanna.</li>
+            <li><strong>Bonds:</strong> $\frac{\delta P}{P} \approx -D\,\delta y + \tfrac{1}{2}C\,\delta y^2$ — duration and convexity are nothing but the first two Taylor coefficients in yield.</li>
+            <li><strong>Delta-gamma VaR:</strong> approximate the portfolio as quadratic in risk factors, then compute the quantile (Cornish-Fisher) — fast, and accurate exactly while $h$ stays small. 2008's lesson: the remainder term is a market regime, not a footnote.</li>
+            <li><strong>Itô preview:</strong> for $dX = \mu dt + \sigma dW$, the second-order term $\frac{1}{2}f''\,dX^2$ does <em>not</em> vanish because $dW^2 = dt$ — Itô's lemma is Taylor to second order plus that one substitution (Part 10).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Worked Example: ATM Straddle Rule</h3>
+        <p>Expand the BS call around the money with $b = 0$, small $\sigma\sqrt{T}$:</p>
+        $$C_{ATM} \approx 0.4\, S\, \sigma\sqrt{T},$$
+        <p>(precisely $S\sigma\sqrt{T}\,\phi(0)\cdot$ correction, $\phi(0) = 0.3989$). The ATM straddle ≈ $0.8 S\sigma\sqrt{T}$: a one-line vol-to-price converter used on every options desk, and the Brenner-Subrahmanyam implied-vol seed inverted. Accuracy check: σ = 20%, T = 0.25 → $\sigma\sqrt{T} = 0.10$, error of the truncation ~0.1% — third-order terms are $O((\sigma\sqrt{T})^3)$.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. When Taylor Fails</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Kinks and digitals:</strong> no derivatives at the kink — expansions across a strike near expiry are meaningless (gamma explodes; the remainder dominates).</li>
+            <li><strong>Radius of convergence:</strong> $\ln(1+h)$ diverges for $|h| > 1$; geometric series likewise — extrapolating fitted polynomials beyond their data is the classic smile-fitting accident (SVI's linear wings exist precisely to avoid it).</li>
+            <li><strong>Large moves:</strong> delta-gamma approximations understate losses for convex-short books in jumps; full revaluation in stress tests is the institutional remedy.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Greeks, duration/convexity and delta-gamma VaR are Taylor coefficients wearing work clothes.</li>
+            <li>$\ln(1+h) \approx h - h^2/2$: returns arithmetic, volatility drag, and log-vs-simple in one line.</li>
+            <li>$C_{ATM} \approx 0.4 S\sigma\sqrt{T}$ — the most used back-of-envelope formula in options.</li>
+            <li>Respect the remainder: kinks, jumps and convergence radii are where truncation bites.</li>
+        </ul>
+    </div>
+</div>

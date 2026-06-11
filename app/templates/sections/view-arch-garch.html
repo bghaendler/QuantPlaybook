@@ -1,0 +1,65 @@
+<div id="view-arch-garch" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">ARCH &amp; GARCH Models</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Conditional heteroskedasticity: modeling volatility as a process that reacts to news and reverts to a long-run mean — the workhorse of econometric risk forecasting.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Why Conditional Volatility?</h3>
+        <p>Returns are (nearly) unpredictable, but their <em>variance</em> is not: volatility clusters. Model returns as $r_t = \mu + \epsilon_t$ with</p>
+        $$\epsilon_t = \sigma_t z_t, \qquad z_t \sim \text{i.i.d. } \mathcal{N}(0,1),$$
+        <p>where $\sigma_t^2$ is the <strong>conditional variance</strong>, measurable with respect to information at $t-1$. The art is the recursion for $\sigma_t^2$.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. ARCH(q) — Engle (1982)</h3>
+        <p>Variance responds to recent squared shocks:</p>
+        $$\sigma_t^2 = \omega + \sum_{i=1}^{q} \alpha_i\, \epsilon_{t-i}^2, \qquad \omega > 0,\ \alpha_i \ge 0.$$
+        <p>Captures clustering, but realistic persistence requires large $q$ (many lags), making estimation clumsy. Test for ARCH effects: regress $\hat\epsilon_t^2$ on its lags; $T R^2 \sim \chi^2_q$ (Engle's LM test).</p>
+    </div>
+
+    <div class="card">
+        <h3>3. GARCH(1,1) — Bollerslev (1986)</h3>
+        <p>Add the lagged variance itself — an exponentially-weighted memory of all past shocks:</p>
+        $$\sigma_t^2 = \omega + \alpha\, \epsilon_{t-1}^2 + \beta\, \sigma_{t-1}^2.$$
+        <ul style="line-height: 1.8;">
+            <li><strong>Stationarity:</strong> $\alpha + \beta < 1$; the unconditional variance is $\bar\sigma^2 = \dfrac{\omega}{1 - \alpha - \beta}$.</li>
+            <li><strong>Persistence:</strong> $\alpha + \beta$ is typically 0.95–0.99 for daily data — shocks decay slowly with half-life $\ln(0.5)/\ln(\alpha+\beta)$.</li>
+            <li><strong>News vs. memory:</strong> $\alpha$ ≈ 0.05–0.10 measures reaction to yesterday's surprise; $\beta$ ≈ 0.90 measures smoothing.</li>
+            <li><strong>Fat tails for free:</strong> even with Gaussian $z_t$, the unconditional distribution of $\epsilon_t$ has excess kurtosis.</li>
+        </ul>
+        <p>Special cases: $\beta = 0$ gives ARCH(1); $\omega = 0,\ \alpha + \beta = 1$ gives RiskMetrics EWMA ($\sigma_t^2 = (1-\lambda)\epsilon_{t-1}^2 + \lambda \sigma_{t-1}^2$, $\lambda = 0.94$) — an integrated GARCH with no mean reversion.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Forecasting &amp; Term Structure of Volatility</h3>
+        <p>The $h$-step variance forecast mean-reverts geometrically to the long-run level:</p>
+        $$\mathbb{E}_t[\sigma_{t+h}^2] = \bar\sigma^2 + (\alpha + \beta)^{h-1}\left(\sigma_{t+1}^2 - \bar\sigma^2\right).$$
+        <p>Cumulating over an horizon gives the GARCH term structure: if current vol is above (below) the long-run mean, the forecast curve declines (rises) toward $\bar\sigma$ — mirroring the upward/downward-sloping shapes of implied-volatility term structures. Note: multi-day vol does <em>not</em> scale as $\sqrt{h}$ under GARCH except at the long-run level.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Estimation by Maximum Likelihood</h3>
+        <p>Parameters $(\omega, \alpha, \beta)$ are estimated by maximizing the conditional log-likelihood</p>
+        $$\mathcal{L} = -\frac{1}{2}\sum_{t=1}^{T}\left[\ln(2\pi) + \ln \sigma_t^2 + \frac{\epsilon_t^2}{\sigma_t^2}\right],$$
+        <p>recursing $\sigma_t^2$ from an initial value (e.g. sample variance). With non-Gaussian $z_t$ (Student-t for extra kurtosis), use the corresponding density; Gaussian QMLE remains consistent regardless. Diagnostics: standardized residuals $\hat\epsilon_t/\hat\sigma_t$ should show no remaining ARCH effects (Ljung-Box on squares).</p>
+    </div>
+
+    <div class="card">
+        <h3>6. Worked Example</h3>
+        <p>Daily S&amp;P-type estimates: $\omega = 2\times10^{-6}$, $\alpha = 0.08$, $\beta = 0.91$. Long-run variance $\bar\sigma^2 = 2\times10^{-6}/0.01 = 2\times10^{-4}$ → $\bar\sigma = 1.41\%$ daily ≈ 22% annualized. Yesterday: $\sigma_t = 1\%$, return surprise $\epsilon_t = -3\%$. Today's variance:</p>
+        $$\sigma_{t+1}^2 = 2\times10^{-6} + 0.08 \times (0.03)^2 + 0.91 \times (0.0001) = 1.65\times10^{-4} \Rightarrow \sigma_{t+1} = 1.28\%.$$
+        <p>One large shock lifts vol by 28% in a day; absent further shocks it decays back toward 1.41% with half-life $\ln 0.5 / \ln 0.99 \approx 69$ days.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>GARCH(1,1): $\sigma_t^2 = \omega + \alpha \epsilon_{t-1}^2 + \beta \sigma_{t-1}^2$ — news + memory.</li>
+            <li>Stationary iff $\alpha + \beta < 1$; EWMA/RiskMetrics is the integrated boundary case.</li>
+            <li>Forecasts mean-revert to $\bar\sigma^2 = \omega/(1-\alpha-\beta)$ at rate $(\alpha+\beta)^h$.</li>
+            <li>MLE with variance recursion; check standardized residuals for leftover ARCH.</li>
+            <li>Limitations (symmetry of response) motivate EGARCH/GJR — next section.</li>
+        </ul>
+    </div>
+</div>

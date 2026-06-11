@@ -1,0 +1,56 @@
+<div id="view-asv-p06" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Asymptotics of Stochastic Volatility — Part 06</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Share Measures &amp; Small-Time Asymptotics</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The share (stock) measure as an asymptotic instrument: symmetrizing the smile, taming wings, and sharpening small-time expansions — measure changes as analysis tools.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Share Measure</h3>
+        <p>Take $S_t/S_0$ (discounted) as numéraire: the <strong>share measure</strong> $\mathbb{\hat Q}$ with $\frac{d\hat{\mathbb{Q}}}{d\mathbb{Q}}\big|_T = \frac{S_T}{\mathbb{E}[S_T]}$. Immediate dividends for analysis:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Call decomposition without integrals:</strong> $C = S_0\hat{\mathbb{Q}}(S_T > K) - Ke^{-rT}\mathbb{Q}(S_T > K)$ — in Black-Scholes, $N(d_1)$ <em>is</em> the share-measure exercise probability ($N(d_2)$ the risk-neutral one): the mysterious $d_1$ explained in one line.</li>
+            <li><strong>Put-call symmetry:</strong> under $\hat{\mathbb{Q}}$ the role of $S$ inverts ($1/S$ is a $\hat{\mathbb{Q}}$-martingale, up to carry) — calls at strike $K$ map to puts at strike $F^2/K$: the right wing under $\mathbb{Q}$ is the left wing under $\hat{\mathbb{Q}}$.</li>
+            <li><strong>Moment shift:</strong> $\hat{\mathbb{E}}[S_T^u] = \mathbb{E}[S_T^{u+1}]/\mathbb{E}[S_T]$ — analyticity strips translate by 1; Lee's right-wing slope under $\mathbb{Q}$ becomes a left-wing statement under $\hat{\mathbb{Q}}$ (the two wings of Lee's formula <em>are</em> one result seen in two measures).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Sharpening Small-Time Expansions</h3>
+        <p>Out-of-the-money expansions converge best for the wing they're centered on. The share-measure trick: expand <em>calls under $\hat{\mathbb{Q}}$</em> (equivalently, puts under $\mathbb{Q}$) for high strikes, and vice versa:</p>
+        <ul style="line-height: 1.8;">
+            <li>In SV models, the $\hat{\mathbb{Q}}$-dynamics shift the vol drift by the covariation term: $d\alpha$ picks up $+\rho\nu\alpha\,(\text{vol of }S)\,dt$ — SABR under the share measure is SABR with a tilted vol drift; the geometry (Part 01) is unchanged but the <em>starting point of geodesics effectively shifts</em>, which is exactly the $d_1$-vs-$d_2$ asymmetry at smile level.</li>
+            <li>Practical payoff: expansions done symmetrically in both measures and stitched at ATM produce smiles accurate over a wider strike range than one-measure expansions — the trick behind several "improved SABR" wing treatments (and behind Antonov-style mappings).</li>
+            <li>For Lévy models (Part 05): the share measure is an Esscher tilt $\nu(dx) \to e^x\nu(dx)$ — wings literally exchange tail parameters (Kou's η₁ ↔ η₂ − 1 pattern), making the put-call symmetry of jump smiles explicit.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Delta, Skew and the Share Measure</h3>
+        <ul style="line-height: 1.8;">
+            <li>BS delta $= N(d_1) = \hat{\mathbb{Q}}(\text{exercise})$: delta is an <em>exercise probability under the share measure</em> — why "delta ≈ probability ITM" is wrong by exactly the measure change (a ~$\sigma\sqrt{T}$-sized gap).</li>
+            <li>ATM skew identity: the gap between the two measures' densities at the strike controls $\partial\sigma_{BS}/\partial k$ at the money — small-time skew limits (the $\rho\nu/2$-type constants of Part 03) drop out cleanly from the two-measure comparison.</li>
+            <li>Quanto/composite adjustments are the same algebra with a <em>different</em> numéraire — learn the mechanism once, reuse for every numéraire change in the hybrids world.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Working Recipe</h3>
+        <ol style="line-height: 1.9;">
+            <li>Identify which wing/quantity you need (high-strike calls? deltas? left-tail risk?).</li>
+            <li>Move to the measure where that quantity is a <em>central</em> (not tail) object — share measure for right wing and deltas, risk-neutral for left wing and digitals.</li>
+            <li>Apply the small-time machinery (Parts 01–03) in that measure — drift-adjusted dynamics, same geometry.</li>
+            <li>Map back via the symmetry ($K \leftrightarrow F^2/K$, $u \leftrightarrow u+1$) — and use agreement of the two routes as a correctness test (the asymptotics analogue of AD's dot-product test).</li>
+        </ol>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>The share measure makes $d_1$, delta and put-call symmetry transparent: $C = S_0\hat{\mathbb{Q}} - Ke^{-rT}\mathbb{Q}$.</li>
+            <li>Moments shift by one ($u \to u+1$): Lee's two wing formulas are one statement in two measures.</li>
+            <li>Expand each wing in its natural measure and stitch — wider-validity smile asymptotics for SV and Lévy alike.</li>
+            <li>Numéraire changes are analytic instruments, not just pricing conveniences — the same algebra runs quantos and hybrids.</li>
+        </ul>
+    </div>
+</div>

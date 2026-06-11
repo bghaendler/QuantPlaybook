@@ -1,0 +1,56 @@
+<div id="view-ad-p01" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Algorithmic Adjoint Differentiation — Part 01</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Source Code Transformation Principles</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Derivatives of programs, not formulas: why AD beats finite differences and symbolic algebra, and the two modes every AD tool implements.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Three Ways to Differentiate a Pricer</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;">Method</th><th style="padding: 0.45rem;">Cost for n inputs</th><th style="padding: 0.45rem;">Accuracy</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Finite differences ("bumping")</td><td style="padding: 0.45rem;">$(n+1)\times$ pricer cost</td><td style="padding: 0.45rem;">$O(h)$/$O(h^2)$ truncation <em>vs.</em> cancellation — the step-size dilemma; ~half machine precision at best</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Symbolic algebra</td><td style="padding: 0.45rem;">Expression swell</td><td style="padding: 0.45rem;">Exact, but can't differentiate loops, branches, solvers — i.e. real code</td></tr>
+                <tr><td style="padding: 0.45rem;"><strong>Algorithmic differentiation</strong></td><td style="padding: 0.45rem;">Forward: $O(n)$; <strong>Adjoint: $O(1)$</strong> — ~3–5× one pricer run for <em>all</em> n sensitivities</td><td style="padding: 0.45rem;">Exact to machine precision (chain rule on floats)</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.6rem;">The adjoint promise is the headline: a 10,000-risk-factor XVA book gets its full gradient for a constant multiple of one valuation — the technology behind real-time risk on banks' counterparty desks.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Core Idea: Programs Are Compositions</h3>
+        <p>Any pricer is a sequence of elemental steps $x \mapsto v_1 \mapsto v_2 \mapsto \dots \mapsto y$, each elementary ($+, \times, \exp, \ldots$) with a known local derivative. The chain rule composes them:</p>
+        $$\frac{\partial y}{\partial x} = \frac{\partial y}{\partial v_k}\cdot\frac{\partial v_k}{\partial v_{k-1}}\cdots\frac{\partial v_1}{\partial x}.$$
+        <p><strong>Forward (tangent) mode</strong> multiplies this product left-to-right alongside the original execution — one sweep per <em>input</em> direction. <strong>Reverse (adjoint) mode</strong> multiplies right-to-left — one sweep per <em>output</em>, propagating "sensitivities of the result" backwards. Pricing has many inputs (market data) and one output (PV): adjoint wins. Calibration residuals (many outputs, few parameters) can favor forward — mode choice is a matrix-shape question.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Two Implementation Families</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Source-code transformation (SCT):</strong> a tool parses your code and emits new code computing derivatives (Tapenade, the classic Fortran/C lineage). Fast (compiler-optimized), but requires analyzable source — covered in Part 02's comparison.</li>
+            <li><strong>Operator overloading (OO):</strong> replace <code>double</code> with an active type that records or propagates derivatives through every operation (C++ templates: dco/c++, CppAD, ADOL-C; Python: JAX/PyTorch autograd). Easy adoption, runtime overhead, tape memory — Parts 02 and 06–08 dissect it.</li>
+        </ul>
+        <p>Deep learning's backpropagation <em>is</em> reverse-mode AD specialized to neural nets — quant finance and ML run on the same engine (a point the ML masterclass exploits).</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Series Roadmap</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Parts 02–03:</strong> tooling families; computation graphs as the unifying picture.</li>
+            <li><strong>Parts 04–05:</strong> writing tangent-linear code by hand; vector-mode and sparsity tricks.</li>
+            <li><strong>Parts 06–08:</strong> adjoint mechanics — reversal, tapes, checkpointing, overloading.</li>
+            <li><strong>Parts 09–11:</strong> code-generation tools, second-order adjoints (Hessians), and performance engineering.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>AD differentiates <em>code</em> exactly: no bump-size dilemma, no expression swell.</li>
+            <li>Forward mode costs per input; adjoint costs per output — full gradients in ~3–5× one valuation.</li>
+            <li>SCT compiles derivatives; operator overloading records them — the trade is speed vs. adoption ease.</li>
+            <li>Backprop = adjoint AD: every ML framework is a quant risk engine in disguise (and vice versa).</li>
+        </ul>
+    </div>
+</div>

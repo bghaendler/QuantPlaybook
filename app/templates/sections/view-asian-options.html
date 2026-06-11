@@ -1,0 +1,62 @@
+<div id="view-asian-options" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Asian Options: Geometric &amp; Arithmetic Approximations</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Options on the average price: cheaper, harder to manipulate, beloved by corporates — and analytically awkward because sums of lognormals aren't lognormal.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Why Average?</h3>
+        <p>Payoff on the average $A_T$ of fixings $S_{t_1}, \dots, S_{t_n}$: average-price call $= \max(A_T - K, 0)$ (also: average-strike variants $\max(S_T - A_T, 0)$). Motivations:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Cheaper:</strong> averaging shrinks variance — roughly $\sigma_A^2 \approx \sigma^2/3$ for continuous averaging over the whole life — cutting premium 35–45% vs. vanilla.</li>
+            <li><strong>Manipulation-resistant:</strong> no single fixing decides the payoff (commodity benchmarks, thin underlyings, FX fixes).</li>
+            <li><strong>Matches exposure:</strong> a corporate buying fuel monthly cares about the average price, not the terminal one. Most commodity options (oil swaps/Asians on Platts averages) are Asian by default.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Geometric Asians: The Exactly Solvable Case</h3>
+        <p>The geometric average $G_T = \left(\prod_i S_{t_i}\right)^{1/n}$ of lognormals is lognormal — a sum of normals in logs. For continuous averaging under GBM, $G_T$ behaves like a lognormal asset with</p>
+        $$\sigma_G = \frac{\sigma}{\sqrt{3}}, \qquad b_G = \frac{1}{2}\left(b - \frac{\sigma^2}{6}\right),$$
+        <p>so the price is plain generalized Black-Scholes with $(\sigma_G, b_G)$. Discrete fixings: replace with the exact mean/variance of $\frac{1}{n}\sum \ln S_{t_i}$ (Kemna-Vorst 1990). Geometric Asians barely trade — their value is as a <strong>control variate and approximation anchor</strong> for the arithmetic contract.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Arithmetic Asians: Moment-Matching Approximations</h3>
+        <p>$A_T = \frac{1}{n}\sum S_{t_i}$ has no closed-form law. The classical analytic answers match moments of $A_T$ — computable exactly under GBM — to a tractable density:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Turnbull-Wakeman (1991):</strong> lognormal matched to $M_1, M_2$ (optionally Edgeworth-corrected with $M_3, M_4$). With continuous averaging and carry $b \ne 0$:
+            $$M_1 = \frac{e^{bT} - 1}{bT}S, \qquad M_2 = \frac{2e^{(2b+\sigma^2)T}}{(b+\sigma^2)(2b+\sigma^2)T^2}S^2 + \frac{2S^2}{bT^2}\left(\frac{1}{2b+\sigma^2} - \frac{e^{bT}}{b+\sigma^2}\right),$$
+            then $\sigma_A^2 = \frac{1}{T}\ln(M_2/M_1^2)$, $b_A = \frac{1}{T}\ln(M_1/S)$ into Black-76-style formulas.</li>
+            <li><strong>Levy (1992):</strong> same idea, slightly different packaging; the FX market's habitual quick Asian.</li>
+            <li><strong>Curran (1994):</strong> condition on the geometric average and integrate — among the most accurate analytic methods for discrete fixings.</li>
+        </ul>
+        <p>Accuracy: excellent for typical parameters (σ ≤ 30%, moderate T); degrades for high vol/long maturity where $A_T$'s right tail outgrows the lognormal fit (true Asian is worth less than lognormal-matched for calls — positive skew mismatch).</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Exact &amp; Numerical Benchmarks</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Geman-Yor (1993):</strong> exact Laplace transform in maturity via Bessel processes; inversion is delicate but definitive.</li>
+            <li><strong>PDE in $(t, S, A)$</strong> or the one-dimensional reduction of Rogers-Shi/Večeř — fast and accurate for continuous averaging.</li>
+            <li><strong>Monte Carlo with geometric control variate:</strong> the workhorse — ρ ≈ 0.99 with the geometric twin gives 50–150× variance reduction; handles smiles, discrete fixings, in-progress averaging.</li>
+            <li><strong>In-progress seasoning:</strong> once some fixings are known, the remaining option has an adjusted strike $K' = \frac{nK - \sum_{known} S_i}{\#\text{remaining}}$ and shrinking effective vol — late-life Asians converge to cash positions.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>5. Risk Character</h3>
+        <p>Asian vega and gamma decay as fixings pass — risk is front-loaded relative to a vanilla. Delta hedging is smoother (each fixing settles a slice), which is exactly why desks like selling them. The effective vol scale $\sigma/\sqrt{3}$ explains pricing intuition: a 1-year Asian behaves roughly like a 4-month vanilla in vol terms.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Averaging cuts variance (~σ²/3 continuous) → cheaper, manipulation-resistant, corporate-friendly.</li>
+            <li>Geometric Asians are lognormal ⇒ exact BS with $(\sigma/\sqrt{3},\ \frac{1}{2}(b - \sigma^2/6))$ — and the perfect control variate.</li>
+            <li>Arithmetic: Turnbull-Wakeman/Levy moment matching, Curran conditioning; MC+control as benchmark.</li>
+            <li>Seasoned Asians: adjust strike for known fixings; risk decays as the average locks in.</li>
+            <li>Approximations weaken at high vol/long maturity — check against the control-variate MC.</li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,55 @@
+<div id="view-mm-p10" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Mathematical Methods in Financial Markets — Part 10</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Itô's Lemma &amp; Corrective Terms</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The chain rule for noisy paths: why $dW^2 = dt$ refuses to vanish, where the extra $\frac{1}{2}\sigma^2 f''$ term comes from, and what it buys.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Why Ordinary Calculus Fails</h3>
+        <p>Brownian paths move like $\sqrt{dt}$, not $dt$: over a step, $\Delta W \sim \mathcal{N}(0, \Delta t)$ so $(\Delta W)^2$ has <em>mean $\Delta t$</em> — first order, not second. Taylor-expanding $f(X)$ along a path:</p>
+        $$df = f'\,dX + \tfrac{1}{2}f''\,(dX)^2 + \dots$$
+        <p>For smooth paths $(dX)^2 = O(dt^2)$ dies; for Itô processes $dX = \mu dt + \sigma dW$ the box rules apply:</p>
+        $$dt^2 = 0, \qquad dt\,dW = 0, \qquad dW^2 = dt,$$
+        <p>(the last is the quadratic-variation identity — exact in the limit, not just on average). The second-order term survives at first order.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Itô's Lemma</h3>
+        <p>For $f(X_t, t)$ with $dX = \mu\,dt + \sigma\,dW$:</p>
+        $$df = \left(\frac{\partial f}{\partial t} + \mu\frac{\partial f}{\partial x} + \frac{1}{2}\sigma^2\frac{\partial^2 f}{\partial x^2}\right)dt + \sigma\frac{\partial f}{\partial x}\,dW.$$
+        <p>The chain rule plus one corrective term $\tfrac{1}{2}\sigma^2 f_{xx}$ — convexity times variance. Mnemonic: noise + curvature = drift.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. The Canonical Applications</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Log of GBM</strong> ($f = \ln S$, $f'' = -1/S^2$):
+            $$d\ln S = \left(\mu - \tfrac{1}{2}\sigma^2\right)dt + \sigma\,dW$$
+            — the $-\frac{1}{2}\sigma^2$ "volatility drag": a stock with μ = 10%, σ = 40% has median growth 2%. Arithmetic mean of returns ≠ geometric: the gap is exactly $\sigma^2/2$.</li>
+            <li><strong>Exponential check</strong> ($f = e^x$ on $dx = \nu dt + \sigma dW$): $\frac{dS}{S} = (\nu + \tfrac{1}{2}\sigma^2)dt + \sigma dW$ — the correction reappears with opposite sign; $\mathbb{E}[e^{\sigma W_t}] = e^{\sigma^2 t/2}$ is the same fact in expectation form.</li>
+            <li><strong>$W^2$:</strong> $d(W^2) = 2W\,dW + dt$ ⇒ $\mathbb{E}[W_t^2] = t$, and $W_t^2 - t$ is a martingale — the simplest nontrivial Itô computation and a favorite interview check.</li>
+            <li><strong>Black-Scholes derivation:</strong> apply Itô to $V(S, t)$, form the hedged portfolio $\Pi = V - V_S\,S$; the $dW$ terms cancel and the surviving drift identity <em>is</em> the BS PDE, with $\tfrac{1}{2}\sigma^2S^2V_{SS}$ — the option's convexity cost/income — coming straight from the corrective term.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Extensions in One Breath</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Two processes (product rule):</strong> $d(XY) = X\,dY + Y\,dX + dX\,dY$ — the cross-variation $\rho\sigma_X\sigma_Y dt$ term drives quanto adjustments and covariance hedging.</li>
+            <li><strong>Multidimensional:</strong> replace $\tfrac{1}{2}\sigma^2 f_{xx}$ by $\tfrac{1}{2}\sum_{ij}\rho_{ij}\sigma_i\sigma_j f_{x_ix_j}$.</li>
+            <li><strong>Jumps:</strong> add $[f(X_{t^-} + J) - f(X_{t^-})]dN_t$ — convexity correction by finite differences instead of derivatives.</li>
+            <li><strong>Stratonovich</strong> ($\circ$): the symmetric integral that obeys ordinary calculus, at the cost of a drift adjustment — physics prefers it; finance prefers Itô because the Itô integral is a martingale (no peeking into the future inside the integrand).</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>$dW^2 = dt$: quadratic variation makes second-order terms first-order.</li>
+            <li>Itô = chain rule + $\frac{1}{2}\sigma^2 f''\,dt$; convexity × variance becomes drift.</li>
+            <li>Volatility drag $-\sigma^2/2$ and BS's gamma term are the same correction in two costumes.</li>
+            <li>Product rule's $dX\,dY$ cross term handles correlation; jumps correct by differences; Itô (not Stratonovich) keeps martingales.</li>
+        </ul>
+    </div>
+</div>

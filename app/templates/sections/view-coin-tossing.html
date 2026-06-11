@@ -1,0 +1,66 @@
+<div id="view-coin-tossing" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Coin-Tossing &amp; Random Walk Limits</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">From the simplest possible random experiment to Brownian motion: how scaling a coin-tossing game correctly produces the continuum model of finance.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Symmetric Random Walk</h3>
+        <p>Let $\epsilon_1, \epsilon_2, \dots$ be i.i.d. fair coin tosses with $\mathbb{P}(\epsilon_i = +1) = \mathbb{P}(\epsilon_i = -1) = \tfrac{1}{2}$. The partial sum</p>
+        $$M_n = \sum_{i=1}^{n} \epsilon_i$$
+        <p>is the <strong>symmetric random walk</strong>. Its three structural properties are inherited by everything built on top of it:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Independent increments:</strong> $M_{n_2} - M_{n_1}$ and $M_{n_4} - M_{n_3}$ are independent for $n_1 \le n_2 \le n_3 \le n_4$.</li>
+            <li><strong>Martingale:</strong> $\mathbb{E}[M_{n+1} \mid \mathcal{F}_n] = M_n$ — fair game, no predictable profit.</li>
+            <li><strong>Variance grows linearly:</strong> $\operatorname{Var}(M_n) = n$, so typical displacement is $\sqrt{n}$, not $n$.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Quadratic Variation: The Crucial Observation</h3>
+        <p>The quadratic variation of the walk up to time $n$ is</p>
+        $$[M]_n = \sum_{i=1}^{n} (M_i - M_{i-1})^2 = \sum_{i=1}^{n} \epsilon_i^2 = n,$$
+        <p>which is <em>deterministic</em> — true path by path, not just on average. This is the discrete ancestor of $dW^2 = dt$, the identity that generates the Itô correction term and ultimately the $\frac{1}{2}\sigma^2 S^2 V_{SS}$ term of the Black-Scholes equation.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. The Scaled Walk &amp; Donsker's Limit</h3>
+        <p>To get a continuous-time limit, speed up time and shrink the step size <em>in the right ratio</em>. Define the scaled walk</p>
+        $$W^{(n)}(t) = \frac{1}{\sqrt{n}}\, M_{\lfloor nt \rfloor}.$$
+        <p>Each unit of time now contains $n$ tosses of size $1/\sqrt{n}$. Then $\operatorname{Var}(W^{(n)}(t)) \to t$, and by the Central Limit Theorem $W^{(n)}(t) \Rightarrow \mathcal{N}(0, t)$. <strong>Donsker's invariance principle</strong> upgrades this pointwise convergence to convergence of the whole path:</p>
+        $$W^{(n)} \xrightarrow{\;d\;} W \quad \text{(Brownian motion), as } n \to \infty.$$
+        <p>The scaling $\Delta x = \sqrt{\Delta t}$ is forced: scaling steps like $\Delta t$ gives a degenerate (constant) limit; scaling slower than $\sqrt{\Delta t}$ explodes. Diffusion lives precisely on the square-root frontier.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Limits That Coin-Tossing Makes Visible</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Theorem</th><th style="padding: 0.5rem;">Statement for the walk</th><th style="padding: 0.5rem;">Continuum analogue</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Law of Large Numbers</td><td style="padding: 0.5rem;">$M_n / n \to 0$ a.s.</td><td style="padding: 0.5rem;">$W_t / t \to 0$</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Central Limit Theorem</td><td style="padding: 0.5rem;">$M_n/\sqrt{n} \Rightarrow \mathcal{N}(0,1)$</td><td style="padding: 0.5rem;">$W_t \sim \mathcal{N}(0,t)$</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Law of Iterated Logarithm</td><td style="padding: 0.5rem;">$\limsup \frac{M_n}{\sqrt{2n\ln\ln n}} = 1$</td><td style="padding: 0.5rem;">same with $t$</td></tr>
+                <tr><td style="border-bottom: none; padding: 0.5rem;">Reflection principle</td><td style="padding: 0.5rem;">$\mathbb{P}(\max_k M_k \ge a) = 2\,\mathbb{P}(M_n > a) + \mathbb{P}(M_n = a)$</td><td style="padding: 0.5rem;">barrier-option formulas</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.75rem;">The reflection principle is not a curiosity: it is the engine behind closed-form prices of <strong>barrier and lookback options</strong>, where the law of the running maximum of Brownian motion is required.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. From Coin Tossing to Asset Prices</h3>
+        <p>A binomial asset model is a coin-tossing game in disguise: over $\Delta t$, the log-price moves $\pm\sigma\sqrt{\Delta t}$ with risk-neutral probabilities tilted to give drift $(r - \tfrac{1}{2}\sigma^2)\Delta t$. As $\Delta t \to 0$ the model converges to GBM:</p>
+        $$\ln S_t = \ln S_0 + \left(r - \tfrac{1}{2}\sigma^2\right)t + \sigma W_t,$$
+        <p>which is why Cox-Ross-Rubinstein binomial prices converge to Black-Scholes prices. Every binomial tree pricer is a coin-tossing limit argument executed numerically.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>The symmetric walk has independent increments, the martingale property, and variance $n$.</li>
+            <li>Quadratic variation $[M]_n = n$ holds path-by-path — the origin of $dW^2 = dt$.</li>
+            <li>Brownian motion is the Donsker limit of walks scaled by $\Delta x = \sqrt{\Delta t}$.</li>
+            <li>Reflection-principle results for the walk become barrier/lookback option formulas.</li>
+            <li>Binomial trees are coin-tossing approximations whose prices converge to Black-Scholes.</li>
+        </ul>
+    </div>
+</div>

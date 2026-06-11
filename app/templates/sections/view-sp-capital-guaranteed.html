@@ -1,0 +1,56 @@
+<div id="view-sp-capital-guaranteed" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Capital Guaranteed Note</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The PPN family generalized: partial guarantees, minimum coupons, capped or averaged upside — the menu of protection levels and what each headline term costs.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The General Payoff</h3>
+        <p>A capital guaranteed note returns a guaranteed floor $G$ (as % of notional) plus participation in an underlying:</p>
+        $$V_T = N\left[\,G + PR \cdot \max\!\big(\min(R_{underlying}, \text{Cap}) - \text{Strike},\ 0\big)\right],$$
+        <p>where $G = 100\%$ is full protection, $G = 90\%$ a "90% capital protected" note, and a <strong>guaranteed minimum coupon</strong> $c$ shifts the floor to $G + c$. Budget identity per 100 of notional:</p>
+        $$100 = \underbrace{G \cdot P_{ZCB}}_{\text{floor funding}} + \underbrace{\text{option spend}}_{\text{upside}} + \text{fees}.$$
+        <p>Every headline improvement (higher participation, higher cap, minimum coupon) must be paid by weakening another term — the structuring triangle.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Protection Dial</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Floor $G$</th><th style="padding: 0.5rem;">ZCB cost (4%, 5y)</th><th style="padding: 0.5rem;">Option budget</th><th style="padding: 0.5rem;">Indicative participation*</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">100%</td><td style="padding: 0.5rem;">81.9</td><td style="padding: 0.5rem;">~16</td><td style="padding: 0.5rem;">80%</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">95%</td><td style="padding: 0.5rem;">77.8</td><td style="padding: 0.5rem;">~20</td><td style="padding: 0.5rem;">100%</td></tr>
+                <tr><td style="padding: 0.5rem;">90%</td><td style="padding: 0.5rem;">73.7</td><td style="padding: 0.5rem;">~24</td><td style="padding: 0.5rem;">120%</td></tr>
+            </tbody>
+        </table>
+        <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.5rem;">*ATM call at 20% of notional, 2 fees. Giving up 10 points of protection buys ~40 points of participation — the price of certainty made explicit.</p>
+        <p>Partial protection can also be structured as full ZCB + <em>sold OTM put</em> (e.g. floor breached only below −20%): "protected unless the index falls 20%" — economically a put-spread financed floor, stepping toward the reverse convertible family.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Upside Engineering</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Cap:</strong> buy call spread instead of call — cheaper, so higher participation, bounded payoff. Marketing favorite ("150% participation up to a 30% cap").</li>
+            <li><strong>Asian tail:</strong> average the final 6–12 monthly fixings — reduces option cost ~15–25% and protects against a last-minute crash, at the cost of diluting a late rally.</li>
+            <li><strong>Cliquet/ratchet:</strong> lock in periodic gains $\sum_i \max(r_i, 0)$ (capped per period) — forward-starting options, sensitive to forward skew, notoriously model-risky for the issuer.</li>
+            <li><strong>Quanto:</strong> foreign underlying, domestic currency payoff — adds an FX-equity correlation adjustment into the forward.</li>
+            <li><strong>Worst-of basket:</strong> participation on the worst of several indices — cheapest option, biggest behavioral trap.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Valuation &amp; Suitability</h3>
+        <p>Fair value at issue is typically 96–99% of issue price (fees + structuring margin); regulators in several jurisdictions now require publishing this. Decomposition is the analysis: price the ZCB off the <em>issuer's</em> funding curve (credit!), price each option leg on its own surface (smile for spreads, forward skew for cliquets, correlation for baskets). Investor checklist: who guarantees (credit), what exactly is floored (nominal? including coupons?), what is given up (dividends, caps, averaging), and the secondary-market mark sensitivity (long-dated note marks swing on rates and vol long before maturity).</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>One budget identity governs all variants: floor funding + option spend + fees = 100.</li>
+            <li>Protection level ↔ participation: each 5 points of floor ≈ tens of points of upside (rates-dependent).</li>
+            <li>Caps, Asian tails, cliquets and baskets are all option-cost reduction devices with distinct risks.</li>
+            <li>The guarantee is issuer credit; fair value at issue sits below par by fees and margin.</li>
+            <li>Decompose, price each leg on its own market, and read the terms as the option positions they are.</li>
+        </ul>
+    </div>
+</div>

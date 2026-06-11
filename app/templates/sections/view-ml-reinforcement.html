@@ -1,0 +1,60 @@
+<div id="view-ml-reinforcement" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Reinforcement Learning for Portfolio Management</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Sequential decision-making under uncertainty: framing allocation, execution and hedging as Markov Decision Processes — and the brutal realities of training agents on markets.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The MDP Framing</h3>
+        <p>An agent observes state $s_t$, takes action $a_t$, receives reward $r_{t+1}$, and the world transitions to $s_{t+1}$. The goal is a policy $\pi(a \mid s)$ maximizing expected discounted reward:</p>
+        $$J(\pi) = \mathbb{E}_\pi\left[\sum_{t=0}^{\infty} \gamma^t r_{t+1}\right].$$
+        <p>Portfolio translation: <strong>state</strong> = current weights, prices/features, cash, perhaps recent history; <strong>action</strong> = target weights or trades; <strong>reward</strong> = period P&amp;L net of costs, or better, a risk-adjusted increment (e.g. $\Delta\text{wealth} - \lambda \cdot \Delta\text{wealth}^2$, the "mean-variance reward" — maximizing log-wealth recovers Kelly behavior). Transaction costs make this a genuinely <em>sequential</em> problem: today's trade changes tomorrow's starting point, which is exactly why one-shot Markowitz is insufficient and RL is attractive.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Value Functions &amp; Bellman</h3>
+        <p>Define $Q^\pi(s, a)$ as expected return from taking $a$ in $s$ then following $\pi$. The Bellman optimality equation</p>
+        $$Q^*(s, a) = \mathbb{E}\left[r + \gamma \max_{a'} Q^*(s', a') \,\middle|\, s, a\right]$$
+        <p>underlies <strong>Q-learning</strong> (and DQN with neural approximation, for discrete actions like {decrease, hold, increase}). Continuous portfolio weights need <strong>policy-gradient / actor-critic</strong> methods — PPO, DDPG, SAC — which directly parameterize $\pi_\theta$ and ascend $\nabla_\theta J$. Notably, dynamic-programming classics are special cases: Merton's consumption-investment problem and Almgren-Chriss execution are MDPs with closed-form solutions — useful sanity benchmarks any RL agent should rediscover.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Where RL Genuinely Helps in Finance</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Optimal execution:</strong> scheduling a parent order against market impact (state: inventory, time left, book signals). Best-documented success area; rewards are well-defined and episodes short.</li>
+            <li><strong>Deep hedging:</strong> learning hedge ratios under transaction costs and discrete rebalancing — beats BS delta when frictions are material (Buehler et al.).</li>
+            <li><strong>Market making:</strong> inventory-aware quoting (Avellaneda-Stoikov as the analytic baseline).</li>
+            <li><strong>Asset allocation:</strong> the hardest case — long horizons, non-stationarity, one historical path. Most published "RL beats the market" results do not survive costs and out-of-sample tests.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. The Three Curses of Financial RL</h3>
+        <ol style="line-height: 1.9;">
+            <li><strong>One path of history:</strong> RL wants millions of episodes; markets give you one non-stationary sample. Cures: market simulators / generative models (with model-risk caveats), bootstrapped resampling, training across many assets.</li>
+            <li><strong>Noise dominates reward:</strong> the credit-assignment signal in daily P&amp;L is tiny; agents overfit spurious patterns. Cures: reward shaping toward risk-adjusted increments, strong regularization, tiny action spaces.</li>
+            <li><strong>Backtest leakage &amp; evaluation:</strong> hyperparameter search across seeds <em>is</em> multiple testing. Walk-forward evaluation, cost realism, and comparison to static baselines (equal weight, vol targeting, Merton) are mandatory.</li>
+        </ol>
+    </div>
+
+    <div class="card">
+        <h3>5. Minimal Honest Pipeline</h3>
+        <ol style="line-height: 1.9;">
+            <li>Environment: gym-style wrapper around historical (or simulated) returns with explicit cost model (spread + impact) and realistic constraints (leverage, turnover).</li>
+            <li>Baselines first: equal-weight, risk parity, Merton fraction — these define "worth doing".</li>
+            <li>Agent: PPO/SAC with small networks; reward = $\Delta\log W_t - \text{cost}$; discrete-ized actions to start.</li>
+            <li>Evaluate: out-of-sample Sharpe, max drawdown, turnover; sensitivity to seeds and cost assumptions; an agent whose edge vanishes at 2 bps of cost has no edge.</li>
+        </ol>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>RL fits problems where today's action changes tomorrow's state — execution, hedging, inventory; costs create exactly that coupling in portfolios.</li>
+            <li>Q-learning for discrete actions; actor-critic (PPO/SAC/DDPG) for continuous weights.</li>
+            <li>Log-wealth rewards connect RL to Kelly/Merton; analytic solutions are your unit tests.</li>
+            <li>Data scarcity + noise + evaluation leakage are the field's failure modes — simulators and severe out-of-sample discipline are the cures.</li>
+            <li>Deep hedging and optimal execution are the proven wins; full asset allocation remains research.</li>
+        </ul>
+    </div>
+</div>

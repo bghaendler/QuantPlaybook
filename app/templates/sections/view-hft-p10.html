@@ -1,0 +1,54 @@
+<div id="view-hft-p10" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">High-Frequency Trading &amp; Market Microstructure — Part 10</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Stochastic Control Theory &amp; Trade Execution</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Dynamic programming for trading: the HJB equation, the Avellaneda-Stoikov market-making solution, and execution as a controlled diffusion problem.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Control Framework</h3>
+        <p>State $X_t$ (price, inventory $q_t$, cash) evolves under a control $u_t$ (trade rate, quote offsets); maximize expected utility of terminal wealth. The value function $V(t, x)$ satisfies the <strong>Hamilton-Jacobi-Bellman</strong> equation:</p>
+        $$\partial_t V + \sup_{u}\Big\{\mathcal{L}^{u}V + f(x, u)\Big\} = 0, \qquad V(T, x) = \text{terminal payoff},$$
+        <p>where $\mathcal{L}^u$ is the controlled generator. Dynamic programming replaces a path-space optimization with a PDE: solve backwards, the maximizing $u^*(t,x)$ <em>is</em> the policy. Verification theorems certify that a smooth solution is genuinely optimal. The deterministic Almgren-Chriss schedule (Part 07) is this machinery with no feedback; the gain here is <strong>closed-loop</strong> policies that react to inventory and prices.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Avellaneda-Stoikov Market Making (The Canonical Solve)</h3>
+        <p>Mid follows $dS = \sigma dW$; quoting at distances $\delta^{\pm}$ from mid attracts fills with intensity $\lambda(\delta) = Ae^{-k\delta}$; exponential utility with risk aversion $\gamma$. The HJB system reduces (via the ansatz $V = -e^{-\gamma(w + \theta(t, q, s))}$) to closed-form quotes:</p>
+        $$\text{reservation price: } r(t) = s - q\,\gamma\sigma^2(T - t), \qquad \text{total spread: } \delta^+ + \delta^- = \gamma\sigma^2(T - t) + \frac{2}{\gamma}\ln\!\left(1 + \frac{\gamma}{k}\right).$$
+        <ul style="line-height: 1.8;">
+            <li><strong>Inventory skew:</strong> long $q$ ⇒ reservation price below mid ⇒ quotes skew to sell — the controller sheds risk automatically.</li>
+            <li><strong>Spread anatomy:</strong> a risk term (σ, γ, horizon) + a liquidity-elasticity term ($k$): exactly Part 01's inventory + adverse-selection decomposition, now derived rather than asserted.</li>
+            <li>Extensions: inventory limits (reflecting boundaries, Part 09), Hawkes-driven intensities, adverse-selection terms (Guéant-Lehalle-Tapia generalizations with ODE-system solutions).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Optimal Execution as Control</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Liquidation with temporary impact</strong> $\dot{x} = -u$, cost $\eta u^2$, risk $\sigma^2x^2$: HJB yields the same sinh trajectory as Part 07 — but now state-dependent variants are easy: stochastic σ (regime urgency, Part 08), price-dependent alpha (trade faster into favorable drift), terminal penalties for residual inventory.</li>
+            <li><strong>Limit-vs-market order control:</strong> impulse/optimal-switching formulations — quasi-variational inequalities decide when to cross the spread vs. keep resting; numerically: policy iteration on a discretized state grid.</li>
+            <li><strong>Order routing as control:</strong> the bandit/assignment view of Part 06 is the discrete-action sibling of the same DP principle.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Solving in Practice</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Dimensionality:</strong> 1–3 state dimensions → finite differences with policy iteration (boundary care per Part 09); higher → approximate DP / neural policy methods; reinforcement learning is HJB by sampling when dynamics aren't trusted analytically (cf. the ML masterclass).</li>
+            <li><strong>Ansatz first:</strong> exponential utility + linear-quadratic structures collapse HJB to ODE systems — try the literature's ansatz before discretizing a PDE.</li>
+            <li><strong>Robustness beats elegance:</strong> mis-specified $\lambda(\delta)$ or σ degrades the "optimal" policy below a tuned heuristic — control output should be policy <em>shapes</em> (skew with inventory, widen with vol and horizon) with parameters fitted in production telemetry.</li>
+            <li><strong>Sanity anchors:</strong> γ→0 must recover risk-neutral limits (TWAP-like schedules, symmetric quotes); horizon→0 must liquidate/flatten — check the corners.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>HJB turns trading into a backward PDE; the argmax of the Hamiltonian is the live policy.</li>
+            <li>Avellaneda-Stoikov: reservation price skews with inventory, spread = risk term + $\frac{2}{\gamma}\ln(1 + \gamma/k)$ — market making solved in closed form.</li>
+            <li>Execution control generalizes Almgren-Chriss to feedback policies; impulse control governs limit-vs-market decisions.</li>
+            <li>Use ansatz reductions where they exist, FD/policy iteration in low dimension, RL beyond — and ship the policy <em>shape</em>, recalibrated from telemetry.</li>
+        </ul>
+    </div>
+</div>

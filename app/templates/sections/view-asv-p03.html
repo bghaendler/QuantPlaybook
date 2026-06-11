@@ -1,0 +1,54 @@
+<div id="view-asv-p03" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Asymptotics of Stochastic Volatility — Part 03</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Small-Time vs. Large-Time Asymptotic Limits</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Two different mathematical regimes with two different toolkits: geodesics rule short maturities, ergodic theory rules long ones — and the smile behaves accordingly.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Two Regimes</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;"></th><th style="padding: 0.45rem;">Small time ($T \to 0$)</th><th style="padding: 0.45rem;">Large time ($T \to \infty$)</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Driver</td><td style="padding: 0.45rem;">Geometry: geodesic distance (Varadhan)</td><td style="padding: 0.45rem;">Ergodicity: invariant measure of the vol process</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Math toolkit</td><td style="padding: 0.45rem;">Heat kernels, large deviations (rate fn = $d^2/2$)</td><td style="padding: 0.45rem;">Spectral theory / large deviations of occupation measures (Donsker-Varadhan), saddlepoints of the cumulant limit</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Smile shape</td><td style="padding: 0.45rem;">Full smile survives: skew/curvature set by ρ, ν (Parts 01–02)</td><td style="padding: 0.45rem;">Smile <em>flattens</em>: $\sigma_{BS}(K,T) \to$ constant in fixed $K$; in scaled strikes $k = \theta T$ a limiting smile persists</td></tr>
+                <tr><td style="padding: 0.45rem;">Skew decay</td><td style="padding: 0.45rem;">ATM skew $\to$ finite constant (≈ $\rho\nu/2$ effect)</td><td style="padding: 0.45rem;">ATM skew decays like $1/T$ (Markovian SV) — vs. empirical $\approx T^{-0.4}$, motivating rough volatility</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>2. Small-Time: Large Deviations Formalized</h3>
+        <p>Freidlin-Wentzell/Varadhan: $\;\lim_{T\to0} T\ln\mathbb{P}(\ln S_T \approx k) = -\frac{d^2(k)}{2}$, hence the BBF-type identity</p>
+        $$\sigma_{BS}(k)\big|_{T\to0} = \frac{|k|}{d(k)}$$
+        <p>— moneyness over geodesic distance (model-enters only through $d$). Heston's small-time smile, SABR's backbone, and local-vol's harmonic-mean formula are all instances. Corrections in powers of $T$ (the heat-kernel $a_1, a_2$) give the practical formulas of Part 02. Mind the order of limits: small-$T$ at <em>fixed</em> strike; for wings-at-fixed-$T$, Lee's moment bounds rule instead (Part 05's territory).</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Large-Time: Ergodicity and Flattening</h3>
+        <p>With mean-reverting vol (Heston, OU-vols), the average realized variance $\frac{1}{T}\int_0^T v_s ds \to \bar{v}$ (ergodic theorem) — randomness in <em>average</em> vol dies, so fixed-strike smiles flatten toward a single Black vol $\sqrt{\bar v}$. The refined picture (Lewis; Forde-Jacquier for Heston): the limiting cumulant generating function $\Lambda(u) = \lim \frac{1}{T}\ln\mathbb{E}[e^{u\ln S_T}]$ exists; Gärtner-Ellis gives a large-deviation rate $\Lambda^*$ and a <strong>nontrivial limiting smile in scaled moneyness</strong>:</p>
+        $$\sigma_\infty^2(\theta) \;=\; 2\left(2\Lambda^*(\theta) - \theta\right) \;\text{-type formulas}, \qquad k = \theta T,$$
+        <p>computable from the model's principal eigenvalue (for Heston, explicit in the parameters). This is the regime relevant for long-dated FX/rates hybrids and ALM-horizon options.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Practical Consequences</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Use the right expansion:</strong> Hagan/short-time formulas extrapolated to 10y misprice systematically (Part 02's drift); long-dated books should be marked with large-time-consistent models or full numerics.</li>
+            <li><strong>Term-structure diagnostics:</strong> plot ATM skew × T — Markovian SV predicts a plateau (skew ∼ c/T); persistent power-law growth in the data is the empirical fingerprint behind rough-vol models (Part 06 adjacent).</li>
+            <li><strong>Model selection by regime:</strong> ν, ρ are identified from short-dated smiles; mean-reversion speed κ and $\bar v$ from the long end — calibrate each parameter where its regime has power.</li>
+            <li><strong>Sanity tests for numerics:</strong> any SV pricer must reproduce flattening at large T and the $|k|/d(k)$ law at small T — two free asymptotic unit tests.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Short maturity: geometry (geodesics, Varadhan) — smile = moneyness/distance with $T$-power corrections.</li>
+            <li>Long maturity: ergodicity — fixed-strike smiles flatten; a limiting smile survives only in $k \sim \theta T$ scaling (Gärtner-Ellis).</li>
+            <li>Markovian SV forces ATM skew ∼ 1/T at the long end — data's slower decay motivates rough volatility.</li>
+            <li>Calibrate each parameter in the regime that identifies it; use the asymptotics as free unit tests for pricers.</li>
+        </ul>
+    </div>
+</div>

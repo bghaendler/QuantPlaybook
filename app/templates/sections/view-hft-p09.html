@@ -1,0 +1,60 @@
+<div id="view-hft-p09" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">High-Frequency Trading &amp; Market Microstructure — Part 09</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Stock Diffusion Modeling with Numeric Boundaries</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">From discrete ticks and queues to diffusions — and back: tick-size boundaries, price bands, and the reflected/absorbed processes that respect them.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Discreteness Meets Diffusion</h3>
+        <p>Microstructure prices live on a grid (tick size $\delta$), yet models and limits are continuous. The reconciliation:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Diffusion limits of queues:</strong> rescaled order-book queue sizes converge to (reflected) Brownian motions; mid-price changes — sums of many ±tick moves — aggregate to diffusions by CLT. The art is matching the diffusion's σ to tick-level dynamics: $\sigma^2_{eff} = \delta^2 \cdot f(\text{queue intensities})$ (Cont-de Larrard-type formulas relating price volatility to order-flow rates).</li>
+            <li><strong>Tick-size regimes:</strong> large-tick names (spread ≈ 1 tick, queues deep) behave like queueing systems; small-tick names like diffusions with sparse books — one model family rarely fits both.</li>
+            <li><strong>Microstructure noise:</strong> observed price = efficient diffusion + rounding/bounce noise; signature plots (RV vs. sampling frequency) expose the noise floor (Part 01's Roll logic).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Boundaries: Absorbing, Reflecting, and Banded</h3>
+        <p>Real prices face hard numeric boundaries; the right boundary condition is a modeling decision:</p>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;">Boundary</th><th style="padding: 0.45rem;">Condition</th><th style="padding: 0.45rem;">Microstructure instance</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Absorbing</td><td style="padding: 0.45rem;">$V(B) = $ value at stop</td><td style="padding: 0.45rem;">Queue depletion (level disappears), stop-out levels, default-style exits</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Reflecting</td><td style="padding: 0.45rem;">$\partial_x V(B) = 0$</td><td style="padding: 0.45rem;">LULD price bands while pegged, inventory limits of a market maker</td></tr>
+                <tr><td style="padding: 0.45rem;">Sticky / partially reflecting</td><td style="padding: 0.45rem;">Mixed (Robin)</td><td style="padding: 0.45rem;">Limit-up states that trade <em>at</em> the band before resuming</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.6rem;">The first-passage toolkit carries over verbatim from barrier options: reflection principle, method of images, and the exit-probability formulas — for driftless BM on $[0, B]$ started at $x$, $\mathbb{P}[\text{hit } B \text{ before } 0] = x/B$ (the gambler's-ruin identity used for queue-race odds: which side of the book depletes first).</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Numerics That Respect Boundaries</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Finite differences:</strong> impose the condition in the scheme — Dirichlet rows for absorbing, ghost-node mirror for reflecting; mis-typed boundaries are the classic source of "leaking probability" (check: total mass conservation under reflecting BCs).</li>
+            <li><strong>Monte Carlo with barriers:</strong> discrete monitoring overestimates survival — apply the Brownian-bridge crossing probability $p = \exp(-2\Delta_1\Delta_2/(\sigma^2\Delta t))$ per step (the same correction as barrier-option pricing), or the Broadie-Glasserman-Kou $0.5826\,\sigma\sqrt{\Delta t}$ barrier shift.</li>
+            <li><strong>Reflected paths:</strong> simulate via $|X_t|$ (driftless) or the Skorokhod construction $X_t = Y_t + L_t$ with local-time pushes; naive clipping at the boundary biases occupation times.</li>
+            <li><strong>Grid alignment:</strong> place FD nodes <em>on</em> the boundary and on tick multiples — interpolating a band between nodes degrades convergence from $O(h^2)$ to $O(h)$.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Applications in the HFT Stack</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Queue-race probabilities</strong> (fill vs. adverse tick) price the value of queue position — the core quantity behind join/cancel decisions in large-tick names.</li>
+            <li><strong>Band-aware risk:</strong> LULD/limit-band proximity changes short-horizon return distributions from ~Gaussian to censored — position risk and option hedging near bands must use the truncated laws.</li>
+            <li><strong>Inventory control previews Part 10:</strong> a market maker's inventory is a controlled diffusion between reflecting limits — the stochastic-control formulation needs exactly these boundary conditions.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Diffusions emerge from tick/queue dynamics; calibrate $\sigma_{eff}$ from order-flow intensities and respect tick-regime differences.</li>
+            <li>Absorbing vs. reflecting vs. sticky boundaries are modeling choices with distinct PDE conditions and distinct microstructure meanings.</li>
+            <li>Use barrier-pricing numerics: Brownian-bridge corrections, ghost nodes, Skorokhod reflection — never naive clipping.</li>
+            <li>Gambler's-ruin exit odds price queue races; banded diffusions underpin maker inventory control (next part).</li>
+        </ul>
+    </div>
+</div>

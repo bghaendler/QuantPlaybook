@@ -1,0 +1,61 @@
+<div id="view-asv-p04" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Asymptotics of Stochastic Volatility — Part 04</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">SABR vs. CEV vs. Heston: Large-Time Limit Comparisons</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Three model families pushed to long maturities: which smiles flatten, which collapse, and what the comparison teaches about choosing models per book.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Contenders' Long-Run Anatomy</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>CEV</strong> ($dF = \alpha F^\beta dW$): no stochastic vol at all — the "smile" is pure local-vol skew. Long-time behavior is degenerate: for β &lt; 1 the origin is attainable (absorption = default-like mass at 0) — the left wing's density mass grows with T; effective smile becomes pure downward skew, no curvature.</li>
+            <li><strong>SABR:</strong> vol is a GBM ($d\alpha = \nu\alpha dW_2$) — <em>not mean-reverting, not ergodic</em>: $\alpha_T$ is lognormal with exploding variance. Total variance $\int\alpha^2$ has fat (lognormal-like) tails forever ⇒ the smile does <em>not</em> flatten correctly; moment explosions are immediate ($\mathbb{E}[S_T^{1+\epsilon}] = \infty$ for ρ ≥ 0 cases and generally for large u) — SABR is a short-maturity asymptotic device, not a global model.</li>
+            <li><strong>Heston</strong> ($dv = \kappa(\theta - v)dt + \xi\sqrt{v}dW_2$): CIR variance is ergodic (Gamma invariant law) ⇒ genuine large-time limit: fixed-strike smile flattens to $\sqrt{\theta}$-level vol, with the scaled limiting smile computable via the explicit limiting cumulant function $\Lambda(u)$ (Forde-Jacquier) — the only one of the three with honest long-run behavior.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Moment Explosions: The Sharp Comparison Tool</h3>
+        <p>Define $T^*(u) = \sup\{T: \mathbb{E}[S_T^u] < \infty\}$. Lee's moment formula ties wings to moments: right-wing slope of total variance $= \psi(u^* - 1)$ where $u^*$ is the critical moment.</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>CEV:</strong> all positive moments finite (β &lt; 1) — wings eventually Gaussian-thin on the right; left wing dominated by absorption mass.</li>
+            <li><strong>SABR (β = 1):</strong> moments $u > 1$ explode at finite (often zero) time for ρ ≤ 0...&gt; precise conditions in ρ, ν — wings stay steep at all maturities; large-T smile in scaled strikes stays <em>non-degenerate wide</em>.</li>
+            <li><strong>Heston:</strong> $T^*(u)$ finite and explicitly computable (the Andersen-Piterbarg ODE-blowup criterion); critical moments → constants as $T \to \infty$, wing slopes settle — consistent with ergodic flattening at fixed strikes.</li>
+        </ul>
+        <p>The practical use: moment explosions decide whether CMS convexity, quanto and power-payoff integrals even <em>converge</em> under each model — checked before any pricing.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Numerical Comparison (Representative Shapes)</h3>
+        <p>Calibrate all three to the same 6m smile (same ATM vol 20%, skew, curvature), then push to 10y:</p>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;"></th><th style="padding: 0.45rem;">ATM vol @10y</th><th style="padding: 0.45rem;">90/110 skew @10y</th><th style="padding: 0.45rem;">Wing behavior</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">CEV</td><td style="padding: 0.45rem;">drifts with backbone ($F$-dependent)</td><td style="padding: 0.45rem;">persists (local-vol skew ~ constant in T)</td><td style="padding: 0.45rem;">left mass from absorption; no curvature</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">SABR (Hagan)</td><td style="padding: 0.45rem;">inflates (the $\nu^2T$ term grows unboundedly)</td><td style="padding: 0.45rem;">over-steep; formula outside validity</td><td style="padding: 0.45rem;">negative densities (Part 02)</td></tr>
+                <tr><td style="padding: 0.45rem;">Heston</td><td style="padding: 0.45rem;">→ ergodic level $\approx\sqrt{\theta}$</td><td style="padding: 0.45rem;">decays ≈ 1/T (Part 03)</td><td style="padding: 0.45rem;">slopes set by critical moments; densities valid</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.6rem;">(Shapes, not universal numbers — the exercise to run in the Python sandbox with this app's pricers.) The disagreement at 10y between models <em>identically calibrated at 6m</em> is the cleanest demonstration of model risk in volatility books (ARM Part 01's theme, made vivid).</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Choosing by Book</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Short-dated smile quoting/risk</strong> (FX options, listed equity): SABR-class asymptotics — unbeatable speed/stability where they're valid.</li>
+            <li><strong>Long-dated/hybrid books</strong> (CMS, PRDC, autocall back-ends): mean-reverting SV (Heston-class or LSV) — ergodic structure and finite-moment control are requirements, not luxuries.</li>
+            <li><strong>Default-sensitive equity (low strikes):</strong> CEV/local-vol absorption behavior is a feature (links to credit, cf. structural models) — but recognize it's modeling <em>default mass</em>, not smile curvature.</li>
+            <li>Mixed desks mark short ends on SABR quotes and long ends on Heston/LSV surfaces — the handover maturity is itself a governance choice; document it.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>CEV: no SV, absorption-dominated left wing; SABR: non-ergodic lognormal vol — short-time tool only; Heston: ergodic, honest large-T limits.</li>
+            <li>Moment explosion times $T^*(u)$ are the sharp cross-model comparison — and a convergence pre-check for convex payoffs.</li>
+            <li>Identical 6m calibrations diverge wildly at 10y: large-time behavior is pure model risk, invisible in short-dated fits.</li>
+            <li>Match the model's asymptotic regime to the book's maturity profile; document the SABR→SV handover point.</li>
+        </ul>
+    </div>
+</div>

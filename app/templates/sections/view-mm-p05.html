@@ -1,0 +1,56 @@
+<div id="view-mm-p05" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Mathematical Methods in Financial Markets — Part 05</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Random Variables &amp; Probability Moments</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">From sample spaces to the four moments every risk report quotes — mean, variance, skew, kurtosis — and the distributions that carry them in finance.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Random Variables, CDF, PDF</h3>
+        <p>A random variable $X$ maps outcomes to numbers; its law is captured by the CDF $F(x) = \mathbb{P}(X \le x)$ (non-decreasing, right-continuous, limits 0 and 1) and, when it exists, the density $f = F'$ with $\mathbb{P}(a < X \le b) = \int_a^b f$. Quantiles invert it: $\text{VaR}_\alpha$ is precisely $F^{-1}_{loss}(\alpha)$ — risk management is applied CDF inversion. Expectations of transforms: $\mathbb{E}[g(X)] = \int g(x)f(x)dx$ (LOTUS) — option pricing is $g = $ discounted payoff under the risk-neutral $f$.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Four Moments</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Moment</th><th style="padding: 0.5rem;">Definition</th><th style="padding: 0.5rem;">Finance reading</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Mean $\mu$</td><td style="padding: 0.5rem;">$\mathbb{E}[X]$</td><td style="padding: 0.5rem;">Expected return / forward</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Variance $\sigma^2$</td><td style="padding: 0.5rem;">$\mathbb{E}[(X-\mu)^2]$</td><td style="padding: 0.5rem;">Volatility² — the unit of risk</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Skewness $\gamma_1$</td><td style="padding: 0.5rem;">$\mathbb{E}[(X-\mu)^3]/\sigma^3$</td><td style="padding: 0.5rem;">Crash asymmetry; smile slope</td></tr>
+                <tr><td style="padding: 0.5rem;">Kurtosis $\gamma_2$ (excess)</td><td style="padding: 0.5rem;">$\mathbb{E}[(X-\mu)^4]/\sigma^4 - 3$</td><td style="padding: 0.5rem;">Fat tails; smile curvature</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.75rem;">Useful algebra: $\operatorname{Var}(X) = \mathbb{E}[X^2] - \mu^2$; $\operatorname{Var}(aX + bY) = a^2\sigma_X^2 + b^2\sigma_Y^2 + 2ab\operatorname{Cov}(X,Y)$ — the two-line foundation of portfolio theory. Moment generating function $M(t) = \mathbb{E}[e^{tX}]$ packages all moments: $\mathbb{E}[X^n] = M^{(n)}(0)$.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. The Cast of Distributions</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Normal $\mathcal{N}(\mu, \sigma^2)$:</strong> closed under sums, CLT-blessed, MGF $e^{\mu t + \sigma^2t^2/2}$ — log-returns' default model and its known understatement of tails.</li>
+            <li><strong>Lognormal:</strong> $e^{\mathcal{N}}$ — prices; mean $e^{\mu + \sigma^2/2}$ (note the convexity bump), all moments finite but the MGF doesn't exist.</li>
+            <li><strong>Poisson/exponential:</strong> jump counts and waiting times (default arrival in intensity models: $\mathbb{P}(\tau > t) = e^{-\lambda t}$).</li>
+            <li><strong>Student-t:</strong> power tails, kurtosis from $\nu$; the GARCH-residual standard; variance infinite for $\nu \le 2$.</li>
+            <li><strong>Empirical daily equity returns:</strong> $\gamma_1 \approx -0.5$ to $-1$, $\gamma_2 \approx 5$–$30$ — the numbers any candidate model must reproduce (cf. Stylised Facts).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Moments → Prices and Risk</h3>
+        <ul style="line-height: 1.8;">
+            <li>Variance prices vanillas (BS needs only $\sigma$); skew and kurtosis price the smile (Gram-Charlier: slope ∝ $-\gamma_1$, curvature ∝ $\gamma_2$).</li>
+            <li>Cornish-Fisher adjusts VaR quantiles for $\gamma_1, \gamma_2$: $z^{CF} = z + \frac{\gamma_1}{6}(z^2 - 1) + \frac{\gamma_2}{24}(z^3 - 3z) - \frac{\gamma_1^2}{36}(2z^3 - 5z)$.</li>
+            <li>Sample moments are noisy in the tails: kurtosis estimates need thousands of observations and are dominated by a handful of extreme days — quote them with suspicion, prefer robust/quantile-based diagnostics.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>CDF inversion = quantiles = VaR; LOTUS = pricing integrals.</li>
+            <li>Variance algebra with covariance is the mathematical core of diversification.</li>
+            <li>Skew and kurtosis are priced objects (smiles), not statistical curiosities.</li>
+            <li>Know each distribution's tail and which moments exist before trusting any formula on it.</li>
+        </ul>
+    </div>
+</div>

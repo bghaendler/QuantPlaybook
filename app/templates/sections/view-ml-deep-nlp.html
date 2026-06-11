@@ -1,0 +1,67 @@
+<div id="view-ml-deep-nlp" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Deep Learning &amp; NLP: LSTM &amp; Sentiment Analysis</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Sequence models for financial time series and text: what LSTMs actually compute, where they help in finance, and how sentiment becomes a tradable feature.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Why Recurrent Networks for Finance?</h3>
+        <p>Financial data is sequential and path-dependent: volatility clusters, order flow has memory, news arrives as a stream. A recurrent network maintains a hidden state $h_t$ summarizing the past:</p>
+        $$h_t = f(W_x x_t + W_h h_{t-1} + b),$$
+        <p>but plain RNNs suffer <strong>vanishing/exploding gradients</strong> — backpropagating through $T$ steps multiplies $T$ Jacobians, so long-range dependencies are unlearnable. LSTMs were designed to fix exactly this.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The LSTM Cell</h3>
+        <p>Long Short-Term Memory (Hochreiter &amp; Schmidhuber, 1997) adds a <em>cell state</em> $c_t$ — a conveyor belt modified only by elementwise gates:</p>
+        $$\begin{aligned}
+        f_t &= \sigma(W_f [h_{t-1}, x_t] + b_f) && \text{forget gate} \\
+        i_t &= \sigma(W_i [h_{t-1}, x_t] + b_i) && \text{input gate} \\
+        \tilde{c}_t &= \tanh(W_c [h_{t-1}, x_t] + b_c) && \text{candidate} \\
+        c_t &= f_t \odot c_{t-1} + i_t \odot \tilde{c}_t && \text{cell update} \\
+        o_t &= \sigma(W_o [h_{t-1}, x_t] + b_o), \quad h_t = o_t \odot \tanh(c_t)
+        \end{aligned}$$
+        <p>Because $c_t$ updates <em>additively</em> (gated identity path), gradients flow across hundreds of steps. The gates learn what to remember (vol level), what to overwrite (stale trends), and what to expose to the output. GRUs are the cheaper two-gate variant; Transformers have since displaced LSTMs for text but LSTMs remain competitive for modest-size numeric time series.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. LSTMs on Market Data: Honest Expectations</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Works:</strong> volatility forecasting (beats GARCH benchmarks modestly), order-book dynamics at short horizons, hedging policies (deep hedging — learning to hedge under frictions), feature extraction for downstream models.</li>
+            <li><strong>Rarely works as advertised:</strong> direct return prediction. Signal-to-noise in daily returns is ~0.05; an expressive model happily memorizes noise. Symptoms: spectacular in-sample/backtest, random out-of-sample.</li>
+            <li><strong>Discipline:</strong> walk-forward (purged) cross-validation, embargo periods, small networks, dropout/weight decay, ensembling over seeds, and benchmarking against ridge regression and GARCH — if the LSTM can't beat those, it is overfit decoration.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Sentiment Analysis: Text as a Factor</h3>
+        <p>Pipeline: source (news wires, earnings calls, filings, social media) → entity tagging → sentiment scoring → aggregation into a time series → orthogonalization against known factors → signal test.</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Lexicon era:</strong> Loughran-McDonald dictionary — finance-specific word lists (in general English, "liability" is neutral; in filings it isn't). Transparent, fast, weak.</li>
+            <li><strong>Embedding/LSTM era:</strong> word vectors + recurrent encoders capture negation and context ("failed to miss estimates").</li>
+            <li><strong>Transformer era:</strong> FinBERT and LLM-based scoring dominate accuracy; the modeling edge has shifted to data breadth, latency, and entity resolution rather than the classifier.</li>
+            <li><strong>Stylized findings:</strong> news sentiment predicts short-horizon (days) drift with rapid decay; earnings-call tone shifts predict post-announcement drift; aggregate sentiment is largely a fast-moving risk-on/off proxy — decays fast, crowds quickly.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>5. A Reference Architecture</h3>
+        <ol style="line-height: 1.9;">
+            <li><strong>Inputs:</strong> 60-day window of standardized features (returns, realized vol, volume, sentiment score).</li>
+            <li><strong>Model:</strong> 1–2 LSTM layers (32–64 units), dropout 0.2–0.5, dense head; classification target (up/flat/down or vol quantile) is usually more robust than regression on returns.</li>
+            <li><strong>Training:</strong> rolling windows, early stopping on a <em>chronologically later</em> validation block; never shuffle across time.</li>
+            <li><strong>Evaluation:</strong> transaction-cost-adjusted PnL and turnover, not accuracy; compare to the linear baseline on identical features.</li>
+        </ol>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>LSTM gates create an additive memory path that defeats vanishing gradients.</li>
+            <li>Best financial uses: volatility, microstructure, hedging policies — not naive return prediction.</li>
+            <li>Finance text needs finance models: Loughran-McDonald → FinBERT → LLM scoring.</li>
+            <li>Sentiment is a fast-decaying, crowdable alpha; engineering (entities, latency) is the moat.</li>
+            <li>Chronological validation with embargoes is non-negotiable — leakage is the field's default failure.</li>
+        </ul>
+    </div>
+</div>

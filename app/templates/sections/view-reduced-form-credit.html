@@ -1,0 +1,67 @@
+<div id="view-reduced-form-credit" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Reduced-Form Intensity Models</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Default as a surprise: model the hazard rate of an unpredictable stopping time, calibrate it to market spreads, and price credit like interest rates.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Intensity Framework</h3>
+        <p>Instead of explaining <em>why</em> default happens (structural), model <em>when</em>: default is the first jump of a point process with intensity $\lambda_t$ — the instantaneous default probability per unit time given survival:</p>
+        $$\mathbb{P}(\tau \in [t, t+dt] \mid \tau > t, \mathcal{F}_t) = \lambda_t\, dt.$$
+        <p>Survival probability mirrors discounting:</p>
+        $$Q(t, T) = \mathbb{P}(\tau > T \mid \tau > t) = \mathbb{E}\left[e^{-\int_t^T \lambda_s\, ds}\right],$$
+        <p>so the entire bond-pricing toolbox (affine models, HJM) transfers wholesale with $\lambda$ in the role of $r$. Default arrives as a total surprise (inaccessible stopping time) — exactly what diffusion-based structural models cannot produce, and why intensity models generate realistic <em>short-dated</em> spreads.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Pricing Defaultable Claims</h3>
+        <p>A zero-recovery defaultable zero-coupon bond (doubly-stochastic/Cox setting, $\lambda$ independent of default itself):</p>
+        $$\bar{P}(t, T) = \mathbb{E}\left[e^{-\int_t^T (r_s + \lambda_s)\, ds}\right]$$
+        <p>— <strong>discount at the risky rate $r + \lambda$</strong>. With recovery $R$ (fraction of market value, Duffie-Singleton), the effective discount spread becomes the loss rate:</p>
+        $$s \approx (1 - R)\,\lambda,$$
+        <p>the <em>credit triangle</em>: spread = loss-given-default × hazard. A 200bp spread with 40% recovery implies λ ≈ 3.33%/yr and one-year survival ≈ 96.7%. CDS pricing equates premium and protection legs:</p>
+        $$s_{CDS} \int_0^T D(u) Q(u)\, du \;=\; (1-R)\int_0^T D(u)\, (-dQ(u)),$$
+        <p>with $D$ the risk-free discount; bootstrapping $Q(\cdot)$ from the CDS curve (piecewise-constant λ) is the market-standard ISDA model's core.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Specifying λ: Affine Machinery</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Constant λ:</strong> exponential default time — the back-of-envelope and CDS-bootstrap workhorse.</li>
+            <li><strong>CIR intensity:</strong> $d\lambda = \kappa(\theta - \lambda)dt + \sigma\sqrt{\lambda}\, dW$ — positive, mean-reverting, closed-form survival via affine exponents; add jumps for spread gapping.</li>
+            <li><strong>Correlated $(r, \lambda)$:</strong> joint affine models price counterparty-risky rates trades (wrong-way risk when λ rises as exposure rises).</li>
+            <li><strong>Stochastic λ matters for options on credit</strong> (CDS swaptions, callable bonds): spread vol is the new vol surface.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Structural vs. Reduced-Form</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;"></th><th style="padding: 0.5rem;">Structural (Merton)</th><th style="padding: 0.5rem;">Reduced-form (intensity)</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Default is</td><td style="padding: 0.5rem;">Predictable (assets hit barrier)</td><td style="padding: 0.5rem;">A surprise (jump)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Inputs</td><td style="padding: 0.5rem;">Balance sheet, asset vol</td><td style="padding: 0.5rem;">Market spreads (CDS/bonds)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Short spreads</td><td style="padding: 0.5rem;">→ 0 (wrong)</td><td style="padding: 0.5rem;">= $(1-R)\lambda$ (right)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Economic content</td><td style="padding: 0.5rem;">High (causal)</td><td style="padding: 0.5rem;">Low (statistical)</td></tr>
+                <tr><td style="padding: 0.5rem;">Best at</td><td style="padding: 0.5rem;">Relative value, what-if leverage</td><td style="padding: 0.5rem;">Mark-to-market pricing, calibration</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.75rem;">Hybrids (Duffie-Lando): structural fundamentals observed with noise <em>generate</em> an intensity — reconciling the two views formally.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Portfolio Credit &amp; Correlation</h3>
+        <p>For multi-name products, intensities must be correlated. Choices: common-factor intensities (doubly-stochastic), contagion/self-exciting models (Hawkes; default of one raises others' λ), or — historically dominant for CDOs — copulas gluing single-name survival curves together (next section). The 2008 lesson: independence-ish correlation calibrated in calm markets catastrophically understated joint tail risk.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Model the hazard λ, not the cause: survival = $\mathbb{E}[e^{-\int\lambda}]$, pricing = discount at $r + \lambda$.</li>
+            <li>Credit triangle: spread ≈ $(1-R)\lambda$ — the one formula every credit quant uses daily.</li>
+            <li>CDS curves bootstrap $Q(t,T)$ with piecewise-constant λ (ISDA standard model).</li>
+            <li>Affine/CIR intensities import the entire rates toolbox to credit, including spread options.</li>
+            <li>Reduced-form prices, structural explains; hybrids and contagion models bridge to portfolios.</li>
+        </ul>
+    </div>
+</div>

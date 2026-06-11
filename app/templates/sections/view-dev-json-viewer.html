@@ -1,0 +1,122 @@
+<div id="view-dev-json-viewer" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">JSON Input/Output Payload Viewer</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Validate, pretty-print and inspect <code>/calculate</code> payloads and responses — with one-click samples and a live round-trip against the backend.</p>
+    </header>
+
+    <div class="card">
+        <h3>Inspector</h3>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+            <button onclick="jsonViewerSample('request')" style="padding: 0.4rem 0.9rem; border-radius: 8px; border: 1px solid var(--input-border); background: transparent; color: var(--text-color); cursor: pointer; font-size: 0.82rem;">Sample Request</button>
+            <button onclick="jsonViewerSample('barrier')" style="padding: 0.4rem 0.9rem; border-radius: 8px; border: 1px solid var(--input-border); background: transparent; color: var(--text-color); cursor: pointer; font-size: 0.82rem;">Sample Barrier Request</button>
+            <button onclick="jsonViewerFormat()" style="padding: 0.4rem 0.9rem; border-radius: 8px; border: none; background: var(--accent); color: #fff; font-weight: 700; cursor: pointer; font-size: 0.82rem;">Validate &amp; Format</button>
+            <button onclick="jsonViewerMinify()" style="padding: 0.4rem 0.9rem; border-radius: 8px; border: 1px solid var(--input-border); background: transparent; color: var(--text-color); cursor: pointer; font-size: 0.82rem;">Minify</button>
+            <button onclick="jsonViewerSend()" style="padding: 0.4rem 0.9rem; border-radius: 8px; border: 1px solid var(--accent); background: transparent; color: var(--accent); font-weight: 700; cursor: pointer; font-size: 0.82rem;">POST to /calculate</button>
+        </div>
+        <textarea id="jsonViewerIn" spellcheck="false" placeholder='Paste JSON here...' style="width: 100%; height: 170px; font-family: monospace; font-size: 0.82rem; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); resize: vertical;"></textarea>
+        <div id="jsonViewerStatus" style="margin-top: 0.5rem; font-size: 0.85rem; font-weight: 600;"></div>
+        <pre id="jsonViewerOut" style="margin-top: 0.75rem; background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.9rem; font-size: 0.8rem; max-height: 400px; overflow: auto; white-space: pre-wrap;"></pre>
+    </div>
+
+    <div class="card">
+        <h3>Response Anatomy</h3>
+        <p>A successful <code>/calculate</code> response bundles scalar results with visualization arrays:</p>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.85rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.4rem;">Field group</th><th style="padding: 0.4rem;">Contents</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;">Scalars</td><td style="padding: 0.4rem;"><code>price</code>, Greeks (<code>delta</code>, <code>gamma</code>, <code>vega</code>, <code>theta</code>, <code>rho</code>...), model metadata</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;">Graphing</td><td style="padding: 0.4rem;"><code>graph_data</code> (payoff/value curves), <code>distribution_data</code> (terminal density)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;">Heatmaps</td><td style="padding: 0.4rem;"><code>heatmap_data/spots</code>, <code>spot_time_*</code>, <code>vol_time_*</code> grids</td></tr>
+                <tr><td style="padding: 0.4rem;">Surfaces</td><td style="padding: 0.4rem;"><code>vol_surface_strike/delta</code>, <code>gatheral_*</code> (total variance, SVI fit, arbitrage diagnostics)</td></tr>
+            </tbody>
+        </table>
+        <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.6rem;">The viewer truncates arrays longer than 12 elements for readability — counts are shown in place of the tail.</p>
+    </div>
+</div>
+
+<script>
+function jsonViewerSetStatus(ok, msg) {
+    var el = document.getElementById('jsonViewerStatus');
+    el.style.color = ok ? '#10b981' : '#ef4444';
+    el.textContent = msg;
+}
+
+function jsonViewerParse() {
+    var raw = document.getElementById('jsonViewerIn').value.trim();
+    if (!raw) { jsonViewerSetStatus(false, 'Nothing to parse.'); return null; }
+    try {
+        var obj = JSON.parse(raw);
+        jsonViewerSetStatus(true, 'Valid JSON ✓ (' + Object.keys(obj).length + ' top-level keys)');
+        return obj;
+    } catch (e) {
+        var m = /position (\d+)/.exec(e.message);
+        var hint = '';
+        if (m) {
+            var pos = parseInt(m[1], 10);
+            var line = raw.slice(0, pos).split('\n').length;
+            hint = ' (around line ' + line + ')';
+        }
+        jsonViewerSetStatus(false, 'Invalid JSON: ' + e.message + hint);
+        return null;
+    }
+}
+
+function jsonViewerTruncate(obj) {
+    if (Array.isArray(obj)) {
+        if (obj.length > 12) {
+            return obj.slice(0, 12).map(jsonViewerTruncate).concat(['... +' + (obj.length - 12) + ' more']);
+        }
+        return obj.map(jsonViewerTruncate);
+    }
+    if (obj && typeof obj === 'object') {
+        var out = {};
+        Object.keys(obj).forEach(function(k) { out[k] = jsonViewerTruncate(obj[k]); });
+        return out;
+    }
+    return obj;
+}
+
+function jsonViewerFormat() {
+    var obj = jsonViewerParse();
+    if (obj === null) return;
+    document.getElementById('jsonViewerOut').textContent = JSON.stringify(jsonViewerTruncate(obj), null, 2);
+}
+
+function jsonViewerMinify() {
+    var obj = jsonViewerParse();
+    if (obj === null) return;
+    document.getElementById('jsonViewerOut').textContent = JSON.stringify(obj);
+}
+
+function jsonViewerSample(kind) {
+    var sample;
+    if (kind === 'barrier') {
+        sample = { model: 'barrier_std', type: 'call', spot: 100, strike: 100, time: 0.5,
+                   rate: 0.05, volatility: 0.25, barrier: 120, barrierType: 'Up-and-Out', rebate: 1.0 };
+    } else {
+        sample = { model: 'bsm', type: 'call', spot: 100, strike: 105, time: 1.0,
+                   rate: 0.05, volatility: 0.2, dividend: 0.0 };
+    }
+    document.getElementById('jsonViewerIn').value = JSON.stringify(sample, null, 2);
+    jsonViewerSetStatus(true, 'Sample loaded.');
+    document.getElementById('jsonViewerOut').textContent = '';
+}
+
+async function jsonViewerSend() {
+    var obj = jsonViewerParse();
+    if (obj === null) return;
+    var out = document.getElementById('jsonViewerOut');
+    out.textContent = 'POST /calculate ...';
+    try {
+        var resp = await fetch('/calculate', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(obj)
+        });
+        var data = await resp.json();
+        jsonViewerSetStatus(resp.ok, resp.ok ? 'HTTP 200 ✓ response below (arrays truncated)' : 'HTTP ' + resp.status);
+        out.textContent = JSON.stringify(jsonViewerTruncate(data), null, 2);
+    } catch (err) {
+        jsonViewerSetStatus(false, 'Request failed: ' + err.message);
+        out.textContent = 'Is the FastAPI backend running on this origin?';
+    }
+}
+</script>

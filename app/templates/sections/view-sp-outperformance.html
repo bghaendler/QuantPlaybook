@@ -1,0 +1,51 @@
+<div id="view-sp-outperformance" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Outperformance Note</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Relative-value structuring: payoffs on one asset beating another — Margrabe economics in a retail wrapper, plus the leveraged-upside "sprint" variant that shares the name.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Two Products Called "Outperformance"</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Relative outperformance certificate:</strong> pays the positive performance difference of asset 1 over asset 2:
+            $$V_T = N\left[1 + PR \cdot \max\!\left(\frac{S^1_T}{S^1_0} - \frac{S^2_T}{S^2_0},\ 0\right)\right].$$
+            Market-neutral in direction: both can fall and the note still pays if asset 1 falls less. This is an <strong>exchange option on normalized prices</strong> — Margrabe pricing, correlation as the key input.</li>
+            <li><strong>Outperformance/sprint certificate (leveraged upside):</strong> a single-asset note paying $1 + PR \times \max(R, 0)$ with $PR > 1$ above the strike (often capped), funded by forfeiting dividends and/or selling a cap — economically: long stock + extra calls financed by dividends.</li>
+        </ul>
+        <p>Both monetize the same idea — paying for relative or amplified performance with optionality — but the relative version is the structurally interesting one.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Pricing the Relative Version</h3>
+        <p>Per unit notional with performances $X_i = S^i_T/S^i_0$, the embedded option is $\max(X_1 - X_2, 0)$ — Margrabe with both "assets" normalized to 1, dividend yields $q_1, q_2$:</p>
+        $$V_{opt} = e^{-q_1 T} N(d_1) - e^{-q_2 T} N(d_2), \qquad \hat\sigma = \sqrt{\sigma_1^2 + \sigma_2^2 - 2\rho\sigma_1\sigma_2},$$
+        $$d_1 = \frac{(q_2 - q_1)T + \hat\sigma^2 T/2}{\hat\sigma\sqrt{T}}, \qquad d_2 = d_1 - \hat\sigma\sqrt{T}.$$
+        <p>Note what disappears: the market's direction, the level of rates (mostly), each asset's standalone drift. What remains: the two vols, the correlation — and the <strong>dividend differential</strong>, which sets the forward of the performance ratio (a high-dividend asset 1 hurts: its price forward lags). ATM value scales with $\hat\sigma\sqrt{T}/\sqrt{2\pi}$: low correlation pairs make expensive options, so issuers prefer correlated pairs (index vs index) for high participation.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Uses &amp; Risks</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Views without direction:</strong> sector vs market, value vs growth, domestic vs global, gold vs miners — expressed with floored downside (the option never goes negative; the fee/forgone coupon is the loss bound).</li>
+            <li><strong>Correlation risk:</strong> the holder is short ρ — a pair that converges (ρ↑) drains the spread vol. Marks move on correlation regime changes even with both legs flat.</li>
+            <li><strong>Dividend risk:</strong> normalized performance is computed on <em>price</em> indices in most term sheets — the implicit short position in asset 1's dividends and long in asset 2's is a real, hedgeable mark.</li>
+            <li><strong>Beta mismatch trap:</strong> "A beats B" structurally (e.g. leveraged sector vs broad index in a bull tape) often just repackages beta — check whether the pair's forward already prices the expected outperformance.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Desk Perspective</h3>
+        <p>Hedge = Margrabe delta in each name ($+e^{-q_1T}N(d_1)$ of asset 1, $-e^{-q_2T}N(d_2)$ of asset 2, in performance units) — a self-financing long/short pair rebalanced as the ratio moves; vega in the <em>spread vol</em> $\hat\sigma$ decomposes into two vegas and a cega ($\partial V/\partial\rho < 0$). Books of outperformance notes net naturally against worst-of inventory (opposite correlation sign) — one reason dealers quote them keenly. Quanto versions (both legs in foreign currency, payoff in domestic) add FX-correlation adjustments to each leg's forward.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Relative outperformance note = Margrabe exchange option on normalized performances.</li>
+            <li>Inputs that matter: two vols, correlation (short), dividend differential — not direction.</li>
+            <li>Spread vol $\hat\sigma = \sqrt{\sigma_1^2 + \sigma_2^2 - 2\rho\sigma_1\sigma_2}$ prices the view; correlated pairs = cheap options = high participation.</li>
+            <li>Sprint/leveraged variants are a different product: dividends traded for geared, usually capped, upside.</li>
+            <li>Dealer books net outperformance (long dispersion) against worst-of (short dispersion) inventory.</li>
+        </ul>
+    </div>
+</div>

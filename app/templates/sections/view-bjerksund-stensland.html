@@ -1,0 +1,55 @@
+<div id="view-bjerksund-stensland" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Bjerksund-Stensland (1993 &amp; 2002)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">American options priced by assuming a simple exercise boundary and valuing the resulting stopping strategy exactly — a guaranteed lower bound that is remarkably tight.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Strategy-Based Idea</h3>
+        <p>Any <em>feasible</em> exercise strategy gives a lower bound on the American price (the optimal strategy is the supremum). Bjerksund &amp; Stensland choose a deliberately simple strategy: exercise the first time $S$ hits a <strong>flat boundary</strong> $X$:</p>
+        $$\tau = \inf\{t : S_t \ge X\}.$$
+        <p>The value of this strategy under GBM has a closed form (first-passage mathematics), and maximizing over the single number $X$ — or using their analytical near-optimal choice of $X$ — yields a price that is both fast and a true lower bound. Contrast with BAW: BAW approximates the PDE (error of unknown sign); BS approximates the <em>strategy</em> (error of known sign, always ≤ true value).</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The 1993 Formula</h3>
+        <p>For a call with carry $b < r$ (otherwise European), define $\beta$ as the positive root of the fundamental quadratic:</p>
+        $$\beta = \left(\tfrac{1}{2} - \tfrac{b}{\sigma^2}\right) + \sqrt{\left(\tfrac{b}{\sigma^2} - \tfrac{1}{2}\right)^2 + \tfrac{2r}{\sigma^2}}.$$
+        <p>The trigger price is parametrized as</p>
+        $$X = B_0 + (B_\infty - B_0)\left(1 - e^{h(T)}\right), \qquad B_\infty = \frac{\beta}{\beta - 1}K, \quad B_0 = \max\!\left(K, \frac{r}{r - b}K\right),$$
+        $$h(T) = -\left(bT + 2\sigma\sqrt{T}\right)\frac{B_0}{B_\infty - B_0}\cdot\frac{K^2}{B_0(B_\infty-B_0)}\;\;\text{(1993 variant: } h(T) = -(bT + 2\sigma\sqrt{T})\tfrac{K^2}{B_0(B_\infty - B_0)}\text{)},$$
+        <p>interpolating between the perpetual boundary $B_\infty$ and the at-expiry boundary $B_0$. The price assembles from the auxiliary function $\varphi(S, T, \gamma, H, X)$ — the value of receiving $S^\gamma$ at $T$ if the boundary $X$ was never hit, known in closed form from the reflection principle:</p>
+        $$C = \alpha S^\beta - \alpha\,\varphi(S,T,\beta,X,X) + \varphi(S,T,1,X,X) - \varphi(S,T,1,K,X) - K\varphi(S,T,0,X,X) + K\varphi(S,T,0,K,X),$$
+        <p>with $\alpha = (X - K)X^{-\beta}$. Puts price via the <strong>Bjerksund-Stensland transformation</strong> $P(S, K, T, r, b, \sigma) = C(K, S, T, r - b, -b, \sigma)$ — no separate derivation needed.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. The 2002 Refinement: Two-Step Boundary</h3>
+        <p>The 2002 version splits $[0, T]$ at $t_1 = \frac{1}{2}(\sqrt{5} - 1)T$ and uses a <em>two-level flat boundary</em> (higher trigger early, lower trigger late), valuing the strategy with bivariate normal terms ($\Psi$ functions alongside $\varphi$). Cost: bivariate CDF evaluations. Benefit: the lower bound tightens dramatically — typical errors drop from ~0.1–0.5% (1993) to ~0.01–0.1% (2002), competitive with fine trees at a tiny fraction of the cost.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Accuracy &amp; Positioning</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Method</th><th style="padding: 0.5rem;">Error character</th><th style="padding: 0.5rem;">Speed</th><th style="padding: 0.5rem;">Best regime</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">BAW (1987)</td><td style="padding: 0.5rem;">Either sign, grows with T</td><td style="padding: 0.5rem;">Newton loop</td><td style="padding: 0.5rem;">Short maturities</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">BS 1993</td><td style="padding: 0.5rem;">Lower bound</td><td style="padding: 0.5rem;">Fully closed-form</td><td style="padding: 0.5rem;">General purpose</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">BS 2002</td><td style="padding: 0.5rem;">Tighter lower bound</td><td style="padding: 0.5rem;">Closed-form + bivariate CDF</td><td style="padding: 0.5rem;">Long maturities, production default</td></tr>
+                <tr><td style="padding: 0.5rem;">CRR tree (1000 steps)</td><td style="padding: 0.5rem;">Converges (oscillating)</td><td style="padding: 0.5rem;">~10³ × slower</td><td style="padding: 0.5rem;">Benchmark, dividends</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.75rem;">Because no root-finding is required, BS is branch-free and vectorizes — popular inside calibration loops, real-time risk and GPU batch pricing (e.g. commodity futures options where Black-76 carry makes Americans genuinely premium-bearing).</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Value a <em>suboptimal but explicit</em> stopping strategy exactly → guaranteed lower bound.</li>
+            <li>1993: one flat boundary interpolated between $B_0$ and the perpetual $B_\infty = \frac{\beta}{\beta-1}K$.</li>
+            <li>2002: two-step boundary + bivariate normals → near-benchmark accuracy.</li>
+            <li>Put = transformed call: swap $S \leftrightarrow K$, $r \to r-b$, $b \to -b$.</li>
+            <li>No iteration ⇒ fast, stable Greeks; the production standard for analytic Americans.</li>
+        </ul>
+    </div>
+</div>

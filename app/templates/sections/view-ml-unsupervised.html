@@ -1,0 +1,60 @@
+<div id="view-ml-unsupervised" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Unsupervised Learning: K-Means &amp; GMM Regime Detection</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Letting the data label itself: clustering market observations into regimes — calm, stressed, trending — without ever telling the algorithm what a regime is.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Regime-Detection Problem</h3>
+        <p>Market behavior is non-stationary but not arbitrary: it visits recurring states (low-vol grind, risk-off stress, recovery). Features per period $x_t$ — realized vol, returns, correlation level, credit spreads, term-structure slope — form a point cloud; clustering asks whether that cloud has natural groups. Found regimes feed: vol scaling, dynamic risk limits, strategy switching, and regime-conditional parameter estimation.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. K-Means: Hard Assignments</h3>
+        <p>Choose $K$ centroids $\mu_k$ to minimize within-cluster variance:</p>
+        $$\min_{\{c_t\},\{\mu_k\}} \sum_t \left\lVert x_t - \mu_{c_t}\right\rVert^2.$$
+        <p>Lloyd's algorithm alternates: assign each point to its nearest centroid; recompute centroids as cluster means. Converges fast (to a local optimum — run multiple seeds, or k-means++).</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Choosing K:</strong> elbow on inertia, silhouette score, or stability across subsamples; for markets, $K = 2$–4 (calm/stress, plus trend states) is typical.</li>
+            <li><strong>Must standardize features</strong> — Euclidean distance is meaningless across mixed units.</li>
+            <li>Limitations: spherical equal-size clusters, <em>hard</em> boundaries — a day is 100% in one regime even when evidence is ambiguous.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Gaussian Mixture Models: Soft, Probabilistic Regimes</h3>
+        <p>Model the density as a mixture of $K$ Gaussians:</p>
+        $$p(x) = \sum_{k=1}^{K} \pi_k\, \mathcal{N}(x \mid \mu_k, \Sigma_k).$$
+        <p>The <strong>EM algorithm</strong> alternates: E-step computes <em>responsibilities</em> (posterior regime probabilities)</p>
+        $$\gamma_{tk} = \frac{\pi_k \mathcal{N}(x_t \mid \mu_k, \Sigma_k)}{\sum_j \pi_j \mathcal{N}(x_t \mid \mu_j, \Sigma_j)},$$
+        <p>M-step re-estimates $(\pi_k, \mu_k, \Sigma_k)$ from responsibility-weighted moments. Advantages over k-means (which is the $\Sigma_k = \epsilon I$ limit):</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Soft membership:</strong> "today is 70% stress" — directly usable as a position-scaling weight.</li>
+            <li><strong>Full covariances:</strong> regimes can be elongated/correlated clusters (e.g. stress = high vol <em>and</em> high correlation).</li>
+            <li><strong>Model selection by likelihood:</strong> BIC/AIC choose $K$ on statistical grounds.</li>
+            <li>A GMM on returns is literally a fat-tailed model: a 2-state mixture of normals reproduces excess kurtosis and skew with 5 parameters.</li>
+        </ul>
+        <p>Adding Markov dynamics on the hidden state gives the <strong>Hidden Markov Model</strong> (Hamilton's regime-switching) — same E/M logic with transition probabilities, yielding regime <em>persistence</em> and filtered/smoothed state paths.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. A Concrete Pipeline</h3>
+        <ol style="line-height: 1.9;">
+            <li>Features: 21-day realized vol, 21-day return, average pairwise correlation of sector ETFs, slope 2s10s — standardized (z-scores on a rolling window to avoid lookahead).</li>
+            <li>Fit GMM with $K = 3$ on history up to $t$; classify day $t+1$ out-of-sample.</li>
+            <li>Typical output: regime A (low vol, positive drift, ~70% of days), B (elevated vol, flat), C (vol spike, negative drift, high correlation, ~5%).</li>
+            <li>Use: scale exposure by $1 - \gamma_{t,C}$, or fit per-regime covariance matrices for VaR.</li>
+        </ol>
+        <p><strong>Pitfalls:</strong> label switching across refits (order regimes by vol), regime-count instability, lookahead bias in standardization, and the fact that clusters describe the past — transition <em>timing</em> is where the money is, and unsupervised models are weakest exactly there.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>K-means: fast hard clustering by within-cluster variance; standardize features, multi-seed, elbow/silhouette for K.</li>
+            <li>GMM via EM generalizes k-means: soft probabilistic membership, full covariances, BIC for K.</li>
+            <li>Mixtures double as fat-tail return models; HMM adds regime persistence.</li>
+            <li>Out-of-sample discipline (rolling fits, no lookahead) decides whether "regimes" are real or artifacts.</li>
+        </ul>
+    </div>
+</div>

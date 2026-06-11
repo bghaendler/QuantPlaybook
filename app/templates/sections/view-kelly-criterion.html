@@ -1,0 +1,63 @@
+<div id="view-kelly-criterion" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Kelly Criterion &amp; Optimal Bet Sizing</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Maximizing the long-run growth rate of capital: the log-utility solution to "how much should I bet?" — and why practitioners bet less.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Binary Bet Setup</h3>
+        <p>Repeated independent bets: win probability $p$, lose probability $q = 1-p$. A winning bet pays odds $b$ per unit staked (lose: stake forfeited). Betting a constant fraction $f$ of wealth each round, wealth after $n$ rounds with $W$ wins and $L$ losses is</p>
+        $$X_n = X_0 (1 + fb)^{W} (1 - f)^{L}.$$
+        <p>The <strong>exponential growth rate</strong> of capital is</p>
+        $$g(f) = \lim_{n\to\infty} \frac{1}{n}\ln\frac{X_n}{X_0} = p \ln(1 + fb) + q \ln(1 - f).$$
+    </div>
+
+    <div class="card">
+        <h3>2. The Kelly Fraction</h3>
+        <p>Maximizing $g(f)$ via $g'(f) = 0$ gives the celebrated formula:</p>
+        $$f^* = \frac{pb - q}{b} = p - \frac{q}{b}.$$
+        <p>Interpretation: <em>edge over odds</em>. With a fair coin ($p = 0.5$) paying $b = 2{:}1$, $f^* = 0.5 - 0.25 = 25\%$ of wealth per bet. If the edge $pb - q \le 0$, the optimal bet is zero — Kelly never bets without positive expectation.</p>
+        <div style="background: var(--accent-glow); border: 1px solid var(--accent); border-radius: 8px; padding: 0.75rem 1rem; margin-top: 1rem; font-size: 0.85rem;">
+            <strong>Properties (Breiman, 1961):</strong> Kelly betting (i) maximizes the asymptotic growth rate almost surely, (ii) minimizes the expected time to reach any large wealth target, and (iii) almost surely out-grows any "essentially different" strategy in the long run.
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>3. Continuous Time: Merton's Fraction</h3>
+        <p>For a GBM asset with drift $\mu$, volatility $\sigma$ and risk-free rate $r$, investing a constant fraction $f$ of wealth gives portfolio growth rate</p>
+        $$g(f) = r + f(\mu - r) - \tfrac{1}{2} f^2 \sigma^2,$$
+        <p>maximized at the continuous Kelly (Merton) fraction:</p>
+        $$f^* = \frac{\mu - r}{\sigma^2}, \qquad g(f^*) = r + \frac{1}{2}\left(\frac{\mu - r}{\sigma}\right)^2 = r + \tfrac{1}{2}\,\text{SR}^2.$$
+        <p>The maximum incremental growth rate equals half the squared Sharpe ratio. Example: $\mu - r = 6\%$, $\sigma = 20\%$ → $f^* = 0.06/0.04 = 150\%$ (leveraged!) — a first hint that full Kelly is aggressive.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Fractional Kelly &amp; Drawdown Reality</h3>
+        <p>The growth-rate parabola is flat near the top but the risk is not: betting $f = 2f^*$ produces <em>zero</em> excess growth with double the variance, and overbetting beyond $2f^*$ guarantees long-run ruin in growth terms. Full Kelly itself implies brutal swings: the probability of ever halving your bankroll before doubling it is about $1/3$, and the probability that wealth ever falls below a fraction $x$ of its start is approximately $x$ itself.</p>
+        <p><strong>Half-Kelly</strong> ($f = f^*/2$) delivers ~75% of the optimal growth with roughly half the volatility — the standard practitioner compromise. Fractional Kelly is equivalent to full Kelly under a more risk-averse power utility.</p>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 0.75rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.4rem;">Strategy</th><th style="padding: 0.4rem;">Growth vs. optimum</th><th style="padding: 0.4rem;">Relative variance</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;">Full Kelly ($f^*$)</td><td style="padding: 0.4rem;">100%</td><td style="padding: 0.4rem;">1.0</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;">Half Kelly ($f^*/2$)</td><td style="padding: 0.4rem;">75%</td><td style="padding: 0.4rem;">0.5</td></tr>
+                <tr><td style="padding: 0.4rem;">Double Kelly ($2f^*$)</td><td style="padding: 0.4rem;">0%</td><td style="padding: 0.4rem;">2.0</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>5. Estimation Risk: The Practical Killer</h3>
+        <p>$f^*$ depends on parameters you do not know. Because over-betting is punished far more than under-betting, parameter uncertainty asymmetrically argues for smaller bets: if your estimate $\hat{\mu}$ is noisy, the certainty-equivalent optimal fraction shrinks. Rule of thumb: treat estimated edges with suspicion, size at a fraction (¼ to ½) of estimated Kelly, and recompute as evidence accumulates. Thorp applied exactly this discipline from blackjack card-counting to Princeton-Newport's convertible arbitrage.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Kelly maximizes expected log wealth: $f^* = (pb - q)/b$ discrete, $f^* = (\mu - r)/\sigma^2$ continuous.</li>
+            <li>Max growth = $r + \frac{1}{2}\text{SR}^2$ — the Sharpe ratio is a growth statement.</li>
+            <li>Overbetting is fatal: growth hits zero at $2f^*$ and turns negative beyond.</li>
+            <li>Half-Kelly: 75% of growth, half the variance — the standard real-world choice.</li>
+            <li>Parameter uncertainty always pushes the optimal bet below naive Kelly.</li>
+        </ul>
+    </div>
+</div>

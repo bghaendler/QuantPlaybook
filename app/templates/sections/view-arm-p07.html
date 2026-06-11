@@ -1,0 +1,53 @@
+<div id="view-arm-p07" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Advanced Risk Management — Part 07</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Limitations of Classical VaR Measures</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">What VaR cannot tell you: tail-blindness, non-subadditivity, gaming, procyclicality — the formal backtests that expose failures, and the fixes (ES and friends).</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Structural Limitations</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Tail-blind by construction:</strong> VaR is a quantile — it says nothing about losses <em>beyond</em> it. Two books with identical 99% VaR can have ES differing by 10× (sold deep OTM puts vs. plain equity).</li>
+            <li><strong>Not subadditive:</strong> $\mathrm{VaR}(A + B) > \mathrm{VaR}(A) + \mathrm{VaR}(B)$ is possible (the coherent-risk course's defaultable-bond example) — merging desks can <em>raise</em> measured risk, breaking limit aggregation logic and rewarding artificial de-mergers.</li>
+            <li><strong>Gameable:</strong> the quantile invites payoff shaping — sell risk just beyond the 99th percentile (digital-style tail bets); VaR falls, true risk rises. Quantile optimization is the adversarial failure mode of quantile regulation.</li>
+            <li><strong>Procyclical:</strong> rolling-window VaR shrinks in calm and explodes in stress — exactly backwards as a brake; it amplified deleveraging in 2008 (margin/limits tied to VaR).</li>
+            <li><strong>One number, one horizon:</strong> liquidity-blind (a 1-day horizon assumes you can exit), correlation-regime-blind, and silent on <em>which factor</em> drives the risk.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Backtesting: Catching Failure Formally</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Kupiec POF test:</strong> exceptions $x$ in $n$ days should be Binomial$(n, 1-c)$; likelihood ratio $LR = -2\ln\frac{(1-p)^{n-x}p^x}{(1-\hat{p})^{n-x}\hat{p}^x} \sim \chi^2_1$. With 250 days at 99%: expect 2.5; >7 rejects at 5%.</li>
+            <li><strong>Christoffersen independence test:</strong> exceptions must not cluster — a first-order Markov LR test on the exception sequence; clustering (the Part 06 regime signature) fails risk models that pass on counts.</li>
+            <li><strong>Basel traffic lights:</strong> green ≤4, yellow 5–9 (capital multiplier rises 3→4), red ≥10 exceptions per 250 days — the supervisory wrapper around Kupiec.</li>
+            <li><strong>ES backtesting</strong> is harder (ES is not <em>elicitable</em> alone) but feasible jointly with VaR (Fissler-Ziegel scoring, Acerbi-Székely tests) — the objection that "ES can't be backtested" is obsolete.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. The Fixes</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Expected Shortfall:</strong> $\mathrm{ES}_c = \mathbb{E}[L \mid L > \mathrm{VaR}_c]$ — tail-aware, subadditive (coherent), harder to game with beyond-quantile payoffs; FRTB's ES₉₇.₅ with factor-level liquidity horizons addresses three limitations at once.</li>
+            <li><strong>Stressed calibration:</strong> fixed crisis windows (Part 05) cut procyclicality.</li>
+            <li><strong>Spectral measures:</strong> weight quantiles by a risk-aversion function — a coherent family generalizing ES, useful for bespoke appetite statements.</li>
+            <li><strong>Complements, not replacements:</strong> sensitivity limits, stress/scenario floors, concentration metrics and drawdown control around any statistical headline (Part 02's layered limits).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Using VaR Honestly</h3>
+        <p>VaR remains the right tool for what it does: a common-currency, backtestable, daily summary of <em>ordinary</em> risk. The honest usage contract: (i) quote ES alongside; (ii) publish the backtest record with the number; (iii) attach the assumptions note (window, weighting, revaluation method — Parts 01, 05); (iv) never let the quantile be a target (Goodhart's law applies to risk measures with full force); (v) keep humans responsible for the tail the statistic cannot see.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>VaR is tail-blind, can be non-subadditive, gameable and procyclical — limitations of the <em>measure</em>, before any model error.</li>
+            <li>Kupiec counts + Christoffersen independence + traffic lights make failure detectable; clustered exceptions are the regime alarm.</li>
+            <li>ES (with joint VaR-ES backtests) is the structural fix; stressed windows and layered limits handle the rest.</li>
+            <li>Quote VaR with ES, its backtest record and its assumptions — and never as a target.</li>
+        </ul>
+    </div>
+</div>

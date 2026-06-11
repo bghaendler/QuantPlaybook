@@ -1,0 +1,60 @@
+<div id="view-spark-crack-spreads" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Spread Options: Spark &amp; Crack Spreads</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Options on the difference of two prices: the financial representation of physical conversion assets — power plants, refineries — and the models that price them.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Spreads That Run the Energy World</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Spark spread:</strong> power price minus gas cost of generating it: $\text{Spark} = P_{power} - HR \times P_{gas}$, with heat rate $HR$ (MMBtu/MWh, ~7 for efficient CCGTs). A gas-fired plant is a strip of <em>spark-spread call options</em>: run when the spread is positive, idle otherwise.</li>
+            <li><strong>Crack spread:</strong> refined products minus crude, e.g. the 3-2-1 crack: $\tfrac{2}{3}P_{gasoline} + \tfrac{1}{3}P_{heating oil} - P_{WTI}$. A refinery is a strip of crack-spread options.</li>
+            <li>Others: dark spread (power − coal), frac spread (NGL − gas), processing/toll agreements generally.</li>
+        </ul>
+        <p>The general payoff: $\max(S_1 - h\,S_2 - K, 0)$, where $K$ captures fixed (e.g. O&amp;M) costs.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Why Spreads Are Hard</h3>
+        <p>The difference of two lognormals is not lognormal — it can be negative and has no closed-form density. Only one special case is exact: <strong>$K = 0$, Margrabe's exchange option</strong>. With strike, three approaches dominate:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Bachelier on the spread:</strong> model $X = S_1 - hS_2$ as arithmetic Brownian with normal vol $\sigma_X$ — natural since spreads go negative; common for short-dated power.</li>
+            <li><strong>Kirk's approximation (1995):</strong> treat $hS_2 + K$ as approximately lognormal and apply Black-76 to the ratio.</li>
+            <li><strong>Numerical:</strong> 2D quadrature/FFT on the joint density, or Monte Carlo — the benchmark.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Kirk's Approximation</h3>
+        <p>With futures $F_1, F_2$, vols $\sigma_1, \sigma_2$, correlation $\rho$:</p>
+        $$c \approx e^{-rT}\left[F_1 N(d_1) - (h F_2 + K) N(d_2)\right],$$
+        $$\sigma_K = \sqrt{\sigma_1^2 - 2\rho\sigma_1\sigma_W W + \sigma_W^2 W^2}\,, \qquad W = \frac{hF_2}{hF_2 + K},\;\; \sigma_W = \sigma_2,$$
+        $$d_1 = \frac{\ln\!\big(F_1/(hF_2 + K)\big) + \sigma_K^2 T/2}{\sigma_K \sqrt{T}}, \qquad d_2 = d_1 - \sigma_K\sqrt{T}.$$
+        <p>Accurate to a few basis points when $K$ is small relative to $hF_2$; degrades for large strikes or very high vol where the lognormal-shift fudge bites. Refinements: Bjerksund-Stensland's spread formula, Carmona-Durrleman bounds, moment-matched 2D quadrature.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Correlation Is the Price</h3>
+        <p>Spread vol is dominated by the correlation term:</p>
+        $$\sigma_{spread}^2 \approx \sigma_1^2 + (hF_2/F_1)^2\sigma_2^2 - 2\rho\,(hF_2/F_1)\,\sigma_1\sigma_2.$$
+        <p><strong>Long a spread option = short correlation:</strong> as $\rho \to 1$ with similar vols the spread variance — and the option value — collapses. Power-gas correlation is high (gas often sets the marginal power price) but regime-dependent: it breaks down precisely in scarcity events (heat waves, freeze-offs), when the spark spread explodes. Hence the chronic gap between historical correlation and the (lower) implied correlation at which conversion-asset deals clear: buyers of plants are paying for correlation breakdown insurance. Tail events (Texas, Feb 2021: power capped at \$9,000/MWh against gas at hundreds of dollars) dominate realized P&amp;L and are invisible in Gaussian-copula correlation assumptions.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Real-Asset Valuation Use</h3>
+        <p>A tolling agreement / CCGT with capacity $Q$ MWh per peak hour values as</p>
+        $$V = Q \sum_{\text{hours } i} e^{-rT_i}\, \mathbb{E}^{\mathbb{Q}}\!\left[\max\!\big(P_i - HR \cdot G_i - VOM, 0\big)\right],$$
+        <p>a strip of hourly spark-spread calls — priced with Kirk/Bachelier per delivery period plus operational constraints (start costs, ramp rates) layered on via stochastic-control or lattice adjustments (see Swing Contracts). The option view explains why low or even negative <em>average</em> spreads do not make a flexible plant worthless: volatility and the right to idle carry the value.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Spark/crack spreads financialize conversion assets; plants and refineries are strips of spread calls.</li>
+            <li>No closed form with strike: Kirk's approximation (lognormal shift), Bachelier on the spread, or numerics.</li>
+            <li>Spread options are short correlation; implied vs. realized correlation is the key trading axis.</li>
+            <li>Correlation breaks down exactly in the scarcity events that matter — model the tails, not the average.</li>
+            <li>Flexibility (the right to idle) means volatile spreads create value even when mean spreads are thin.</li>
+        </ul>
+    </div>
+</div>

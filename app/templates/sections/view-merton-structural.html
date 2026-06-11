@@ -1,0 +1,58 @@
+<div id="view-merton-structural" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Merton Structural Default Model</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Credit risk from the balance sheet: equity as a call on firm assets, debt as a risk-free bond minus a put — and default as an economic event, not a statistical one.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Capital Structure as Options</h3>
+        <p>Firm asset value $V_t$ follows GBM; the firm owes a single zero-coupon debt $D$ at $T$. At maturity, equity holders receive $\max(V_T - D, 0)$ — they own a <strong>call on the firm's assets</strong>:</p>
+        $$E_0 = V_0 N(d_1) - D e^{-rT} N(d_2), \qquad d_{1,2} = \frac{\ln(V_0/D) + (r \pm \sigma_V^2/2)T}{\sigma_V\sqrt{T}}.$$
+        <p>Debt holders receive $\min(V_T, D) = D - \max(D - V_T, 0)$: <strong>risky debt = risk-free bond − put on assets</strong>. The credit spread is the put premium amortized over maturity — lenders have sold default insurance to shareholders.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Default Probability &amp; Distance to Default</h3>
+        <p>Default occurs iff $V_T < D$:</p>
+        $$PD = N(-d_2) = N\!\left(-\frac{\ln(V_0/D) + (\mu_V - \sigma_V^2/2)T}{\sigma_V\sqrt{T}}\right),$$
+        <p>(risk-neutral with $r$; physical with the asset drift $\mu_V$). The argument is the <strong>distance to default</strong>:</p>
+        $$DD = \frac{\ln(V_0/D) + (\mu_V - \sigma_V^2/2)T}{\sigma_V \sqrt{T}} \approx \frac{\text{asset cushion in } \sigma\text{'s}}{}$$
+        <p>— how many asset-volatility standard deviations the firm sits above its default point. Leverage and asset vol are the two levers: a stable utility at 80% leverage can be safer than a volatile tech firm at 40%.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Implementation: Backing Out Unobservables</h3>
+        <p>$V$ and $\sigma_V$ are not observed; equity value $E$ and equity vol $\sigma_E$ are. Solve the system</p>
+        $$E = V N(d_1) - D e^{-rT} N(d_2), \qquad \sigma_E E = N(d_1)\, \sigma_V V,$$
+        <p>(the second from Itô on $E(V)$). Two equations, two unknowns — Newton iteration. The <strong>KMV/Moody's</strong> industrial version: default point = short-term debt + ½ long-term debt; map DD to default frequencies <em>empirically</em> (EDF) rather than through $N(\cdot)$, because Gaussian tails are far too thin at short horizons.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Strengths, Failures, Extensions</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Strength:</strong> economically causal — links credit to equity markets in real time; explains why credit spreads widen as equity falls and vol rises (the put gains). Basis of capital-structure arbitrage and the Basel IRB asset-correlation framework (Vasicek is Merton + one factor).</li>
+            <li><strong>Failure 1 — short-spread problem:</strong> a diffusion cannot default suddenly: model spreads → 0 as $T \to 0$, while real 1-year spreads are tens of bps. Fixes: jumps in $V$, or incomplete-information models (Duffie-Lando).</li>
+            <li><strong>Failure 2 — default only at maturity:</strong> <strong>Black-Cox (1976)</strong> adds a continuous default barrier (first passage); <strong>Leland (1994)</strong> makes the barrier endogenous via tax shields vs. bankruptcy costs, delivering optimal capital structure in the same framework.</li>
+            <li><strong>Failure 3 — flat term structures and recovery:</strong> stochastic rates and barriers (Longstaff-Schwartz 1995) refine both.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>5. Worked Example</h3>
+        <p>$V_0 = 100$, $D = 70$, $T = 1$, $r = 4\%$, $\sigma_V = 25\%$:</p>
+        $$d_2 = \frac{\ln(100/70) + (0.04 - 0.03125)}{0.25} = \frac{0.3567 + 0.0088}{0.25} = 1.462, \qquad PD = N(-1.462) \approx 7.2\%.$$
+        $$\text{Debt} = 70e^{-0.04} - p(V_0, 70) \approx 67.25 - 1.62 = 65.63 \;\Rightarrow\; y = \ln(70/65.63) = 6.45\% \;\Rightarrow\; \text{spread} \approx 245\text{ bp}.$$
+        <p>Implied recovery-given-default and spread both fall out of the same put price — internally consistent credit pricing from four balance-sheet numbers.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Equity = call on assets; risky debt = risk-free debt − put; spread = put premium.</li>
+            <li>$PD = N(-DD)$: leverage and asset vol determine credit through distance to default.</li>
+            <li>Calibrate $(V, \sigma_V)$ from equity price and vol via the two-equation system (KMV in industry).</li>
+            <li>Known failure: vanishing short spreads — cured by jumps, barriers (Black-Cox) or incomplete information.</li>
+            <li>The structural lens powers equity-credit relative value and the Basel IRB formula itself.</li>
+        </ul>
+    </div>
+</div>

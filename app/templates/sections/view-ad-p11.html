@@ -1,0 +1,63 @@
+<div id="view-ad-p11" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Algorithmic Adjoint Differentiation — Part 11</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Iterative Code Optimization &amp; Performance Profiles</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The series capstone: profiling adjoint codes, the optimization ladder from naive to production, and the correctness harness that keeps speed from breaking math.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Profile First: Where Adjoint Time Goes</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>The adjoint ratio</strong> $R = \frac{\text{cost(value + gradient)}}{\text{cost(value)}}$ is the headline KPI: theory says 3–5; naive implementations ship at 20–100. Track it per release.</li>
+            <li>Typical profile of a slow OO adjoint: 40–60% tape memory traffic (allocation + cache misses), 15–30% interpreter dispatch, only ~20% actual FLOPs — it's a memory problem wearing a math costume (Part 06's point, measured).</li>
+            <li>Tools: perf/VTune for cache/bandwidth counters; per-phase timers (record vs. reverse vs. primal); peak-RSS tracking for the tape. <em>Measure before touching anything.</em></li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. The Optimization Ladder (In Payoff Order)</h3>
+        <ol style="line-height: 1.9;">
+            <li><strong>Structural wins:</strong> per-path tape reset; checkpointing schedule; custom super-node adjoints for solvers/regressions/interpolators (Parts 06–08) — order-of-magnitude items.</li>
+            <li><strong>Tape engineering:</strong> preallocated flat buffers (no per-node allocation), struct-of-arrays layout, preaccumulation of straight-line blocks, passive-type fast path.</li>
+            <li><strong>Vectorization:</strong> batch paths (AoS→SoA), SIMD the reverse sweep (it's mostly FMAs over contiguous adjoint arrays), vector-forward for the few-input pieces (Part 05).</li>
+            <li><strong>Parallelism:</strong> paths across threads with thread-local tapes + deterministic reduction of $\bar\theta$ (Part 07's reproducibility note); GPU offload last — counter-based RNGs and the per-path structure port directly (the GPU workshop's subject).</li>
+            <li><strong>Micro:</strong> recompute-vs-store per operation (an <code>exp</code> is often cheaper than its cache miss), fused payoff kernels — only after 1–4 plateau.</li>
+        </ol>
+    </div>
+
+    <div class="card">
+        <h3>3. The Correctness Harness (Speed's Seatbelt)</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Dot-product test</strong> $\langle\dot y, \bar y\rangle = \langle\dot x, \bar x\rangle$ on random seeds/inputs — catches reversal bugs to machine precision; run per commit.</li>
+            <li><strong>Tangent vs. central bump</strong> with common random numbers (Part 04) at tolerance ~1e-6; <strong>adjoint vs. tangent</strong> exactly.</li>
+            <li><strong>Golden gradients:</strong> archived full-precision gradients on a trade zoo (vanilla, barrier-smoothed, XVA netting set); any drift &gt; 1 ulp-scale flags tool/compiler changes.</li>
+            <li><strong>Determinism gate:</strong> bit-identical gradients across runs and thread counts where governance requires (fixed reduction trees); otherwise documented tolerance.</li>
+            <li>Performance regression CI alongside: $R$-ratio and peak-tape budgets as build-failing assertions — speed and correctness regress together or not at all.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. A Realistic Optimization Diary (Composite Case)</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;">Step</th><th style="padding: 0.45rem;">R-ratio</th><th style="padding: 0.45rem;">Peak tape</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Naive OO taping, monolithic</td><td style="padding: 0.45rem;">~45×</td><td style="padding: 0.45rem;">38 GB (fails)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">+ per-path reversal</td><td style="padding: 0.45rem;">~18×</td><td style="padding: 0.45rem;">60 MB</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">+ custom adjoints (curve solve, regression)</td><td style="padding: 0.45rem;">~9×</td><td style="padding: 0.45rem;">22 MB</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">+ flat tape, preaccumulation</td><td style="padding: 0.45rem;">~5×</td><td style="padding: 0.45rem;">14 MB</td></tr>
+                <tr><td style="padding: 0.45rem;">+ SIMD batch + threads</td><td style="padding: 0.45rem;">~3.5× (wall-clock 30× total)</td><td style="padding: 0.45rem;">14 MB/thread</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.6rem;">The shape is universal: structure buys the first 10×, memory engineering the next 2–3×, vectorization the last. At ~3–5× you've hit the theoretical floor — stop and ship.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Track the adjoint ratio R; profile shows adjoints are memory-bound — optimize traffic before flops.</li>
+            <li>Ladder: structure (paths, checkpoints, super-nodes) → tape engineering → SIMD/threads → micro.</li>
+            <li>Dot-product, tangent-vs-bump, golden gradients and determinism gates make optimization safe.</li>
+            <li>R ≈ 3–5× is the physics floor — reaching it means done, not "keep going".</li>
+        </ul>
+    </div>
+</div>

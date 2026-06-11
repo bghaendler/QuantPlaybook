@@ -1,0 +1,135 @@
+<div id="view-tool-delta-gamma-hedge" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Delta-Gamma Dynamic Portfolio Hedging Simulator</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Hold a short call, hedge it daily with stock — or neutralize gamma with a second option — and watch the hedging error distribution over simulated paths.</p>
+    </header>
+
+    <div class="card">
+        <h3>Setup</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; margin-bottom: 0.75rem;">
+            <div><label style="font-size: 0.75rem; font-weight: 700; display:block; margin-bottom:0.25rem;">Spot / Strike</label>
+                <input id="dgS" type="number" value="100" style="width:100%; padding:0.35rem; border-radius:6px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);"></div>
+            <div><label style="font-size: 0.75rem; font-weight: 700; display:block; margin-bottom:0.25rem;">Implied vol σ</label>
+                <input id="dgIV" type="number" value="0.20" step="0.01" style="width:100%; padding:0.35rem; border-radius:6px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);"></div>
+            <div><label style="font-size: 0.75rem; font-weight: 700; display:block; margin-bottom:0.25rem;">Realized vol</label>
+                <input id="dgRV" type="number" value="0.20" step="0.01" style="width:100%; padding:0.35rem; border-radius:6px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);"></div>
+            <div><label style="font-size: 0.75rem; font-weight: 700; display:block; margin-bottom:0.25rem;">Maturity (y)</label>
+                <input id="dgT" type="number" value="0.25" step="0.05" style="width:100%; padding:0.35rem; border-radius:6px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);"></div>
+            <div><label style="font-size: 0.75rem; font-weight: 700; display:block; margin-bottom:0.25rem;">Rebalance / day</label>
+                <select id="dgFreq" style="width:100%; padding:0.35rem; border-radius:6px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);">
+                    <option value="1">Daily</option><option value="0.2">Weekly</option><option value="4">4× daily</option>
+                </select></div>
+            <div><label style="font-size: 0.75rem; font-weight: 700; display:block; margin-bottom:0.25rem;">Mode</label>
+                <select id="dgMode" style="width:100%; padding:0.35rem; border-radius:6px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);">
+                    <option value="delta">Delta hedge (stock only)</option>
+                    <option value="deltagamma">Delta-gamma (stock + 110-strike call)</option>
+                    <option value="none">Unhedged</option>
+                </select></div>
+        </div>
+        <button onclick="dgRun()" style="padding: 0.45rem 1.3rem; border-radius: 8px; border: none; background: var(--accent); color: #fff; font-weight: 700; cursor: pointer;">Run 2,000 paths</button>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Hedging Error Distribution (final P&amp;L of short call + hedge)</h3>
+        <div id="dgMetrics" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;"></div>
+        <canvas id="dgCanvas" width="900" height="240" style="width: 100%; border: 1px solid var(--card-border); border-radius: 8px; background: var(--metric-bg);"></canvas>
+        <p style="font-size: 0.8rem; color: #64748b; margin-top: 0.5rem;">With realized = implied and frequent rebalancing, the distribution collapses around zero (replication works). Set realized ≠ implied to see the systematic gamma P&amp;L $\frac{1}{2}\Gamma S^2(\sigma_r^2 - \sigma_i^2)dt$; reduce frequency to see discrete-hedging noise; add the gamma hedge to kill both.</p>
+    </div>
+</div>
+
+<script>
+function dgNorm() { var u1 = Math.random(), u2 = Math.random(); return Math.sqrt(-2 * Math.log(u1 + 1e-12)) * Math.cos(2 * Math.PI * u2); }
+function dgCdf(x) { var t = 1 / (1 + 0.2316419 * Math.abs(x));
+    var p = t * (0.319381530 + t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429))));
+    var nd = 1 - Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI) * p;
+    return x >= 0 ? nd : 1 - nd; }
+function dgBS(S, K, T, r, v) {
+    if (T <= 0) return { p: Math.max(S - K, 0), d: S > K ? 1 : 0, g: 0 };
+    var sq = v * Math.sqrt(T);
+    var d1 = (Math.log(S / K) + (r + 0.5 * v * v) * T) / sq;
+    var d2 = d1 - sq;
+    var pdf = Math.exp(-0.5 * d1 * d1) / Math.sqrt(2 * Math.PI);
+    return { p: S * dgCdf(d1) - K * Math.exp(-r * T) * dgCdf(d2), d: dgCdf(d1), g: pdf / (S * sq) };
+}
+
+function dgRun() {
+    var S0 = parseFloat(document.getElementById('dgS').value) || 100;
+    var K = S0, K2 = S0 * 1.10;
+    var iv = parseFloat(document.getElementById('dgIV').value) || 0.2;
+    var rv = parseFloat(document.getElementById('dgRV').value) || 0.2;
+    var T = parseFloat(document.getElementById('dgT').value) || 0.25;
+    var freq = parseFloat(document.getElementById('dgFreq').value) || 1;
+    var mode = document.getElementById('dgMode').value;
+    var r = 0.0;
+    var stepsPerYear = 252 * freq;
+    var nSteps = Math.max(2, Math.round(T * stepsPerYear));
+    var dt = T / nSteps;
+    var nPaths = 2000;
+    var premium = dgBS(S0, K, T, r, iv).p;
+    var pnls = [];
+
+    for (var p = 0; p < nPaths; p++) {
+        var S = S0, cash = premium, shares = 0, opt2 = 0; // short 1 call at K
+        for (var i = 0; i < nSteps; i++) {
+            var tau = T - i * dt;
+            var main = dgBS(S, K, tau, r, iv);
+            var targetDelta = main.d, targetGamma = main.g;
+            if (mode === 'none') { targetDelta = 0; targetGamma = 0; }
+            var newOpt2 = 0, h2 = { p: 0, d: 0, g: 0 };
+            if (mode === 'deltagamma') {
+                h2 = dgBS(S, K2, tau, r, iv);
+                newOpt2 = h2.g > 1e-10 ? targetGamma / h2.g : 0;
+            }
+            var newShares = (mode === 'none') ? 0 : targetDelta - newOpt2 * h2.d;
+            cash -= (newShares - shares) * S + (newOpt2 - opt2) * h2.p;
+            shares = newShares; opt2 = newOpt2;
+            cash *= Math.exp(r * dt);
+            var z = dgNorm();
+            S *= Math.exp((r - 0.5 * rv * rv) * dt + rv * Math.sqrt(dt) * z);
+        }
+        var h2T = Math.max(S - K2, 0);
+        var pnl = cash + shares * S + opt2 * h2T - Math.max(S - K, 0);
+        pnls.push(pnl);
+    }
+    pnls.sort(function(a, b) { return a - b; });
+    var mean = pnls.reduce(function(a, x) { return a + x; }, 0) / nPaths;
+    var sd = Math.sqrt(pnls.reduce(function(a, x) { return a + (x - mean) * (x - mean); }, 0) / (nPaths - 1));
+    var p5 = pnls[Math.floor(0.05 * nPaths)], p95 = pnls[Math.floor(0.95 * nPaths)];
+    function card(l, v) {
+        return '<div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.6rem 0.8rem;">' +
+            '<div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">' + l + '</div>' +
+            '<div style="font-size: 1.2rem; font-weight: 800;">' + v + '</div></div>';
+    }
+    document.getElementById('dgMetrics').innerHTML =
+        card('Option premium', premium.toFixed(3)) + card('Mean P&L', mean.toFixed(3)) +
+        card('Std dev', sd.toFixed(3)) + card('5% / 95%', p5.toFixed(2) + ' / ' + p95.toFixed(2));
+
+    // Histogram
+    var canvas = document.getElementById('dgCanvas'), ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height, padL = 10, padB = 22, padT = 8;
+    ctx.clearRect(0, 0, W, H);
+    var lo = pnls[Math.floor(0.005 * nPaths)], hi = pnls[Math.floor(0.995 * nPaths)];
+    if (hi - lo < 1e-9) { lo -= 0.5; hi += 0.5; }
+    var nBins = 60, bins = new Array(nBins).fill(0);
+    pnls.forEach(function(x) {
+        var b = Math.floor((x - lo) / (hi - lo) * nBins);
+        if (b >= 0 && b < nBins) bins[b]++;
+    });
+    var bMax = Math.max.apply(null, bins);
+    ctx.fillStyle = '#4f46e5';
+    for (var b = 0; b < nBins; b++) {
+        var x = padL + (W - 2 * padL) * b / nBins;
+        var h = (H - padT - padB) * bins[b] / bMax;
+        ctx.fillRect(x, H - padB - h, (W - 2 * padL) / nBins - 1, h);
+    }
+    // zero line
+    var zx = padL + (W - 2 * padL) * (0 - lo) / (hi - lo);
+    ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(zx, padT); ctx.lineTo(zx, H - padB); ctx.stroke();
+    ctx.fillStyle = '#64748b'; ctx.font = '11px sans-serif';
+    ctx.fillText(lo.toFixed(2), padL, H - 6);
+    ctx.fillText('0', zx + 3, H - 6);
+    ctx.fillText(hi.toFixed(2), W - padL - 36, H - 6);
+}
+setTimeout(dgRun, 600);
+</script>

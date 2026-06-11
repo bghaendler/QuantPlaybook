@@ -1,0 +1,53 @@
+<div id="view-black-litterman" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Black-Litterman Model</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">A Bayesian repair of Markowitz optimization: start from market-implied equilibrium returns, then tilt them by investor views with controlled confidence.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Problem with Raw Markowitz</h3>
+        <p>Mean-variance optimization is an <em>error-maximizing</em> machine: tiny changes in expected-return inputs produce wild, concentrated, often short portfolios. Historical mean returns are estimated with enormous noise (standard error $\sigma/\sqrt{T}$ shrinks painfully slowly), so feeding them directly into the optimizer produces unusable allocations. Black &amp; Litterman (1990, Goldman Sachs) replace the fragile input with a disciplined prior.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Step 1 — Implied Equilibrium Returns</h3>
+        <p>Instead of estimating returns, <strong>reverse-optimize</strong>: ask what expected returns would make the observed market-cap weights $w_{mkt}$ optimal. With risk-aversion $\delta$ and covariance $\Sigma$:</p>
+        $$\Pi = \delta\, \Sigma\, w_{mkt}.$$
+        <p>$\Pi$ are the <strong>equilibrium excess returns</strong> — the CAPM-consistent prior. If you hold no views, the model hands back the market portfolio: a sensible, fully-invested default with no estimation error. $\delta$ is typically calibrated as $\delta = (\mathbb{E}[R_M] - r_f)/\sigma_M^2 \approx 2.5$.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Step 2 — Expressing Views</h3>
+        <p>Views are linear statements about expected returns, packaged as $P \mu = Q + \varepsilon$, $\varepsilon \sim \mathcal{N}(0, \Omega)$:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Absolute view:</strong> "German equities will return 6%" → row of $P$ has 1 on Germany, $Q = 6\%$.</li>
+            <li><strong>Relative view:</strong> "Tech will outperform utilities by 2%" → $+1$ on tech, $-1$ on utilities, $Q = 2\%$.</li>
+        </ul>
+        <p>$\Omega$ (view uncertainty, usually diagonal) encodes confidence: small $\omega_k$ = strong conviction. A common default is $\Omega = \operatorname{diag}(P (\tau\Sigma) P^{\top})$, with Idzorek's method mapping intuitive 0–100% confidence levels onto $\Omega$.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Step 3 — The Bayesian Blend</h3>
+        <p>Treat $\Pi$ as prior ($\mu \sim \mathcal{N}(\Pi, \tau\Sigma)$, with $\tau$ a small scalar ≈ 0.01–0.05) and views as noisy observations. The posterior mean — the <strong>Black-Litterman expected returns</strong> — is the precision-weighted average:</p>
+        $$\mu_{BL} = \left[(\tau\Sigma)^{-1} + P^{\top}\Omega^{-1}P\right]^{-1}\left[(\tau\Sigma)^{-1}\Pi + P^{\top}\Omega^{-1}Q\right].$$
+        <p>Equivalent intuition-friendly form:</p>
+        $$\mu_{BL} = \Pi + \tau\Sigma P^{\top}\left(P\tau\Sigma P^{\top} + \Omega\right)^{-1}(Q - P\Pi),$$
+        <p>i.e. equilibrium plus a correction proportional to the <em>surprise</em> $(Q - P\Pi)$ of each view, distributed across all correlated assets via $\Sigma$. Feeding $\mu_{BL}$ (and posterior covariance) into the optimizer yields moderate, intuitive tilts away from market weights — only where views exist, sized by confidence.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Worked Mini-Example</h3>
+        <p>Two assets, equilibrium $\Pi = (4\%,\ 6\%)$. View: asset 1 outperforms asset 2 by 1% ($P = [1, -1]$, $Q = 1\%$) with moderate confidence. Equilibrium implies $P\Pi = -2\%$, so the view surprise is $+3\%$. The posterior shifts asset 1 up and asset 2 down — but only partially (say to $5.1\%$ and $5.2\%$ for moderate confidence), and the resulting portfolio overweights asset 1 modestly instead of going 100/0 as naive Markowitz would. Confidence → 0 recovers market weights; confidence → ∞ imposes the view exactly.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Reverse optimization gives a noise-free starting point: $\Pi = \delta \Sigma w_{mkt}$.</li>
+            <li>Views are linear constraints with explicit uncertainty $\Omega$; relative views are the natural use case.</li>
+            <li>Posterior returns are a precision-weighted blend of equilibrium and views.</li>
+            <li>No views ⇒ hold the market. Stronger views ⇒ larger, but still diversified, tilts.</li>
+            <li>BL fixes input sensitivity, not the optimizer itself — covariance estimation still matters.</li>
+        </ul>
+    </div>
+</div>

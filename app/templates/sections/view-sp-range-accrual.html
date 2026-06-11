@@ -1,0 +1,51 @@
+<div id="view-sp-range-accrual" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Range Accrual Corridor Note</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Coupons that count the days: interest accrues only while the reference stays inside a corridor — a strip of digital options sold against calm markets.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Payoff Mechanics</h3>
+        <p>For each coupon period, the note pays an enhanced rate $C$ scaled by the fraction of days the reference $X_t$ (an index, FX rate, or — classically — a swap/deposit rate) fixes inside the corridor $[L, U]$:</p>
+        $$\text{Coupon} = N \cdot C \cdot \frac{\#\{t : L \le X_t \le U\}}{\#\text{business days}}.$$
+        <p>Principal is typically protected (the structure lives on the coupon). Decomposition: each observation day contributes a pair of <strong>digital options</strong> — the investor is short a digital strip:</p>
+        $$\text{daily accrual} = \frac{C}{D}\Big(\mathbb{1}_{\{X_t \ge L\}} - \mathbb{1}_{\{X_t > U\}}\Big),$$
+        <p>so the note = bond + $C/D \times \sum_t$ (digital call at $L$ − digital call at $U$), one pair per day — hundreds of small digitals.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. What the Investor Has Sold</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Short volatility/realized range:</strong> the corridor pays in quiet regimes; breakouts (either direction) stop accrual. The enhanced coupon is digital-strip premium — i.e. vol premium in disguise.</li>
+            <li><strong>Path risk concentrates late:</strong> a breach early in a period costs that period only; structural regime change (rate hiking cycle, FX trend) zeroes coupons for the remaining life — duration of the "dead" note extends exactly when rates rise (negative convexity for rate corridors).</li>
+            <li><strong>Smile exposure:</strong> digitals price off the skew at $L$ and $U$ (call-spread replication): the issuer hedges with tight call spreads, and the corridor edges inherit all the pin/skew risk of digitals.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Pricing</h3>
+        <p>Each daily digital is a cheap closed-form object — under Black-76 on the relevant forward $F_t$: $e^{-rT_t}[N(d_2(L)) - N(d_2(U))]$ with skew corrections via call spreads. The subtleties:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Forward curve through the corridor:</strong> value is driven by where forwards sit relative to $[L, U]$ — a steep curve that exits the corridor in year 3 makes far coupons nearly worthless however calm the market.</li>
+            <li><strong>Per-day smiles:</strong> strictly, each observation needs vol at its own expiry-moneyness; in practice interpolated surfaces with skew-consistent digital replication.</li>
+            <li><strong>Callable range accruals</strong> (issuer can redeem) dominate the rates market: pricing then needs a term-structure model with credible vol dynamics (LMM/SABR-LMM or Bermudan-capable short-rate models) — the product that famously punished dealers hedging Bermudan callability against corridor digitals.</li>
+            <li><strong>Dual-range / range on spreads</strong> (e.g. CMS 10y−2y stays positive): adds curve-correlation, the 2008-era "steepener" notes.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Risk Vignette</h3>
+        <p>USD 3y note, corridor on 3m rates $[0\%, 4\%]$, coupon 6% (vs. 4% market). Two years of accrual at full rate, then a hiking cycle pushes fixings to 5%: coupons stop entirely; mark-to-market drops both from dead coupons and higher discounting. The investor's realized yield ≈ 4% — market rate — having borne breakout risk for nothing. Reverse scenario (rates stay in range): they earn +2% over market, which was precisely the digital-strip premium. There is no free coupon; there is only the range bet, priced daily by the desk.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Range accrual = bond + short strip of daily digital pairs at the corridor edges.</li>
+            <li>The enhanced coupon is volatility/breakout premium; calm markets pay it, regimes break it.</li>
+            <li>Forwards relative to the corridor — not spot — drive value; steep curves kill far coupons.</li>
+            <li>Digitals ⇒ skew pricing and call-spread hedging at $L$ and $U$; callable versions need full term-structure models.</li>
+            <li>Negative convexity: the note extends and deadens exactly in adverse rate regimes.</li>
+        </ul>
+    </div>
+</div>

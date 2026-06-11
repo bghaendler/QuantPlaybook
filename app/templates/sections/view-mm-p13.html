@@ -1,0 +1,57 @@
+<div id="view-mm-p13" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Mathematical Methods in Financial Markets — Part 13</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Black-Scholes PDE Parabolic Framework</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The Black-Scholes equation as a parabolic PDE: derivation by hedging, reduction to the heat equation, boundary conditions as contracts, and what parabolicity buys you.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Derivation in Five Lines (Hedging Argument)</h3>
+        <p>Hold the option $V(S,t)$, short $\Delta$ shares: $\Pi = V - \Delta S$. Itô (Part 10) gives</p>
+        $$d\Pi = \left(V_t + \tfrac{1}{2}\sigma^2S^2V_{SS}\right)dt + \left(V_S - \Delta\right)dS.$$
+        <p>Choose $\Delta = V_S$ — the $dS$ (risky) term vanishes; the portfolio is instantaneously riskless and must earn $r$: $d\Pi = r\Pi\,dt$. Equate:</p>
+        $$\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2S^2\frac{\partial^2 V}{\partial S^2} + rS\frac{\partial V}{\partial S} - rV = 0.$$
+        <p>Note what's absent: $\mu$. The drift hedges away — the economic content of risk-neutral pricing, visible directly in the PDE.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Why "Parabolic" Matters</h3>
+        <p>For $a V_{xx} + b V_{xt} + c V_{tt} + \dots$, the discriminant $b^2 - 4ac$ classifies: elliptic (&lt;0), parabolic (=0), hyperbolic (&gt;0). Black-Scholes has $b = c = 0$ ⇒ parabolic — the diffusion/heat family. Consequences:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Smoothing:</strong> kinked payoffs become $C^\infty$ instantly before expiry — gamma is finite for $t < T$ and blows up only at the kink at expiry.</li>
+            <li><strong>One time direction:</strong> well-posed solved <em>backwards</em> from the terminal payoff (diffusion forwards in $\tau = T - t$); solving it the wrong way is exponentially unstable.</li>
+            <li><strong>Maximum principle:</strong> solutions attain extremes on the boundary — the PDE-level reason for no-arbitrage price bounds and monotonicity in volatility.</li>
+            <li><strong>Numerics:</strong> the parabolic toolkit applies verbatim: explicit/implicit/Crank-Nicolson finite differences with the $\Delta t \lesssim \Delta S^2$ stability constraint for explicit schemes.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Reduction to the Heat Equation</h3>
+        <p>Substitute $S = Ke^x$, $t = T - \frac{2\tau}{\sigma^2}$, $V = K e^{\alpha x + \beta\tau} u(x, \tau)$ with $\alpha = -\frac{1}{2}(k-1)$, $\beta = -\frac{1}{4}(k+1)^2$, $k = \frac{2r}{\sigma^2}$:</p>
+        $$\frac{\partial u}{\partial \tau} = \frac{\partial^2 u}{\partial x^2}.$$
+        <p>Black-Scholes <em>is</em> the heat equation in log-price coordinates — option value diffuses backwards from the payoff exactly as heat spreads from an initial temperature profile. The fundamental solution (heat kernel) $\frac{1}{\sqrt{4\pi\tau}}e^{-x^2/4\tau}$ becomes, after untransforming, the lognormal risk-neutral density; convolving the call payoff against it reproduces the Black-Scholes formula — the PDE route to the same Gaussian integral as Part 04.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Boundary &amp; Terminal Conditions = The Contract</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;">Contract</th><th style="padding: 0.45rem;">Terminal ($t = T$)</th><th style="padding: 0.45rem;">Spatial boundaries</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">European call</td><td style="padding: 0.45rem;">$(S - K)^+$</td><td style="padding: 0.45rem;">$V(0,t) = 0$; $V \sim S - Ke^{-r\tau}$ as $S \to \infty$</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Up-and-out barrier</td><td style="padding: 0.45rem;">$(S - K)^+\mathbf{1}_{S<H}$</td><td style="padding: 0.45rem;">$V(H, t) = R$ (rebate) — Dirichlet at the barrier</td></tr>
+                <tr><td style="padding: 0.45rem;">American put</td><td style="padding: 0.45rem;">$(K - S)^+$</td><td style="padding: 0.45rem;">Free boundary $S^*(t)$: $V = K - S$, $V_S = -1$ (smooth pasting) — an obstacle problem, $\mathcal{L}V \le 0$, $V \ge$ payoff</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.6rem;">Same operator every time; only the conditions change. That is the practical power of the PDE view: one solver, many products — and exotic features (barriers, early exercise, discrete dividends as jump conditions $V(S, t_d^-) = V(S - D, t_d^+)$) enter as conditions, not new theory.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Delta hedging kills the $dW$ term and the drift with it: the PDE contains $r$, never $\mu$.</li>
+            <li>Parabolic ⇒ smoothing, backward time direction, maximum principle, and the standard FD toolkit.</li>
+            <li>Log-price + scaling transforms BS exactly into $u_\tau = u_{xx}$; the heat kernel is the lognormal density in disguise.</li>
+            <li>The operator is the model; terminal/boundary conditions are the contract — barriers are Dirichlet data, American exercise is a free boundary.</li>
+        </ul>
+    </div>
+</div>

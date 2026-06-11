@@ -1,0 +1,62 @@
+<div id="view-asv-p07" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Asymptotics of Stochastic Volatility — Part 07</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">CEV-Heston and Kou/CGMY Hybrid Frameworks</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Combining the building blocks: local-vol backbones under stochastic variance, jumps on top of SV — what each hybrid fixes, what it costs, and how the asymptotics divide the calibration.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Why Hybrids Exist</h3>
+        <p>Each pure family fails one empirical demand (Parts 04–05): Lévy smiles don't evolve (skew term-structure wrong); Heston short-dated skews are too flat (diffusive $T\to0$); CEV/local vol fits any single surface but implies wrong forward smiles (smile flattens as spot moves — sticky-strike dynamics). Hybrids assign each block the regime it's good at:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>CEV-Heston (SVCJ-without-jumps / "SV-CEV"):</strong> $dS = \sqrt{v}\,S^{\beta}\,dW_1$, CIR $v$ — backbone (β) controls how ATM vol rides spot; SV (κ, θ, ξ, ρ) controls curvature and term-structure. The λ-SABR/Heston-CEV class used widely in rates LSV engines.</li>
+            <li><strong>Bates / Kou-Heston (SV + jumps):</strong> Heston plus compound-Poisson jumps (Gaussian = Bates; double-exponential = Kou-flavored) — jumps make the short end steep (Part 05's linear-in-T mechanism), SV makes the long end evolve and flatten correctly (Part 03).</li>
+            <li><strong>CGMY-CIR time change:</strong> run a CGMY clock at stochastic speed $\int v_s ds$ (Carr-Geman-Madan-Yor + CIR) — infinite-activity jumps with vol clustering; characteristic function still closed-form (composition of Laplace transforms): the Fourier stack survives.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Asymptotic Division of Labor</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;">Smile feature</th><th style="padding: 0.45rem;">Identified by</th><th style="padding: 0.45rem;">Owned by parameter(s)</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Short-T wing steepness</td><td style="padding: 0.45rem;">$T\to0$ at fixed OTM strike</td><td style="padding: 0.45rem;">Jump measure (λ, η's / C, G, M, Y)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">ATM skew level &amp; sign</td><td style="padding: 0.45rem;">small-T ATM expansion</td><td style="padding: 0.45rem;">ρ (SV leg) + β (backbone)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Skew term-structure decay</td><td style="padding: 0.45rem;">intermediate T</td><td style="padding: 0.45rem;">κ (mean reversion) vs. jump share</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Long-T level &amp; flattening</td><td style="padding: 0.45rem;">ergodic limit (Part 03)</td><td style="padding: 0.45rem;">θ, ξ (invariant law of v)</td></tr>
+                <tr><td style="padding: 0.45rem;">Backbone (ATM vs. spot moves)</td><td style="padding: 0.45rem;">forward-smile / hedging behavior</td><td style="padding: 0.45rem;">β (and LSV leverage function)</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.6rem;">This is the series' central practical message: <strong>asymptotics make hybrid calibration well-posed</strong> — each parameter block is pinned by a regime where the others are asymptotically silent, replacing one big ill-posed fit with staged identifiable ones (the ARM Part 01 ill-posedness cure, by mathematics instead of regularization).</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Costs and Cautions</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Parameter count:</strong> Bates has 8+ — without the staged identification above, calibrations wander (many (κ, ξ, λ) trade-offs fit one surface); regularize toward stable historical estimates.</li>
+            <li><strong>Moment bookkeeping compounds:</strong> the hybrid's critical moments are the <em>minimum</em> of the legs' — jump tails and Heston explosions both constrain damping/quanto integrals (Parts 04–05 checks, run on the composite).</li>
+            <li><strong>Hedging interpretation changes:</strong> jump risk is unhedgeable in the diffusive sense — the measure choice (market price of jump risk) is an explicit input; two desks with identical fits can carry different deltas legitimately.</li>
+            <li><strong>Numerics stay Fourier-friendly</strong> (all named hybrids keep closed-form characteristic functions) — but branch-cut discipline (CA Part 08) becomes more delicate as exponents compose.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. A Staged Calibration Recipe (Bates-Type)</h3>
+        <ol style="line-height: 1.9;">
+            <li>Fit jump parameters to the shortest maturities' wings (1–4 weeks) — SV contributes $O(\sqrt{T})$ there, jumps $O(T)$ dominate the steepness.</li>
+            <li>Fix jumps; fit ρ and an initial $v_0$ to the 1–6m ATM skew and level.</li>
+            <li>Fit κ, θ, ξ to the 1y+ term-structure of ATM vol and skew decay (the ergodic anchors).</li>
+            <li>Global polish with all parameters in a narrow trust region; verify staged parameters barely move — if they do, the surface disagrees with the model family (report, don't force).</li>
+        </ol>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Hybrids assign regimes: jumps own the short end, SV the term-structure, backbone/leverage the smile dynamics.</li>
+            <li>Asymptotic separation makes 8-parameter calibrations well-posed via staged fits — the practical payoff of Parts 01–06.</li>
+            <li>Composite moment explosions = min over legs; re-run convergence checks on the hybrid, not the parts.</li>
+            <li>Closed-form characteristic functions survive composition — the Fourier pricing stack carries the whole family.</li>
+        </ul>
+    </div>
+</div>

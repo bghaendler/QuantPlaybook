@@ -7,13 +7,107 @@
 
     <!-- Navigation Tabs -->
     <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans);">
-        <button id="tabProbTheory" onclick="switchProbTab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Core Probability Theory</button>
+        <button id="tabProbExercises" onclick="switchProbTab('exercises')" style="background: none; border: none; font-size: 0.95rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">Worked Solutions Sheet</button>
+        <button id="tabProbTheory" onclick="switchProbTab('theory')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Core Probability Theory</button>
         <button id="tabProbSandbox" onclick="switchProbTab('sandbox')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">CLT Simulator Sandbox</button>
         <button id="tabProbVenn" onclick="switchProbTab('venn')" style="background: none; border: none; font-size: 0.95rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s;">Venn &amp; Bayes Lab</button>
     </div>
 
+    <!-- Tab A: Worked Solutions Sheet -->
+    <div id="secProbExercises" style="display: block;">
+        <div style="margin-bottom: 1.5rem; background: var(--accent-glow); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--accent); font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.5; color: var(--text-color);">
+            <strong style="color: var(--accent);">Mathematics Primer Worked Solutions:</strong> Below are step-by-step mathematical derivations and layman explanations for core probability and statistical concepts.
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 2rem; margin-bottom: 2rem;">
+            
+            <!-- Problem 1 -->
+            <div class="card" style="padding: 1.5rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--card-border); padding-bottom: 0.75rem; margin-bottom: 1rem;">
+                    <h3 style="margin: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem 1: Maximum Likelihood Estimation (MLE) of Normal Variance &amp; Proof of Bias</h3>
+                    <span style="font-size: 0.75rem; font-weight: 700; background: var(--accent-glow); color: var(--accent); padding: 0.25rem 0.5rem; border-radius: 4px; font-family: var(--font-family-sans);">Statistics &amp; Estimation</span>
+                </div>
+                <p style="font-size: 0.92rem; line-height: 1.6;">Let $X_1, X_2, \dots, X_n$ be independent and identically distributed (i.i.d.) random variables following a normal distribution $N(\mu, \sigma^2)$. Derive the Maximum Likelihood Estimator (MLE) for the variance $\sigma^2$ (assuming the mean $\mu$ is known), and prove that when the population mean is replaced by the sample mean $\bar{X}$, the MLE estimator for variance $\hat{\sigma}^2_{\text{MLE}} = \frac{1}{n}\sum_{i=1}^n(X_i - \bar{X})^2$ is <strong>biased</strong>, with an expected value of $\frac{n-1}{n}\sigma^2$.</p>
+                
+                <h4 style="color: var(--accent); font-family: var(--font-family-sans); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1rem;">Mathematical Derivation</h4>
+                <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem; overflow-x: auto;">
+                    <strong>Step 1: Construct the Likelihood and Log-Likelihood Functions</strong>
+                    <br>The probability density function (PDF) for a single observation is:
+                    $$f(x_i; \mu, \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(x_i - \mu)^2}{2\sigma^2}\right)$$
+                    Since the observations are independent, the joint probability density (Likelihood function) is the product of individual PDFs:
+                    $$L(\mu, \sigma^2) = \prod_{i=1}^n f(x_i; \mu, \sigma^2) = \left(2\pi\sigma^2\right)^{-n/2} \exp\left(-\sum_{i=1}^n \frac{(x_i - \mu)^2}{2\sigma^2}\right)$$
+                    Taking the natural logarithm of both sides gives the log-likelihood function:
+                    $$\ln L(\mu, \sigma^2) = -\frac{n}{2}\ln(2\pi) - \frac{n}{2}\ln(\sigma^2) - \frac{1}{2\sigma^2}\sum_{i=1}^n (x_i - \mu)^2$$
+                    <strong>Step 2: Differentiate with respect to $\sigma^2$ to find the MLE</strong>
+                    <br>Let $\theta = \sigma^2$. To find the value that maximizes the log-likelihood, we take the partial derivative with respect to $\theta$ and set it to zero:
+                    $$\frac{\partial \ln L}{\partial \theta} = -\frac{n}{2\theta} + \frac{1}{2\theta^2}\sum_{i=1}^n (x_i - \mu)^2 = 0$$
+                    Multiplying by $2\theta^2$ (assuming $\theta > 0$):
+                    $$-n\theta + \sum_{i=1}^n (x_i - \mu)^2 = 0 \implies \hat{\theta}_{\text{MLE}} = \hat{\sigma}^2_{\text{MLE}} = \frac{1}{n}\sum_{i=1}^n (X_i - \bar{X})^2$$
+                    <em>(Note: We substitute $\mu$ with the sample mean estimator $\bar{X}$ when the population mean is unknown).</em>
+                    <br><br>
+                    <strong>Step 3: Prove that $\hat{\sigma}^2_{\text{MLE}}$ is biased</strong>
+                    <br>We want to find the expected value of $\hat{\sigma}^2_{\text{MLE}}$:
+                    $$\mathbb{E}[\hat{\sigma}^2_{\text{MLE}}] = \mathbb{E}\left[\frac{1}{n}\sum_{i=1}^n (X_i - \bar{X})^2\right]$$
+                    Using the identity $X_i - \bar{X} = (X_i - \mu) - (\bar{X} - \mu)$, we expand the squared term:
+                    $$\sum_{i=1}^n (X_i - \bar{X})^2 = \sum_{i=1}^n \left[(X_i - \mu) - (\bar{X} - \mu)\right]^2$$
+                    $$\sum_{i=1}^n (X_i - \bar{X})^2 = \sum_{i=1}^n (X_i - \mu)^2 - 2(\bar{X} - \mu)\sum_{i=1}^n (X_i - \mu) + n(\bar{X} - \mu)^2$$
+                    Since $\sum_{i=1}^n (X_i - \mu) = n(\bar{X} - \mu)$, the middle term becomes $-2n(\bar{X} - \mu)^2$:
+                    $$\sum_{i=1}^n (X_i - \bar{X})^2 = \sum_{i=1}^n (X_i - \mu)^2 - n(\bar{X} - \mu)^2$$
+                    Now, we apply the expectation operator to both sides:
+                    $$\mathbb{E}\left[\sum_{i=1}^n (X_i - \bar{X})^2\right] = \sum_{i=1}^n \mathbb{E}[(X_i - \mu)^2] - n\mathbb{E}[(\bar{X} - \mu)^2]$$
+                    Since $\mathbb{E}[(X_i - \mu)^2] = \text{Var}(X_i) = \sigma^2$ and $\mathbb{E}[(\bar{X} - \mu)^2] = \text{Var}(\bar{X}) = \frac{\sigma^2}{n}$, we substitute:
+                    $$\mathbb{E}\left[\sum_{i=1}^n (X_i - \bar{X})^2\right] = \sum_{i=1}^n \sigma^2 - n\left(\frac{\sigma^2}{n}\right) = n\sigma^2 - \sigma^2 = (n-1)\sigma^2$$
+                    Finally, dividing by $n$ to get the expected value of our MLE estimator:
+                    $$\mathbb{E}[\hat{\sigma}^2_{\text{MLE}}] = \mathbb{E}\left[\frac{1}{n}\sum_{i=1}^n (X_i - \bar{X})^2\right] = \frac{n-1}{n}\sigma^2$$
+                    Since $\frac{n-1}{n}\sigma^2 \neq \sigma^2$, the MLE estimator is <strong>biased</strong>.
+                </div>
+                
+                <h4 style="color: #8b5cf6; font-family: var(--font-family-sans); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1rem;">Layman Explanation</h4>
+                <p style="font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">Imagine you want to find the spread of stock returns in a market. In a perfect world, you would compare each return to the true, long-term average return of the market. However, because you only have a small sample, you must use your sample's average return instead. Since the sample average is computed directly from your dataset, the data points naturally sit closer to their own sample average than to the true population average. This makes the sample look less spread out than it actually is. By dividing by $n$, the standard MLE formula underestimates the true risk. To correct this downward bias, statisticians use <strong>Bessel's Correction</strong>, which divides by $n-1$ instead of $n$, yielding the familiar unbiased sample variance formula $S^2 = \frac{1}{n-1}\sum(X_i - \bar{X})^2$.</p>
+            </div>
+
+            <!-- Problem 2 -->
+            <div class="card" style="padding: 1.5rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--card-border); padding-bottom: 0.75rem; margin-bottom: 1rem;">
+                    <h3 style="margin: 0; color: var(--accent); font-family: var(--font-family-sans); font-weight: 700; font-size: 1.15rem;">Problem 2: Bayes' Rule with Continuous Distributions (Beta-Binomial Conjugacy)</h3>
+                    <span style="font-size: 0.75rem; font-weight: 700; background: var(--accent-glow); color: var(--accent); padding: 0.25rem 0.5rem; border-radius: 4px; font-family: var(--font-family-sans);">Bayesian Inference</span>
+                </div>
+                <p style="font-size: 0.92rem; line-height: 1.6;">Let the success probability $p$ of a Bernoulli process follow a prior Beta distribution $\text{Beta}(\alpha, \beta)$. If we observe $x$ successes in $n$ independent trials (following a Binomial distribution), prove that the posterior distribution $f(p|x)$ is also a Beta distribution, specifically $\text{Beta}(\alpha + x, \beta + n - x)$.</p>
+                
+                <h4 style="color: var(--accent); font-family: var(--font-family-sans); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1rem;">Mathematical Derivation</h4>
+                <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; font-family: var(--font-family-sans); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem; overflow-x: auto;">
+                    <strong>Step 1: Define the Prior Density</strong>
+                    <br>The prior distribution of the parameter $p \in [0,1]$ is a Beta distribution:
+                    $$f(p) = \frac{1}{\text{B}(\alpha, \beta)} p^{\alpha-1} (1-p)^{\beta-1}$$
+                    where $\text{B}(\alpha, \beta) = \frac{\Gamma(\alpha)\Gamma(\beta)}{\Gamma(\alpha+\beta)}$ is the normalizing Beta function constant.
+                    <br><br>
+                    <strong>Step 2: Define the Likelihood Function</strong>
+                    <br>Given the probability of success $p$, the probability of observing $x$ successes in $n$ independent trials is given by the Binomial PMF:
+                    $$f(x|p) = \binom{n}{x} p^x (1-p)^{n-x}$$
+                    <strong>Step 3: Apply Bayes' Theorem for Continuous Parameters</strong>
+                    <br>The posterior probability density function of $p$ given the observed data $x$ is:
+                    $$f(p|x) = \frac{f(x|p) \cdot f(p)}{f(x)}$$
+                    Since the marginal probability $f(x) = \int_0^1 f(x|p)f(p)dp$ does not depend on $p$, it acts as a normalizing constant. We can express the posterior in terms of proportionality:
+                    $$f(p|x) \propto f(x|p) \cdot f(p)$$
+                    Substituting our prior and likelihood functions:
+                    $$f(p|x) \propto \left[\binom{n}{x} p^x (1-p)^{n-x}\right] \cdot \left[\frac{1}{\text{B}(\alpha, \beta)} p^{\alpha-1} (1-p)^{\beta-1}\right]$$
+                    Since $\binom{n}{x}$ and $\text{B}(\alpha, \beta)$ do not depend on $p$, we absorb them into the proportionality constant:
+                    $$f(p|x) \propto p^x (1-p)^{n-x} \cdot p^{\alpha-1} (1-p)^{\beta-1}$$
+                    Combining the exponents of $p$ and $(1-p)$:
+                    $$f(p|x) \propto p^{(\alpha + x) - 1} (1-p)^{(\beta + n - x) - 1}$$
+                    <strong>Step 4: Identify the Distribution</strong>
+                    <br>The functional form $p^{A-1}(1-p)^{B-1}$ is uniquely characteristic of the Beta distribution kernel. Since any valid probability density must integrate to 1, the normalizing constant must be $\text{B}(\alpha + x, \beta + n - x)$. Therefore, the posterior distribution is:
+                    $$p|x \sim \text{Beta}(\alpha + x, \beta + n - x)$$
+                    This confirms that the Beta distribution is a <strong>conjugate prior</strong> for the Binomial likelihood.
+                </div>
+                
+                <h4 style="color: #8b5cf6; font-family: var(--font-family-sans); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1rem;">Layman Explanation</h4>
+                <p style="font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">Suppose you are calibrating an algorithmic trading strategy and want to estimate its win rate ($p$). You start with a prior belief—for instance, a balanced assumption that the win rate is likely around 50%, represented by a Beta distribution. You then run the strategy 10 times and observe 8 wins. How do you update your estimate? In Bayesian statistics, because the Beta prior matches the Binomial nature of win/loss trials (conjugacy), you don't need to perform integration. You simply add the number of wins (8) to your prior alpha parameter and the number of losses (2) to your prior beta parameter. This straightforward addition yields the updated probability curve for your strategy's win rate, saving significant computation time during real-time risk adjustments.</p>
+            </div>
+        </div>
+    </div>
+
     <!-- Tab B: Core Probability Theory -->
-    <div id="secProbTheory" style="display: block;">
+    <div id="secProbTheory" style="display: none;">
         <div style="margin-bottom: 1.5rem; background: var(--accent-glow); padding: 1.25rem; border-radius: 8px; border-left: 4px solid var(--accent); font-family: var(--font-family-sans); font-size: 0.95rem; line-height: 1.5; color: var(--text-color);">
             Probability and Statistics provide the framework for measuring uncertainty, describing random outcomes, and making inferential predictions from empirical data. This section reviews probability axioms, set diagrams, conditional probability, Bayes' rule, random variables, expectation algebra, probability distributions, Central Limit Theorem (CLT), and statistical methods (such as Maximum Likelihood Estimation and Time Series analysis).
         </div>
@@ -296,36 +390,45 @@
             let cltChartInstance = null;
 
             window.switchProbTab = function(tab) {
+                const tabExer = document.getElementById('tabProbExercises');
                 const tabTheo = document.getElementById('tabProbTheory');
                 const tabSand = document.getElementById('tabProbSandbox');
                 const tabVenn = document.getElementById('tabProbVenn');
                 
+                const secExer = document.getElementById('secProbExercises');
                 const secTheo = document.getElementById('secProbTheory');
                 const secSand = document.getElementById('secProbSandbox');
                 const secVenn = document.getElementById('secProbVenn');
 
-                if (tab === 'theory') {
+                if (tab === 'exercises') {
+                    tabExer.style.color = 'var(--accent)';
+                    tabExer.style.borderBottomColor = 'var(--accent)';
+                    tabTheo.style.color = tabSand.style.color = tabVenn.style.color = '#6b7280';
+                    tabTheo.style.borderBottomColor = tabSand.style.borderBottomColor = tabVenn.style.borderBottomColor = 'transparent';
+                    secExer.style.display = 'block';
+                    secTheo.style.display = secSand.style.display = secVenn.style.display = 'none';
+                } else if (tab === 'theory') {
                     tabTheo.style.color = 'var(--accent)';
                     tabTheo.style.borderBottomColor = 'var(--accent)';
-                    tabSand.style.color = tabVenn.style.color = '#6b7280';
-                    tabSand.style.borderBottomColor = tabVenn.style.borderBottomColor = 'transparent';
+                    tabExer.style.color = tabSand.style.color = tabVenn.style.color = '#6b7280';
+                    tabExer.style.borderBottomColor = tabSand.style.borderBottomColor = tabVenn.style.borderBottomColor = 'transparent';
                     secTheo.style.display = 'block';
-                    secSand.style.display = secVenn.style.display = 'none';
+                    secExer.style.display = secSand.style.display = secVenn.style.display = 'none';
                 } else if (tab === 'sandbox') {
                     tabSand.style.color = 'var(--accent)';
                     tabSand.style.borderBottomColor = 'var(--accent)';
-                    tabTheo.style.color = tabVenn.style.color = '#6b7280';
-                    tabTheo.style.borderBottomColor = tabVenn.style.borderBottomColor = 'transparent';
+                    tabExer.style.color = tabTheo.style.color = tabVenn.style.color = '#6b7280';
+                    tabExer.style.borderBottomColor = tabTheo.style.borderBottomColor = tabVenn.style.borderBottomColor = 'transparent';
                     secSand.style.display = 'block';
-                    secTheo.style.display = secVenn.style.display = 'none';
+                    secExer.style.display = secTheo.style.display = secVenn.style.display = 'none';
                     setTimeout(() => { runCltSimulation(); }, 50);
                 } else {
                     tabVenn.style.color = 'var(--accent)';
                     tabVenn.style.borderBottomColor = 'var(--accent)';
-                    tabTheo.style.color = tabSand.style.color = '#6b7280';
-                    tabTheo.style.borderBottomColor = tabSand.style.borderBottomColor = 'transparent';
+                    tabExer.style.color = tabTheo.style.color = tabSand.style.color = '#6b7280';
+                    tabExer.style.borderBottomColor = tabTheo.style.borderBottomColor = tabSand.style.borderBottomColor = 'transparent';
                     secVenn.style.display = 'block';
-                    secTheo.style.display = secSand.style.display = 'none';
+                    secExer.style.display = secTheo.style.display = secSand.style.display = 'none';
                     setTimeout(() => { 
                         drawVennDiagram(); 
                         solveBayesCoins();

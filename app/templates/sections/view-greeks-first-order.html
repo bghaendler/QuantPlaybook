@@ -1,0 +1,72 @@
+<div id="view-greeks-first-order" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">First-Order Greeks (Delta, Gamma, Theta, Vega, Rho)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The standard sensitivities of the generalized Black-Scholes price — closed forms, signs, shapes, and the P&amp;L identity that ties them together.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Closed Forms (generalized BSM with carry $b$)</h3>
+        <p>With $d_1 = \frac{\ln(S/K) + (b + \sigma^2/2)T}{\sigma\sqrt{T}}$, $d_2 = d_1 - \sigma\sqrt{T}$, $\phi$ the standard normal pdf:</p>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Greek</th><th style="padding: 0.5rem;">Call</th><th style="padding: 0.5rem;">Put</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Delta $\partial V/\partial S$</td><td style="padding: 0.5rem;">$e^{(b-r)T} N(d_1)$</td><td style="padding: 0.5rem;">$e^{(b-r)T} (N(d_1) - 1)$</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Gamma $\partial^2 V/\partial S^2$</td><td colspan="2" style="padding: 0.5rem;">$\dfrac{e^{(b-r)T} \phi(d_1)}{S \sigma \sqrt{T}}$ &nbsp;(same for call &amp; put)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Vega $\partial V/\partial \sigma$</td><td colspan="2" style="padding: 0.5rem;">$S e^{(b-r)T} \phi(d_1) \sqrt{T}$ &nbsp;(same for both)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Theta $\partial V/\partial t$</td><td style="padding: 0.5rem;">$-\dfrac{S e^{(b-r)T}\phi(d_1)\sigma}{2\sqrt{T}} - (b-r)Se^{(b-r)T}N(d_1) - rKe^{-rT}N(d_2)$</td><td style="padding: 0.5rem;">$-\dfrac{S e^{(b-r)T}\phi(d_1)\sigma}{2\sqrt{T}} + (b-r)Se^{(b-r)T}N(-d_1) + rKe^{-rT}N(-d_2)$</td></tr>
+                <tr><td style="padding: 0.5rem;">Rho $\partial V/\partial r$</td><td style="padding: 0.5rem;">$T K e^{-rT} N(d_2)$ <span style="color:#64748b;">($b\ne r$ case: $-TV_c$ term differs)</span></td><td style="padding: 0.5rem;">$-T K e^{-rT} N(-d_2)$</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>2. Shapes &amp; Signs Worth Memorizing</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Delta:</strong> call ∈ $(0, e^{(b-r)T})$, S-shaped in $S$; ATM call delta ≈ 0.5 (more precisely $N(\sigma\sqrt{T}/2 + b\sqrt{T}/\sigma)$, slightly above ½). Often (mis)read as the risk-neutral probability of finishing ITM — that is $N(d_2)$, not $N(d_1)$.</li>
+            <li><strong>Gamma:</strong> bell-shaped in $S$, peaks just below ATM, explodes as $T \to 0$ at the strike ($\Gamma \sim 1/(S\sigma\sqrt{T})$) — pin risk for hedgers.</li>
+            <li><strong>Vega:</strong> bell-shaped, peaks near ATM(F), grows with $\sqrt{T}$ — long-dated options are vega instruments, short-dated are gamma instruments.</li>
+            <li><strong>Theta:</strong> typically negative for long options; deep-ITM European puts can have <em>positive</em> theta (price below intrinsic, pulled up by discounting).</li>
+            <li><strong>Rho:</strong> calls positive, puts negative; matters mostly for long-dated and rates-linked options.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. The Greeks Are Not Independent: BS Equation as P&amp;L Identity</h3>
+        <p>The pricing PDE is a constraint among Greeks:</p>
+        $$\Theta + \tfrac{1}{2}\sigma^2 S^2 \Gamma + b S \Delta = rV.$$
+        <p>For a delta-hedged book this reads: <strong>theta pays for gamma</strong>. The instantaneous hedged P&amp;L over $dt$ when realized vol is $\sigma_{real}$:</p>
+        $$d\Pi \approx \tfrac{1}{2} \Gamma S^2 \left(\sigma_{real}^2 - \sigma_{imp}^2\right) dt,$$
+        <p>so a long-gamma position profits when the market moves more than the implied vol you paid — the fundamental theorem of option market-making.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Worked Example</h3>
+        <p>$S = K = 100$, $T = 0.25$, $r = b = 5\%$, $\sigma = 20\%$: $d_1 = (0.0125 + 0.005)/0.1 = 0.175$, $\phi(d_1) = 0.3925$.</p>
+        <ul style="line-height: 1.8;">
+            <li>$\Delta_c = N(0.175) = 0.5695$ — hedge a short 100-lot call with 5,695 shares.</li>
+            <li>$\Gamma = 0.3925/(100 \times 0.1) = 0.0393$ per \$ — a \$1 move shifts delta by ≈ 0.04.</li>
+            <li>Vega $= 100 \times 0.3925 \times 0.5 = 19.6$ per unit vol → \$0.196 per vol point.</li>
+            <li>$\Theta \approx -[100 \times 0.3925 \times 0.2/(2\times0.5)] - 5\% \times 75e^{-0.0125}\times N(d_2) \approx -11.5$/yr → ≈ −3.2 cents/day.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>5. Hedging Practice Notes</h3>
+        <ul style="line-height: 1.8;">
+            <li>Delta is hedged continuously (cheap); gamma and vega are hedged with other options (expensive) — books target gamma/vega limits, not zero.</li>
+            <li>Under the smile, practitioners quote <strong>sticky-strike</strong> vs <strong>sticky-delta</strong> deltas; the "smile-adjusted" delta adds $\text{Vega} \times \partial\sigma/\partial S$.</li>
+            <li>Discrete hedging error over interval $\Delta t$ has standard deviation ∝ vega × $\sigma\sqrt{\Delta t}$ — hedge frequency trades transaction costs against replication noise.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Delta = $e^{(b-r)T}N(d_1)$; Gamma and Vega are identical for calls and puts and proportional to $\phi(d_1)$.</li>
+            <li>Gamma spikes near expiry ATM; vega grows with $\sqrt{T}$.</li>
+            <li>$\Theta + \frac{1}{2}\sigma^2S^2\Gamma + bS\Delta = rV$: theta is the rent on gamma.</li>
+            <li>Hedged P&amp;L ∝ $\Gamma S^2(\sigma_{real}^2 - \sigma_{imp}^2)$ — Greeks define the vol trade.</li>
+            <li>$N(d_2)$, not delta, is the risk-neutral ITM probability.</li>
+        </ul>
+    </div>
+</div>

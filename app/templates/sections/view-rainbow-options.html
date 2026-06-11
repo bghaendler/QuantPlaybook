@@ -1,0 +1,59 @@
+<div id="view-rainbow-options" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Rainbow Options: Min/Max of Two Assets (Stulz)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Calls and puts on the better or worse of two assets — closed forms with bivariate normals, and the purest expression of correlation as a price.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Stulz (1982) Building Block: Call on the Minimum</h3>
+        <p>Payoff $\max(\min(S_1, S_2) - K, 0)$. With each asset's $d$-terms $d_i = \frac{\ln(S_i/K) + (b_i + \sigma_i^2/2)T}{\sigma_i\sqrt{T}}$, the ratio vol $\hat\sigma = \sqrt{\sigma_1^2 + \sigma_2^2 - 2\rho\sigma_1\sigma_2}$, and bivariate normal CDF $M$:</p>
+        $$c_{min} = S_1 e^{(b_1 - r)T} M\!\left(d_1,\ \tfrac{\ln(S_2/S_1) + (b_2 - b_1 - \hat\sigma^2/2)T}{\hat\sigma\sqrt{T}};\ \rho_1\right) + S_2 e^{(b_2 - r)T} M\!\left(d_2,\ \cdot\ ;\ \rho_2\right) - K e^{-rT} M\!\left(d_1 - \sigma_1\sqrt{T},\ d_2 - \sigma_2\sqrt{T};\ \rho\right),$$
+        <p>with $\rho_i = (\sigma_i - \rho\sigma_j)/\hat\sigma$. Each term reads naturally: receive asset $i$ when it finishes above $K$ <em>and</em> below its sibling; pay $K$ when both finish above $K$.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Min/Max Algebra</h3>
+        <p>Everything else follows from one identity:</p>
+        $$\max(S_1, S_2) + \min(S_1, S_2) = S_1 + S_2 \;\;\Rightarrow\;\; c_{max}(K) = c_1(K) + c_2(K) - c_{min}(K),$$
+        <p>where $c_i$ are vanilla calls. Puts via parity-style relations, e.g. $p_{min}(K) = Ke^{-rT} - PV(\text{min}) + c_{min}(K)$ with $PV(\min) = c_{min}(0)$ from Margrabe: $\min(S_1,S_2) = S_2 - \max(S_2 - S_1, 0)$. The whole two-color rainbow family — best-of, worst-of, calls and puts — assembles from vanillas, Margrabe and the Stulz $c_{min}$.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Correlation Is the Product</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Position</th><th style="padding: 0.5rem;">Correlation exposure</th><th style="padding: 0.5rem;">Intuition</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Long call on max (best-of)</td><td style="padding: 0.5rem;">Short ρ</td><td style="padding: 0.5rem;">Dispersion lets the winner run away</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Long call on min (worst-of call)</td><td style="padding: 0.5rem;">Long ρ</td><td style="padding: 0.5rem;">Need both up: they must move together</td></tr>
+                <tr><td style="padding: 0.5rem;">Long put on min (worst-of put)</td><td style="padding: 0.5rem;">Short ρ</td><td style="padding: 0.5rem;">Dispersion guarantees a loser to deliver</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.75rem;">Structured-product flow is dominated by <strong>short worst-of puts</strong> (inside autocallables/BRCs): retail is systematically <em>selling dispersion</em>, dealers are long it — driving the implied-correlation market and dispersion trading desks that recycle this risk via index-vs-single-name vol.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Risk Profile</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Cega</strong> (∂V/∂ρ) is first-order: for an ATM worst-of put, moving ρ from 0.8 to 0.5 can change value by tens of percent.</li>
+            <li><strong>Cross-gamma</strong> $\partial^2 V/\partial S_1 \partial S_2$: hedging one asset changes the delta of the other — rebalancing churn concentrated when assets are near each other (the min is about to switch identity).</li>
+            <li><strong>Skew interaction:</strong> worst-of puts load on each asset's downside skew; flat-vol Stulz underprices them. Practice: local-vol or SLV per asset + a (possibly stochastic) correlation overlay, with Stulz as control.</li>
+            <li>Implied correlation marks are model-laden: realized ρ is unstable and spikes toward 1 in crashes — exactly when short-dispersion books hurt.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>5. Beyond Two Colors</h3>
+        <p>Three assets → trivariate normals (Johnson 1987 generalizes Stulz to $n$ assets with $n$-variate CDFs); beyond ~3–4, Monte Carlo wins. Related family: <strong>quanto rainbows</strong> (FX-correlation overlay), <strong>Himalaya/Napoleon</strong> (multi-period best-of with lock-outs — path-dependent, simulation only), and basket options (correlation enters through the sum rather than the order statistics — see next section).</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Stulz's $c_{min}$ + the identity max + min = sum generate all two-asset rainbow prices.</li>
+            <li>Bivariate normal CDFs with correlations $\rho, \rho_1, \rho_2$ are the computational core.</li>
+            <li>Best-of = short correlation; worst-of call = long; worst-of put = short — know your cega sign.</li>
+            <li>Retail structures make the street long dispersion; implied correlation is the clearing price.</li>
+            <li>Cross-gamma and skew interaction make flat-vol formulas a starting point, not a book price.</li>
+        </ul>
+    </div>
+</div>

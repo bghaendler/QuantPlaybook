@@ -1,0 +1,73 @@
+<div id="view-ad-p08" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Algorithmic Adjoint Differentiation — Part 08</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Code Overloading for Backward Interpretation</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Building an adjoint by operator overloading: an active type that records a tape during execution, then a backward interpreter that replays it — a minimal working AAD engine.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Architecture of an OO Adjoint</h3>
+        <p>Three components, ~200 lines for a usable core:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Active type</strong> <code>ADouble</code>: holds a value + a node index into the tape.</li>
+            <li><strong>Tape:</strong> append-only array of records — op code (or just local partials) + parent indices. Recording <em>is</em> the forward execution: overloaded <code>*, +, exp, log, ...</code> compute the value <em>and</em> append a node.</li>
+            <li><strong>Backward interpreter:</strong> allocate an adjoint per node, seed the output's adjoint with 1, walk the tape <em>backwards</em> applying $\bar{v}_{parent} \mathrel{+}= w \cdot \bar{v}_{node}$ for each stored partial $w$.</li>
+        </ul>
+        <p>Storing the <em>partials</em> (not op codes) at record time is "preaccumulation at the elemental level" — the interpreter then needs no primal values at all, trading slightly more tape per node for a simpler, faster reverse sweep.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Minimal Python Implementation</h3>
+        <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.8rem; font-size: 0.74rem; overflow-x: auto;">tape = []                                   # records: (parents, partials)
+
+class ADouble:
+    __slots__ = ('val', 'idx')
+    def __init__(self, val, idx=None):
+        self.val = val
+        self.idx = idx if idx is not None else new_node((), ())
+    def __mul__(self, o):
+        o = wrap(o)
+        return ADouble(self.val*o.val, new_node((self.idx, o.idx), (o.val, self.val)))
+    def __add__(self, o):
+        o = wrap(o)
+        return ADouble(self.val+o.val, new_node((self.idx, o.idx), (1.0, 1.0)))
+
+def exp(x): v = math.exp(x.val); return ADouble(v, new_node((x.idx,), (v,)))
+def new_node(parents, partials): tape.append((parents, partials)); return len(tape)-1
+
+def grad(out):                              # backward interpreter
+    adj = [0.0]*len(tape); adj[out.idx] = 1.0
+    for i in range(out.idx, -1, -1):
+        parents, partials = tape[i]
+        for p, w in zip(parents, partials):
+            adj[p] += w * adj[i]            # the += of Part 03
+    return adj                              # read inputs' adjoints by their idx</pre>
+        <p>Usage: build inputs as <code>ADouble</code>, run the <em>unchanged</em> pricer source (duck typing), call <code>grad(PV)</code> — every input's sensitivity drops out. This 30-line engine is, structurally, PyTorch's autograd.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Production Concerns the Toy Hides</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Tape memory layout:</strong> contiguous flat arrays (struct-of-arrays) for parents/partials — cache-friendly reverse sweeps; per-object Python lists are 100× off the pace (use C++/NumPy blocks; CppAD/dco do exactly this).</li>
+            <li><strong>Tape lifecycle:</strong> per-path tape reset (Part 06's pathwise trick) — <code>tape.clear()</code> between paths keeps memory flat; thread-local tapes for parallelism.</li>
+            <li><strong>Passive fast path:</strong> a template/dual-build so the same source runs pure-<code>double</code> when no derivatives are wanted — never pay tape cost in plain pricing.</li>
+            <li><strong>Custom nodes:</strong> register super-node ops (solve, interpolate, BS formula) that append one record with analytic partials (Parts 02–03) — the single biggest speed/memory lever.</li>
+            <li><strong>Branches recorded implicitly:</strong> the tape stores what executed — re-running with different inputs requires re-taping (contrast JAX's traced-and-compiled static graphs; dynamic taping is the price of Python-style flexibility).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Checkpointed Interpretation</h3>
+        <p>For long simulations, combine the interpreter with Part 06's checkpoints: tape only the current segment; at segment boundaries, store state snapshots; reverse segment-by-segment, re-taping each from its snapshot. The interpreter doesn't change — only the driver loop does. This composition (OO recording + Revolve scheduling + custom nodes) is, component for component, the architecture of commercial AAD libraries deployed for XVA.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>OO adjoint = active type + append-only tape + backward interpreter; storing local partials simplifies the reverse sweep.</li>
+            <li>A 30-line engine demonstrates the whole mechanism — and is structurally identical to autograd.</li>
+            <li>Production = flat memory layout, per-path tape resets, passive fast path, custom super-nodes.</li>
+            <li>Checkpointing changes the driver, not the interpreter — the components compose into the commercial AAD stack.</li>
+        </ul>
+    </div>
+</div>

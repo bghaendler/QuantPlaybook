@@ -1,0 +1,106 @@
+<div id="view-dev-api-docs" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Production API Documentation &amp; Integration Hub</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The FastAPI backend behind this application: endpoints, payload reference, and live testing against the running server.</p>
+    </header>
+
+    <div class="card">
+        <h3>Endpoints</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Method</th><th style="padding: 0.5rem;">Path</th><th style="padding: 0.5rem;">Purpose</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);">
+                    <td style="padding: 0.5rem;"><code style="color:#10b981; font-weight:700;">GET</code></td><td style="padding: 0.5rem;"><code>/</code></td>
+                    <td style="padding: 0.5rem;">Serves this single-page application (Jinja2-rendered <code>index.html</code>).</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);">
+                    <td style="padding: 0.5rem;"><code style="color:#10b981; font-weight:700;">GET</code></td><td style="padding: 0.5rem;"><code>/api/data</code></td>
+                    <td style="padding: 0.5rem;">Term-structure laboratory data: bootstrapped curve, pseudoinverse smoothing, PCA factors, Lorimier spline fit (Swiss yields).</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);">
+                    <td style="padding: 0.5rem;"><code style="color:#f59e0b; font-weight:700;">POST</code></td><td style="padding: 0.5rem;"><code>/calculate</code></td>
+                    <td style="padding: 0.5rem;">The option engine. JSON payload selects model + parameters; returns price, Greeks, graph/heatmap arrays, vol surfaces and distribution data.</td></tr>
+                <tr>
+                    <td style="padding: 0.5rem;"><code style="color:#10b981; font-weight:700;">GET</code></td><td style="padding: 0.5rem;"><code>/docs</code></td>
+                    <td style="padding: 0.5rem;">FastAPI's auto-generated OpenAPI/Swagger UI — interactive schema for everything above.</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>POST /calculate — Payload Reference</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.85rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.4rem;">Field</th><th style="padding: 0.4rem;">Type / Default</th><th style="padding: 0.4rem;">Meaning</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;"><code>model</code></td><td style="padding: 0.4rem;">str, "bsm"</td><td style="padding: 0.4rem;">Model key: bsm, merton, black76, asay, garman, gen_bsm, bachelier, sprenkle, boness, baw, bjerksund93/02, roll_geske, barrier_std, binary, asian_geo, margrabe, ... (see sidebar pricer list)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;"><code>type</code></td><td style="padding: 0.4rem;">"call" | "put"</td><td style="padding: 0.4rem;">Option type</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;"><code>spot, strike</code></td><td style="padding: 0.4rem;">float, 100</td><td style="padding: 0.4rem;">Underlying level and strike</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;"><code>time, rate, volatility</code></td><td style="padding: 0.4rem;">1.0, 0.05, 0.2</td><td style="padding: 0.4rem;">Maturity (years), risk-free rate, lognormal vol</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;"><code>dividend</code></td><td style="padding: 0.4rem;">float, 0</td><td style="padding: 0.4rem;">Overloaded by model: Merton q · Garman foreign rate · gen_bsm carry deduction · Brenner b · Black76F forward expiry</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;"><code>div1_amt, div1_time, div2_amt, div2_time</code></td><td style="padding: 0.4rem;">float, 0</td><td style="padding: 0.4rem;">Discrete cash dividends (escrowed / RGW models)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;"><code>barrier, barrierType, rebate</code></td><td style="padding: 0.4rem;">0, "Up-and-Out", 0</td><td style="padding: 0.4rem;">Barrier family inputs</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;"><code>spot2, vol2, dividend2, correlation, q1, q2</code></td><td style="padding: 0.4rem;">104, 0.12, 0.04, 0.8, 1, 1</td><td style="padding: 0.4rem;">Second asset for Margrabe / multi-asset exotics</td></tr>
+                <tr><td style="padding: 0.4rem;"><code>lambda, shift, time_dividend</code></td><td style="padding: 0.4rem;">0, 0, 0.25</td><td style="padding: 0.4rem;">Executive-option exit rate · Bachelier shift · RGW dividend date</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Live Tester</h3>
+        <p style="font-size: 0.85rem; color: #64748b;">Sends the JSON below to <code>POST /calculate</code> on this origin and shows the core results (works when the FastAPI backend is serving the app).</p>
+        <textarea id="apiDocsPayload" spellcheck="false" style="width: 100%; height: 130px; font-family: monospace; font-size: 0.82rem; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);">{
+  "model": "bsm",
+  "type": "call",
+  "spot": 100, "strike": 100,
+  "time": 1.0, "rate": 0.05,
+  "volatility": 0.2, "dividend": 0.0
+}</textarea>
+        <div style="margin-top: 0.6rem;">
+            <button onclick="runApiDocsTest()" style="padding: 0.45rem 1.2rem; border-radius: 8px; border: none; background: var(--accent); color: #fff; font-weight: 700; cursor: pointer;">Send Request</button>
+        </div>
+        <pre id="apiDocsResult" style="margin-top: 0.75rem; background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.9rem; font-size: 0.82rem; min-height: 50px; white-space: pre-wrap;"></pre>
+    </div>
+
+    <div class="card">
+        <h3>Client Snippets</h3>
+        <p style="font-weight: 700; font-size: 0.85rem; margin-bottom: 0.25rem;">curl</p>
+        <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.75rem; font-size: 0.78rem; overflow-x: auto;">curl -s -X POST http://localhost:8000/calculate \
+  -H "Content-Type: application/json" \
+  -d '{"model":"bsm","type":"call","spot":100,"strike":100,"time":1,"rate":0.05,"volatility":0.2}' | jq .price</pre>
+        <p style="font-weight: 700; font-size: 0.85rem; margin: 0.75rem 0 0.25rem;">Python (requests)</p>
+        <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.75rem; font-size: 0.78rem; overflow-x: auto;">import requests
+
+payload = {"model": "baw", "type": "put", "spot": 100, "strike": 110,
+           "time": 0.5, "rate": 0.05, "volatility": 0.25, "dividend": 0.03}
+r = requests.post("http://localhost:8000/calculate", json=payload, timeout=10)
+r.raise_for_status()
+data = r.json()
+print(data["price"], data.get("delta"), data.get("gamma"))</pre>
+        <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.75rem;">Run the server locally with <code>uvicorn backend:app --reload</code> from the <code>app/</code> directory.</p>
+    </div>
+</div>
+
+<script>
+async function runApiDocsTest() {
+    var out = document.getElementById('apiDocsResult');
+    out.textContent = 'Sending...';
+    var payload;
+    try { payload = JSON.parse(document.getElementById('apiDocsPayload').value); }
+    catch (e) { out.textContent = 'Invalid JSON: ' + e.message; return; }
+    try {
+        var resp = await fetch('/calculate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (!resp.ok) { out.textContent = 'HTTP ' + resp.status + ': ' + (await resp.text()).slice(0, 400); return; }
+        var data = await resp.json();
+        var core = {};
+        ['price', 'delta', 'gamma', 'vega', 'theta', 'rho', 'model_name'].forEach(function(k) {
+            if (data[k] !== undefined) core[k] = data[k];
+        });
+        var nKeys = Object.keys(data).length;
+        out.textContent = JSON.stringify(core, null, 2) + '\n\n(' + nKeys + ' fields returned in total - graph/heatmap/surface arrays omitted here)';
+    } catch (err) {
+        out.textContent = 'Request failed: ' + err.message + '\nIs the FastAPI backend running on this origin?';
+    }
+}
+</script>

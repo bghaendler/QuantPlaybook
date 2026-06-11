@@ -1,0 +1,131 @@
+<div id="view-dev-quantlib-export" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Model Code Export to QuantLib Python</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Generate ready-to-run QuantLib-Python scripts for the pricer's models with your parameters baked in.</p>
+    </header>
+
+    <div class="card">
+        <h3>Configure &amp; Generate</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;">
+            <div>
+                <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Model</label>
+                <select id="qlExpModel" onchange="genQlExport()" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);">
+                    <option value="bsm">Black-Scholes-Merton (European)</option>
+                    <option value="black76">Black-76 (Option on Future)</option>
+                    <option value="gk">Garman-Kohlhagen (FX)</option>
+                    <option value="american">American (Barone-Adesi-Whaley)</option>
+                    <option value="binomial">American (CRR Binomial 801 steps)</option>
+                    <option value="heston">Heston (Semi-Analytic)</option>
+                </select>
+            </div>
+            <div><label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Type</label>
+                <select id="qlExpType" onchange="genQlExport()" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);"><option value="Call">Call</option><option value="Put">Put</option></select></div>
+            <div><label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Spot / Forward</label>
+                <input id="qlExpS" type="number" value="100" step="1" oninput="genQlExport()" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);"></div>
+            <div><label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Strike</label>
+                <input id="qlExpK" type="number" value="100" step="1" oninput="genQlExport()" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);"></div>
+            <div><label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Maturity (y)</label>
+                <input id="qlExpT" type="number" value="1.0" step="0.25" oninput="genQlExport()" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);"></div>
+            <div><label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Rate r</label>
+                <input id="qlExpR" type="number" value="0.05" step="0.005" oninput="genQlExport()" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);"></div>
+            <div><label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Div yield / r&#7497;</label>
+                <input id="qlExpQ" type="number" value="0.02" step="0.005" oninput="genQlExport()" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);"></div>
+            <div><label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Vol &#963;</label>
+                <input id="qlExpV" type="number" value="0.20" step="0.01" oninput="genQlExport()" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);"></div>
+        </div>
+        <div style="display: flex; gap: 0.75rem; align-items: center;">
+            <button onclick="copyQlExport()" style="padding: 0.45rem 1.2rem; border-radius: 8px; border: none; background: var(--accent); color: #fff; font-weight: 700; cursor: pointer;">Copy to Clipboard</button>
+            <span id="qlExpCopied" style="font-size: 0.8rem; color: #10b981;"></span>
+        </div>
+        <pre id="qlExpOut" style="margin-top: 1rem; background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.9rem; font-size: 0.78rem; overflow-x: auto; white-space: pre;"></pre>
+    </div>
+
+    <div class="card">
+        <h3>Notes on the QuantLib Object Model</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Instrument / Engine separation:</strong> a <code>VanillaOption</code> holds payoff + exercise; the pricing model lives in the engine (<code>AnalyticEuropeanEngine</code>, <code>BaroneAdesiWhaleyApproximationEngine</code>, ...). Swap the engine, keep the instrument.</li>
+            <li><strong>Term structures as handles:</strong> curves and vols are wrapped in <code>Handle</code>s so market data updates re-price instruments automatically.</li>
+            <li><strong>Day counting and calendars matter:</strong> the generated code uses <code>Actual365Fixed</code> and a flat calendar — align these with your market conventions before production use.</li>
+            <li>Install with <code>pip install QuantLib</code> (the SWIG Python wheel).</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+function qlExpVal(id) { return parseFloat(document.getElementById(id).value) || 0; }
+
+function genQlExport() {
+    var model = document.getElementById('qlExpModel').value;
+    var type = document.getElementById('qlExpType').value;
+    var S = qlExpVal('qlExpS'), K = qlExpVal('qlExpK'), T = qlExpVal('qlExpT');
+    var r = qlExpVal('qlExpR'), q = qlExpVal('qlExpQ'), v = qlExpVal('qlExpV');
+    var head = 'import QuantLib as ql\n\n' +
+        'today = ql.Date.todaysDate()\n' +
+        'ql.Settings.instance().evaluationDate = today\n' +
+        'maturity = today + ql.Period(int(' + T + ' * 365), ql.Days)\n' +
+        'dc = ql.Actual365Fixed()\n\n' +
+        'spot   = ql.QuoteHandle(ql.SimpleQuote(' + S + '))\n' +
+        'r_ts   = ql.YieldTermStructureHandle(ql.FlatForward(today, ' + r + ', dc))\n' +
+        'q_ts   = ql.YieldTermStructureHandle(ql.FlatForward(today, ' + q + ', dc))\n' +
+        'vol_ts = ql.BlackVolTermStructureHandle(\n' +
+        '    ql.BlackConstantVol(today, ql.NullCalendar(), ' + v + ', dc))\n\n' +
+        'payoff   = ql.PlainVanillaPayoff(ql.Option.' + type + ', ' + K + ')\n';
+    var body = '';
+    if (model === 'bsm' || model === 'gk') {
+        body = 'exercise = ql.EuropeanExercise(maturity)\n' +
+            'option   = ql.VanillaOption(payoff, exercise)\n\n' +
+            '# ' + (model === 'gk' ? 'Garman-Kohlhagen: q_ts is the FOREIGN rate curve' : 'BSM with continuous dividend yield q') + '\n' +
+            'process = ql.BlackScholesMertonProcess(spot, q_ts, r_ts, vol_ts)\n' +
+            'option.setPricingEngine(ql.AnalyticEuropeanEngine(process))\n\n' +
+            'print(f"NPV   : {option.NPV():.6f}")\n' +
+            'print(f"Delta : {option.delta():.6f}")\n' +
+            'print(f"Gamma : {option.gamma():.6f}")\n' +
+            'print(f"Vega  : {option.vega():.6f}")\n';
+    } else if (model === 'black76') {
+        body = 'exercise = ql.EuropeanExercise(maturity)\n' +
+            'option   = ql.VanillaOption(payoff, exercise)\n\n' +
+            '# Black-76: model the forward directly via a Black process (b = 0)\n' +
+            'process = ql.BlackProcess(spot, r_ts, vol_ts)  # spot quote = forward price\n' +
+            'option.setPricingEngine(ql.AnalyticEuropeanEngine(process))\n\n' +
+            'print(f"NPV (on forward {' + S + '}): {option.NPV():.6f}")\n';
+    } else if (model === 'american') {
+        body = 'exercise = ql.AmericanExercise(today, maturity)\n' +
+            'option   = ql.VanillaOption(payoff, exercise)\n\n' +
+            'process = ql.BlackScholesMertonProcess(spot, q_ts, r_ts, vol_ts)\n' +
+            'option.setPricingEngine(ql.BaroneAdesiWhaleyApproximationEngine(process))\n\n' +
+            'print(f"American NPV (BAW): {option.NPV():.6f}")\n';
+    } else if (model === 'binomial') {
+        body = 'exercise = ql.AmericanExercise(today, maturity)\n' +
+            'option   = ql.VanillaOption(payoff, exercise)\n\n' +
+            'process = ql.BlackScholesMertonProcess(spot, q_ts, r_ts, vol_ts)\n' +
+            'option.setPricingEngine(ql.BinomialVanillaEngine(process, "crr", 801))\n\n' +
+            'print(f"American NPV (CRR 801): {option.NPV():.6f}")\n';
+    } else if (model === 'heston') {
+        body = 'exercise = ql.EuropeanExercise(maturity)\n' +
+            'option   = ql.VanillaOption(payoff, exercise)\n\n' +
+            '# Heston: v0/theta set to sigma^2, kappa/sigma_v/rho illustrative - calibrate!\n' +
+            'v0, kappa, theta, sigma_v, rho = ' + (v*v).toFixed(4) + ', 2.0, ' + (v*v).toFixed(4) + ', 0.4, -0.7\n' +
+            'heston_process = ql.HestonProcess(r_ts, q_ts, spot, v0, kappa, theta, sigma_v, rho)\n' +
+            'option.setPricingEngine(ql.AnalyticHestonEngine(ql.HestonModel(heston_process)))\n\n' +
+            'print(f"Heston NPV: {option.NPV():.6f}")\n';
+    }
+    document.getElementById('qlExpOut').textContent = head + body;
+}
+
+function copyQlExport() {
+    var text = document.getElementById('qlExpOut').textContent;
+    function done() {
+        var el = document.getElementById('qlExpCopied');
+        el.textContent = 'Copied ✓';
+        setTimeout(function() { el.textContent = ''; }, 2000);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done);
+    } else {
+        var ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta); done();
+    }
+}
+setTimeout(genQlExport, 400);
+</script>

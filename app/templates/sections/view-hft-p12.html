@@ -1,0 +1,54 @@
+<div id="view-hft-p12" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">High-Frequency Trading &amp; Market Microstructure — Part 12</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Identifying Microstructure Price Relationships</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The capstone: lead-lag structure, price discovery shares, cointegration across venues and instruments — finding where price formation actually happens.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Lead-Lag Relationships</h3>
+        <p>Related instruments (ETF vs. basket, futures vs. cash, cross-listings, venue feeds) do not move simultaneously — one usually leads by milliseconds to seconds:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Cross-correlation functions</strong> of returns at fine lags: the asymmetry of $\rho(\tau)$ vs. $\rho(-\tau)$ locates the leader. Use the <strong>Hayashi-Yoshida estimator</strong> on raw asynchronous ticks — naive synchronized sampling at fine grids biases correlations toward zero (the <strong>Epps effect</strong>).</li>
+            <li><strong>Classic findings:</strong> index futures lead cash by ~seconds; SPY and ES co-lead within milliseconds; the consolidated SIP lags direct feeds — the literal latency-arbitrage gap (Part 06).</li>
+            <li>Lead-lag horizons have compressed from minutes (1990s) to milliseconds — the measured footprint of the HFT arms race.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Cointegration at High Frequency</h3>
+        <p>Prices of the "same" asset on different venues (or tight substitutes) are I(1) individually but their spread is stationary — a cointegration relation with error-correction dynamics:</p>
+        $$\Delta p^A_t = \alpha_A(p^B_{t-1} - p^A_{t-1} - \mu) + \dots, \qquad \Delta p^B_t = -\alpha_B(\cdot) + \dots$$
+        <p>The adjustment speeds $\alpha$ say <em>who corrects toward whom</em>: the leader barely adjusts ($\alpha \approx 0$), the follower does the converging. This vector-error-correction (VECM) frame underlies both stat-arb pairs at high frequency and the price-discovery metrics below. Estimation care: event-clock sampling, robust SEs for heteroskedastic microstructure noise, and sub-second alignment (Part 11's joins).</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Price Discovery Metrics</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Information shares (Hasbrouck):</strong> from the VECM, decompose the variance of the common efficient-price innovation across venues — bounds per venue (upper/lower from Cholesky orderings); midpoints quoted in practice.</li>
+            <li><strong>Component shares (Gonzalo-Granger):</strong> weights of the common permanent factor — cheaper, complements Hasbrouck.</li>
+            <li><strong>Empirical regularities:</strong> primary listing venues and futures dominate discovery; dark venues contribute volume but little discovery (they reference lit prices — Part 06's pegging); discovery share shifts intraday with the seasonality of Part 05.</li>
+            <li><strong>Use:</strong> route <em>information-sensitive</em> child orders to (or time them by) the discovering venue's feed; build fair-value signals from the leader, execute on the lagger.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. From Relationships to Strategies (and Their Limits)</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Latency/stat arb:</strong> trade the lagger when the leader moves — profitable iff (predicted move) &gt; (spread + fees + adverse-selection cost); the Part 01–03 cost stack is the strategy filter.</li>
+            <li><strong>ETF arbitrage:</strong> NAV-basis error correction with creation/redemption as the hard anchor; inventory and hedge legs priced via the impact models of Parts 02–03.</li>
+            <li><strong>Decay discipline:</strong> these edges erode as others find them — measured lead-lag shrinkage is the canonical example of alpha decay; continuous re-measurement (the Part 11 pipeline) is not optional.</li>
+            <li><strong>Causality caveat:</strong> lead-lag is correlation in time, not causation — common reactions to a third feed (news, index ticks) mimic leadership; condition on event windows before believing a leader.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Measure lead-lag with Hayashi-Yoshida on raw ticks — synchronized fine grids fall to the Epps effect.</li>
+            <li>Venue/instrument pairs are cointegrated; VECM adjustment speeds reveal who follows whom.</li>
+            <li>Hasbrouck information shares & Gonzalo-Granger weights quantify where price discovery happens — futures and primary lits dominate, dark pools reference.</li>
+            <li>Lead-lag edges must clear the full microstructure cost stack and are perpetually decaying — measurement is the moat.</li>
+        </ul>
+    </div>
+</div>

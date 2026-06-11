@@ -1,0 +1,53 @@
+<div id="view-arm-p04" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Advanced Risk Management — Part 04</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Classic Risk Categorizations: Market, Credit, Liquidity, Operational</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The four canonical risk types: definitions, measurement paradigms, capital treatment — and the interactions between them that define real crises.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Market Risk</h3>
+        <p>Loss from moves in prices and rates (equity, IR, FX, commodity, vol). Measured by sensitivities (delta/DV01/vega/CS01), VaR/ES on a 1–10 day horizon, plus stress tests. Capital: FRTB's ES₉₇.₅ with liquidity horizons by risk factor, or the standardized sensitivities-based approach. Character: high-frequency data, near-continuous P&amp;L feedback — the <em>best-measured</em> of the four, hence the temptation to over-rely on it (Part 02's matrix).</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Credit Risk</h3>
+        <p>Loss from obligor default or deterioration. The canonical decomposition:</p>
+        $$\mathbb{E}[L] = PD \times LGD \times EAD,$$
+        <p>with portfolio tails driven by <em>default correlation</em> (the asymptotic single-factor Gaussian model behind Basel's IRB capital formula — conditional PD $\;N\!\big(\frac{N^{-1}(PD) + \sqrt{\rho}\,z}{\sqrt{1-\rho}}\big)$ at the 99.9th systematic percentile). Two measurement cultures: structural (Merton-style, equity-implied — see the credit course) and reduced-form (intensities from CDS spreads). Character: skewed, lumpy losses; long horizons (1y+); scarce default data ⇒ heavy model risk in correlations (the 2008 lesson via CDO copulas).</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Liquidity Risk (Two Distinct Animals)</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Market liquidity risk:</strong> cost/impossibility of exiting positions — bid-ask widening, depth evaporation (the entire HFT impact stack); measured by liquidation-cost-adjusted VaR, time-to-liquidate buckets, FRTB liquidity horizons.</li>
+            <li><strong>Funding liquidity risk:</strong> inability to roll obligations — margin spirals, deposit runs, repo haircut jumps; measured by LCR/NSFR ratios, cash-flow ladders, survival horizons under stressed runoff.</li>
+            <li>The two interact viciously: falling prices ⇒ margin calls (funding) ⇒ forced sales (market) ⇒ falling prices — Brunnermeier-Pedersen liquidity spirals; LTCM and 2008 are this loop, not standalone categories.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Operational Risk (and the Boundary Map)</h3>
+        <p>Loss from failed people, processes, systems, external events (fraud, cyber, legal, model error — Part 01 lives here taxonomically). Measured by loss-event databases, scenario workshops, KRIs; capital via the Standardized Measurement Approach (business-indicator based — the AMA's internal models were retired for unverifiability). Character: extreme skew — decades of small losses punctuated by firm-threatening singles (Société Générale's €4.9bn, BCCI-class legal events); EVT-style severity tails (Part 03) apply.</p>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 0.5rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.4rem;"></th><th style="padding: 0.4rem;">Data richness</th><th style="padding: 0.4rem;">Loss shape</th><th style="padding: 0.4rem;">Horizon</th><th style="padding: 0.4rem;">Dominant model risk</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;">Market</td><td style="padding: 0.4rem;">High</td><td style="padding: 0.4rem;">≈ symmetric, fat tails</td><td style="padding: 0.4rem;">Days</td><td style="padding: 0.4rem;">Tails, correlation in stress</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;">Credit</td><td style="padding: 0.4rem;">Low (defaults rare)</td><td style="padding: 0.4rem;">Heavily left-skewed</td><td style="padding: 0.4rem;">1y+</td><td style="padding: 0.4rem;">Default correlation</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;">Liquidity</td><td style="padding: 0.4rem;">Regime-dependent</td><td style="padding: 0.4rem;">Spiral/nonlinear</td><td style="padding: 0.4rem;">Days–months</td><td style="padding: 0.4rem;">Feedback loops</td></tr>
+                <tr><td style="padding: 0.4rem;">Operational</td><td style="padding: 0.4rem;">Sparse, censored</td><td style="padding: 0.4rem;">Extreme severity skew</td><td style="padding: 0.4rem;">Any</td><td style="padding: 0.4rem;">Tail severity, scenario completeness</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.6rem;">Boundary cases are where losses hide: a mis-marked book (op risk) discovered in a sell-off (market) that triggers collateral calls (liquidity) on a downgraded counterparty (credit). Categorization allocates ownership — but stress design must cross the boundaries deliberately.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Market: well-measured, sensitivity + ES paradigm. Credit: PD×LGD×EAD with correlation-driven tails (Basel IRB's single-factor percentile).</li>
+            <li>Liquidity splits into market vs. funding — and their spiral interaction is the historical crisis engine.</li>
+            <li>Operational risk is severity-tail dominated; loss data + scenarios + SMA capital, with model risk as a member.</li>
+            <li>Categories assign ownership and method; real events traverse all four — design stresses across the boundaries.</li>
+        </ul>
+    </div>
+</div>

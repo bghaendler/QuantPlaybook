@@ -1,0 +1,54 @@
+<div id="view-black76-commodities" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Black '76 Model for Commodity Options</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Pricing options on futures rather than spot: why commodities trade off the forward curve, and how Black-76 became the lingua franca of energy and rates options.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Why Futures, Not Spot?</h3>
+        <p>For commodities the spot is often not a tradable hedge instrument: storage is costly or impossible (power), convenience yields are unobservable, and the physical market is fragmented. The <strong>futures contract is the liquid underlying</strong>, and its price $F$ already embeds storage, convenience yield and seasonality. Pricing options directly on $F$ sidesteps the unobservable carry entirely — the curve is the model input.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Formula</h3>
+        <p>Under the risk-neutral measure a futures price is a martingale (zero drift — entering a future costs nothing), $dF = \sigma F\, dW$. The Black-76 prices are BSM with carry $b = 0$:</p>
+        $$c = e^{-rT}\left[F N(d_1) - K N(d_2)\right], \qquad p = e^{-rT}\left[K N(-d_2) - F N(-d_1)\right],$$
+        $$d_1 = \frac{\ln(F/K) + \sigma^2 T/2}{\sigma\sqrt{T}}, \qquad d_2 = d_1 - \sigma\sqrt{T}.$$
+        <p>Everything is discounted because the payoff $\max(F_T - K, 0)$ arrives at expiry while the futures position itself carries no cost. For options on <em>margined</em> futures where the premium is also margined, drop the discounting ($r = 0$): the <strong>Asay (1982)</strong> variant used on several futures exchanges.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Commodity-Specific Wrinkles</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Expiry mismatch:</strong> the option typically expires days before its underlying future. Use the option's expiry $T$ for variance, the future's level for $F$ — and beware Samuelson vol effects between the two dates.</li>
+            <li><strong>Samuelson effect:</strong> futures vol rises as maturity approaches (information concentrates near delivery). The vol term structure is downward in time-to-maturity; calendar-spread options live off this.</li>
+            <li><strong>Seasonality:</strong> natural gas and power have strongly seasonal curves and vols — each contract month is essentially its own underlying with its own smile.</li>
+            <li><strong>Mean reversion:</strong> spot commodities mean-revert (Schwartz one-factor); on a <em>futures</em> of fixed maturity this shows up as lower effective vol for long-dated contracts rather than a changed formula.</li>
+            <li><strong>Negative prices:</strong> April 2020 WTI and frequent power prices break lognormality — desks switch to Bachelier (normal vol) quoting when curves approach zero.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Greeks &amp; Quoting Conventions</h3>
+        <p>Delta is in futures contracts: $\Delta_c = e^{-rT} N(d_1)$ — note even an arbitrarily deep ITM call has delta below 1 by the discount factor. Vega and gamma mirror BSM on $F$. Implied vols are quoted per contract month against strike (the "vol smile by month"); ATM here means $K = F$ — at-the-money-<em>forward</em> — so Black-76 needs no carry inputs at all: $F$, $K$, $T$, $r$, $\sigma$ and nothing else. This operational simplicity is why the model also colonized <strong>interest-rate land</strong>: caps/floors (on forward rates) and swaptions (on forward swap rates) are quoted in Black-76 vols, with the rate playing the role of $F$.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Worked Example: WTI Call</h3>
+        <p>$F = 80$ \$/bbl (Dec contract), $K = 85$, $T = 0.5$, $r = 4\%$, $\sigma = 35\%$.</p>
+        $$d_1 = \frac{\ln(80/85) + 0.5 \times 0.1225 \times 0.5}{0.35\sqrt{0.5}} = \frac{-0.0606 + 0.0306}{0.2475} = -0.121, \qquad d_2 = -0.369.$$
+        $$c = e^{-0.02}\left[80 \times N(-0.121) - 85 \times N(-0.369)\right] = 0.980\left[80 \times 0.4518 - 85 \times 0.3561\right] \approx 5.76.$$
+        <p>The call costs ≈ \$5.76/bbl (\$5,760 per 1,000-bbl contract); delta = $0.980 \times 0.4518 \approx 0.44$ futures.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Black-76 = BSM with $b = 0$: futures are risk-neutral martingales, so only $F, K, T, r, \sigma$ enter.</li>
+            <li>The futures curve absorbs storage/convenience/seasonality — no carry estimation needed.</li>
+            <li>Samuelson effect and per-month smiles structure commodity vol surfaces.</li>
+            <li>Asay variant ($r=0$) for fully margined premium; Bachelier when prices can go negative.</li>
+            <li>The same formula prices caps, floors and swaptions — Black-76 is the universal "options on forwards" quote.</li>
+        </ul>
+    </div>
+</div>

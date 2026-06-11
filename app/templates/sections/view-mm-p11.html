@@ -1,0 +1,58 @@
+<div id="view-mm-p11" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Mathematical Methods in Financial Markets — Part 11</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Lognormal Stock Price Evolution Derivation</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">From the GBM postulate to the explicit distribution of $S_T$: the complete derivation, its moments, and what the lognormal does and doesn't capture.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Solve the SDE</h3>
+        <p>Postulate proportional dynamics (returns, not levels, are stationary): $dS = \mu S\,dt + \sigma S\,dW$. Apply Itô to $\ln S$:</p>
+        $$d\ln S = \left(\mu - \tfrac{1}{2}\sigma^2\right)dt + \sigma\,dW,$$
+        <p>whose right side no longer involves $S$ — integrate directly:</p>
+        $$S_T = S_0\,\exp\!\left[\left(\mu - \tfrac{1}{2}\sigma^2\right)T + \sigma W_T\right], \qquad W_T \sim \mathcal{N}(0, T).$$
+        <p>So $\ln S_T \sim \mathcal{N}\!\left(\ln S_0 + (\mu - \tfrac{1}{2}\sigma^2)T,\ \sigma^2 T\right)$: <strong>prices are lognormal, log-returns are normal</strong>, and the solution is exact (the basis of exact simulation).</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Moments &amp; the Three "Means"</h3>
+        $$\mathbb{E}[S_T] = S_0e^{\mu T}, \qquad \operatorname{Median}(S_T) = S_0e^{(\mu - \sigma^2/2)T}, \qquad \operatorname{Mode}(S_T) = S_0e^{(\mu - \tfrac{3}{2}\sigma^2)T},$$
+        $$\operatorname{Var}(S_T) = S_0^2e^{2\mu T}\left(e^{\sigma^2T} - 1\right).$$
+        <p>Mean &gt; median &gt; mode: the right-skewed lognormal's signature. The arithmetic-vs-geometric gap ($\sigma^2/2$) explains why a volatile asset can have positive expected return yet a typical (median) path that loses money — the quantitative core of "volatility drag" and of Kelly-style log-growth thinking. Density, for reference:</p>
+        $$f(s) = \frac{1}{s\,\sigma\sqrt{2\pi T}}\exp\!\left(-\frac{\left[\ln(s/S_0) - (\mu - \sigma^2/2)T\right]^2}{2\sigma^2 T}\right), \quad s > 0.$$
+    </div>
+
+    <div class="card">
+        <h3>3. Why Lognormal Is the Right First Model</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Positivity:</strong> $S_T > 0$ always — limited liability respected (Bachelier's normal model fails this).</li>
+            <li><strong>Scale invariance:</strong> returns don't depend on the price level; a 2:1 split changes nothing — proportional dynamics is the economically sensible invariance.</li>
+            <li><strong>Multiplicative CLT:</strong> compound many small independent relative changes and the log converges to normal — the same argument that makes the normal universal for sums makes the lognormal universal for products.</li>
+            <li><strong>Closure:</strong> products/powers of lognormals are lognormal — why geometric Asian and basket approximations work.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Where It Breaks (and What Fixes It)</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.4rem;">Empirical violation</th><th style="padding: 0.4rem;">Model response</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;">Fat tails (kurtosis ≫ 3)</td><td style="padding: 0.4rem;">Jumps (Merton), Lévy, Student-t innovations</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;">Volatility clustering</td><td style="padding: 0.4rem;">GARCH, stochastic vol (Heston)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;">Skew/leverage effect</td><td style="padding: 0.4rem;">Negative spot-vol correlation, local vol</td></tr>
+                <tr><td style="padding: 0.4rem;">Implied smile ≠ flat</td><td style="padding: 0.4rem;">All of the above, calibrated to options</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.75rem;">Under the risk-neutral measure, set $\mu \to r$ (or $r - q$): the same lognormal with the drift replaced — every Black-Scholes quantity ($N(d_2)$ probabilities, truncated means) is a direct lognormal computation from this section's formulas.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Itô on $\ln S$ linearizes GBM; the exact solution makes prices lognormal with variance $\sigma^2T$ in logs.</li>
+            <li>Mean, median, mode separate by powers of $e^{\sigma^2T/2}$ — volatility drag quantified.</li>
+            <li>Positivity, scale invariance and multiplicative CLT justify the model; tails, clustering and skew indict it.</li>
+            <li>Risk-neutral version ($\mu \to r$) + truncated lognormal integrals = Black-Scholes (Part 04's computation).</li>
+        </ul>
+    </div>
+</div>

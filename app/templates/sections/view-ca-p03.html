@@ -1,0 +1,60 @@
+<div id="view-ca-p03" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Complex Analysis for Quants — Part 03</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Geometric Moduli Interpretations</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">|z| as distance: circles, disks, annuli and half-planes as inequalities — the geometric vocabulary in which convergence regions and analyticity strips are written.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Modulus = Distance</h3>
+        <p>$|z| = \sqrt{x^2 + y^2}$ is the distance from the origin; $|z - z_0|$ the distance from $z_0$. Core identities:</p>
+        $$|z_1z_2| = |z_1||z_2|, \qquad |z|^2 = z\bar{z}, \qquad \left|\frac{z_1}{z_2}\right| = \frac{|z_1|}{|z_2|}, \qquad |\bar{z}| = |z|.$$
+        <p>and the inequalities that drive every convergence proof:</p>
+        $$|z_1 + z_2| \le |z_1| + |z_2| \;\text{(triangle)}, \qquad |z_1 - z_2| \ge \bigl||z_1| - |z_2|\bigr| \;\text{(reverse)}.$$
+        <p>The reverse triangle inequality is the workhorse for bounding denominators away from zero on contours — "on $|z| = R$, $|z^2 + 1| \ge R^2 - 1$" is the move that makes arc contributions vanish in Part 16.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Loci as Equations and Inequalities</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;">Set</th><th style="padding: 0.45rem;">Geometry</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">$|z - z_0| = r$</td><td style="padding: 0.45rem;">Circle, center $z_0$, radius $r$</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">$|z - z_0| < r$</td><td style="padding: 0.45rem;">Open disk — the domain of a Taylor series</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">$r_1 < |z - z_0| < r_2$</td><td style="padding: 0.45rem;">Annulus — the domain of a Laurent series (Part 13)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">$|z - a| = |z - b|$</td><td style="padding: 0.45rem;">Perpendicular bisector of segment $ab$ (a line)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">$|z - a| = k|z - b|$, $k \ne 1$</td><td style="padding: 0.45rem;">Circle of Apollonius</td></tr>
+                <tr><td style="padding: 0.45rem;">$\mathrm{Im}\,z > 0$, $a < \mathrm{Im}\,z < b$</td><td style="padding: 0.45rem;">Half-plane; horizontal strip — analyticity strips of characteristic functions</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>3. Where a Quant Meets These Sets</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Unit disk $|z| < 1$:</strong> stability of time-series — an ARMA/GARCH process is stationary iff the AR polynomial's roots lie <em>outside</em> the unit circle (equivalently the companion-matrix eigenvalues inside it); the same criterion governs stability of finite-difference schemes (von Neumann analysis: amplification factor $|g| \le 1$).</li>
+            <li><strong>Annuli:</strong> the natural home of Laurent expansions, hence of residue extraction around singularities of pricing transforms.</li>
+            <li><strong>Strips $a < \mathrm{Im}\,u < b$:</strong> where $\mathbb{E}[e^{iuX}]$ extends analytically; the strip's edges are moment explosions (e.g. Heston's finite-moment boundary), and damping parameters must be chosen strictly inside.</li>
+            <li><strong>Bounding on circles:</strong> ML-inequality estimates $\left|\int_\gamma f\right| \le \max_\gamma|f| \cdot \text{length}(\gamma)$ — modulus geometry is how arcs are killed in contour arguments.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Worked Micro-Examples</h3>
+        <ul style="line-height: 1.8;">
+            <li>$|z - 1| + |z + 1| = 4$: an ellipse with foci $\pm 1$ — sum-of-distances definition read straight off the moduli.</li>
+            <li>$\mathrm{Re}\left(\frac{1}{z}\right) = \frac{x}{x^2 + y^2} = c$ ⇒ circle through the origin: inversion maps lines/circles to lines/circles (preview of Part 04's mappings).</li>
+            <li>On $|z| = 2$: $\left|\frac{1}{z^2 + 1}\right| \le \frac{1}{|z|^2 - 1} = \frac{1}{3}$ — reverse triangle inequality bounding an integrand for an ML estimate.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Modulus is distance; circles, disks, annuli, strips are inequalities in $|z - z_0|$ or $\mathrm{Im}\,z$.</li>
+            <li>The reverse triangle inequality bounds denominators on contours — the key step in killing arcs.</li>
+            <li>Unit-circle root conditions = stationarity (ARMA/GARCH) and FD scheme stability — the same geometry, twice.</li>
+            <li>Convergence regions (Taylor: disks; Laurent: annuli; char. functions: strips) are all moduli statements.</li>
+        </ul>
+    </div>
+</div>

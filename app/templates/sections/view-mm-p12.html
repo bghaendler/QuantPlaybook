@@ -1,0 +1,57 @@
+<div id="view-mm-p12" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Mathematical Methods in Financial Markets — Part 12</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Short Rate Mechanics (Vasicek vs. CIR)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The two canonical mean-reverting short-rate models side by side: dynamics, distributions, bond prices, and the trade-offs that decide which one you reach for.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Common Skeleton: Mean Reversion</h3>
+        <p>Both models write the short rate as a pull toward a long-run level $\theta$ at speed $\kappa$, plus noise:</p>
+        $$\text{Vasicek:}\quad dr = \kappa(\theta - r)\,dt + \sigma\,dW, \qquad \text{CIR:}\quad dr = \kappa(\theta - r)\,dt + \sigma\sqrt{r}\,dW.$$
+        <p>The single difference — $\sigma$ vs. $\sigma\sqrt{r}$ — cascades into everything: distribution shape, positivity, bond formulas and calibration behavior. Half-life of a shock in both: $t_{1/2} = \ln 2 / \kappa$ (κ = 0.5 ⇒ ~1.4 years), the most intuitive way to quote mean-reversion speed.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Distributions</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;"></th><th style="padding: 0.45rem;">Vasicek</th><th style="padding: 0.45rem;">CIR</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Conditional law of $r_t$</td><td style="padding: 0.45rem;">Normal</td><td style="padding: 0.45rem;">Noncentral $\chi^2$ (scaled)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Mean</td><td style="padding: 0.45rem;" colspan="2">$\theta + (r_0 - \theta)e^{-\kappa t}$ (identical)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Variance</td><td style="padding: 0.45rem;">$\frac{\sigma^2}{2\kappa}(1 - e^{-2\kappa t})$</td><td style="padding: 0.45rem;">$r_0\frac{\sigma^2}{\kappa}(e^{-\kappa t} - e^{-2\kappa t}) + \theta\frac{\sigma^2}{2\kappa}(1 - e^{-\kappa t})^2$</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Negative rates?</td><td style="padding: 0.45rem;">Yes (Gaussian tails)</td><td style="padding: 0.45rem;">No; $r=0$ unreachable iff Feller: $2\kappa\theta \ge \sigma^2$</td></tr>
+                <tr><td style="padding: 0.45rem;">Vol of rate moves</td><td style="padding: 0.45rem;">Level-independent</td><td style="padding: 0.45rem;">Proportional to $\sqrt{r}$ (calmer near zero)</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.6rem;">Pre-2008, "Vasicek goes negative" was a defect; the negative-rate era made it a feature. CIR's $\sqrt{r}$ also reappears as the variance process in Heston — learn it once, use it twice.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Bond Pricing: Both Are Affine</h3>
+        <p>Both admit exponential-affine bond prices $P(t, T) = A(\tau)e^{-B(\tau)r_t}$, $\tau = T - t$, with the ODE machinery of Part 07:</p>
+        $$\text{Vasicek:}\quad B(\tau) = \frac{1 - e^{-\kappa\tau}}{\kappa}, \qquad \ln A = \left(\theta - \frac{\sigma^2}{2\kappa^2}\right)(B - \tau) - \frac{\sigma^2 B^2}{4\kappa},$$
+        $$\text{CIR:}\quad B(\tau) = \frac{2(e^{\gamma\tau} - 1)}{(\gamma + \kappa)(e^{\gamma\tau} - 1) + 2\gamma}, \qquad \gamma = \sqrt{\kappa^2 + 2\sigma^2},$$
+        <p>with the matching $A(\tau)$ power formula. Yields are affine in $r$: $y(\tau) = -\frac{\ln A}{\tau} + \frac{B}{\tau}r$ — so each model generates a one-factor family of yield curves (normal, inverted, mildly humped), all perfectly correlated across maturities: the known one-factor limitation that multi-factor and HJM models address.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Choosing in Practice</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Analytical convenience:</strong> Vasicek wins — Gaussian closed forms for bonds <em>and</em> bond options (Jamshidian); Hull-White is exactly Vasicek with time-dependent $\theta(t)$ fitted to today's curve.</li>
+            <li><strong>Positivity / realism near zero:</strong> CIR wins (with Feller satisfied); intensity models for credit reuse CIR precisely because default intensities must stay positive.</li>
+            <li><strong>Simulation:</strong> Vasicek exact and trivial; CIR needs the noncentral-χ² exact sampler or full-truncation Euler (Part 09's warning).</li>
+            <li><strong>Calibration habit:</strong> fit κ from autocorrelation/half-life, θ from the long-run mean, σ from residual vol — then accept that one factor can't match cap/swaption surfaces and move to Hull-White/multi-factor for desk use.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Same drift, different diffusion: $\sigma$ (Vasicek) vs. $\sigma\sqrt{r}$ (CIR) drives every downstream difference.</li>
+            <li>Vasicek = Gaussian, tractable, can go negative; CIR = noncentral χ², positive under Feller $2\kappa\theta \ge \sigma^2$.</li>
+            <li>Both are affine: $P = Ae^{-Br}$ with ODE-solvable coefficients — the gateway to the whole affine class.</li>
+            <li>One factor ⇒ perfectly correlated curve moves; real desks graduate to Hull-White (fitted Vasicek) or multi-factor.</li>
+        </ul>
+    </div>
+</div>

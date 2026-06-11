@@ -1,0 +1,62 @@
+<div id="view-merton-jump-diffusion" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Merton Jump-Diffusion Model</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Adding crashes to Black-Scholes: a Poisson stream of lognormal jumps, a series of BS prices as the formula, and the first model to generate a genuine smile.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Dynamics</h3>
+        <p>Merton (1976) superimposes jumps on GBM:</p>
+        $$\frac{dS_t}{S_{t^-}} = (\mu - \lambda \bar{k})\, dt + \sigma\, dW_t + (J - 1)\, dN_t,$$
+        <p>where $N_t$ is Poisson with intensity $\lambda$ (jumps/year), jump sizes are lognormal $\ln J \sim \mathcal{N}(\mu_J, \sigma_J^2)$, and $\bar{k} = \mathbb{E}[J-1] = e^{\mu_J + \sigma_J^2/2} - 1$ is subtracted from the drift to keep the total return correct (compensation). Between jumps the path diffuses; at jump times it gaps by a random factor — capturing earnings surprises, devaluations, crashes.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Pricing: A Poisson-Weighted Series of BS Prices</h3>
+        <p>Merton's key (and honest) assumption: jump risk is <strong>diversifiable</strong> (idiosyncratic), hence unpriced — the hedge cannot eliminate jumps, so this is a choice, not a theorem. Conditioning on the number of jumps $n$ in $[0, T]$, the asset is lognormal with adjusted parameters, giving:</p>
+        $$C = \sum_{n=0}^{\infty} \frac{e^{-\lambda' T}(\lambda' T)^n}{n!}\; C_{BS}\big(S, K, T;\ r_n,\ \sigma_n\big),$$
+        $$\lambda' = \lambda(1 + \bar{k}), \qquad \sigma_n^2 = \sigma^2 + \frac{n\,\sigma_J^2}{T}, \qquad r_n = r - \lambda\bar{k} + \frac{n \ln(1 + \bar{k})}{T}.$$
+        <p>Each term: probability of $n$ jumps × BS price with variance fattened by $n$ jumps' worth and drift adjusted for compensation. The series converges fast (10–20 terms suffice); implementation is a loop over Black-Scholes calls.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. The Smile Emerges</h3>
+        <p>Calibrate BS-implied vols from Merton prices and you get a <strong>smile/skew</strong>:</p>
+        <ul style="line-height: 1.8;">
+            <li>Negative mean jumps ($\mu_J < 0$) fatten the left tail → OTM puts expensive → negative skew, exactly the post-1987 equity pattern.</li>
+            <li>The smile is steepest at <strong>short maturities</strong> — a single jump dominates a small diffusion variance — and flattens as $T$ grows (CLT averages jumps out). This matches markets, where stochastic-vol-only models notoriously cannot produce enough short-dated skew.</li>
+            <li>Total variance decomposes as $\sigma^2 + \lambda(\mu_J^2 + \sigma_J^2)$ (per year); skewness ∝ $\lambda\mu_J(\dots)$, kurtosis ∝ $\lambda(\dots)$ — moments map directly onto smile features.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Hedging Reality: Markets Are Incomplete</h3>
+        <p>With jumps, delta hedging cannot replicate: between rebalances the gap $\delta S$ is finite, and a short call loses $\approx \frac{1}{2}\Gamma (\delta S)^2$ on a crash regardless of hedging frequency. Consequences:</p>
+        <ul style="line-height: 1.8;">
+            <li>The market is <strong>incomplete</strong>: a continuum of risk-neutral measures is consistent with no-arbitrage; the jump risk premium is set by supply/demand (crash insurance), not replication. Empirically, implied jump parameters are far more severe than historical ones — the crash premium.</li>
+            <li>Practical hedging adds option hedges: match gamma and a few jump scenarios (e.g. hedge a −20% gap) — semi-static hedges replace the dynamic-only BS story.</li>
+            <li>Merton's diversifiability assumption is least defensible for index options — crashes are systematic — which is precisely where the premium is biggest.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>5. Calibration &amp; Descendants</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Parameters</strong> $(\sigma, \lambda, \mu_J, \sigma_J)$: fit to the smile per maturity; identifiability is weak ($\lambda$ vs. jump size trade off) — regularize or fix $\lambda$.</li>
+            <li><strong>Kou (2002):</strong> double-exponential jumps — asymmetric tails and (semi-)closed forms for barriers/lookbacks via memorylessness.</li>
+            <li><strong>Bates (1996):</strong> Merton jumps + Heston stochastic vol — the standard equity-index smile workhorse.</li>
+            <li><strong>Pure-jump Lévy</strong> (Variance Gamma, CGMY) and characteristic-function pricing (Carr-Madan FFT) generalize the program: Merton is the gateway to the Lévy world.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>GBM + compensated lognormal Poisson jumps; price = Poisson-weighted series of BS prices.</li>
+            <li>Negative jumps generate the equity skew, especially short-dated — where diffusive models fail.</li>
+            <li>Jumps break replication: incomplete markets, a genuine crash-risk premium, semi-static hedging.</li>
+            <li>Calibrated jump parameters ≫ historical ones — option markets sell expensive crash insurance.</li>
+            <li>Descendants: Kou, Bates, Lévy/FFT — the modern smile-modeling lineage starts here.</li>
+        </ul>
+    </div>
+</div>

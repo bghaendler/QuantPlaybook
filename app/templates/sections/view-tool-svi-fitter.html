@@ -1,0 +1,117 @@
+<div id="view-tool-svi-fitter" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Implied Volatility Surface Fitter (SVI)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Gatheral's Stochastic Volatility Inspired parametrization: five parameters per maturity slice. Move the sliders and watch the smile — with live no-arbitrage diagnostics.</p>
+    </header>
+
+    <div class="card">
+        <h3>The Raw SVI Slice</h3>
+        <p>Total implied variance as a function of log-moneyness $k = \ln(K/F)$:</p>
+        $$w(k) = a + b\left[\rho\,(k - m) + \sqrt{(k - m)^2 + \sigma^2}\right], \qquad \sigma_{imp}(k) = \sqrt{w(k)/T}.$$
+        <ul style="line-height: 1.7; font-size: 0.9rem;">
+            <li><strong>a</strong> — overall variance level · <strong>b</strong> — wing slope (vol of vol) · <strong>ρ</strong> — skew/rotation · <strong>m</strong> — horizontal shift · <strong>σ</strong> — ATM curvature smoothing.</li>
+            <li>Wings are asymptotically linear in $k$ (Lee's moment bounds), which is why SVI extrapolates sanely where polynomials explode.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Interactive Slice</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; margin-bottom: 0.75rem; font-size: 0.82rem;">
+            <label>a: <span id="sviAVal">0.020</span><input id="sviA" type="range" min="0.001" max="0.10" step="0.001" value="0.02" oninput="sviDraw()" style="width:100%;"></label>
+            <label>b: <span id="sviBVal">0.40</span><input id="sviB" type="range" min="0.01" max="1.0" step="0.01" value="0.4" oninput="sviDraw()" style="width:100%;"></label>
+            <label>ρ: <span id="sviRhoVal">-0.40</span><input id="sviRho" type="range" min="-0.99" max="0.99" step="0.01" value="-0.4" oninput="sviDraw()" style="width:100%;"></label>
+            <label>m: <span id="sviMVal">0.00</span><input id="sviM" type="range" min="-0.5" max="0.5" step="0.01" value="0" oninput="sviDraw()" style="width:100%;"></label>
+            <label>σ: <span id="sviSigVal">0.20</span><input id="sviSig" type="range" min="0.01" max="0.8" step="0.01" value="0.2" oninput="sviDraw()" style="width:100%;"></label>
+            <label>T (yrs): <span id="sviTVal">0.50</span><input id="sviT" type="range" min="0.05" max="3" step="0.05" value="0.5" oninput="sviDraw()" style="width:100%;"></label>
+        </div>
+        <canvas id="sviCanvas" width="900" height="300" style="width: 100%; border: 1px solid var(--card-border); border-radius: 8px; background: var(--metric-bg);"></canvas>
+        <div id="sviDiag" style="margin-top: 0.6rem; font-size: 0.85rem; font-weight: 600;"></div>
+    </div>
+
+    <div class="card">
+        <h3>No-Arbitrage Conditions &amp; Fitting Practice</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Butterfly arbitrage</strong> (negative density): checked via Gatheral's $g(k) \ge 0$ function — the diagnostic above flags violations; a simple necessary condition is $b(1 + |\rho|) \le 4/T$ for the wings.</li>
+            <li><strong>Calendar arbitrage:</strong> total variance slices must not cross — $w(k, T_2) \ge w(k, T_1)$ for $T_2 > T_1$; the <em>SVI-JW</em> reparametrization and Gatheral-Jacquier "Surface SVI" enforce this by construction.</li>
+            <li><strong>Fitting:</strong> quasi-explicit calibration (Zeliade): for fixed $(m, \sigma)$, the model is <em>linear</em> in $(a, b\rho, b)$ — solve by constrained least squares inside a 2-D search. Robust, fast, smooth parameter evolution day to day.</li>
+            <li><strong>Why SVI won:</strong> wings consistent with moment bounds, few parameters with trader-readable meaning, exact Heston large-T consistency, and clean Dupire local-vol extraction from the fitted surface.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+function sviDraw() {
+    var a = parseFloat(document.getElementById('sviA').value);
+    var b = parseFloat(document.getElementById('sviB').value);
+    var rho = parseFloat(document.getElementById('sviRho').value);
+    var m = parseFloat(document.getElementById('sviM').value);
+    var sig = parseFloat(document.getElementById('sviSig').value);
+    var T = parseFloat(document.getElementById('sviT').value);
+    document.getElementById('sviAVal').textContent = a.toFixed(3);
+    document.getElementById('sviBVal').textContent = b.toFixed(2);
+    document.getElementById('sviRhoVal').textContent = rho.toFixed(2);
+    document.getElementById('sviMVal').textContent = m.toFixed(2);
+    document.getElementById('sviSigVal').textContent = sig.toFixed(2);
+    document.getElementById('sviTVal').textContent = T.toFixed(2);
+
+    function w(k) { return a + b * (rho * (k - m) + Math.sqrt((k - m) * (k - m) + sig * sig)); }
+    function wp(k) { return b * (rho + (k - m) / Math.sqrt((k - m) * (k - m) + sig * sig)); }
+    function wpp(k) { var d = Math.sqrt((k - m) * (k - m) + sig * sig); return b * sig * sig / (d * d * d); }
+    function g(k) { // Gatheral's butterfly function
+        var W = w(k), W1 = wp(k), W2 = wpp(k);
+        if (W <= 0) return -1;
+        var t1 = Math.pow(1 - k * W1 / (2 * W), 2);
+        var t2 = (W1 * W1 / 4) * (1 / W + 0.25);
+        return t1 - t2 + W2 / 2;
+    }
+
+    var canvas = document.getElementById('sviCanvas');
+    var ctx = canvas.getContext('2d');
+    var W_ = canvas.width, H = canvas.height, padL = 48, padB = 26, padT = 10, padR = 10;
+    ctx.clearRect(0, 0, W_, H);
+    var kMin = -1.0, kMax = 1.0, nPts = 240;
+    var vols = [], gOK = true, minW = Infinity;
+    for (var i = 0; i <= nPts; i++) {
+        var k = kMin + (kMax - kMin) * i / nPts;
+        var tv = w(k);
+        minW = Math.min(minW, tv);
+        vols.push(tv > 0 ? Math.sqrt(tv / T) : 0);
+        if (g(k) < 0) gOK = false;
+    }
+    var vMax = Math.max.apply(null, vols) * 1.12, vMin = 0;
+    function px(i) { return padL + (W_ - padL - padR) * i / nPts; }
+    function py(v) { return padT + (H - padT - padB) * (1 - (v - vMin) / (vMax - vMin)); }
+    ctx.strokeStyle = 'rgba(120,120,140,0.35)'; ctx.fillStyle = '#64748b'; ctx.font = '11px sans-serif';
+    for (var gI = 0; gI <= 4; gI++) {
+        var gv = vMin + (vMax - vMin) * gI / 4, gy = py(gv);
+        ctx.beginPath(); ctx.moveTo(padL, gy); ctx.lineTo(W_ - padR, gy); ctx.stroke();
+        ctx.fillText((100 * gv).toFixed(0) + '%', 6, gy + 4);
+    }
+    for (var kt = -1; kt <= 1; kt += 0.5) {
+        var xi = (kt - kMin) / (kMax - kMin) * nPts;
+        ctx.fillText('k=' + kt.toFixed(1), px(xi) - 14, H - 8);
+    }
+    // ATM marker
+    var atmI = (0 - kMin) / (kMax - kMin) * nPts;
+    ctx.strokeStyle = 'rgba(120,120,140,0.5)'; ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(px(atmI), padT); ctx.lineTo(px(atmI), H - padB); ctx.stroke();
+    ctx.setLineDash([]);
+    // Smile
+    ctx.strokeStyle = '#4f46e5'; ctx.lineWidth = 2.2; ctx.beginPath();
+    for (var i = 0; i <= nPts; i++) {
+        if (i === 0) ctx.moveTo(px(i), py(vols[i])); else ctx.lineTo(px(i), py(vols[i]));
+    }
+    ctx.stroke();
+
+    var atmVol = Math.sqrt(Math.max(w(0), 0) / T);
+    var diag = document.getElementById('sviDiag');
+    var msgs = ['ATM vol: ' + (100 * atmVol).toFixed(2) + '%'];
+    if (minW <= 0) { msgs.push('⚠ total variance non-positive — invalid slice'); }
+    msgs.push(gOK ? '✓ butterfly arbitrage-free (g(k) ≥ 0 on [-1, 1])' : '⚠ butterfly arbitrage: g(k) < 0 somewhere — density goes negative');
+    var wingCond = b * (1 + Math.abs(rho)) <= 4 / T;
+    msgs.push(wingCond ? '✓ wing condition b(1+|ρ|) ≤ 4/T' : '⚠ wing condition b(1+|ρ|) > 4/T violated');
+    diag.innerHTML = msgs.join(' &nbsp;·&nbsp; ');
+    diag.style.color = (gOK && wingCond && minW > 0) ? '#10b981' : '#ef4444';
+}
+setTimeout(sviDraw, 400);
+</script>

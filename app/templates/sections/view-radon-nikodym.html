@@ -1,0 +1,58 @@
+<div id="view-radon-nikodym" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Radon-Nikodym &amp; Change of Measure</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The machinery that lets us re-weight probabilities — from the real world $\mathbb{P}$ to the risk-neutral world $\mathbb{Q}$ — without changing what is possible.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Equivalent Measures</h3>
+        <p>Two probability measures $\mathbb{P}$ and $\mathbb{Q}$ on the same measurable space $(\Omega, \mathcal{F})$ are <strong>equivalent</strong>, written $\mathbb{P} \sim \mathbb{Q}$, when they agree on what is impossible:</p>
+        $$\mathbb{P}(A) = 0 \iff \mathbb{Q}(A) = 0 \quad \text{for all } A \in \mathcal{F}.$$
+        <p>Changing measure re-weights the likelihood of scenarios but never creates or destroys scenarios. This is exactly the freedom needed in pricing: the risk-neutral measure must agree with the market about which events can happen, while assigning them different odds.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Radon-Nikodym Theorem</h3>
+        <p>If $\mathbb{Q}$ is absolutely continuous with respect to $\mathbb{P}$ ($\mathbb{Q} \ll \mathbb{P}$), there exists a non-negative random variable $Z$, the <strong>Radon-Nikodym derivative</strong></p>
+        $$Z = \frac{d\mathbb{Q}}{d\mathbb{P}}, \qquad \mathbb{E}^{\mathbb{P}}[Z] = 1,$$
+        <p>such that expectations transform by re-weighting:</p>
+        $$\mathbb{E}^{\mathbb{Q}}[X] = \mathbb{E}^{\mathbb{P}}[Z\,X].$$
+        <p>Intuitively, $Z(\omega)$ is the factor by which scenario $\omega$ is made more or less likely under $\mathbb{Q}$. On a discrete space it is literally the ratio of probabilities $q_i / p_i$.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. The Density Process &amp; Conditional Expectations</h3>
+        <p>In a dynamic setting with filtration $(\mathcal{F}_t)_{t \le T}$, define the <strong>density process</strong></p>
+        $$Z_t = \mathbb{E}^{\mathbb{P}}\!\left[\frac{d\mathbb{Q}}{d\mathbb{P}} \,\Big|\, \mathcal{F}_t\right],$$
+        <p>which is a strictly positive $\mathbb{P}$-martingale with $Z_0 = 1$. Conditional expectations change measure via the <strong>abstract Bayes formula</strong>:</p>
+        $$\mathbb{E}^{\mathbb{Q}}[X \mid \mathcal{F}_t] = \frac{\mathbb{E}^{\mathbb{P}}[Z_T X \mid \mathcal{F}_t]}{Z_t}.$$
+        <p>A process $M_t$ is a $\mathbb{Q}$-martingale if and only if $Z_t M_t$ is a $\mathbb{P}$-martingale — the workhorse identity behind numeraire changes.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Girsanov in One Line</h3>
+        <p>For Brownian motion, the canonical change of measure uses the <strong>exponential martingale</strong> (Doléans-Dade exponential):</p>
+        $$Z_t = \exp\!\left(-\int_0^t \lambda_s\, dW_s - \tfrac{1}{2}\int_0^t \lambda_s^2\, ds\right),$$
+        <p>under which $\widetilde{W}_t = W_t + \int_0^t \lambda_s ds$ is a $\mathbb{Q}$-Brownian motion. Choosing $\lambda = (\mu - r)/\sigma$ — the market price of risk — removes the real-world drift $\mu$ and replaces it with the risk-free rate $r$:</p>
+        $$\frac{dS_t}{S_t} = \mu\, dt + \sigma\, dW_t \;\;\xrightarrow{\;\mathbb{P} \to \mathbb{Q}\;}\;\; \frac{dS_t}{S_t} = r\, dt + \sigma\, d\widetilde{W}_t.$$
+        <p>Note the volatility $\sigma$ is untouched: a change of measure can only shift drifts, never the diffusion coefficient.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Worked Example: Two-State Economy</h3>
+        <p>One period, two states: up with $\mathbb{P}(\text{up}) = 0.6$, down with $\mathbb{P}(\text{down}) = 0.4$. Suppose no-arbitrage pricing requires risk-neutral probabilities $q_u = 0.45$, $q_d = 0.55$. The Radon-Nikodym derivative is state-by-state re-weighting:</p>
+        $$Z(\text{up}) = \frac{0.45}{0.6} = 0.75, \qquad Z(\text{down}) = \frac{0.55}{0.4} = 1.375.$$
+        <p>Check: $\mathbb{E}^{\mathbb{P}}[Z] = 0.6 \times 0.75 + 0.4 \times 1.375 = 1$. ✔ Bad states are over-weighted ($Z > 1$) — the mathematical expression of risk aversion embedded in market prices.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>$d\mathbb{Q}/d\mathbb{P}$ re-weights scenario probabilities; equivalence preserves null sets.</li>
+            <li>$\mathbb{E}^{\mathbb{Q}}[X] = \mathbb{E}^{\mathbb{P}}[ZX]$ — pricing under $\mathbb{Q}$ is weighted averaging under $\mathbb{P}$.</li>
+            <li>The density process $Z_t$ is a positive $\mathbb{P}$-martingale; Bayes' rule links conditional expectations across measures.</li>
+            <li>Girsanov supplies the explicit $Z_t$ for diffusions: drifts move, volatilities stay.</li>
+            <li>Risk-neutral probabilities overweight bad states — they bundle probability and risk preference into one object.</li>
+        </ul>
+    </div>
+</div>

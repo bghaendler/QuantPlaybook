@@ -1,0 +1,129 @@
+<div id="view-tool-hist-vol" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Historical Volatility Tracker</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Paste a price series (or simulate one) and compare realized-volatility estimators: close-to-close, EWMA (RiskMetrics) and rolling-window dynamics.</p>
+    </header>
+
+    <div class="card">
+        <h3>Input Prices</h3>
+        <p style="font-size: 0.85rem; color: #64748b;">One closing price per line (or comma-separated). Daily data assumed; annualization uses 252 days.</p>
+        <textarea id="hvPrices" spellcheck="false" style="width: 100%; height: 110px; font-family: monospace; font-size: 0.82rem; padding: 0.6rem; border-radius: 8px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);"></textarea>
+        <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.6rem; align-items: center;">
+            <button onclick="hvSimulate()" style="padding: 0.4rem 1rem; border-radius: 8px; border: 1px solid var(--input-border); background: transparent; color: var(--text-color); cursor: pointer; font-size: 0.82rem;">Simulate GBM + vol regime shift</button>
+            <button onclick="hvCompute()" style="padding: 0.4rem 1.2rem; border-radius: 8px; border: none; background: var(--accent); color: #fff; font-weight: 700; cursor: pointer; font-size: 0.82rem;">Compute</button>
+            <label style="font-size: 0.8rem;">Rolling window: <input id="hvWindow" type="number" value="21" min="5" max="252" style="width: 70px; padding: 0.25rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="hvCompute()"> days</label>
+            <label style="font-size: 0.8rem;">EWMA λ: <input id="hvLambda" type="number" value="0.94" min="0.5" max="0.999" step="0.01" style="width: 70px; padding: 0.25rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="hvCompute()"></label>
+        </div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Results</h3>
+        <div id="hvMetrics" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;"></div>
+        <canvas id="hvCanvas" width="900" height="280" style="width: 100%; border: 1px solid var(--card-border); border-radius: 8px; background: var(--metric-bg);"></canvas>
+        <p style="font-size: 0.8rem; color: #64748b; margin-top: 0.5rem;">Blue: rolling close-to-close annualized vol. Orange: EWMA vol. The EWMA reacts faster to regime changes but never fully forgets — exactly the trade-off GARCH formalizes.</p>
+    </div>
+
+    <div class="card">
+        <h3>Estimator Notes</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Close-to-close:</strong> $\hat\sigma^2 = \frac{252}{n}\sum r_i^2$ (zero-mean convention — for daily data, estimating the mean adds more noise than it removes).</li>
+            <li><strong>EWMA (RiskMetrics):</strong> $\sigma_t^2 = (1-\lambda) r_{t-1}^2 + \lambda\sigma_{t-1}^2$, λ = 0.94 daily — an integrated GARCH with effective memory $\approx 1/(1-\lambda) \approx 17$ days.</li>
+            <li><strong>Range estimators</strong> (Parkinson, Garman-Klass, Yang-Zhang) use OHLC data for ~5× efficiency — preferable when highs/lows are available.</li>
+            <li>Window choice is a bias-variance dial: 21d tracks regimes but is noisy (s.e. ≈ $\sigma/\sqrt{2n}$ ≈ 15% relative); 252d is stable but stale.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+function hvParse() {
+    var raw = document.getElementById('hvPrices').value.trim();
+    if (!raw) return [];
+    return raw.split(/[\s,;]+/).map(parseFloat).filter(function(x) { return isFinite(x) && x > 0; });
+}
+
+function hvSimulate() {
+    var n = 504, S = 100, out = [];
+    for (var i = 0; i < n; i++) {
+        var vol = i < 252 ? 0.15 : 0.35; // regime shift after 1y
+        var z = 0; for (var j = 0; j < 12; j++) z += Math.random(); z -= 6;
+        S *= Math.exp((0.05 - 0.5 * vol * vol) / 252 + vol * Math.sqrt(1 / 252) * z);
+        out.push(S.toFixed(4));
+    }
+    document.getElementById('hvPrices').value = out.join('\n');
+    hvCompute();
+}
+
+function hvCompute() {
+    var prices = hvParse();
+    var metricsEl = document.getElementById('hvMetrics');
+    var canvas = document.getElementById('hvCanvas');
+    var ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (prices.length < 10) {
+        metricsEl.innerHTML = '<div style="color:#64748b; font-size:0.85rem;">Need at least 10 prices — paste data or click Simulate.</div>';
+        return;
+    }
+    var rets = [];
+    for (var i = 1; i < prices.length; i++) rets.push(Math.log(prices[i] / prices[i - 1]));
+    var n = rets.length;
+    var sumSq = rets.reduce(function(a, r) { return a + r * r; }, 0);
+    var fullVol = Math.sqrt(252 * sumSq / n);
+
+    var lam = parseFloat(document.getElementById('hvLambda').value) || 0.94;
+    var w = Math.max(5, Math.min(252, parseInt(document.getElementById('hvWindow').value) || 21));
+
+    // EWMA series
+    var ewma = [], v = rets[0] * rets[0];
+    for (var i = 0; i < n; i++) {
+        v = (1 - lam) * rets[i] * rets[i] + lam * v;
+        ewma.push(Math.sqrt(252 * v));
+    }
+    // Rolling series
+    var roll = [];
+    var acc = 0;
+    for (var i = 0; i < n; i++) {
+        acc += rets[i] * rets[i];
+        if (i >= w) acc -= rets[i - w] * rets[i - w];
+        roll.push(i >= w - 1 ? Math.sqrt(252 * acc / w) : null);
+    }
+    var last = function(arr) { for (var i = arr.length - 1; i >= 0; i--) if (arr[i] !== null) return arr[i]; return NaN; };
+    function metric(label, val) {
+        return '<div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.6rem 0.8rem;">' +
+            '<div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">' + label + '</div>' +
+            '<div style="font-size: 1.25rem; font-weight: 800;">' + (100 * val).toFixed(2) + '%</div></div>';
+    }
+    metricsEl.innerHTML =
+        metric('Full-sample vol (ann.)', fullVol) +
+        metric(w + 'd rolling vol (latest)', last(roll)) +
+        metric('EWMA vol (latest, λ=' + lam + ')', last(ewma)) +
+        '<div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.6rem 0.8rem;">' +
+        '<div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Observations</div>' +
+        '<div style="font-size: 1.25rem; font-weight: 800;">' + n + ' returns</div></div>';
+
+    // Plot
+    var W = canvas.width, H = canvas.height, padL = 48, padB = 22, padT = 10, padR = 10;
+    var all = roll.filter(function(x){return x!==null;}).concat(ewma);
+    var vmax = Math.max.apply(null, all) * 1.15, vmin = 0;
+    function px(i) { return padL + (W - padL - padR) * i / (n - 1); }
+    function py(val) { return padT + (H - padT - padB) * (1 - (val - vmin) / (vmax - vmin)); }
+    ctx.strokeStyle = 'rgba(120,120,140,0.35)'; ctx.fillStyle = '#64748b'; ctx.font = '11px sans-serif';
+    for (var g = 0; g <= 4; g++) {
+        var gv = vmin + (vmax - vmin) * g / 4, gy = py(gv);
+        ctx.beginPath(); ctx.moveTo(padL, gy); ctx.lineTo(W - padR, gy); ctx.stroke();
+        ctx.fillText((100 * gv).toFixed(0) + '%', 6, gy + 4);
+    }
+    function plotSeries(series, color) {
+        ctx.strokeStyle = color; ctx.lineWidth = 1.8; ctx.beginPath();
+        var started = false;
+        for (var i = 0; i < n; i++) {
+            if (series[i] === null) continue;
+            if (!started) { ctx.moveTo(px(i), py(series[i])); started = true; }
+            else ctx.lineTo(px(i), py(series[i]));
+        }
+        ctx.stroke();
+    }
+    plotSeries(roll, '#4f46e5');
+    plotSeries(ewma, '#f59e0b');
+}
+setTimeout(function() { if (!document.getElementById('hvPrices').value) hvSimulate(); }, 500);
+</script>

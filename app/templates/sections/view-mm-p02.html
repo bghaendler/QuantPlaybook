@@ -1,0 +1,43 @@
+<div id="view-mm-p02" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Mathematical Methods in Financial Markets — Part 02</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Polynomials, Implied Volatility &amp; Complex Numbers</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Roots, where they live, and how root-finding becomes a daily production task the moment markets quote prices instead of parameters.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Polynomials &amp; Their Roots</h3>
+        <p>A degree-$n$ polynomial $p(x) = a_n x^n + \dots + a_0$ has exactly $n$ roots in $\mathbb{C}$ (Fundamental Theorem of Algebra) — the reason $\mathbb{C}$ exists in this course at all. Quadratics solve by formula; the discriminant $b^2 - 4ac$ decides real vs. complex-conjugate pairs. Finance hits polynomials constantly: characteristic equations of difference/differential equations (Cauchy-Euler, Part 08), the "fundamental quadratic" of perpetual options $\frac{1}{2}\sigma^2\gamma(\gamma-1) + b\gamma - r = 0$, and bond-yield equations $\sum c_i x^{t_i} = P$ with $x = e^{-y}$ — degree = number of cash flows, no closed form beyond degree 4 (Abel-Ruffini), hence numerics.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Implied Volatility as Inverse-Problem Prototype</h3>
+        <p>Markets quote prices; models want parameters. Implied vol solves $C_{BS}(\sigma) = C_{mkt}$ — no algebraic solution exists (the normal CDF is not elementary-invertible), so we use the structure instead:</p>
+        <ul style="line-height: 1.8;">
+            <li>$C_{BS}$ is continuous, strictly increasing in σ (vega &gt; 0), with known limits — a unique root is guaranteed inside the no-arbitrage bracket (Bolzano/IVT).</li>
+            <li><strong>Bisection:</strong> guaranteed, linear. <strong>Newton-Raphson:</strong> $\sigma_{n+1} = \sigma_n - (C(\sigma_n) - C_{mkt})/\text{vega}(\sigma_n)$, quadratic near the root, needs vega ≥ ε.</li>
+            <li>Seed with the ATM expansion $C \approx 0.4\, S\sigma\sqrt{T}$ ⇒ $\sigma_0 \approx C/(0.4 S\sqrt{T})$.</li>
+        </ul>
+        <p>This pattern — monotone pricing function, bracketed root, derivative known analytically — recurs for yields, OAS, CDS hazard bootstraps, and SABR calibration. Learn it once here.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Complex Numbers: The Minimum Working Set</h3>
+        <p>$z = x + iy = re^{i\theta}$ with $r = |z| = \sqrt{x^2 + y^2}$, $\theta = \arg z$. Euler's formula $e^{i\theta} = \cos\theta + i\sin\theta$ converts multiplication into angle addition: $z_1 z_2 = r_1 r_2 e^{i(\theta_1 + \theta_2)}$.</p>
+        <ul style="line-height: 1.8;">
+            <li>Complex roots of real polynomials come in conjugate pairs $\lambda = \alpha \pm i\beta$ — in ODEs they produce damped oscillations $e^{\alpha t}(\cos\beta t, \sin\beta t)$ (mean-reverting models with cyclical components).</li>
+            <li><strong>Characteristic functions</strong> $\varphi_X(u) = \mathbb{E}[e^{iuX}]$ encode whole distributions; Heston and Lévy models price options by integrating $\varphi$ (Carr-Madan FFT) — the single most practical reason a quant needs $\mathbb{C}$.</li>
+            <li>de Moivre: $(\cos\theta + i\sin\theta)^n = \cos n\theta + i\sin n\theta$ — the generator of trig identities and $n$-th roots of unity (FFT grids).</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Degree-$n$ ⇒ $n$ complex roots; beyond quartics, root-finding is numerical by theorem, not laziness.</li>
+            <li>Implied vol = the canonical inverse problem: monotonicity + IVT guarantee, Newton + bisection deliver.</li>
+            <li>Polar form + Euler's formula make complex arithmetic geometric; conjugate-pair roots = oscillatory solutions.</li>
+            <li>Characteristic functions are the working quant's bridge from $\mathbb{C}$ to option prices (FFT pricing).</li>
+        </ul>
+    </div>
+</div>

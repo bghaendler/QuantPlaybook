@@ -1,0 +1,51 @@
+<div id="view-sp-reverse-convertible" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Classic Reverse Convertible (ZCB + Short Put)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The yield machine: a bond whose fat coupon is the premium of a put the investor has sold — equity downside dressed as fixed income.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Structure &amp; Payoff</h3>
+        <p>Term typically 6–18 months, underlying a single stock or index, strike $K$ (usually 100% of initial spot). The investor receives a high fixed coupon $c$ unconditionally, and at maturity:</p>
+        $$V_T = \begin{cases} N(1 + c), & S_T \ge K \\[4pt] N\frac{S_T}{K} + Nc \;\;\text{(physical: shares worth } S_T\text{)}, & S_T < K \end{cases}$$
+        <p>Decomposition: <strong>long ZCB + short ATM put</strong> (cash- or physically-settled):</p>
+        $$\text{RC} = N e^{-yT}(1 + c)\big|_{\text{bond leg}} - p(S_0, K, T).$$
+        <p>The coupon is funding interest <em>plus the put premium</em>: with 1y rates at 3% and a 1y ATM put on a 30-vol stock at ~10%, the headline coupon is ~13% — none of it is alpha; all of it is risk premium.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Risk Asymmetry</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Upside capped</strong> at the coupon; <strong>downside is equity-like</strong> below the strike (minus the coupon cushion). Breakeven at $S_T = K(1 - c)$ approximately.</li>
+            <li>The investor's position is the textbook <em>covered-call-equivalent</em> profile (short put = long stock + short call, by parity) — they own the stock's crashes without its rallies.</li>
+            <li>Issuers select <strong>high-vol underlyings</strong> for fat coupons; the buyer is systematically short the most expensive puts on the board, often single names with earnings/event risk.</li>
+            <li>Behavioral hazard: coupon framing ("13% yield") obscures that expected return ≈ bond yield once the put's expected loss is netted — the volatility risk premium is the only systematic edge, and it accrues to <em>diversified, sized</em> sellers, not concentrated retail positions.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Pricing &amp; Greeks (Desk View)</h3>
+        <p>Issuer hedges by <em>buying</em> the put back in the market (or warehousing short-put risk): the note's fair value = bond − put, with the margin between fair value and the 100 issue price as P&amp;L. Investor-side Greeks (long note): short put ⇒ <strong>positive delta, short gamma, short vega, long theta</strong>. Marks fall fast on a sell-off (delta + vega both hurt), recover slowly — exactly the "down the elevator" profile. Physical settlement adds a delivery option worth a few basis points to the issuer (deliver the worst into the close) and ensures the investor's loss arrives as a depreciated stock position, not cash.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Variations</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Discount certificate:</strong> same economics packaged as buying the stock at a discount with capped upside (zero coupon variant).</li>
+            <li><strong>Strike below spot</strong> (e.g. 90%): smaller coupon, an OTM put sold instead — first step toward the barrier version.</li>
+            <li><strong>Barrier Reverse Convertible:</strong> replace the vanilla short put with a <em>down-and-in</em> put — coupon nearly as high, loss only if a barrier (e.g. 60–70%) is breached. The dominant retail structure; next section.</li>
+            <li><strong>Worst-of RC:</strong> short put on the worst of 2–3 names — correlation-cheapened, dispersion-loaded.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Reverse convertible = ZCB + short ATM put; the coupon is interest + put premium, fully explained.</li>
+            <li>Risk profile: capped upside, equity downside — short vol, short gamma, long theta.</li>
+            <li>High coupons track high implied vol (and issuer name selection), not expected return.</li>
+            <li>Physical settlement and underlying choice quietly favor the issuer; read them as option terms.</li>
+            <li>The barrier and worst-of variants are the same trade with cheaper (riskier) puts sold.</li>
+        </ul>
+    </div>
+</div>

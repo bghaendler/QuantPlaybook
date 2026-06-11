@@ -1,0 +1,106 @@
+<div id="view-dev-json-schema" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Custom JSON Schema Generator</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Build a JSON Schema (draft 2020-12) for the <code>/calculate</code> payload — pick the parameter groups your integration uses and get a validating contract.</p>
+    </header>
+
+    <div class="card">
+        <h3>Parameter Groups</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0.5rem; margin-bottom: 1rem; font-size: 0.88rem;">
+            <label style="display:flex; gap:0.5rem; align-items:center;"><input type="checkbox" id="jsGrpCore" checked disabled onchange="genJsonSchema()"> Core (model, type, spot, strike, time, rate, volatility) — always on</label>
+            <label style="display:flex; gap:0.5rem; align-items:center;"><input type="checkbox" id="jsGrpCarry" checked onchange="genJsonSchema()"> Carry / dividend yield</label>
+            <label style="display:flex; gap:0.5rem; align-items:center;"><input type="checkbox" id="jsGrpDiscDiv" onchange="genJsonSchema()"> Discrete dividends (escrowed / RGW)</label>
+            <label style="display:flex; gap:0.5rem; align-items:center;"><input type="checkbox" id="jsGrpBarrier" onchange="genJsonSchema()"> Barrier inputs</label>
+            <label style="display:flex; gap:0.5rem; align-items:center;"><input type="checkbox" id="jsGrpMulti" onchange="genJsonSchema()"> Second asset (Margrabe / rainbow)</label>
+            <label style="display:flex; gap:0.5rem; align-items:center;"><input type="checkbox" id="jsGrpMisc" onchange="genJsonSchema()"> Misc (lambda, shift, time_dividend)</label>
+            <label style="display:flex; gap:0.5rem; align-items:center;"><input type="checkbox" id="jsGrpStrict" onchange="genJsonSchema()"> Strict mode (<code>additionalProperties: false</code>)</label>
+        </div>
+        <div style="display: flex; gap: 0.75rem; align-items: center;">
+            <button onclick="copyJsonSchema()" style="padding: 0.45rem 1.2rem; border-radius: 8px; border: none; background: var(--accent); color: #fff; font-weight: 700; cursor: pointer;">Copy Schema</button>
+            <span id="jsSchemaCopied" style="font-size: 0.8rem; color: #10b981;"></span>
+        </div>
+        <pre id="jsSchemaOut" style="margin-top: 1rem; background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.9rem; font-size: 0.76rem; overflow-x: auto; max-height: 460px;"></pre>
+    </div>
+
+    <div class="card">
+        <h3>Using the Schema</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Python:</strong> <code>jsonschema.validate(payload, schema)</code> before sending; or generate Pydantic models with <code>datamodel-code-generator</code> for native FastAPI validation.</li>
+            <li><strong>JavaScript:</strong> <code>ajv.compile(schema)</code> validates at the edge before the request leaves the client.</li>
+            <li><strong>Contract testing:</strong> commit the schema to the repo; CI validates recorded request fixtures against it so breaking payload changes fail loudly.</li>
+            <li>Strict mode rejects unknown fields — safer integrations, but additive API evolution then requires schema releases.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+function genJsonSchema() {
+    var props = {
+        model: { type: 'string', description: 'Pricing model key', examples: ['bsm', 'black76', 'garman', 'baw', 'margrabe'] },
+        type: { type: 'string', enum: ['call', 'put'], default: 'call' },
+        spot: { type: 'number', exclusiveMinimum: 0, default: 100 },
+        strike: { type: 'number', exclusiveMinimum: 0, default: 100 },
+        time: { type: 'number', exclusiveMinimum: 0, description: 'Maturity in years', default: 1 },
+        rate: { type: 'number', description: 'Continuously compounded risk-free rate', default: 0.05 },
+        volatility: { type: 'number', exclusiveMinimum: 0, default: 0.2 }
+    };
+    var required = ['model', 'spot', 'strike', 'time', 'rate', 'volatility'];
+
+    if (document.getElementById('jsGrpCarry').checked) {
+        props.dividend = { type: 'number', default: 0,
+            description: 'Overloaded by model: Merton q | Garman foreign rate | gen_bsm carry deduction | Brenner b | Black76F forward expiry' };
+    }
+    if (document.getElementById('jsGrpDiscDiv').checked) {
+        props.div1_amt = { type: 'number', minimum: 0, default: 0 };
+        props.div1_time = { type: 'number', minimum: 0, default: 0 };
+        props.div2_amt = { type: 'number', minimum: 0, default: 0 };
+        props.div2_time = { type: 'number', minimum: 0, default: 0 };
+    }
+    if (document.getElementById('jsGrpBarrier').checked) {
+        props.barrier = { type: 'number', minimum: 0, default: 0 };
+        props.barrierType = { type: 'string',
+            enum: ['Up-and-Out', 'Up-and-In', 'Down-and-Out', 'Down-and-In'], default: 'Up-and-Out' };
+        props.rebate = { type: 'number', minimum: 0, default: 0 };
+    }
+    if (document.getElementById('jsGrpMulti').checked) {
+        props.spot2 = { type: 'number', exclusiveMinimum: 0, default: 104 };
+        props.vol2 = { type: 'number', exclusiveMinimum: 0, default: 0.12 };
+        props.dividend2 = { type: 'number', default: 0.04 };
+        props.correlation = { type: 'number', minimum: -1, maximum: 1, default: 0.8 };
+        props.q1 = { type: 'number', default: 1 };
+        props.q2 = { type: 'number', default: 1 };
+    }
+    if (document.getElementById('jsGrpMisc').checked) {
+        props['lambda'] = { type: 'number', minimum: 0, default: 0, description: 'Executive stock option exit rate' };
+        props.shift = { type: 'number', default: 0, description: 'Modified Bachelier displacement' };
+        props.time_dividend = { type: 'number', minimum: 0, default: 0.25, description: 'RGW ex-dividend time (years)' };
+    }
+    var schema = {
+        $schema: 'https://json-schema.org/draft/2020-12/schema',
+        $id: 'https://example.com/schemas/calculate-payload.json',
+        title: 'Option Engine /calculate payload',
+        type: 'object',
+        properties: props,
+        required: required
+    };
+    if (document.getElementById('jsGrpStrict').checked) schema.additionalProperties = false;
+    document.getElementById('jsSchemaOut').textContent = JSON.stringify(schema, null, 2);
+}
+
+function copyJsonSchema() {
+    var text = document.getElementById('jsSchemaOut').textContent;
+    function done() {
+        var el = document.getElementById('jsSchemaCopied');
+        el.textContent = 'Copied ✓';
+        setTimeout(function() { el.textContent = ''; }, 2000);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done);
+    } else {
+        var ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta); done();
+    }
+}
+setTimeout(genJsonSchema, 400);
+</script>

@@ -1,0 +1,56 @@
+<div id="view-ca-p16" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Complex Analysis for Quants — Part 16</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Infinite Real Domain Contour Integrals</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Evaluating $\int_{-\infty}^{\infty} f(x)\,dx$ by closing the line into a semicircle: the recipe, the decay conditions, and the density integrals it unlocks.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Semicircle Recipe</h3>
+        <p>To compute $\int_{-\infty}^\infty f(x)dx$ for rational $f$:</p>
+        <ol style="line-height: 1.9;">
+            <li>Close the real segment $[-R, R]$ with the upper semicircle $C_R$ ($z = Re^{i\theta}$, $\theta \in [0, \pi]$).</li>
+            <li>Residue theorem on the closed loop: $\int_{-R}^{R} + \int_{C_R} = 2\pi i\sum \mathrm{Res}$ (poles in the upper half-plane).</li>
+            <li>Kill the arc: if $\deg(\text{denom}) \ge \deg(\text{num}) + 2$, then $|f| \le M/R^2$ on $C_R$ and ML gives $\left|\int_{C_R}\right| \le \frac{M}{R^2}\pi R \to 0$.</li>
+            <li>Let $R \to \infty$:</li>
+        </ol>
+        $$\int_{-\infty}^{\infty} f(x)\,dx = 2\pi i \sum_{\mathrm{Im}\,z_j > 0} \mathrm{Res}_{z_j} f.$$
+        <p>Closing downward works equally (clockwise ⇒ $-2\pi i\sum$ over lower poles) — the answer agrees; choose whichever half-plane is convenient.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Two Canonical Examples</h3>
+        <p><strong>(a)</strong> $\displaystyle\int_{-\infty}^{\infty}\frac{dx}{1 + x^2}$: poles $\pm i$; upper pole $i$, residue $\frac{1}{2i}$ (quotient rule: $1/(2z)|_{z=i}$):</p>
+        $$= 2\pi i \cdot \frac{1}{2i} = \pi \quad\checkmark\;(= [\arctan]_{-\infty}^{\infty}).$$
+        <p><strong>(b)</strong> $\displaystyle\int_{-\infty}^{\infty}\frac{dx}{(1 + x^2)^2}$: double pole at $i$; residue $= \frac{d}{dz}\left[\frac{1}{(z + i)^2}\right]_{z=i} = \frac{-2}{(2i)^3} = \frac{1}{4i}$ ⇒ integral $= \frac{\pi}{2}$. This is the normalization of the Student-$t_3$-type kernel — fat-tailed densities used for return innovations normalize through exactly these integrals (the $t_\nu$ constant involves $\int (1 + x^2/\nu)^{-(\nu+1)/2}dx$, residue-computable for odd ν).</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Where the Conditions Bite</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Decay degree:</strong> $\int \frac{x\,dx}{1+x^2}$ fails the two-degree gap — and indeed diverges (only a principal value exists). Check the gap before integrating.</li>
+            <li><strong>Real-axis poles:</strong> a pole on the path (e.g. $\frac{1}{x}$) requires indenting a small semicircle around it: an indentation around a <em>simple</em> pole contributes half a residue, $\pi i\,\mathrm{Res}$ — yielding principal values like $\mathrm{PV}\int\frac{dx}{x(x^2+1)}$.</li>
+            <li><strong>Oscillatory integrands</strong> $e^{iax}f(x)$: the $R^{-2}$ decay isn't needed — Jordan's lemma (next part) closes them with only $f \to 0$.</li>
+            <li><strong>Branch points</strong> ($x^{\alpha}$, $\ln x$ on $[0,\infty)$): keyhole contour around the positive real axis; the cut's two sides differ by a phase $e^{2\pi i\alpha}$, and the mismatch solves for the integral — the technique behind Mellin-type identities.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Quant Use: Densities and Tail Integrals from Transforms</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Cauchy/Lévy stable densities:</strong> $f(x) = \frac{1}{2\pi}\int e^{-iux}e^{-|u|}du = \frac{1}{\pi(1+x^2)}$ — the inversion is example (a) run backwards; stable distributions (infinite variance, used for extreme-event modeling) only exist through such integrals.</li>
+            <li><strong>Kou double-exponential jumps:</strong> rational characteristic function ⇒ inversion = residue sums ⇒ closed-form first-passage and barrier/lookback prices — the model's whole selling point.</li>
+            <li><strong>Hilbert transforms / PV integrals</strong> connect real and imaginary parts of causal transfer functions (Kramers-Kronig style) — used in signal-based alpha research and in verifying that fitted impulse responses are causal.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Close the line, kill the arc (two-degree decay + ML), sum upper-half-plane residues × $2\pi i$.</li>
+            <li>$\int\frac{dx}{1+x^2} = \pi$ and its square are the template; quotient rule keeps residues quick.</li>
+            <li>Real-axis poles ⇒ indentation (half-residues, principal values); branch points ⇒ keyhole contours.</li>
+            <li>Density inversions for stable and double-exponential-jump models are these integrals verbatim.</li>
+        </ul>
+    </div>
+</div>

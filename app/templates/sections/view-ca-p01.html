@@ -1,0 +1,52 @@
+<div id="view-ca-p01" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Complex Analysis for Quants — Part 01</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Complex Variable Integration &amp; Holomorphic Motivation</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Why a quant course on complex analysis exists at all: characteristic functions, Fourier option pricing, and the integrals that only contours can crack.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Payoff for a Quant</h3>
+        <p>Modern pricing beyond Black-Scholes runs on <strong>characteristic functions</strong>: $\varphi_T(u) = \mathbb{E}[e^{iu\ln S_T}]$ is known in closed form for Heston, Merton jump-diffusion, Variance Gamma, CGMY — models whose densities have no elementary expression. Prices come from inverting it:</p>
+        $$C(K) = \frac{e^{-\alpha k}}{\pi}\int_0^\infty \mathrm{Re}\!\left[e^{-iuk}\,\frac{e^{-rT}\varphi_T(u - (\alpha+1)i)}{\alpha^2 + \alpha - u^2 + i(2\alpha+1)u}\right]du$$
+        <p>(Carr-Madan). Every symbol in that integral — the complex argument shift, the choice of damping $\alpha$, the convergence of the integral — is complex analysis. This series builds exactly the toolkit needed to use, debug, and trust such formulas.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. What "Integration" Means in ℂ</h3>
+        <p>A complex integral is taken along a <strong>contour</strong> $\gamma$ (an oriented path in the plane):</p>
+        $$\int_\gamma f(z)\,dz = \int_a^b f(\gamma(t))\,\gamma'(t)\,dt,$$
+        <p>so it depends, in general, on the path — until $f$ is <strong>holomorphic</strong> (complex-differentiable), at which point Cauchy's theorem (Part 10) makes it path-<em>independent</em> inside the domain of analyticity. That collapse — from "integral along a curve" to "value determined by endpoints and singularities" — is the entire mechanism the residue calculus exploits to evaluate real integrals like $\int_{-\infty}^\infty \frac{\cos x}{1+x^2}dx$ that resist real-variable methods.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Holomorphic = Unreasonably Well-Behaved</h3>
+        <p>One complex derivative buys what no amount of real differentiability can:</p>
+        <ul style="line-height: 1.8;">
+            <li>Differentiable once ⇒ differentiable infinitely often, and locally equal to its power series (analytic).</li>
+            <li>Values inside a region are determined by values on the boundary (Cauchy's integral formula) — the ultimate "interpolation" guarantee.</li>
+            <li>Identity theorem: two analytic functions agreeing on a small arc agree everywhere — why analytic continuation of characteristic functions (shifting $u$ into the complex strip, as Carr-Madan does) is legitimate and unique.</li>
+        </ul>
+        <p>For quants this is practical: knowing $\varphi$ is analytic in a strip $\mathrm{Im}\,u \in (a, b)$ tells you which damping factors converge and where moment explosions (Heston's!) sit.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Roadmap of the Series</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Parts 02–04:</strong> algebra and geometry of ℂ — de Moivre, moduli, mappings.</li>
+            <li><strong>Parts 05–08:</strong> holomorphy — power series, Cauchy-Riemann (Cartesian and polar), harmonic functions.</li>
+            <li><strong>Parts 09–12:</strong> contour integration — parameterization, Cauchy's theorem and formula, first real-integral applications.</li>
+            <li><strong>Parts 13–17:</strong> the heavy machinery — Laurent series, singularity classification, residues, and infinite real integrals (the Fourier-inversion patterns used in pricing).</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Characteristic-function pricing (Heston, Lévy, FFT calibration) is the working quant's reason to know complex analysis.</li>
+            <li>Complex integrals live on contours; holomorphy makes them path-independent and computable by residues.</li>
+            <li>One complex derivative ⇒ infinite smoothness, power series, and unique analytic continuation.</li>
+            <li>Analyticity strips of $\varphi$ govern damping choices and moment explosions in real pricing code.</li>
+        </ul>
+    </div>
+</div>

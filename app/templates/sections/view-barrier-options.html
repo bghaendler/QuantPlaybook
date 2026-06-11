@@ -1,0 +1,62 @@
+<div id="view-barrier-options" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Barrier Options: Down &amp; Out, Up &amp; In, etc.</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Path-dependent vanillas: options that are born or die when spot crosses a level — cheaper than vanillas, closed-form under Black-Scholes, and the canonical test of hedging models.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Taxonomy</h3>
+        <p>Eight standard contracts: {call, put} × {up, down} × {in, out}, barrier $H$, optional rebate $R$ paid if the option dies (out) or never lives (in).</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Knock-out:</strong> vanilla unless/until $S$ touches $H$, then worthless (plus rebate). "Down-and-out call": $H < S_0$.</li>
+            <li><strong>Knock-in:</strong> worthless unless $S$ touches $H$, then becomes vanilla.</li>
+            <li><strong>In-out parity</strong> (same $H$, $K$, $T$, no rebate): $\text{In} + \text{Out} = \text{Vanilla}$ — price one, get the other.</li>
+        </ul>
+        <p>Why trade them? Premium reduction: a down-and-out put costs a fraction of the vanilla put because it cancels in exactly the scenarios it would pay most. Buyers accept scenario risk for cheapness; sellers (structurers) embed them to fund headline coupons.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Closed Forms via the Reflection Principle</h3>
+        <p>Under GBM, the joint density of $(S_T, \text{extremum})$ is known: for a Brownian motion with drift $\nu$, the reflected path argument gives</p>
+        $$\mathbb{P}\left(\min_t S_t \le H,\ S_T > x\right) = \left(\frac{H}{S_0}\right)^{2\nu/\sigma^2} \mathbb{P}\left(S_T^{refl} > x\right)$$
+        <p>with the reflected process started at $H^2/S_0$. Merton (1973) priced the down-and-out call; Rubinstein-Reiner (1991) completed the catalogue with six building blocks $A$–$F$ combining terms like</p>
+        $$S e^{(b-r)T}\left(\frac{H}{S}\right)^{2(\mu+1)} N(\eta y) - K e^{-rT}\left(\frac{H}{S}\right)^{2\mu} N(\eta y - \eta\sigma\sqrt{T}), \qquad \mu = \frac{b - \sigma^2/2}{\sigma^2},$$
+        <p>assembled per contract type. E.g. the down-and-out call ($H \le K$): $C_{DO} = C_{BS} - C_{DI}$ where the down-and-in part is the reflection term. Double barriers (Ikeda-Kunitomo) need infinite image-charge series; discrete monitoring uses the <strong>Broadie-Glasserman-Kou shift</strong> $H \to He^{\pm0.5826\sigma\sqrt{\Delta t}}$ to correct continuous formulas.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. The Hedging Problem: Barriers Are Where Models Fight</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Pin risk at $H$:</strong> a knock-out's value jumps to zero across the barrier; delta is discontinuous and gamma explodes near $H$, especially close to expiry. A reverse knock-out (barrier in-the-money, e.g. up-and-out call with $H > K$) embeds a digital of size $(H - K)$ at the barrier — the worst case.</li>
+            <li><strong>Vega sign flips:</strong> more vol means more payoff <em>and</em> more knock-out probability; net vega changes sign with spot — single-vol Black-Scholes pricing is structurally wrong.</li>
+            <li><strong>Model dependence:</strong> barrier prices differ markedly between local vol, stochastic vol, and SLV calibrated to the same vanilla smile — the barrier reads the smile <em>dynamics</em>, not just today's smile. FX desks calibrate SLV mixtures to liquid one-touches for exactly this reason.</li>
+            <li><strong>Static replication:</strong> Derman-Ergener-Kani / Carr-Chou construct portfolios of vanillas matching the barrier value along $H$ — robust to some model risk, exact only under flat-vol assumptions.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Worked Intuition: Down-and-Out Put</h3>
+        <p>Vanilla put $K = 100$, knock-out $H = 70$, $S_0 = 100$. The vanilla pays most in crashes — precisely the paths that hit 70 first. So the DO put keeps only the "mild decline" payoffs ($70 < S_T < 100$ without ever touching 70) and might cost 25–40% of the vanilla. Its in-counterpart, the down-and-<em>in</em> put (activated by the crash), holds the remaining 60–75% — and is exactly the option embedded short in barrier reverse convertibles: the investor has sold crash insurance that switches on at the worst moment.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Practice Notes</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Monitoring:</strong> continuous vs. daily-close vs. at-expiry barriers differ materially (BGK correction); contract wording on the fixing source matters.</li>
+            <li><strong>Barrier shifts:</strong> sellers book an internal shifted barrier (hedge as if $H$ were closer) to buy room for hedging slippage — a quantified safety margin charged in the price.</li>
+            <li><strong>Manipulation risk</strong> around popular FX barriers is real; large knock-outs attract spot defense/attack flows.</li>
+            <li>Rebates decompose as one-touch digitals — price with the Rubinstein-Reiner touch formulas.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>In + Out = Vanilla; barrier options are cheap because they cancel in their own worst scenarios.</li>
+            <li>GBM closed forms come from the reflection principle with power-of-$(H/S)$ image terms.</li>
+            <li>Near the barrier: discontinuous delta, exploding gamma, sign-flipping vega — pin risk is the defining hazard.</li>
+            <li>Prices are smile-dynamics-dependent: same vanillas, different barrier values across LV/SV/SLV.</li>
+            <li>Discrete monitoring: shift the barrier by $e^{0.5826\sigma\sqrt{\Delta t}}$ (Broadie-Glasserman-Kou).</li>
+        </ul>
+    </div>
+</div>

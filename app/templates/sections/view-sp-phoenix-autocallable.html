@@ -1,0 +1,60 @@
+<div id="view-sp-phoenix-autocallable" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Phoenix Autocallable Note</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The flagship of modern retail structuring: conditional coupons with memory, automatic early redemption, and a barrier put underneath — four option layers in one wrapper.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Mechanics</h3>
+        <p>Observation dates $t_1, \dots, t_n$ (quarterly/annually), underlying $S$ (often worst-of). Three trigger levels as % of initial:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Autocall trigger</strong> $A$ (typically 100%): if $S_{t_i} \ge A$, the note redeems early at par + coupon. Game over.</li>
+            <li><strong>Coupon barrier</strong> $B$ (typically 70–80%): if $S_{t_i} \ge B$, the period coupon $c$ is paid. <strong>Phoenix memory:</strong> previously missed coupons are paid too ("rises from the ashes").</li>
+            <li><strong>Protection barrier</strong> $H$ (typically 50–70%, usually European): at maturity, if never autocalled and $S_T < H$, redemption is $N \cdot S_T/S_0$ — the down-and-in put bites.</li>
+        </ul>
+        <p>Decomposition: bond + strip of conditional (memory) digitals − down-and-in put − <em>the issuer's autocall feature</em> (a knock-out on everything else). No closed form: priced by Monte Carlo or PDE on calibrated smile dynamics.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Risk Geometry</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Duration uncertainty:</strong> in rallies the note dies at the first observation (reinvestment risk, ~3–12 month realized life); in sell-offs it extends to full maturity exactly when the put risk is alive — the investor is short an extension option.</li>
+            <li><strong>Coupon risk:</strong> coupons stop in drawdowns (below $B$) though memory may recover them; deep drawdowns kill coupons <em>and</em> trigger the barrier loss.</li>
+            <li><strong>Worst-of versions</strong> (most issuance): all triggers read the worst performer — short correlation, short dispersion, and the protection barrier breaks on the single worst name.</li>
+            <li>The investor profile: long carry, short vol, short skew, short correlation, short forward vol. Expected life and yield look great precisely because so many risk premia are being sold simultaneously.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Dealer Hedging &amp; Market Footprint</h3>
+        <ul style="line-height: 1.8;">
+            <li>Dealers (long the note's mirror) are structurally <strong>long vega and long forward skew</strong> from autocall books; their re-hedging is a known macro flow: as spot falls toward coupon/protection barriers, dealer vega and gamma positions flip and grow, amplifying vol moves (documented in Korea/Japan autocall episodes and the 2020 crash).</li>
+            <li><strong>Model requirements:</strong> smile dynamics (SLV), discrete-date triggers, dividends (long-dated single names), stochastic rates for long tenors, correlation (worst-of) — the autocallable is the de facto SLV benchmark product.</li>
+            <li><strong>Greeks are discontinuous</strong> at each observation date/trigger: delta jumps when an autocall nearly triggers; "peak vega" sits around the protection barrier 1–2 years out.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Term-Sheet Sensitivities (Indicative)</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Change</th><th style="padding: 0.5rem;">Coupon impact</th><th style="padding: 0.5rem;">Why</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Single index → worst-of 3 stocks</td><td style="padding: 0.5rem;">+3 to +6%/yr</td><td style="padding: 0.5rem;">Correlation + dispersion sold</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Protection barrier 60% → 70%</td><td style="padding: 0.5rem;">+1 to +2%</td><td style="padding: 0.5rem;">DIP worth more</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Autocall step-down (100→95→90…)</td><td style="padding: 0.5rem;">−0.5 to −1%</td><td style="padding: 0.5rem;">Earlier expected call, less premium collected</td></tr>
+                <tr><td style="padding: 0.5rem;">Memory feature added</td><td style="padding: 0.5rem;">−0.3 to −0.8%</td><td style="padding: 0.5rem;">Coupon optionality returned to investor</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Phoenix = conditional memory coupons + autocall + European barrier put, on (usually) a worst-of basket.</li>
+            <li>Short extension option: lives briefly in good markets, extends fully in bad ones.</li>
+            <li>The coupon aggregates vol, skew, correlation and forward-vol premia — count the options sold.</li>
+            <li>Dealer autocall books drive observable vega/gamma flows around barrier zones.</li>
+            <li>Simulation on SLV with correlation is the pricing floor; no decomposition is exact here.</li>
+        </ul>
+    </div>
+</div>

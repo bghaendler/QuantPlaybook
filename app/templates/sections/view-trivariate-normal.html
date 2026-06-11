@@ -1,0 +1,60 @@
+<div id="view-trivariate-normal" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Trivariate Normal Distribution</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Three correlated Gaussian events: the integral behind two-dividend Americans, three-asset rainbows and double-decision exotics — and where analytic pricing finally hands over to simulation.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Definition</h3>
+        $$N_3(a_1, a_2, a_3; \rho_{12}, \rho_{13}, \rho_{23}) = \mathbb{P}(X_1 \le a_1, X_2 \le a_2, X_3 \le a_3),$$
+        <p>for standard normals with correlation matrix $R$ (which must be positive semi-definite — with three pairwise correlations this is the constraint $1 - \rho_{12}^2 - \rho_{13}^2 - \rho_{23}^2 + 2\rho_{12}\rho_{13}\rho_{23} \ge 0$; violating it is the classic three-asset input error).</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Where Pricing Needs It</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>American calls with two discrete dividends</strong> (Welch-Chen / Haug extensions of Roll-Geske-Whaley): three decision events — exercise before either ex-date or hold to expiry — with correlations $\sqrt{t_i/t_j}$.</li>
+            <li><strong>Three-asset rainbows</strong> (Johnson 1987): calls on the max/min of three assets — each "asset $i$ wins and beats $K$" event is a trivariate probability in suitably rotated coordinates.</li>
+            <li><strong>Twice-compound options</strong> (option on option on option; multi-stage real options).</li>
+            <li><strong>Window/partial barriers with two monitoring sub-periods</strong>, two-date Bermudans on top of a barrier, etc.</li>
+        </ul>
+        <p>The pattern: each additional Gaussian decision/extremum event raises the CDF dimension by one. Dimension 3 is the last one commonly shipped in closed-form pricing libraries.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Computation</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Reduction to 1-D integrals of bivariate CDFs:</strong> condition on $X_3 = z$ — given $z$, $(X_1, X_2)$ is bivariate normal with shifted limits and adjusted correlation:
+            $$N_3 = \int_{-\infty}^{a_3} \phi(z)\, M\!\left(\frac{a_1 - \rho_{13}z}{\sqrt{1-\rho_{13}^2}},\ \frac{a_2 - \rho_{23}z}{\sqrt{1-\rho_{23}^2}};\ \rho_{12|3}\right) dz, \qquad \rho_{12|3} = \frac{\rho_{12} - \rho_{13}\rho_{23}}{\sqrt{(1-\rho_{13}^2)(1-\rho_{23}^2)}},$$
+            evaluated by Gauss-Legendre — simple and accurate with a good $M$ underneath.</li>
+            <li><strong>Genz-Bretz TVPACK:</strong> specialized transformations achieving ~10⁻¹⁴; the reference implementation (used by R's <code>mvtnorm</code>, QuantLib).</li>
+            <li><strong>General MVN (n &gt; 3):</strong> Genz's separation-of-variables transform + quasi-Monte Carlo — accuracy becomes statistical; this is the practical bridge to high dimensions.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Identities &amp; Checks</h3>
+        <ul style="line-height: 1.8;">
+            <li>Margins: $N_3(a_1, a_2, \infty) = M(a_1, a_2; \rho_{12})$ — every implementation test starts here.</li>
+            <li>Independence: $N_3 = N(a_1)N(a_2)N(a_3)$ at zero correlations.</li>
+            <li>Singular $R$ (e.g. $\rho_{13} = \rho_{12}\rho_{23}$ boundaries) needs care — conditional correlations hit ±1 and the inner $M$ must be Genz-robust.</li>
+            <li>Complementation in 3-D has $2^3$ orthant terms — derive once, encode carefully (sign errors here are a classic bug in rainbow-option code).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>5. The Practical Frontier</h3>
+        <p>Beyond trivariate, closed-form pricing stops being worth it: a four-asset rainbow needs $N_4$ evaluated thousands of times for calibration, while a quasi-MC simulation prices the whole payoff with smiles and discrete dividends included. The modern division of labor: <strong>$N$, $M$, $N_3$ in the analytics library for the formula catalogue; Genz-QMC or full simulation beyond</strong>. Knowing both sides — and that the trivariate identities validate your Monte Carlo in the Gaussian limit — is the actual skill.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>$N_3$ prices two-dividend Americans, three-asset rainbows, and double-decision exotics.</li>
+            <li>Check the correlation matrix is PSD: $1 - \sum\rho^2 + 2\rho_{12}\rho_{13}\rho_{23} \ge 0$.</li>
+            <li>Compute by conditioning: a 1-D Gaussian integral over bivariate CDFs with conditional correlation $\rho_{12|3}$.</li>
+            <li>Genz-Bretz routines are the precision reference; margins-to-$M$ identities are your unit tests.</li>
+            <li>Dimension 3 is the practical end of the closed-form catalogue — QMC takes over beyond.</li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,70 @@
+<div id="view-ad-p07" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Algorithmic Adjoint Differentiation — Part 07</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Adjoint Reverse-Mode Implementation &amp; Stacks</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Writing adjoint code by hand: the statement-reversal rules, the push/pop stack discipline for overwritten variables and control flow, and a complete worked kernel.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Reversal Rules</h3>
+        <p>For each primal assignment, the adjoint statements run in <em>reverse program order</em>; each <code>v = φ(a, b)</code> becomes:</p>
+        <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.8rem; font-size: 0.8rem; overflow-x: auto;">ā += (∂φ/∂a)·v̄ ;   b̄ += (∂φ/∂b)·v̄ ;   v̄ = 0   // v consumed: reset its adjoint</pre>
+        <ul style="line-height: 1.8;">
+            <li><strong>Always <code>+=</code></strong> (fan-out accumulates — Part 03's rule); <strong>reset</strong> the assigned variable's adjoint after distributing it (it was overwritten in the primal, so its old adjoint chain ends here). Missed resets corrupt gradients in loops — the second-most-common bug after missed <code>+=</code>.</li>
+            <li>In-place updates: <code>v = v*a</code> ⇒ <code>ā += v_old·v̄; v̄ = a·v̄</code> — needs the <em>old</em> v: store it (stack) before overwriting.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Stacks: The Reversal Data Structure</h3>
+        <p>Reversal is LIFO by nature, so the canonical implementation pairs every forward <code>PUSH</code> with a backward <code>POP</code>:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Value stack:</strong> push any value about to be overwritten that the adjoint will need (Tapenade's <code>PUSHREAL/POPREAL</code>); pop restores it just before the corresponding adjoint statement.</li>
+            <li><strong>Control-flow stack:</strong> push which branch was taken / how many loop iterations ran; the backward sweep pops to replay decisions in reverse — <code>if</code> reverses to the same branch's adjoint, a <code>for</code> of $n$ iterations reverses as $n$ adjoint iterations in reverse order.</li>
+            <li><strong>Call stack discipline:</strong> each function gets <code>f_fwd</code> (primal + pushes) and <code>f_bwd</code> (pops + adjoints); composite reversal nests like brackets. This signature pair is exactly JAX's <code>custom_vjp</code> contract.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Worked Kernel: Adjoint GBM Loop</h3>
+        <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.8rem; font-size: 0.76rem; overflow-x: auto;"># forward (per path): tape S_t before overwrite
+S = S0
+for t in range(n):
+    push(S)                                   # value stack
+    S = S * exp(drift + vol*Z[t])
+payoff = max(S - K, 0); PV = df * payoff
+
+# reverse
+S_bar = df * (1.0 if S > K else 0.0) * PV_bar          # payoff & discount adjoints
+drift_bar = vol_bar = 0
+for t in reversed(range(n)):
+    S_old = pop()
+    g = exp(drift + vol*Z[t])                  # recompute (cheap) or push it too
+    drift_bar += S_old * g * S_bar             # ∂S/∂drift = S_old·g
+    vol_bar   += S_old * g * Z[t] * S_bar
+    S_bar      = g * S_bar                     # ∂S/∂S_old
+S0_bar = S_bar
+# then: sigma_bar = vol_bar*sqrt(T/n) + drift_bar*(-sigma*T/n), r_bar = ...</pre>
+        <p>Validation: $\;S0\_bar$ must equal the pathwise delta (= tangent-linear run, Part 04) and the dot-product test $\langle\dot y,\bar y\rangle = \langle\dot x,\bar x\rangle$ must hold to machine precision for random seeds — the two tests that catch essentially all reversal bugs.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Hand-Coding in Practice</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>When to hand-code:</strong> hot kernels (inner MC loops, PDE steppers), library boundaries (solvers, regressions — Part 02's symbolic-adjoint rule), and anywhere a tool's tape would blow Part 06's memory budget.</li>
+            <li><strong>Style that prevents bugs:</strong> single-assignment locals where possible (no pushes needed); explicit <code>_bar</code> naming; adjoint code blocks mirroring primal blocks in reverse order with comments pairing them.</li>
+            <li><strong>Discontinuities:</strong> the digital part of payoffs has zero pathwise derivative <em>almost surely</em> but the expectation's derivative is not zero where the payoff jumps — smooth the payoff or add likelihood-ratio/vibrato terms for digitals and barriers; silent omission biases Greeks (flagged again in Part 09).</li>
+            <li><strong>Accumulation order:</strong> floating-point adjoint sums across paths/threads need deterministic reduction (pairwise/Kahan, fixed ordering) if bit-reproducibility is a governance requirement (ARM Part 09's theme).</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Adjoint of each assignment: distribute with <code>+=</code>, then reset the overwritten variable's adjoint.</li>
+            <li>PUSH/POP stacks carry overwritten values and control-flow decisions; loops reverse iteration order.</li>
+            <li>The GBM kernel pattern (tape S, reverse the recursion) is the template for every simulation adjoint.</li>
+            <li>Dot-product + tangent-vs-adjoint tests are non-negotiable; handle payoff discontinuities explicitly.</li>
+        </ul>
+    </div>
+</div>

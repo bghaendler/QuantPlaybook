@@ -1,0 +1,68 @@
+<div id="view-egarch-gjr" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">EGARCH &amp; GJR-GARCH Extensions</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Asymmetric volatility: letting bad news raise volatility more than good news — the econometric answer to the leverage effect.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. What Plain GARCH Misses</h3>
+        <p>In GARCH(1,1) the variance responds to $\epsilon_{t-1}^2$ — the <em>size</em> of the shock only. Empirically, negative equity returns raise future volatility substantially more than positive returns of the same magnitude (the <strong>leverage effect</strong>). The <em>news impact curve</em> — $\sigma_t^2$ as a function of $\epsilon_{t-1}$ — should be asymmetric, steeper on the left. Two canonical fixes: GJR (threshold) and EGARCH (log-variance).</p>
+    </div>
+
+    <div class="card">
+        <h3>2. GJR-GARCH — Glosten, Jagannathan &amp; Runkle (1993)</h3>
+        <p>Add an indicator-activated extra ARCH term for negative shocks:</p>
+        $$\sigma_t^2 = \omega + \left(\alpha + \gamma\, \mathbb{1}_{\{\epsilon_{t-1} < 0\}}\right) \epsilon_{t-1}^2 + \beta\, \sigma_{t-1}^2.$$
+        <ul style="line-height: 1.8;">
+            <li>Positive shock impact: $\alpha$. Negative shock impact: $\alpha + \gamma$. Leverage effect ⇔ $\gamma > 0$.</li>
+            <li>Typical equity estimates: $\alpha \approx 0.02$, $\gamma \approx 0.10$, $\beta \approx 0.92$ — <em>most</em> of the news response comes from the asymmetric term.</li>
+            <li>Stationarity (symmetric $z$): $\alpha + \tfrac{1}{2}\gamma + \beta < 1$; long-run variance $\bar\sigma^2 = \omega / (1 - \alpha - \tfrac{1}{2}\gamma - \beta)$.</li>
+        </ul>
+        <p>The closely related <strong>Threshold GARCH (TGARCH/Zakoian)</strong> applies the same idea to conditional standard deviation rather than variance.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. EGARCH — Nelson (1991)</h3>
+        <p>Model the <em>logarithm</em> of variance, removing positivity constraints entirely:</p>
+        $$\ln \sigma_t^2 = \omega + \beta \ln \sigma_{t-1}^2 + \alpha\left(|z_{t-1}| - \mathbb{E}|z_{t-1}|\right) + \gamma\, z_{t-1}, \qquad z_t = \epsilon_t/\sigma_t.$$
+        <ul style="line-height: 1.8;">
+            <li><strong>Size effect</strong> ($\alpha$): unusually large shocks of either sign raise log-variance.</li>
+            <li><strong>Sign effect</strong> ($\gamma$): with $\gamma < 0$, negative shocks raise variance, positive shocks damp it.</li>
+            <li>No parameter constraints needed — $\ln\sigma^2$ can be any real number; stationarity requires only $|\beta| < 1$.</li>
+            <li>Shocks act multiplicatively on variance, so a single extreme observation can have a very large impact (a known fragility in estimation).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. News Impact Curves Compared</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Model</th><th style="padding: 0.5rem;">Response to $\epsilon_{t-1}$</th><th style="padding: 0.5rem;">Shape</th><th style="padding: 0.5rem;">Constraints</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">GARCH</td><td style="padding: 0.5rem;">$\alpha\epsilon^2$</td><td style="padding: 0.5rem;">Symmetric parabola</td><td style="padding: 0.5rem;">$\omega,\alpha,\beta \ge 0$</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">GJR</td><td style="padding: 0.5rem;">$\alpha\epsilon^2$ or $(\alpha+\gamma)\epsilon^2$</td><td style="padding: 0.5rem;">Kinked parabola, steeper left</td><td style="padding: 0.5rem;">$\alpha + \gamma \ge 0$ etc.</td></tr>
+                <tr><td style="padding: 0.5rem;">EGARCH</td><td style="padding: 0.5rem;">exponential in $|z|$, $z$</td><td style="padding: 0.5rem;">Asymmetric exponential</td><td style="padding: 0.5rem;">none ($|\beta|<1$)</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.75rem;">Engle &amp; Ng's sign-bias tests formally check whether residual asymmetry remains after fitting; in equity data plain GARCH almost always fails them while GJR/EGARCH pass.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Which to Use?</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Equity indices:</strong> asymmetric models materially improve fits (log-likelihood, BIC) and VaR backtests; GJR is the common default for its robustness.</li>
+            <li><strong>FX:</strong> asymmetry is weak (no natural "down" direction) — symmetric GARCH often suffices.</li>
+            <li><strong>Risk vs. pricing:</strong> for derivatives, GARCH option-pricing models (Duan; Heston-Nandi closed form) translate these dynamics into smiles with realistic negative skew.</li>
+            <li>Student-t or skewed-t innovations are standard companions, since even asymmetric GARCH leaves fat-tailed standardized residuals.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Leverage effect ⇒ asymmetric news impact: bad news moves vol more.</li>
+            <li>GJR adds $\gamma\,\mathbb{1}_{\{\epsilon<0\}}\epsilon^2$; leverage ⇔ $\gamma > 0$; stationarity uses $\alpha + \gamma/2 + \beta$.</li>
+            <li>EGARCH models $\ln\sigma_t^2$ — sign and size effects, no positivity constraints.</li>
+            <li>Model choice shows up directly in VaR/ES accuracy and in implied-skew generation.</li>
+        </ul>
+    </div>
+</div>

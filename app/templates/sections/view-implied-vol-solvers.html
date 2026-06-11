@@ -1,0 +1,66 @@
+<div id="view-implied-vol-solvers" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Implied Vol: Bisection, Newton-Raphson, Corrado-Miller</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Inverting Black-Scholes: the root-finding problem solved millions of times a day, its numerical hazards, and the closed-form approximations that seed it.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Problem</h3>
+        <p>Given a market price $C_{mkt}$, find $\sigma$ such that</p>
+        $$f(\sigma) = C_{BS}(\sigma) - C_{mkt} = 0.$$
+        <p>Existence and uniqueness are guaranteed on the no-arbitrage interval: $C_{BS}$ is continuous and <em>strictly increasing</em> in $\sigma$ (vega &gt; 0), running from intrinsic value (σ→0) to the spot bound (σ→∞). The function is well-behaved but its <em>slope</em> — vega — collapses for deep ITM/OTM and short-dated options, which is where solvers misbehave.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Bisection: Slow and Indestructible</h3>
+        <p>Bracket the root, e.g. $\sigma \in [10^{-4}, 5]$, and halve:</p>
+        <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.9rem; font-size: 0.85rem; overflow-x: auto;">while (hi - lo) > tol:
+    mid = (lo + hi) / 2
+    if C_BS(mid) > C_mkt: hi = mid
+    else:                 lo = mid</pre>
+        <p>Linear convergence: error halves each step, so ~45 iterations for $10^{-12}$ accuracy regardless of the contract. Never diverges, needs no derivative — the fallback of choice when robustness beats speed.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Newton-Raphson: Fast with a Failure Mode</h3>
+        <p>Use vega as the derivative:</p>
+        $$\sigma_{n+1} = \sigma_n - \frac{C_{BS}(\sigma_n) - C_{mkt}}{\text{vega}(\sigma_n)}, \qquad \text{vega} = S e^{(b-r)T}\phi(d_1)\sqrt{T}.$$
+        <p>Quadratic convergence — 3–4 iterations to machine precision from a decent start. Two hazards:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Tiny vega</strong> (deep ITM/OTM, short T): the step $f/f'$ explodes, overshooting to negative or huge σ. Standard cure: clamp the step or fall back to bisection when vega &lt; ε (a "safeguarded Newton" / Brent's method).</li>
+            <li><strong>Bad seed:</strong> convergence is only local. Seeds below: Brenner-Subrahmanyam or Corrado-Miller.</li>
+        </ul>
+        <p>The state of the art, Jäckel's <em>"Let's Be Rational"</em> (2015), uses rational approximations per branch to deliver implied vol to machine precision in two iterations — the reference implementation for production systems.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Closed-Form Approximations</h3>
+        <p><strong>Brenner-Subrahmanyam (1988)</strong>, ATM-forward only: from $c_{ATM} \approx 0.4\, S\sigma\sqrt{T}$,</p>
+        $$\sigma \approx \frac{C}{0.4\, S \sqrt{T}} \;=\; \sqrt{\frac{2\pi}{T}}\,\frac{C}{S}.$$
+        <p><strong>Corrado-Miller (1996)</strong> extends away from the money. With $X' = Ke^{-rT}$:</p>
+        $$\sigma\sqrt{T} \approx \frac{\sqrt{2\pi}}{S + X'}\left[C - \frac{S - X'}{2} + \sqrt{\left(C - \frac{S - X'}{2}\right)^2 - \frac{(S - X')^2}{\pi}}\right].$$
+        <p>Accurate to a few basis points of vol within roughly ±10% moneyness; degrades (the square root can even go negative) far from the money. Use it as the Newton seed, not the final answer.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Practical Checklist</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Validate first:</strong> reject prices outside no-arbitrage bounds $[\max(Se^{(b-r)T} - Ke^{-rT}, 0),\, Se^{(b-r)T}]$ — no σ exists for them.</li>
+            <li><strong>Use OTM options:</strong> invert puts below the forward, calls above (bigger time value, bigger vega, better conditioning); parity converts.</li>
+            <li><strong>Seed</strong> with Corrado-Miller (or Brenner-Subrahmanyam ATM), <strong>iterate</strong> safeguarded Newton, <strong>fallback</strong> bisection.</li>
+            <li><strong>Vectorize:</strong> surfaces mean thousands of inversions per snapshot — branch-free formulations (Jäckel) matter at scale.</li>
+            <li>Quote convention: implied vol is the market's <em>price metric</em>, not a forecast — the smile across strikes is the next section's subject.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Implied vol exists and is unique inside no-arbitrage bounds because vega &gt; 0.</li>
+            <li>Bisection: linear, unconditionally safe. Newton: quadratic, needs vega ≥ ε and a good seed.</li>
+            <li>Brenner-Subrahmanyam: $\sigma \approx \sqrt{2\pi/T}\,C/S$ at-the-money; Corrado-Miller extends off-ATM.</li>
+            <li>Production answer: validated inputs + seeded, safeguarded Newton (or Jäckel's rational method).</li>
+            <li>Low-vega regions (deep ITM/OTM, short-dated) are where naive solvers blow up.</li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,59 @@
+<div id="view-hft-p04" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">High-Frequency Trading &amp; Market Microstructure — Part 04</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Volume Distribution Modeling &amp; Heavy-Tail Spikes</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Trade sizes and volumes are power-law objects: how to model them, estimate tail indices honestly, and survive the spikes that Gaussian thinking calls impossible.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Empirical Facts</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Trade sizes:</strong> survival $\mathbb{P}(v > x) \sim x^{-\zeta_v}$ with $\zeta_v \approx 1.5$–$2.5$ — finite mean, marginal variance. Round-lot clustering (100s, 1000s) and odd-lot proliferation overlay the tail.</li>
+            <li><strong>Per-interval volume:</strong> heavy-tailed and strongly autocorrelated (volume clustering mirrors volatility clustering — the two are linked through the mixture-of-distributions hypothesis: both driven by information arrival).</li>
+            <li><strong>Spikes:</strong> opens/closes, index events, news halts ⇒ volumes 10–50× the median — these are <em>structural</em>, not outliers to delete.</li>
+            <li><strong>Number of trades</strong> is better behaved than volume — counts are nearer log-normal; size-of-trade carries most of the tail.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Candidate Distributions</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;">Model</th><th style="padding: 0.45rem;">Tail</th><th style="padding: 0.45rem;">Use</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Lognormal</td><td style="padding: 0.45rem;">Sub-power (all moments)</td><td style="padding: 0.45rem;">Body of volume; underestimates extreme spikes</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Pareto / generalized Pareto (GPD)</td><td style="padding: 0.45rem;">$x^{-\zeta}$</td><td style="padding: 0.45rem;">Peaks-over-threshold tail modeling (EVT)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Lognormal body + GPD tail (spliced)</td><td style="padding: 0.45rem;">Mixed</td><td style="padding: 0.45rem;">The practical production choice</td></tr>
+                <tr><td style="padding: 0.45rem;">Negative binomial (counts) × size mixture</td><td style="padding: 0.45rem;">Compound</td><td style="padding: 0.45rem;">Simulating realistic tape (Part 11 labs)</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>3. Estimating Tail Indices Without Fooling Yourself</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Hill estimator:</strong> $\hat\zeta^{-1} = \frac{1}{k}\sum_{i=1}^{k}\ln\frac{x_{(n-i+1)}}{x_{(n-k)}}$ on the top $k$ order statistics — plot $\hat\zeta$ vs. $k$ (the "Hill plot") and look for a stable plateau; never report a single-$k$ value.</li>
+            <li><strong>Log-log rank plots</strong> are diagnostics, not estimators — OLS on them is biased; use MLE/GPD fits over a threshold chosen by mean-excess-plot linearity.</li>
+            <li><strong>Traps:</strong> mixing regimes (open/close with midday) fakes heavier tails; lognormals masquerade as power laws over 1–2 decades; finite samples make $\zeta < 2$ vs. $\zeta > 2$ (infinite vs. finite variance!) genuinely hard to distinguish — and that distinction changes which statistics even converge.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Consequences for Trading Systems</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Participation algos:</strong> a % -of-volume strategy inherits volume's tails — cap child-order sizes, or one spike prints an outsized slice at the worst moment.</li>
+            <li><strong>Volume forecasts</strong> (for VWAP/IS schedules, Part 05–07): model log-volume with seasonal mean + AR dynamics + GPD shocks; evaluate with quantile loss, not RMSE — the tail is the business case.</li>
+            <li><strong>Risk of liquidity metrics:</strong> ADV-based position limits computed on means are fragile; use medians/quantiles of the spliced fit.</li>
+            <li><strong>Impact interaction:</strong> heavy-tailed sizes + concave impact (Part 02) ⇒ aggregate cost dominated by the few largest prints — exactly where estimation (Part 03) has least data. Stress-test there.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Sizes and volumes are power-law tailed ($\zeta \approx 1.5$–$2.5$); spikes are structural features, not outliers.</li>
+            <li>Production fit: lognormal body + GPD tail; counts × sizes for simulation.</li>
+            <li>Hill plateaus and mean-excess plots, never single-point tail estimates; beware regime mixing and lognormal impostors.</li>
+            <li>Cap participation exposure and evaluate volume models on tail quantiles — the largest prints carry the P&amp;L.</li>
+        </ul>
+    </div>
+</div>

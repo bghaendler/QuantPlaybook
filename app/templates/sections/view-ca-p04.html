@@ -1,0 +1,53 @@
+<div id="view-ca-p04" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Complex Analysis for Quants — Part 04</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Mapping the z-Plane to the w-Plane: f(z)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Complex functions as geometric transformations: how grids, circles and strips travel under w = f(z), and why conformality is the property worth tracking.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Functions as Transformations</h3>
+        <p>A complex function $w = f(z) = u(x,y) + iv(x,y)$ cannot be graphed (4 real dimensions); instead we watch how it <em>transports</em> sets from the $z$-plane to the $w$-plane. The basic alphabet:</p>
+        <ul style="line-height: 1.8;">
+            <li>$w = z + b$: translation. $w = az$: rotation by $\arg a$, scaling by $|a|$. $w = az + b$: every similarity.</li>
+            <li>$w = \bar{z}$: reflection in the real axis (orientation-reversing — <em>not</em> holomorphic, by Part 06).</li>
+            <li>$w = 1/z$: inversion — moduli reciprocate ($|w| = 1/|z|$), arguments negate; maps the family of lines-and-circles to itself (a line through the origin ↔ itself; a line missing the origin ↔ a circle through the origin).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. The Two Mappings Behind Pricing Coordinates</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>$w = z^2$:</strong> doubles arguments, squares moduli — the right half-plane opens to the whole plane (minus a slit); Cartesian grid lines map to orthogonal parabolas. Where angles at the origin get doubled is exactly where conformality fails ($f'(0) = 0$).</li>
+            <li><strong>$w = e^z$:</strong> horizontal lines $y = c$ → rays $\arg w = c$; vertical lines $x = c$ → circles $|w| = e^c$; the strip $0 < y < \pi$ → the upper half-plane. Its inverse $\ln z$ is multi-valued (add $2\pi i k$) — the reason log-price coordinates need a branch choice, and the prototype for branch cuts.</li>
+        </ul>
+        <p>The substitution $S = Ke^x$ from the Black-Scholes-to-heat-equation reduction (MM Part 13) is precisely the $e^z$ mapping restricted to the real line: pricing already works in mapped coordinates.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Conformality</h3>
+        <p>Where $f$ is holomorphic and $f'(z_0) \ne 0$, the map preserves <strong>angles</strong> (magnitude and orientation) between intersecting curves: locally it is rotation by $\arg f'(z_0)$ plus scaling by $|f'(z_0)|$. Consequences:</p>
+        <ul style="line-height: 1.8;">
+            <li>Orthogonal grids stay orthogonal — the level curves of $u$ and $v$ always cross at right angles (the geometric face of Cauchy-Riemann, Part 06).</li>
+            <li>Harmonic functions stay harmonic under conformal pullback — solve Laplace problems on a simple domain (disk/half-plane) and transport the solution (Part 07's method).</li>
+            <li>Möbius maps $w = \frac{az + b}{cz + d}$ ($ad - bc \ne 0$): the conformal automorphisms taking lines/circles to lines/circles, with exactly three degrees of freedom — pick any three points to send to any three points.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Worked Example: Strip → Disk</h3>
+        <p>Map the analyticity strip $-1 < \mathrm{Im}\,z < 1$ to the unit disk: first $\zeta = e^{\pi z/2}$ sends it to the right half-plane $\mathrm{Re}\,\zeta > 0$; then the Cayley-type Möbius $w = \frac{\zeta - 1}{\zeta + 1}$ sends the half-plane to $|w| < 1$. Composition:</p>
+        $$w = \frac{e^{\pi z/2} - 1}{e^{\pi z/2} + 1} = \tanh\!\left(\frac{\pi z}{4}\right).$$
+        <p>This is the standard trick for numerics on strips (where characteristic functions live): transplant the problem to the disk or half-plane where quadrature nodes, kernels and convergence theory are off-the-shelf.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Read $f(z)$ as transport: translations/rotations ($az+b$), inversion ($1/z$), doubling ($z^2$), strip-to-rays ($e^z$).</li>
+            <li>$e^z$/$\ln z$ are the coordinates pricing already uses; multi-valuedness of log forces branch cuts.</li>
+            <li>Holomorphic + $f' \ne 0$ ⇒ conformal: angles preserved, grids stay orthogonal, harmonicity transports.</li>
+            <li>Möbius maps move lines/circles around with three free points — the canonical tool for normalizing domains.</li>
+        </ul>
+    </div>
+</div>

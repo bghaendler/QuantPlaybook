@@ -1,0 +1,60 @@
+<div id="view-ad-p10" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Algorithmic Adjoint Differentiation — Part 10</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Second-Order Adjoints &amp; Hessian Extraction</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Gammas and cross-gammas at AD precision: forward-over-reverse composition, Hessian-vector products, and the structure tricks that avoid ever forming the full matrix.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Composing Modes</h3>
+        <p>Second derivatives = differentiate a derivative. Four compositions exist; two matter:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Forward-over-reverse (the workhorse):</strong> the reverse sweep computes $\nabla f(x)$; run that whole computation in <em>tangent mode</em> with seed $\dot{x} = v$ ⇒ output is $\nabla^2 f(x)\,v$ — one <strong>Hessian-vector product (HVP)</strong> at ~10–25× a primal valuation, independent of $n$.</li>
+            <li><strong>Reverse-over-forward:</strong> equivalent cost by symmetry; tool ergonomics decide (JAX: <code>jvp(grad(f))</code> vs <code>grad(jvp)</code> compositions).</li>
+            <li>Full Hessian: $n$ HVPs with $v = e_1..e_n$ — $O(n)$× gradient cost; symmetric, so only $n(n+1)/2$ entries needed. For large $n$, don't form it (see §3).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. What Desks Actually Need</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Gamma ladder (diagonal):</strong> per-bucket $\partial^2 PV/\partial x_i^2$ — $n$ HVPs, or cheaper: colored/compressed HVPs when the Hessian is banded (curve gammas couple only neighboring buckets — Part 05's coloring applies to Hessian columns too).</li>
+            <li><strong>Cross-gammas of a block</strong> (e.g. FX×rates for quanto books): HVPs seeded with the block's coordinates only — cost scales with the block, not the book.</li>
+            <li><strong>Delta-gamma VaR inputs (ARM):</strong> the quadratic approximation needs Σ-weighted Hessian contractions — i.e. HVPs against factor principal components: ~5–10 HVPs, never the full matrix.</li>
+            <li><strong>Optimizer curvature:</strong> Newton/trust-region calibration consumes HVPs directly (conjugate-gradient inner loops) — again matrix-free.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Matrix-Free Discipline</h3>
+        <p>The recurring theme: <em>the Hessian is an operator, not an array</em>.</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>CG/Lanczos on HVPs</strong> solves Newton systems and extracts extreme eigenvalues (the book's largest convexity directions — useful risk information in itself) in ~10–50 HVPs.</li>
+            <li><strong>Low-rank + diagonal structure:</strong> portfolio Hessians are typically a few stiff directions (level/slope/vol-level) plus a near-diagonal remainder — randomized sketching (HVPs against random $v$) certifies the rank cheaply.</li>
+            <li><strong>Sparsity:</strong> trade-level Hessians touch few factors; aggregate by summing sparse contributions rather than densifying.</li>
+            <li><strong>Smoothness warning:</strong> second derivatives amplify payoff kinks — smoothed payoffs (Part 09's policy) are mandatory for stable gammas in MC; bump-validate on smooth test books only.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Worked Sketch: JAX-Style Gamma Ladder</h3>
+        <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.8rem; font-size: 0.78rem; overflow-x: auto;">grad_f = jax.grad(pv)                      # reverse mode: full delta vector
+def hvp(x, v):                             # forward-over-reverse
+    return jax.jvp(grad_f, (x,), (v,))[1]  # = H @ v, ~one extra valuation multiple
+
+# banded curve Hessian: 3-coloring gives all gammas in 3 HVPs
+colors = [seed_vec(c) for c in (0, 1, 2)]   # e.g. buckets 0,3,6.. | 1,4,7.. | 2,5,8..
+columns = [hvp(x0, v) for v in colors]      # scatter back to diagonal + off-diagonals</pre>
+        <p>Validation: HVP against central second differences of the <em>gradient</em> (not of the value — one less cancellation level), and symmetry checks $v^\top H w = w^\top H v$ on random pairs — the second-order analogue of the dot-product test.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Forward-over-reverse gives Hessian-vector products at constant multiple of one valuation — the second-order primitive.</li>
+            <li>Desk needs (gamma ladders, block cross-gammas, ΔΓ-VaR contractions, Newton steps) are all HVP-shaped — stay matrix-free.</li>
+            <li>Coloring, low-rank sketching and sparsity make even full ladders a handful of HVPs.</li>
+            <li>Smooth the payoffs first; validate with gradient-differences and symmetry tests.</li>
+        </ul>
+    </div>
+</div>

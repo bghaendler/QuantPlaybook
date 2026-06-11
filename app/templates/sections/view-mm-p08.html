@@ -1,0 +1,46 @@
+<div id="view-mm-p08" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Mathematical Methods in Financial Markets — Part 08</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Cauchy-Euler Equations (Perpetual Option Solutions)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The equidimensional ODE whose power-law solutions price perpetual options in closed form — the one American option you can solve on paper.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Cauchy-Euler Equation</h3>
+        $$a x^2 y'' + b x y' + c y = 0.$$
+        <p>Coefficients scale with derivatives' orders ("equidimensional": invariant under $x \to \lambda x$). Try $y = x^m$:</p>
+        $$a\,m(m-1) + b\,m + c = 0$$
+        <p>— the <strong>auxiliary quadratic</strong>. Real distinct roots $m_1, m_2$ ⇒ $y = Ax^{m_1} + Bx^{m_2}$; repeated root ⇒ $x^m(A + B\ln x)$; complex $\alpha \pm i\beta$ ⇒ $x^\alpha(A\cos(\beta\ln x) + B\sin(\beta\ln x))$. Equivalently, substitute $x = e^z$ to get constant coefficients — Cauchy-Euler is the constant-coefficient equation in log coordinates, which is exactly why it appears under geometric Brownian motion.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Perpetual Options: Time Drops Out</h3>
+        <p>With no expiry, $V_t = 0$ and the Black-Scholes PDE becomes a Cauchy-Euler ODE in $S$:</p>
+        $$\tfrac{1}{2}\sigma^2 S^2 V'' + (r - q) S V' - rV = 0,$$
+        <p>auxiliary quadratic $\tfrac{1}{2}\sigma^2 m(m-1) + (r-q)m - r = 0$ with roots $m_1 > 1 > 0 > m_2$ (for $r > 0$). General solution $V = AS^{m_1} + BS^{m_2}$: the two power solutions are the building blocks of every perpetual and first-passage formula (they are the same powers in Bjerksund-Stensland's $\beta$ and the one-touch exponents $\mu \pm \lambda$).</p>
+    </div>
+
+    <div class="card">
+        <h3>3. The Perpetual American Put (McKean/Merton)</h3>
+        <p>Hold region $S > S^*$: $V = BS^{m_2}$ (discard $S^{m_1}$ — value must vanish as $S \to \infty$). Two conditions at the unknown boundary:</p>
+        $$V(S^*) = K - S^* \;\;\text{(value matching)}, \qquad V'(S^*) = -1 \;\;\text{(smooth pasting)}.$$
+        <p>Solving:</p>
+        $$S^* = \frac{m_2}{m_2 - 1}K, \qquad V(S) = \frac{K - S^*}{(S^*)^{m_2}}\, S^{m_2} = \frac{K}{1 - m_2}\left(\frac{m_2 - 1}{m_2}\cdot\frac{S}{K}\right)^{m_2}.$$
+        <p>With $q = 0$: $m_2 = -2r/\sigma^2$. Numbers: $r = 5\%$, $\sigma = 20\%$, $K = 100$ ⇒ $m_2 = -2.5$, $S^* = \frac{-2.5}{-3.5}\times100 = 71.4$ — exercise the perpetual put when spot falls below ~71. The perpetual call (with $q > 0$) mirrors with $m_1$: $S^* = \frac{m_1}{m_1 - 1}K$.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Why Smooth Pasting?</h3>
+        <p>Value matching alone leaves a one-parameter family — one for each candidate boundary. Smooth pasting (equal first derivatives) is the <em>optimality</em> condition: exercising at any other boundary gives a value function with a kink, and a kinked value can be improved (the holder could do better by waiting or acting earlier). Economically it equates the marginal value of waiting to the marginal intrinsic gain. This pair of conditions — match value, match slope, solve for the free boundary — recurs throughout real options (investment timing à la McDonald-Siegel, abandonment, debt default in Leland's model), all of which are Cauchy-Euler problems with different payoffs.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>$ax^2y'' + bxy' + cy = 0$: try $x^m$, solve the auxiliary quadratic; log-substitution explains why GBM produces it.</li>
+            <li>Perpetual BS = Cauchy-Euler; the two power roots bracket 0 and 1 and build all first-passage prices.</li>
+            <li>Perpetual put: $S^* = \frac{m_2}{m_2-1}K$ via value matching + smooth pasting — the only American option with a clean closed form.</li>
+            <li>Smooth pasting is optimality, not aesthetics; the same recipe runs all of real-options theory.</li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,59 @@
+<div id="view-ad-p05" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Algorithmic Adjoint Differentiation — Part 05</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Tangent-Linear Efficiency: Vector Mode &amp; Sparsity</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Making forward mode pay: propagate many directions at once, exploit Jacobian sparsity via graph coloring, and amortize the primal work.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Vector (Multi-Directional) Mode</h3>
+        <p>Naive forward mode re-runs the primal once per input. Vector mode carries a <em>block</em> of tangents $\dot{V} \in \mathbb{R}^{1 \times p}$ per variable — one primal execution, $p$ directions:</p>
+        <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.8rem; font-size: 0.8rem; overflow-x: auto;">w = exp(v)        →   w_d[0..p-1] = w * v_d[0..p-1]     // one primal exp, p mults</pre>
+        <ul style="line-height: 1.8;">
+            <li><strong>Why it's faster than p sweeps:</strong> the primal values ($\exp$, $\ln$, divisions — the expensive parts) are computed once; the per-direction work is mostly fused multiply-adds over contiguous arrays — SIMD-perfect. Speedups of 3–10× over repeated single sweeps are routine at $p$ = 8–32.</li>
+            <li><strong>Jacobian assembly:</strong> seed $\dot{X} = I_n$ (in blocks of $p$) → full $J$ in $\lceil n/p\rceil$ vectorized passes.</li>
+            <li>This is exactly JAX's <code>jacfwd</code>/vmap pattern and Tapenade's "vector mode" — also how bump grids should have been done all along.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Sparsity: Don't Compute Zeros</h3>
+        <p>Real quant Jacobians are sparse: a 40-bucket curve build where each swap touches ~4 buckets; a local-vol PDE where each output node depends on a few surface nodes. <strong>Compression by coloring:</strong></p>
+        <ul style="line-height: 1.8;">
+            <li>Two inputs whose columns share no nonzero <em>row</em> can be seeded <strong>together</strong> (their effects never overlap) — finding the minimal seed count is graph coloring on the column-intersection graph (Curtis-Powell-Reid).</li>
+            <li>Result: a banded/structured $n$-column Jacobian costs χ (chromatic number) sweeps, often 3–10 regardless of $n$ — tridiagonal needs 3 colors, period.</li>
+            <li>Workflow: detect the sparsity pattern (one boolean propagation pass or static analysis) → color → seed compressed blocks → scatter back into $J$.</li>
+            <li>The same compression applies to bumping (it predates AD — "compressed finite differences") and to reverse mode by rows.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Quant-Library Plays</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Calibration Jacobians:</strong> Levenberg-Marquardt over (instruments × parameters) — parameters are few: vector-forward over all of them in one pass beats adjoint (which would sweep once per instrument residual). Mode choice by shape, as promised in Part 01.</li>
+            <li><strong>Curve risk through cash-flow generators:</strong> bucket sparsity (each trade hits few buckets) + coloring ⇒ full bucketed deltas at ~constant cost in bucket count.</li>
+            <li><strong>Scenario/"what-if" engines:</strong> the $p$ directions need not be coordinate bumps — seed with <em>scenario vectors</em> (parallel shift, twist, butterfly): vector-forward returns the portfolio's directional derivatives for the whole scenario set in one valuation.</li>
+            <li><strong>Stochastic-process tangents:</strong> per-path tangents over $p$ parameters vectorize across both paths and directions — a (paths × p) tangent matrix in NumPy/CUDA, the layout the GPU workshop assumes.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Cost Model &amp; Crossover</h3>
+        <p>Rule-of-thumb flop counts per primal cost 1: single tangent ≈ 2–2.5; vector-$p$ tangent ≈ 1 + 0.15p (amortized); adjoint ≈ 3–5 (+ memory traffic). Crossover heuristics:</p>
+        <ul style="line-height: 1.8;">
+            <li>$n \lesssim 20$ inputs (or χ colors ≲ 20): vector forward wins on simplicity <em>and</em> speed.</li>
+            <li>$n$ in the hundreds+ with one PV: adjoint, no contest (Part 06 onward).</li>
+            <li>Both large (full dense Jacobian): you probably don't need the full Jacobian — re-ask the question (directional scenarios? sparsity? low-rank structure?).</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Vector mode amortizes the primal: one execution, $p$ SIMD-friendly tangent directions.</li>
+            <li>Sparsity + coloring compresses $n$ columns into χ seeds — bucketed curve risk at constant cost.</li>
+            <li>Seed with scenario vectors, not just coordinates — directional risk is forward mode's native product.</li>
+            <li>Crossover: few inputs → vector forward; many inputs, one output → adjoint; both huge → restructure the question.</li>
+        </ul>
+    </div>
+</div>

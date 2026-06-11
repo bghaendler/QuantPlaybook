@@ -1,0 +1,59 @@
+<div id="view-hft-p06" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">High-Frequency Trading &amp; Market Microstructure — Part 06</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Multi-Venue Execution: Dark Pools vs. Lit Markets</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Fragmented liquidity: the venue taxonomy, the routing problem, dark-pool selection effects, and the regulatory rails the whole game runs on.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Venue Landscape</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Lit exchanges:</strong> displayed books, pre-trade transparency, protected quotes (NYSE, Nasdaq, ~16 US exchanges + European MTFs). Maker-taker or taker-maker (inverted) fee schedules — rebates shape queue economics.</li>
+            <li><strong>Dark pools (ATSs):</strong> no displayed quotes; typically match at the midpoint of the lit NBBO. Variants: continuous crossing, scheduled crosses, block venues with size thresholds.</li>
+            <li><strong>Wholesalers / internalizers:</strong> retail flow executed off-exchange against market-maker capital (PFOF channel) — a large share of US retail volume.</li>
+            <li><strong>Auctions:</strong> open/close (and the EU's growing periodic auctions) — discrete-time matches inside a continuous day.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. The Routing Problem</h3>
+        <p>A child order can rest on any of dozens of venues; a smart order router (SOR) optimizes over:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Fill probability per venue</strong> — queue lengths, historical fill rates, venue market share by name and time of day.</li>
+            <li><strong>All-in price</strong> — fees/rebates net of price; an inverted venue paying takers can beat a maker rebate after queue-time cost.</li>
+            <li><strong>Latency &amp; sequencing</strong> — spraying simultaneously vs. sequentially; stale quotes get faded ("phantom liquidity") if routing is slow.</li>
+            <li><strong>Information leakage</strong> — every venue touched reveals intent; pinging many pools advertises the parent order. Leakage cost is real but only measurable in aggregate (markouts by venue).</li>
+        </ul>
+        <p>Formally a multi-armed-bandit / stochastic-assignment problem: exploration (learning venue fill curves) vs. exploitation, with venue states correlated through the common NBBO.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Dark Pool Economics: Selection Is the Story</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>The draw:</strong> midpoint execution saves half the spread, with zero pre-trade footprint — ideal for patient, uninformed flow.</li>
+            <li><strong>Adverse selection in the dark:</strong> your resting midpoint order fills <em>fastest</em> exactly when the market is about to move through it (informed counterparties sweep). Measure with <strong>markouts</strong>: mid-price drift at +1s/+10s/+60s after fills, per venue — persistent negative markouts identify toxic pools.</li>
+            <li><strong>Quote fading &amp; latency arbitrage:</strong> midpoint pegs reference the NBBO; participants with faster SIP/direct feeds pick off stale pegs around quote changes — why venues add speed bumps and randomized matching.</li>
+            <li><strong>Counterparty curation:</strong> block venues and trajectory crosses restrict participation to reduce toxicity — the product <em>is</em> the selection effect.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Regulatory Rails &amp; Practical Allocation</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>US:</strong> Reg NMS — order protection (no trade-throughs of protected lit quotes), access rules, sub-penny restrictions; dark midpoint executions are compliant because they price-improve.</li>
+            <li><strong>EU:</strong> MiFID II dark-volume caps (double volume cap → single cap) pushed flow to periodic auctions and SIs — venue mix is jurisdiction-specific.</li>
+            <li><strong>Practical allocation heuristic:</strong> urgency low + size large ⇒ dark/midpoint and blocks first; urgency high ⇒ lit sweep with marketable slices; always recycle through venues by measured markout quality, not advertised fill rates.</li>
+            <li><strong>Monitoring:</strong> per-venue realized spread, fill-rate-conditional markouts, and reversion after your own fills — the SOR's objective function should be re-fitted from this telemetry continuously.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Liquidity is fragmented across lit books, dark midpoint pools, internalizers and auctions — routing is an optimization, not plumbing.</li>
+            <li>Dark pools trade pre-trade opacity for adverse selection; markout analysis per venue is the toxicity meter.</li>
+            <li>Fees/rebates, queue position, latency and leakage all enter the router's objective; bandit framing fits the learning problem.</li>
+            <li>Reg NMS / MiFID II shape what's allowed where — venue strategy is inseparable from its regulatory regime.</li>
+        </ul>
+    </div>
+</div>

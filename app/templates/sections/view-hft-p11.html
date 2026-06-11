@@ -1,0 +1,63 @@
+<div id="view-hft-p11" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">High-Frequency Trading &amp; Market Microstructure — Part 11</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">High-Frequency Data Manipulation Labs (MATLAB/Python)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The unglamorous 80%: cleaning tick data, aligning quotes and trades, building bars, and the lab exercises that turn raw tape into research-grade datasets.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Raw Tick Data and Its Pathologies</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Structure:</strong> trades (price, size, venue, conditions) and quotes (bid/ask/sizes per venue) as separate event streams; nanosecond timestamps (exchange vs. SIP vs. capture clocks differ — pick one and document it).</li>
+            <li><strong>Standard cleaning rules (Barndorff-Nielsen et al.):</strong> drop zero/negative prices and sizes; drop locked/crossed quotes ($b \ge a$); filter condition codes (cancels, corrections, late prints, odd settlement); winsorize prints further than $k$ MADs from a centered rolling median — outliers are usually <em>bad data</em>, but log what you delete.</li>
+            <li><strong>Multi-venue consolidation:</strong> build the NBBO by merging per-venue best quotes on the event clock; beware one-venue glitches polluting the consolidated series.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Alignment: The As-Of Join</h3>
+        <p>The core operation of microstructure research: attach to each trade the quote <em>prevailing just before it</em> — a backward as-of join (never interpolate quotes forward!):</p>
+        <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.8rem; font-size: 0.78rem; overflow-x: auto;"># Python/pandas
+trades = trades.sort_values('ts'); quotes = quotes.sort_values('ts')
+merged = pd.merge_asof(trades, quotes, on='ts',
+                       direction='backward', tolerance=pd.Timedelta('5s'))
+merged['mid'] = (merged.bid + merged.ask) / 2
+merged['sign'] = np.where(merged.price > merged.mid, 1,
+                  np.where(merged.price < merged.mid, -1, 0))  # Lee-Ready core
+
+% MATLAB: timetable + synchronize(tt_trades, tt_quotes, 'union', 'previous')
+% or retime(quotes_tt, trades_times, 'previous')</pre>
+        <p>From the join: effective spreads $2|p - m|$, Lee-Ready trade signs (tick test breaks midpoint ties), and markouts $m_{t+\Delta} - m_t$ per fill — the Part 06 toxicity metrics, three lines from raw tape.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Bars: Resampling the Event Stream</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Time bars</strong> (1s/1min): simple, but mix busy and dead intervals — heteroskedastic by construction (Part 05).</li>
+            <li><strong>Tick / volume / dollar bars:</strong> sample every $N$ trades / shares / dollars — closer to i.i.d. Gaussian returns (sampling in "business time"); dollar bars are the robust default across price levels.</li>
+            <li><strong>Last-vs-prevailing conventions:</strong> bar prices from last trade vs. mid-at-close differ systematically by bounce; use mids for return computation, trades for volume.</li>
+            <li><strong>Signature plot lab:</strong> compute RV at 1s/5s/30s/1m/5m sampling — the upward explosion at fine scales <em>is</em> microstructure noise (Parts 01, 09), and picking the elbow is the standard RV-frequency choice.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Lab Exercises (The Course Set)</h3>
+        <ol style="line-height: 1.9;">
+            <li><strong>Clean &amp; consolidate:</strong> apply the filter battery to one day of TAQ-style data; report deletion counts per rule (expect ~0.1–1%).</li>
+            <li><strong>Spread &amp; depth profiles:</strong> reproduce Part 05's intraday U-shapes from your cleaned data, medians by 5-minute bin.</li>
+            <li><strong>Lee-Ready + OFI:</strong> sign trades, build order-flow imbalance, regress next-bar mid returns on OFI — recover Part 01's predictability (in-sample $R^2$ of a few % at seconds horizons is success).</li>
+            <li><strong>Kyle-λ:</strong> estimate Part 03's impact regression per stock-day; plot λ against 1/(depth) across names.</li>
+            <li><strong>Performance discipline:</strong> vectorize everything (no per-tick loops); a day of liquid-name ticks is ~10⁶–10⁷ events — pandas/MATLAB timetables handle it, Python loops do not.</li>
+        </ol>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Clean with the standard filter battery, log deletions, and never trust locked/crossed or condition-coded prints.</li>
+            <li>The backward as-of join (merge_asof / retime-previous) is the atomic operation — quotes prevailing, never future.</li>
+            <li>Prefer volume/dollar bars for statistics; read the signature plot before choosing any sampling frequency.</li>
+            <li>Every headline result of Parts 01–06 (spreads, OFI predictability, λ, markouts) reproduces in a few vectorized lines on clean data.</li>
+        </ul>
+    </div>
+</div>

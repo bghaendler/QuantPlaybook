@@ -1,0 +1,60 @@
+<div id="view-antithetic-control-variates" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Antithetic Variables &amp; Control Variates</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Two classical variance-reduction techniques: exploit symmetry of the driving noise, or exploit a correlated quantity whose answer you already know.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Why Variance Reduction?</h3>
+        <p>The Monte Carlo error of an estimator with per-path variance $s^2$ over $N$ paths is</p>
+        $$\text{SE} = \frac{s}{\sqrt{N}}.$$
+        <p>Halving the error costs 4× the paths. Variance reduction attacks $s$ instead of $N$: a technique that cuts variance by factor $k$ is worth exactly $k\times$ more paths, for (usually) a few lines of code.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Antithetic Variables</h3>
+        <p>If $Z \sim \mathcal{N}(0,1)$ drives a path, then $-Z$ is equally probable. Pair each draw with its mirror and average:</p>
+        $$\hat\theta_{AV} = \frac{1}{N}\sum_{i=1}^{N} \frac{f(Z_i) + f(-Z_i)}{2}.$$
+        <p>The estimator stays unbiased; its variance per pair is</p>
+        $$\operatorname{Var}\!\left(\frac{f(Z) + f(-Z)}{2}\right) = \frac{\sigma_f^2}{2}\left(1 + \rho\right), \qquad \rho = \operatorname{corr}\big(f(Z), f(-Z)\big).$$
+        <p>Gain iff $\rho < 0$, which holds whenever $f$ is <strong>monotone</strong> in $Z$ (e.g. vanilla calls/puts on terminal $S_T$). For non-monotone payoffs (straddles, barriers near the barrier) antithetics can <em>increase</em> variance. Bonus: paired sampling also enforces a zero sample mean of the driving normals — a free first-moment match.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Control Variates</h3>
+        <p>Suppose alongside the target payoff $Y$ you can compute on the same path a quantity $X$ with <em>known</em> expectation $\mathbb{E}[X]$. Form</p>
+        $$\hat\theta_{CV} = \bar{Y} - \beta\left(\bar{X} - \mathbb{E}[X]\right), \qquad \beta^* = \frac{\operatorname{Cov}(Y, X)}{\operatorname{Var}(X)},$$
+        <p>estimating $\beta^*$ by regression on the simulated sample (a pilot run or the same run — the bias is $O(1/N)$). The variance shrinks by the squared correlation:</p>
+        $$\operatorname{Var}(\hat\theta_{CV}) = (1 - \rho_{XY}^2)\operatorname{Var}(\bar{Y}).$$
+        <p>$\rho = 0.95$ → 10× variance reduction; $\rho = 0.99$ → 50×. The technique is a one-line regression with a guarantee: with estimated $\beta$, it can never do worse than plain MC (asymptotically).</p>
+    </div>
+
+    <div class="card">
+        <h3>4. The Classic Example: Arithmetic Asian via Geometric Control</h3>
+        <p>The arithmetic-average Asian call has no closed form, but the <strong>geometric</strong>-average Asian call does (the geometric mean of lognormals is lognormal). Simulate both on identical paths:</p>
+        $$\hat{C}_{arith} = \bar{Y}_{arith} - \beta\left(\bar{Y}_{geo} - C_{geo}^{closed}\right).$$
+        <p>Arithmetic and geometric averages correlate at ρ ≈ 0.99+, so variance drops by a factor of 50–150 — the single most cost-effective trick in derivatives Monte Carlo. Other standard controls: the underlying itself ($\mathbb{E}[S_T] = S_0e^{bT}$), a European option under BS when pricing under a fancier model, or the delta-hedge portfolio (a "martingale control").</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Practical Notes</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Combine freely:</strong> antithetics + controls are complementary; add stratification or quasi-random (Sobol) sequences on top.</li>
+            <li><strong>Estimate SE honestly:</strong> for antithetics, treat each <em>pair</em> as one observation; for controls, use the regression-residual variance.</li>
+            <li><strong>Multiple controls:</strong> $\beta$ becomes a multivariate regression — diminishing returns and collinearity caution.</li>
+            <li><strong>Greeks too:</strong> controls work on pathwise/likelihood-ratio Greek estimators just as well as on prices.</li>
+            <li>Effort check: a control with $\rho^2 = 0.9$ but 2× path cost still wins 5× overall — always compare variance×cost.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>MC error ∝ $s/\sqrt{N}$: cut $s$, not your compute budget.</li>
+            <li>Antithetics: average $f(Z)$ with $f(-Z)$; works iff payoff is monotone in the noise.</li>
+            <li>Control variates: regress out a correlated quantity with known mean; gain $= 1/(1-\rho^2)$.</li>
+            <li>Geometric-Asian control for arithmetic Asians: the canonical 100× win.</li>
+            <li>Techniques stack — and always validate with the measured standard error.</li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,53 @@
+<div id="view-arm-p01" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Advanced Risk Management — Part 01</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Calibration &amp; Modeling Risk Overview</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The risk before the risks: every number a risk system produces is conditional on a model and a calibration — this part maps how those choices fail and how to manage them.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Model Risk Taxonomy</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Specification risk:</strong> the model family is wrong — Gaussian where fat-tailed (Part 03/06), constant correlation where regime-dependent, diffusion where jumps. The error survives perfect calibration.</li>
+            <li><strong>Calibration/estimation risk:</strong> the family is fine but parameters are noisy or unstable — short samples, regime mixing, overfitting to the quote of the day.</li>
+            <li><strong>Implementation risk:</strong> correct model, wrong code/data — unit errors, stale curves, look-ahead in backtests.</li>
+            <li><strong>Usage risk:</strong> correct numbers, wrong application — a 1-day VaR steering a 1-month illiquid book, or a pricing measure used for risk forecasts.</li>
+        </ul>
+        <p>Regulatory frame: SR 11-7 defines a model as data→assumptions→output and requires validation, monitoring and effective challenge for each — the taxonomy above is essentially its checklist.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Calibration: Fitting Is Not Knowing</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Two calibration cultures:</strong> time-series/historical (P-measure: GARCH, EWMA on returns) vs. cross-sectional/implied (Q-measure: vols, correlations from today's option quotes). They answer different questions; mixing them silently is a classic usage error.</li>
+            <li><strong>Ill-posedness:</strong> many parameter sets fit equally well (Heston's κ-σ ridge; copula correlation from few tranche quotes) — report the <em>set</em>, not the point: profile likelihoods, bootstrap bands, identifiability checks.</li>
+            <li><strong>Instability as signal:</strong> parameters that lurch at re-calibration are absorbing specification error — track parameter time series as a monitoring metric in their own right.</li>
+            <li><strong>Regularization trade-off:</strong> penalties/priors stabilize calibration at the cost of bias — choose by out-of-sample risk forecasting, not in-sample fit.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Measuring Model Risk</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Model reserves:</strong> price/risk under a benchmark set of defensible models; reserve the spread (worst-vs-booked) — standard for exotics desks.</li>
+            <li><strong>Sensitivity mapping:</strong> ∂(output)/∂(assumption) — which assumptions move VaR/price most? Those get monitoring and challenge first.</li>
+            <li><strong>Backtesting &amp; benchmarking:</strong> Kupiec/Christoffersen exception tests for VaR (Part 07), pricing vs. consensus services, P&amp;L-attribution tests (FRTB's eligibility test institutionalizes this).</li>
+            <li><strong>Worst-case bounds:</strong> robust/uncertainty-set approaches (e.g. price under all models within a divergence ball of the baseline) quantify "unknown model" exposure formally.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Course Roadmap</h3>
+        <p>This series builds the toolkit bottom-up: risk frameworks and taxonomies (Parts 02, 04), the non-normal reality of returns (Parts 03, 06), VaR — historical, parametric, Monte Carlo (Parts 05, 07–10) — with the calibration-risk lens of this part applied at every step: each method's numbers will be presented <em>with</em> the assumptions that can break them.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Model risk = specification + calibration + implementation + usage; perfect fits don't cure wrong families.</li>
+            <li>Keep P-measure and Q-measure calibrations distinct; report parameter uncertainty, not just points.</li>
+            <li>Parameter instability is diagnostic data; sensitivity mapping prioritizes validation effort.</li>
+            <li>Reserves, backtests, benchmarking and robust bounds turn "the model might be wrong" into managed numbers.</li>
+        </ul>
+    </div>
+</div>

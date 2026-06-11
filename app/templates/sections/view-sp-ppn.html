@@ -1,0 +1,50 @@
+<div id="view-sp-ppn" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Principal Protected Note (PPN)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The original structured product: a zero-coupon bond plus a call option — full money-back at maturity with equity upside, and every trade-off priced inside.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Construction</h3>
+        <p>Invest notional $N$ for term $T$. The issuer splits it:</p>
+        $$N = \underbrace{N e^{-yT}}_{\text{zero-coupon bond}} + \underbrace{\text{option budget}}_{N(1 - e^{-yT}) - \text{fees}}.$$
+        <p>The ZCB grows back to $N$ at maturity (the protection); the leftover buys call options on the underlying. Payoff:</p>
+        $$\text{PPN}_T = N + N \cdot PR \cdot \max\!\left(\frac{S_T - S_0}{S_0},\ 0\right),$$
+        <p>with <strong>participation rate</strong> $PR = \dfrac{\text{option budget}}{\text{price of 1 ATM call on } N}$. Example: $y = 4\%$, $T = 5$ → ZCB costs 81.9%, leaving ~18% (less ~2% fees = 16%) of notional; if a 5-year ATM call costs 20% of notional, $PR = 16/20 = 80\%$.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. What Drives the Terms</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Rates are the fuel:</strong> high rates → cheap ZCB → big option budget → generous participation. Near-zero rates (2010s) made true 100% protection nearly impossible — issuers stretched maturities, capped upside, or moved to partial protection.</li>
+            <li><strong>Volatility is the cost:</strong> high implied vol → expensive calls → lower participation. PPN buyers are implicitly <em>selling nothing but buying vol</em>; terms look best when vol is low and rates high.</li>
+            <li><strong>Dividends:</strong> calls on price (not total-return) indices are cheaper when dividends are high — participation quietly funds itself by forgoing dividends.</li>
+            <li>Common variants to lift the headline rate: <strong>caps</strong> (sell a call spread instead), <strong>averaging</strong> (Asian tail — cheaper option), <strong>worst-of baskets</strong> (cheaper still, more risk).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. The Risks That Aren't Market Risk</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Credit risk:</strong> "protection" is an unsecured promise of the issuer — Lehman PPNs paid recovery, not principal. The investor is long a corporate ZCB, and the issuer's funding spread (which boosts the option budget) is exactly the compensation.</li>
+            <li><strong>Inflation &amp; opportunity cost:</strong> guaranteed nominal principal over 5–7 years can be a real-terms loss; the certain coupon given up is the protection's true price.</li>
+            <li><strong>Liquidity/mark-to-market:</strong> before maturity the note trades at bond + option value — rising rates or falling vol can mark it well below par even with the guarantee intact.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Pricing &amp; Risk View (Desk Side)</h3>
+        <p>Decompose and book separately: funding desk issues the ZCB at internal funding +spread; exotics desk hedges the call (vanilla if simple, Asian/basket if structured). Greeks of the note = Greeks of the embedded option scaled by $PR$ — delta starts near $PR \times \Delta_{ATM} \approx 0.4 PR$ and the note behaves increasingly like a bond as the call moves OTM. <strong>CPPI</strong> is the dynamic-trading alternative (constant proportion portfolio insurance): same goal, path-dependent gap risk instead of option premium — the classic static-vs-dynamic protection comparison.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>PPN = ZCB (protection) + call (upside); participation = option budget ÷ call price.</li>
+            <li>Rates fund the structure, vol prices the upside, dividends are silently forfeited.</li>
+            <li>Protection is issuer credit, not collateral — Lehman is the case study.</li>
+            <li>Caps, Asian tails and baskets are participation-boosters with embedded option sales.</li>
+            <li>Decomposition pricing (bond + option) is exact and is how desks hedge and how buyers should compare offers.</li>
+        </ul>
+    </div>
+</div>

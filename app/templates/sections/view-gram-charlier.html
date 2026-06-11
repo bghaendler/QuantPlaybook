@@ -1,0 +1,60 @@
+<div id="view-gram-charlier" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Gram-Charlier Expansion (Skew &amp; Kurtosis Adjustments)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Perturbing the Gaussian: express the return density as normal × polynomial corrections in skewness and kurtosis, and read the volatility smile directly off the moments.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Expansion</h3>
+        <p>Approximate a standardized density $f(z)$ by the Gaussian $\phi(z)$ corrected with Hermite polynomials:</p>
+        $$f(z) \approx \phi(z)\left[1 + \frac{\gamma_1}{3!} He_3(z) + \frac{\gamma_2}{4!} He_4(z)\right],$$
+        <p>where $\gamma_1$ = skewness, $\gamma_2$ = excess kurtosis, and $He_3(z) = z^3 - 3z$, $He_4(z) = z^4 - 6z^2 + 3$. Hermite polynomials are orthogonal under the Gaussian weight, so each term corrects exactly one moment without disturbing the lower ones. (The reordered <strong>Edgeworth expansion</strong> collects terms by powers of $1/\sqrt{n}$ — same ingredients, better asymptotic bookkeeping.)</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Option Prices with Skew &amp; Kurtosis (Corrado-Su)</h3>
+        <p>Insert the expansion for the log-return density into the discounted expectation. Corrado &amp; Su (1996) obtain</p>
+        $$C \approx C_{BS} + \gamma_1 Q_3 + \gamma_2 Q_4,$$
+        $$Q_3 = \frac{S\sigma\sqrt{T}}{3!}\left[(2\sigma\sqrt{T} - d_1)\phi(d_1) + \sigma^2 T\, N(d_1)\right], \qquad
+        Q_4 = \frac{S\sigma\sqrt{T}}{4!}\left[(d_1^2 - 1 - 3\sigma\sqrt{T}\,d_2)\phi(d_1) + \sigma^3 T^{3/2} N(d_1)\right].$$
+        <p>Black-Scholes plus two analytic correction terms: $Q_3$ tilts value across strikes (skew), $Q_4$ adds wing value (kurtosis). Three intuitive parameters $(\sigma, \gamma_1, \gamma_2)$ fit a whole maturity's smile — a regression, effectively.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. The Smile in Moment Language (Backus-Foresi-Wu)</h3>
+        <p>Inverting to implied vol gives the celebrated approximation:</p>
+        $$\sigma_{imp}(d) \approx \sigma\left[1 - \frac{\gamma_1}{6}\, d - \frac{\gamma_2}{24}\left(1 - d^2\right)\right], \qquad d \approx \text{standardized moneyness}.$$
+        <p>Read directly: <strong>skewness sets the smile's slope, kurtosis its curvature</strong>. Equity markets ($\gamma_1 < 0$, $\gamma_2 > 0$): downward-sloping skew with raised wings. The map runs both ways — quote risk-reversals and butterflies, recover the market's implied $\gamma_1, \gamma_2$ per maturity. This is the cleanest dictionary between distribution moments and smile geometry in all of option theory.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. The Catch: Negative Densities</h3>
+        <p>Truncated expansions are polynomials × Gaussian — for large $|\gamma_1|, \gamma_2$ the bracket goes <em>negative</em> in the tails: an arbitrageable, invalid density. The positivity region is small (roughly $|\gamma_1| \lesssim 0.7$, $0 \le \gamma_2 \lesssim 4$ jointly constrained). Consequences and fixes:</p>
+        <ul style="line-height: 1.8;">
+            <li>Fit smiles only within the positivity region (constrained optimization — Jondeau-Rockinger map the admissible set).</li>
+            <li>For steep equity skews the expansion fails exactly where you need it; use it for <em>mild</em> smiles (FX, rates, short-dated equity) or as a perturbative diagnostic, not a production surface.</li>
+            <li>Alternatives when moments are extreme: full parametric models (Heston/Bates), SABR-type expansions, or nonparametric (spline) densities with positivity constraints.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>5. Where It Earns Its Keep</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Quick smile fits &amp; sanity checks:</strong> three parameters, closed forms, instant Greeks.</li>
+            <li><strong>Risk language:</strong> "the book is long kurtosis, short skew" — Gram-Charlier makes that a precise pricing statement.</li>
+            <li><strong>Approximating awkward distributions:</strong> arithmetic Asian baskets (Turnbull-Wakeman's higher-order corrections <em>are</em> Edgeworth terms), portfolio VaR via <strong>Cornish-Fisher</strong> quantiles — the same expansion inverted: $z_\alpha^{CF} = z_\alpha + \frac{\gamma_1}{6}(z_\alpha^2 - 1) + \frac{\gamma_2}{24}(z_\alpha^3 - 3z_\alpha) - \frac{\gamma_1^2}{36}(2z_\alpha^3 - 5z_\alpha)$.</li>
+            <li><strong>Econometrics bridge:</strong> GARCH-implied moments → Gram-Charlier prices links time-series models to option markets without simulation.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Gaussian × Hermite corrections: $\gamma_1$ on $He_3$, $\gamma_2$ on $He_4$ — orthogonal moment surgery.</li>
+            <li>Corrado-Su: $C = C_{BS} + \gamma_1 Q_3 + \gamma_2 Q_4$ — BS plus analytic skew/kurtosis terms.</li>
+            <li>Smile dictionary: slope ↔ skewness, curvature ↔ kurtosis (Backus-Foresi-Wu).</li>
+            <li>Fatal flaw: densities go negative outside a small moment region — fit constrained or go parametric.</li>
+            <li>Same mathematics powers Cornish-Fisher VaR and Asian-option moment corrections.</li>
+        </ul>
+    </div>
+</div>

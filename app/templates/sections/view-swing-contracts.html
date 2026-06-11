@@ -1,0 +1,65 @@
+<div id="view-swing-contracts" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Swing Contracts: Flexible Volume Take-up</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Options where the choice variable is quantity, not just timing: gas and power supply contracts with daily and annual volume flexibility — priced by stochastic control.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Contract</h3>
+        <p>A buyer (utility, industrial) contracts with a supplier for delivery over a period (month/year) at a fixed or indexed price $K$, with <strong>volume flexibility</strong>:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Daily constraints:</strong> take $q_t \in [q_{min}, q_{max}]$ each day (Daily Contract Quantity bounds).</li>
+            <li><strong>Global constraints:</strong> cumulative take $Q_T = \sum q_t \in [Q_{min}, Q_{max}]$ (Annual/Total Contract Quantity, often with take-or-pay penalties for under-take).</li>
+            <li>Sometimes framed as a limited number $N$ of "swing rights": days on which the buyer may deviate from a baseline nomination.</li>
+        </ul>
+        <p>Each day the holder compares the spot price $S_t$ with $K$: take maximum volume when $S_t > K$ (the contract is cheap), minimum when $S_t < K$ — <em>except</em> that global constraints couple today's decision to the future. Burning flexibility today may forfeit more valuable optionality later.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Stochastic-Control Formulation</h3>
+        <p>The value with remaining flexibility is a dynamic program over an extra state variable — cumulative take $Q$ (or remaining rights $n$):</p>
+        $$V_t(S, Q) = \max_{q \in [q_{min}, q_{max}]} \left\{ q\,(S - K) + e^{-r\Delta t}\, \mathbb{E}^{\mathbb{Q}}\left[V_{t+1}(S_{t+1}, Q + q) \mid S_t = S\right] \right\},$$
+        <p>with terminal condition encoding penalties: $V_T(S, Q) = -\text{penalty}(Q)$ if $Q < Q_{min}$. A key structural result (Bardou-Bouthemy-Pagès): with linear penalties the optimal policy is <strong>bang-bang</strong> — take $q_{min}$ or $q_{max}$, never interior — which shrinks the action space dramatically.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Bounds and Intuition</h3>
+        <p>A swing contract is sandwiched between known objects:</p>
+        $$\underbrace{\text{strip of forwards}}_{\text{no flexibility}} \;\le\; \text{Swing} \;\le\; \underbrace{\text{strip of } N \text{ independent daily options}}_{\text{flexibility without global constraints}}.$$
+        <p>The gap to the upper bound is the cost of the volume coupling. With loose global constraints, swing → multiple-exercise option ≈ sum of the $N$ best daily options; with tight constraints ($Q_{min} = Q_{max}$), it collapses to a forward strip. Multiple-exercise options are themselves a ladder: an $N$-rights swing equals an $(N-1)$-rights swing plus one marginal Bermudan — valued recursively.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Numerical Methods</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Method</th><th style="padding: 0.5rem;">Idea</th><th style="padding: 0.5rem;">Fit</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Trees / lattices</td><td style="padding: 0.5rem;">Discretize $S$ (e.g. trinomial on mean-reverting log-spot) × grid in $Q$</td><td style="padding: 0.5rem;">1-factor spot models; transparent</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Least-Squares MC (Longstaff-Schwartz)</td><td style="padding: 0.5rem;">Regress continuation values per $(t, Q)$ bucket on path features</td><td style="padding: 0.5rem;">Multi-factor models (price + demand); industry default</td></tr>
+                <tr><td style="padding: 0.5rem;">Optimal quantization / RL</td><td style="padding: 0.5rem;">Quantize state space or learn policy directly</td><td style="padding: 0.5rem;">High-dimensional constraints, research/large books</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.75rem;">Underlying price models matter: gas spot is mean-reverting with jumps and strong seasonality (e.g. $d\ln S = \kappa(\theta_t - \ln S)dt + \sigma_t dW + J\,dN$); using GBM materially misprices swing because mean reversion caps how long spikes — the main source of swing value — persist.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Hedging &amp; Practice</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Delta:</strong> the expected take profile $\partial V/\partial F_t$ per delivery month — hedged with forward strips, rebalanced as the take/price evolves.</li>
+            <li><strong>Extrinsic value:</strong> reported as swing value minus intrinsic (optimal take against today's curve); it decays like theta and is realized only through disciplined re-optimization.</li>
+            <li><strong>Take-or-pay renegotiations</strong> (e.g. European gas post-2009, post-2021) are disputes over exactly this optionality — mispriced flexibility becomes corporate P&amp;L.</li>
+            <li>Storage contracts are the same mathematics with inventory in place of cumulative take (inject/withdraw = negative/positive swing).</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Swing = daily volume options coupled by global min/max take constraints — an optimal control problem with state $(S, Q)$.</li>
+            <li>Optimal policies are bang-bang under linear penalties; value sits between a forward strip and a strip of independent options.</li>
+            <li>Longstaff-Schwartz with the cumulative-take state is the practical pricing standard.</li>
+            <li>Mean-reverting, jumpy, seasonal spot models are essential — GBM overstates spike persistence and swing value.</li>
+            <li>Storage, take-or-pay, and multiple-exercise Bermudans are the same problem in different clothes.</li>
+        </ul>
+    </div>
+</div>

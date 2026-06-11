@@ -1,0 +1,56 @@
+<div id="view-bivariate-normal" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Bivariate Normal Distribution (Drezner, Genz)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The function $M(a, b; \rho)$ behind compound options, Americans with dividends, barriers and two-asset exotics — and the quadrature algorithms that compute it.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Definition &amp; Where It Appears</h3>
+        $$M(a, b; \rho) = \frac{1}{2\pi\sqrt{1-\rho^2}} \int_{-\infty}^{a}\!\!\int_{-\infty}^{b} \exp\!\left(-\frac{x^2 - 2\rho xy + y^2}{2(1-\rho^2)}\right) dy\, dx.$$
+        <p>Pricing needs it whenever a payoff involves <em>two</em> Gaussian events: Geske compound options and Roll-Geske-Whaley ($\rho = \sqrt{T_1/T_2}$ between decision dates), Bjerksund-Stensland 2002, partial-time barriers, two-asset rainbows (Stulz), quanto-barriers, and two-period Bermudans. No closed form exists; the game is fast, uniformly accurate quadrature.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Useful Identities (Implement These First)</h3>
+        <ul style="line-height: 1.8;">
+            <li>Marginals: $M(a, \infty; \rho) = N(a)$; independence: $M(a, b; 0) = N(a)N(b)$.</li>
+            <li>Perfect correlation: $M(a, b; 1) = N(\min(a, b))$; $M(a, b; -1) = \max(0, N(a) + N(b) - 1)$.</li>
+            <li>Symmetries: $M(a, b; \rho) = M(b, a; \rho)$; complement $M(-a, -b; \rho) = 1 - N(a) - N(b) + M(a, b; \rho)$.</li>
+            <li>Sign flip: $M(a, -b; -\rho) = N(a) - M(a, b; \rho)$ — lets you keep $\rho \ge 0$ internally.</li>
+            <li>Derivative in ρ (Plackett): $\dfrac{\partial M}{\partial \rho} = \dfrac{1}{2\pi\sqrt{1-\rho^2}} \exp\!\left(-\dfrac{a^2 - 2\rho ab + b^2}{2(1-\rho^2)}\right)$ — the basis of "integrate over ρ" algorithms and instant cega.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Drezner (1978) &amp; Drezner-Wesolowsky (1990)</h3>
+        <p>Drezner's classic uses Gauss-Hermite-type quadrature on a transformed integral — 4–5 points per dimension, ~10⁻⁶ accuracy; Drezner-Wesolowsky integrate Plackett's identity over ρ with Gauss-Legendre nodes:</p>
+        $$M(a,b;\rho) = N(a)N(b) + \int_0^{\rho} \frac{1}{2\pi\sqrt{1-r^2}}\exp\!\left(-\frac{a^2 - 2rab + b^2}{2(1-r^2)}\right) dr,$$
+        <p>a smooth 1-D integral — short code, ~10⁻⁷ accuracy for moderate ρ. Both degrade as $|\rho| \to 1$ (the integrand spikes); older Haug-book implementations inherit exactly this weakness.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Genz (2004): The Modern Standard</h3>
+        <p>Genz refines Drezner-Wesolowsky with (i) higher-order Gauss-Legendre rules chosen by |ρ| bands, and (ii) for $|\rho| > 0.925$, a singularity-extracting <strong>variable transformation</strong> that handles the near-degenerate case analytically plus a small smooth correction. Result: <strong>~14–15 digit accuracy uniformly in $(a, b, \rho)$</strong> at a cost of 6–20 exponential evaluations. His TVPACK/`bvnd` code (and its translations in QuantLib, SciPy `owens_t`-based routines, etc.) is the de facto reference. Rule of thumb: if your library's bivariate CDF isn't Genz-derived, test it at $\rho = \pm 0.99$ before trusting barrier or compound prices.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Numerical Hygiene for Pricing Use</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Consistency with your $N(x)$:</strong> identities like in-out parity rely on $M$ and $N$ agreeing to full precision; mix vendors and parity breaks at the 10⁻⁸ level — visible in calibrated Greeks.</li>
+            <li><strong>Greeks:</strong> differentiate analytically using $\partial M/\partial a = \phi(a) N\!\left(\frac{b - \rho a}{\sqrt{1-\rho^2}}\right)$ rather than bumping — exact and cheap.</li>
+            <li><strong>ρ near ±1 arises naturally</strong> (compound options with $T_1 \to T_2$; partial barriers with windows shrinking) — precisely where cheap routines fail; use Genz.</li>
+            <li>Owen's T-function is an equivalent formulation ($M$ in terms of $T(h, a)$) with its own high-accuracy algorithms (Patefield-Tandy).</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>$M(a,b;\rho)$ powers compound, American-dividend, partial-barrier and rainbow formulas.</li>
+            <li>Plackett's ρ-derivative identity turns the 2-D integral into a smooth 1-D one — the basis of Drezner-Wesolowsky and Genz.</li>
+            <li>Genz (2004): uniform machine-precision accuracy including $|\rho| \to 1$ — the production standard.</li>
+            <li>Use the analytic partials of $M$ for Greeks; keep $M$ and $N$ from the same precision family.</li>
+            <li>Test any implementation at extreme ρ and via the boundary identities before shipping.</li>
+        </ul>
+    </div>
+</div>

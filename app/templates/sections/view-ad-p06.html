@@ -1,0 +1,53 @@
+<div id="view-ad-p06" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Algorithmic Adjoint Differentiation — Part 06</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Adjoint Code Mechanics &amp; Memory Constraints</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The price of the O(1) gradient: reverse-order data dependencies, tape growth, and checkpointing — the engineering that makes adjoints feasible at Monte Carlo scale.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Why Reverse Needs Memory</h3>
+        <p>The adjoint of <code>w = exp(v)</code> is <code>v̄ += w·w̄</code> — it needs <code>w</code> (a <em>primal</em> value) at a moment when execution runs <em>backwards</em>. Every nonlinear operation's adjoint references primal state, so the forward sweep must preserve it:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Tape (store-all):</strong> record needed values (and, in OO tools, the op sequence) during the forward pass; replay backwards. Memory grows <em>linearly with operations executed</em>: a 100k-path, 252-step MC with ~50 ops/step ≈ 10⁹+ records — tens of GB. Memory bandwidth, not flops, becomes the adjoint's bottleneck.</li>
+            <li><strong>Recompute-all:</strong> store nothing; recompute forward from the start for every needed value — $O(T^2)$ time. Both extremes lose; the answer is between them.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Checkpointing: Trading Time for Memory</h3>
+        <p>Store full state snapshots at $c$ <strong>checkpoints</strong>; during reversal, recompute each segment forward from its checkpoint, tape only the active segment:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Uniform checkpointing:</strong> √-rule — $c \approx \sqrt{T}$ checkpoints give memory $O(\sqrt{T})$ at ~2× forward recomputation.</li>
+            <li><strong>Binomial/Revolve (Griewank-Walther):</strong> provably optimal schedule — memory $O(\log T)$ at $O(\log T)$ recompute factor; the standard for long time-stepping (PDE solvers, long-horizon XVA simulations).</li>
+            <li><strong>Online variants</strong> handle unknown-length loops (adaptive time-stepping).</li>
+            <li>ML knows this as <em>gradient/activation checkpointing</em> — identical algorithm, different vocabulary.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Structural Tricks That Shrink the Tape</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Pathwise independence (the Monte Carlo gift):</strong> paths don't interact until the final average — reverse <em>each path separately</em> and accumulate $\bar\theta$: tape size drops from (paths × steps) to (one path × steps). This single observation makes AAD-XVA practical.</li>
+            <li><strong>Linear segments are free:</strong> adjoints of linear ops need no primal values — discounting, summations, matrix products with constant matrices tape nothing but structure.</li>
+            <li><strong>Super-nodes with analytic adjoints</strong> (Part 03): a root-solve, a regression ($\hat\beta = (X^\top X)^{-1}X^\top y$ has a clean adjoint), an interpolation — replace thousands of taped elementals with one closed-form reversal.</li>
+            <li><strong>Preaccumulation:</strong> collapse straight-line blocks into local Jacobians at record time — fewer, fatter tape entries; standard in dco/c++-class tools.</li>
+            <li><strong>Invertible steps:</strong> when the step can be run backwards exactly (some SDE schemes, reversible integrators), recompute primal state in reverse — zero storage for those segments.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. A Capacity Budget (Order-of-Magnitude)</h3>
+        <p>Adjoint MC pricer, 100k paths × 252 steps, per-path reversal: active doubles per step ≈ 20 → per-path tape ≈ 20 × 252 × 8B ≈ 40 KB — trivially cached; total cost ≈ forward 1× + reverse ~2–3× ⇒ <strong>full smile/curve/parameter gradient at ~4× one pricing</strong>, in &lt;100 MB. The same job taped monolithically: ~400 GB — infeasible. The lesson generalizes: <em>adjoint feasibility is an architecture property, not a tool property</em> — structure (path independence, super-nodes, checkpoints) is where the engineering lives.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Nonlinear adjoints consume primal values backwards — store (tape) or recompute (checkpoint).</li>
+            <li>Revolve-style checkpointing: $O(\log T)$ memory for $O(\log T)$ recompute — optimal for time-stepped codes.</li>
+            <li>Per-path reversal, linear-op freebies, analytic super-nodes and preaccumulation shrink tapes by orders of magnitude.</li>
+            <li>Budget memory before coding: adjoint feasibility is decided by program structure, not by the AD library.</li>
+        </ul>
+    </div>
+</div>

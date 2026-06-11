@@ -1,0 +1,52 @@
+<div id="view-hft-p02" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">High-Frequency Trading &amp; Market Microstructure — Part 02</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Market Impact Functions &amp; Order Distribution</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">How trading moves the price against you: temporary vs. permanent impact, the square-root law, and the order-size distributions that drive it.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Temporary vs. Permanent Impact</h3>
+        <p>Executing quantity $Q$ over a horizon decomposes its price effect:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Temporary (mechanical) impact:</strong> walking the book / pressuring queues — decays after you stop trading; you pay it, the market forgets it.</li>
+            <li><strong>Permanent (informational) impact:</strong> the lasting mid-price shift — the market's inference that your flow carried information. In Kyle's model, permanent impact is linear: $\Delta p = \lambda \cdot Q$, with $\lambda$ rising in informed-flow share and falling in noise-trade volume.</li>
+            <li><strong>Decay kernel view</strong> (propagator models, Bouchaud et al.): $p_t = \sum_{s<t} G(t - s)\,\epsilon_s v_s^\delta + \text{noise}$ — each trade's impact decays as a power law $G(\tau) \sim \tau^{-\beta}$; persistent order-flow autocorrelation and decaying impact balance to keep prices near-martingale ("diffusivity puzzle" resolution).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. The Square-Root Law</h3>
+        <p>Across asset classes, decades, and venues, the cost of executing a metaorder of size $Q$ empirically follows:</p>
+        $$\Delta p \approx Y\,\sigma\sqrt{\frac{Q}{V}},$$
+        <p>with $\sigma$ daily volatility, $V$ daily volume, and $Y \approx 0.5$–$1$. Notable features: concavity (the second half of an order costs less <em>per share</em> than the first), near-universality of the exponent ($\approx 0.4$–$0.6$), and dependence on $Q/V$ (participation), not $Q$ alone. Theoretical accounts: latent-liquidity models (locally linear latent supply ⇒ square-root aggregate) and dimensional-analysis arguments. Practical reading: <em>impact cost in bps</em> $\approx Y\sigma_{bps}\sqrt{\text{participation}}$ — the first number any execution-cost model produces.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Order-Size and Flow Distributions</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Trade sizes are power-law tailed:</strong> $\mathbb{P}(v > x) \sim x^{-\zeta}$ with $\zeta \approx 1.5$–$2.5$ — block trades coexist with odd lots; means exist, variances barely. (Full treatment in Part 04.)</li>
+            <li><strong>Order-flow signs are long-memory:</strong> autocorrelation of buy/sell indicators decays as $\tau^{-\gamma}$, $\gamma \approx 0.5$ — metaorder splitting (Part 07's optimal execution!) creates the persistence that propagator models must offset.</li>
+            <li><strong>Arrival processes cluster:</strong> Poisson fails; Hawkes self-exciting processes $\lambda_t = \mu + \sum_{t_i < t}\alpha e^{-\beta(t - t_i)}$ capture the bursts — events beget events, the microstructure analogue of GARCH clustering.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Modeling Choices for Execution (Setup for Parts 03 &amp; 07)</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Almgren-Chriss parametrization:</strong> permanent impact $g(v) = \gamma v$, temporary $h(v) = \eta v$ (linear in trade rate) — analytically convenient, gives closed-form optimal schedules; calibration in Part 03.</li>
+            <li><strong>Concave (square-root) cost with decay:</strong> more realistic, numerically optimized; matters most for large participation or long horizons.</li>
+            <li><strong>Sanity constraints:</strong> no-dynamic-arbitrage (Gatheral): permanent impact must be linear if decay is absent, and decay kernels must avoid round-trip money pumps — concave permanent impact + no decay is internally inconsistent.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Separate temporary (decaying, mechanical) from permanent (informational) impact; propagator models tie them together with power-law decay.</li>
+            <li>The square-root law $\Delta p \sim \sigma\sqrt{Q/V}$ is the most robust empirical fact in execution — cost scales with participation.</li>
+            <li>Heavy-tailed sizes, long-memory signs, Hawkes-clustered arrivals: the statistical environment any execution model must inhabit.</li>
+            <li>Linear (Almgren-Chriss) for tractability, concave-with-decay for realism — and respect no-arbitrage constraints on impact shapes.</li>
+        </ul>
+    </div>
+</div>

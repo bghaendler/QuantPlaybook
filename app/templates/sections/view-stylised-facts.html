@@ -1,0 +1,62 @@
+<div id="view-stylised-facts" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Stylised Facts of Asset Returns</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The robust empirical regularities observed across asset classes, markets and time periods — and why they break the textbook Gaussian random-walk model.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. What Is a Stylised Fact?</h3>
+        <p>A <strong>stylised fact</strong> is a statistical property of returns so persistent across instruments, markets and decades that any candidate model must reproduce it. Defining the log-return over horizon $\tau$ as</p>
+        $$r_t(\tau) = \ln S_{t+\tau} - \ln S_t,$$
+        <p>the benchmark Geometric Brownian Motion model predicts that $r_t(\tau)$ is i.i.d. Gaussian with variance proportional to $\tau$. Empirical data systematically violates this in at least five well-documented ways.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Fat Tails (Excess Kurtosis)</h3>
+        <p>Daily equity returns exhibit kurtosis far above the Gaussian value of 3 — typically 5 to 30 for indices, higher for single stocks. The tails decay approximately as a power law:</p>
+        $$\mathbb{P}(|r| > x) \sim x^{-\alpha}, \qquad \alpha \approx 3 \text{ to } 5,$$
+        <p>the so-called <em>cubic law</em> of returns. Practical consequence: a "25-sigma" event under the normal distribution (essentially impossible) is merely rare under a fat-tailed law. Tail risk measures and option smiles both originate here.</p>
+        <p>As the sampling horizon $\tau$ increases (daily → weekly → monthly), the distribution slowly approaches Gaussianity — <strong>aggregational Gaussianity</strong> — consistent with the Central Limit Theorem acting on weakly dependent increments.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Volatility Clustering &amp; Long Memory</h3>
+        <p>While returns themselves are nearly uncorrelated, their <em>magnitudes</em> are strongly autocorrelated:</p>
+        $$\operatorname{corr}(r_t, r_{t+k}) \approx 0, \qquad \operatorname{corr}(|r_t|, |r_{t+k}|) > 0 \text{ for } k \text{ up to months.}$$
+        <p>"Large changes tend to be followed by large changes — of either sign — and small changes by small changes" (Mandelbrot, 1963). The autocorrelation of $|r_t|$ decays slowly, roughly as $k^{-\beta}$ with $\beta \in (0.2, 0.4)$, a signature of <strong>long memory</strong> in volatility. This is the empirical foundation of ARCH/GARCH and stochastic-volatility models.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Leverage Effect &amp; Gain/Loss Asymmetry</h3>
+        <p>Volatility is negatively correlated with past returns:</p>
+        $$\operatorname{corr}(r_t, \sigma_{t+k}^2) < 0, \quad k > 0.$$
+        <p>Falling prices raise volatility more than rising prices of the same size — partly a financial-leverage story (equity becomes riskier as firm value drops), partly risk-premium feedback. In option markets this asymmetry manifests as the persistent <strong>negative skew</strong> of equity implied volatility. Drawdowns are also steeper than rallies: large negative returns occur more often than equally large positive ones.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Absence of Linear Autocorrelation</h3>
+        <p>Beyond very short timescales (minutes, where microstructure effects dominate), linear autocorrelations of returns are statistically negligible — otherwise simple linear strategies would arbitrage them away. This is consistent with the (weak-form) efficient market hypothesis, yet emphatically does <em>not</em> imply independence: nonlinear functions of returns ($|r|$, $r^2$) are predictable.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Summary Table: Model vs. Reality</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead>
+                <tr style="border-bottom: 2px solid var(--card-border); text-align: left;">
+                    <th style="padding: 0.5rem;">Property</th>
+                    <th style="padding: 0.5rem;">GBM Prediction</th>
+                    <th style="padding: 0.5rem;">Empirical Fact</th>
+                    <th style="padding: 0.5rem;">Model Response</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Tails</td><td style="padding: 0.5rem;">Gaussian (kurtosis 3)</td><td style="padding: 0.5rem;">Power-law, kurtosis 5–30</td><td style="padding: 0.5rem;">Jumps, Student-t, Lévy</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Volatility</td><td style="padding: 0.5rem;">Constant $\sigma$</td><td style="padding: 0.5rem;">Clustered, long memory</td><td style="padding: 0.5rem;">GARCH, Heston, rough vol</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Symmetry</td><td style="padding: 0.5rem;">Symmetric</td><td style="padding: 0.5rem;">Negative skew, leverage effect</td><td style="padding: 0.5rem;">Correlated vol (ρ &lt; 0), GJR</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Autocorrelation</td><td style="padding: 0.5rem;">None</td><td style="padding: 0.5rem;">None in $r$, strong in $|r|$</td><td style="padding: 0.5rem;">Conditional heteroskedasticity</td></tr>
+                <tr><td style="padding: 0.5rem;">Aggregation</td><td style="padding: 0.5rem;">Gaussian at all scales</td><td style="padding: 0.5rem;">Gaussian only at long scales</td><td style="padding: 0.5rem;">CLT on weak dependence</td></tr>
+            </tbody>
+        </table>
+        <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.75rem;">Reference: Cont, R. (2001), <em>"Empirical properties of asset returns: stylized facts and statistical issues"</em>, Quantitative Finance 1, 223–236.</p>
+    </div>
+</div>

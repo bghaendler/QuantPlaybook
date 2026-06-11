@@ -1,0 +1,47 @@
+<div id="view-ca-p02" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Complex Analysis for Quants — Part 02</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">De Moivre's Theorem &amp; Euler Integrals</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Polar form as a computational engine: powers, roots of unity, trig identities for free, and the Euler-formula integrals that shortcut real calculus.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Polar Form &amp; de Moivre</h3>
+        <p>Write $z = r(\cos\theta + i\sin\theta) = re^{i\theta}$. Multiplication multiplies moduli and adds arguments, so powers are trivial in polar form:</p>
+        $$z^n = r^n e^{in\theta} \quad\Longleftrightarrow\quad (\cos\theta + i\sin\theta)^n = \cos n\theta + i\sin n\theta \;\;\text{(de Moivre)}.$$
+        <p>Expanding the left side binomially and matching real/imaginary parts generates trig identities mechanically: $n = 2$ gives $\cos 2\theta = \cos^2\theta - \sin^2\theta$ and $\sin 2\theta = 2\sin\theta\cos\theta$; $n = 3$ gives $\cos 3\theta = 4\cos^3\theta - 3\cos\theta$ — no memorization, just algebra.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Roots of Unity (and Why FFT Cares)</h3>
+        <p>$z^n = 1$ has exactly $n$ solutions, equally spaced on the unit circle:</p>
+        $$\omega_k = e^{2\pi i k/n}, \quad k = 0, 1, \dots, n-1.$$
+        <p>General $n$-th roots: $z^n = w = \rho e^{i\phi}$ ⇒ $z_k = \rho^{1/n}e^{i(\phi + 2\pi k)/n}$ — one principal root rotated $n$ times. The roots of unity are the evaluation nodes of the discrete Fourier transform; the FFT's $O(N\log N)$ magic is the algebra $\omega_{2n}^2 = \omega_n$ splitting even/odd indices. Every Carr-Madan FFT pricing run (Part 01) is de Moivre exploited at industrial scale.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Euler-Formula Integrals</h3>
+        <p>From $e^{i\theta} = \cos\theta + i\sin\theta$: $\cos\theta = \frac{e^{i\theta} + e^{-i\theta}}{2}$, $\sin\theta = \frac{e^{i\theta} - e^{-i\theta}}{2i}$. This turns hard real integrals into easy exponential ones — integrate, then take real/imaginary parts:</p>
+        $$\int e^{ax}\cos bx\,dx = \mathrm{Re}\int e^{(a+ib)x}dx = \mathrm{Re}\,\frac{e^{(a+ib)x}}{a+ib} = \frac{e^{ax}(a\cos bx + b\sin bx)}{a^2 + b^2},$$
+        <p>— one line instead of two rounds of integration by parts. The same move computes the Gaussian-times-cosine integral behind characteristic functions of normals:</p>
+        $$\int_{-\infty}^{\infty} e^{iux}\phi(x)\,dx = e^{-u^2/2} \quad\text{(complete the square with an imaginary shift)},$$
+        <p>which is precisely $\varphi_Z(u)$ for $Z \sim \mathcal{N}(0,1)$ — the simplest characteristic function in the pricing toolkit, derived by the simplest complex trick.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Powers of Trig via Exponentials (Linearization)</h3>
+        <p>Inverting the substitution linearizes powers — essential for integrating $\cos^n$:</p>
+        $$\cos^4\theta = \left(\frac{e^{i\theta} + e^{-i\theta}}{2}\right)^4 = \frac{1}{8}\cos 4\theta + \frac{1}{2}\cos 2\theta + \frac{3}{8},$$
+        <p>so $\int_0^{2\pi}\cos^4\theta\,d\theta = \frac{3\pi}{4}$ by inspection (only the constant survives). This "pick out the constant term" instinct is a dry run for the residue theorem: integrating $e^{ik\theta}$ over a full circle gives 0 unless $k = 0$ — orthogonality, Fourier coefficients, and residues are all the same observation.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>de Moivre turns powers into angle multiplication and mass-produces trig identities.</li>
+            <li>$n$-th roots: principal root rotated by $2\pi/n$; roots of unity are the FFT's grid.</li>
+            <li>Euler's formula converts trig integrals into exponentials — including the normal characteristic function $e^{-u^2/2}$.</li>
+            <li>$\oint e^{ik\theta}d\theta = 0$ unless $k=0$: the seed of orthogonality and the residue theorem alike.</li>
+        </ul>
+    </div>
+</div>

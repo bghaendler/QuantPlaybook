@@ -1,0 +1,51 @@
+<div id="view-asv-p05" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Asymptotics of Stochastic Volatility — Part 05</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Exponential Lévy Option Asymptotics</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Jump models in the asymptotic lens: small-time smiles that don't vanish, wing slopes from exponential moments, and the diagnostic that separates jumps from diffusion in market data.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Exponential Lévy Models</h3>
+        <p>$S_t = S_0e^{X_t}$ with $X$ a Lévy process: characteristic exponent via Lévy-Khintchine,</p>
+        $$\ln\mathbb{E}[e^{iuX_t}] = t\Big(iub - \tfrac{1}{2}\sigma^2u^2 + \int\big(e^{iux} - 1 - iux\mathbf{1}_{|x|<1}\big)\nu(dx)\Big),$$
+        <p>with the Lévy measure ν carrying the jumps. The cast: Merton (Gaussian jumps + diffusion), Kou (double-exponential), Variance Gamma and CGMY (infinite-activity pure jump). Pricing runs on Part CA-17's Fourier machinery — these models exist <em>because</em> their characteristic functions are simple while their densities aren't.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Small-Time Asymptotics: Jumps Change Everything</h3>
+        <p>Compare with diffusion/SV (Part 03's $T\to0$ regime):</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>OTM option prices:</strong> diffusive models ⇒ $C(K,T) \sim e^{-c/T}$ (exponentially small — Varadhan); Lévy models ⇒ $C(K,T) \sim T\cdot\int(\,\cdot\,)\nu(dx)$ — <strong>linear in T</strong>: one jump suffices to cross the strike, and the probability of one jump is $O(T)$.</li>
+            <li><strong>Implied vol smiles:</strong> consequently the smile does <em>not</em> flatten as $T \to 0$ — it <strong>steepens</strong>: $\sigma_{BS}(k, T) \sim \frac{|k|}{\sqrt{2T\ln(1/T)}}$-type blowup at fixed OTM strike. Empirical short-dated equity/index smiles are extremely steep — the classic evidence for a jump component (and, alternatively explained by rough vol — the live debate).</li>
+            <li><strong>ATM behavior:</strong> with a diffusion part, ATM vol → σ; pure-jump infinite-variation (CGMY Y &gt; 1) mimics diffusion ATM; finite-variation VG has ATM vol → 0 like $\sqrt{T\ln(1/T)}$ — fine structure of ν visible at the money.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Wings: Lee's Moment Formula Is Exact Here</h3>
+        <p>Exponential moments $\mathbb{E}[S_T^u] = e^{T\kappa(u)}$ exist iff $\int_{|x|>1}e^{ux}\nu(dx) < \infty$ — for Kou/VG/CGMY this caps $u$ at the exponential tail rates of ν (e.g. Kou's $\eta_1, \eta_2$; CGMY's G, M). Lee's formula then pins the wing slopes of total implied variance:</p>
+        $$\limsup_{k\to\infty}\frac{\sigma_{BS}^2(k)T}{|k|} = \psi(u^* - 1), \qquad \psi(x) = 2 - 4(\sqrt{x^2 + x} - x),$$
+        <p>so <strong>wing slopes are time-stationary and read off ν's tails directly</strong> — calibrating G and M (or η₁, η₂) <em>is</em> calibrating the wings. Contrast SV: critical moments move with T (Part 04). This stationarity — same smile shape every maturity, just $\sqrt{T}$-scaled — is also Lévy models' weakness: they cannot fit the term-structure of skew (floating smiles), motivating SV-Lévy hybrids (Part 07).</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Diagnostics and Use</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Jump vs. diffusion test in data:</strong> plot OTM option prices vs. T at fixed strike on log axes — linear-in-T decay flags jumps; $e^{-c/T}$ flags diffusion; realized-variance-based tests (bipower variation) corroborate from the time series.</li>
+            <li><strong>Calibration division of labor:</strong> short-dated steep smiles identify ν (jump intensity/tails); long-dated smiles need the SV layer — same regime-matching principle as Part 03.</li>
+            <li><strong>Risk reading:</strong> linear-in-T OTM prices mean short-dated wing options are jump insurance, almost pure ν-risk — hedge with strikes, not with delta.</li>
+            <li><strong>Numerics:</strong> all of the above is testable in the Carr-Madan pricer with Kou/VG characteristic functions — the small-T linearity emerges by 1–2 week maturities.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Lévy OTM prices decay linearly in T (one-jump events) vs. exponentially for diffusions — smiles steepen, not flatten, as T→0.</li>
+            <li>Wing slopes are exact functions of ν's exponential tails via Lee's formula — and time-stationary.</li>
+            <li>Stationary smile shape is the fingerprint <em>and</em> the flaw: jumps fit short-dated steepness, fail skew term-structure.</li>
+            <li>Log-log price-vs-maturity plots separate jumps from diffusion in market data; calibrate ν short, SV long.</li>
+        </ul>
+    </div>
+</div>

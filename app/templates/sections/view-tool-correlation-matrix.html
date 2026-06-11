@@ -1,0 +1,138 @@
+<div id="view-tool-correlation-matrix" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Multi-Asset Correlation Matrix Builder</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Enter pairwise correlations for up to four assets, validate positive semi-definiteness, and compute portfolio volatility and diversification metrics live.</p>
+    </header>
+
+    <div class="card">
+        <h3>Inputs</h3>
+        <div style="display:flex; gap:1rem; align-items:center; margin-bottom: 0.75rem; font-size: 0.85rem;">
+            <label>Assets: <select id="cmN" onchange="cmBuildInputs()" style="padding:0.3rem; border-radius:6px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);"><option>2</option><option selected>3</option><option>4</option></select></label>
+        </div>
+        <div id="cmInputs"></div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Diagnostics &amp; Portfolio Risk</h3>
+        <div id="cmPsd" style="font-weight: 700; margin-bottom: 0.75rem;"></div>
+        <div id="cmMatrix" style="overflow-x: auto; margin-bottom: 1rem;"></div>
+        <div id="cmPort" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.75rem;"></div>
+        <p style="font-size: 0.8rem; color: #64748b; margin-top: 0.75rem;">Portfolio variance: $\sigma_p^2 = w^\top \Sigma w$ with $\Sigma_{ij} = \rho_{ij}\sigma_i\sigma_j$. The diversification ratio is $\sum w_i\sigma_i / \sigma_p$ — the higher, the more correlation benefit captured.</p>
+    </div>
+
+    <div class="card">
+        <h3>Why PSD Validation Matters</h3>
+        <ul style="line-height: 1.8;">
+            <li>Pairwise estimates from different windows/sources routinely assemble into a non-PSD "matrix" — implying <em>negative portfolio variance</em> for some weights. Monte Carlo (Cholesky) fails instantly; optimizers silently exploit the inconsistency.</li>
+            <li>Three-asset intuition: with $\rho_{12} = \rho_{13} = 0.9$, transitivity forces $\rho_{23} \ge 2(0.9)^2 - 1 = 0.62$. The checker enforces the determinant condition $1 - \rho_{12}^2 - \rho_{13}^2 - \rho_{23}^2 + 2\rho_{12}\rho_{13}\rho_{23} \ge 0$ and full eigenvalue positivity.</li>
+            <li><strong>Repair methods</strong> when estimation breaks PSD: eigenvalue clipping (set negatives to 0, rescale), or Higham's nearest-correlation-matrix algorithm — both standard pre-processing before Cholesky.</li>
+            <li>Estimation upgrades for production: shrinkage (Ledoit-Wolf) toward structured targets, factor models, and stress overlays (crisis ρ → 1) for tail risk.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+var cmDefaults = [[1, 0.6, 0.3, 0.2], [0.6, 1, 0.5, 0.3], [0.3, 0.5, 1, 0.4], [0.2, 0.3, 0.4, 1]];
+
+function cmBuildInputs() {
+    var n = parseInt(document.getElementById('cmN').value);
+    var html = '<table style="border-collapse: collapse; font-size: 0.85rem;">';
+    html += '<tr><th style="padding:0.3rem;"></th>';
+    for (var j = 0; j < n; j++) html += '<th style="padding:0.3rem;">A' + (j + 1) + '</th>';
+    html += '<th style="padding:0.3rem 0.6rem;">Vol σ</th><th style="padding:0.3rem 0.6rem;">Weight w</th></tr>';
+    for (var i = 0; i < n; i++) {
+        html += '<tr><th style="padding:0.3rem;">A' + (i + 1) + '</th>';
+        for (var j = 0; j < n; j++) {
+            if (j < i) html += '<td style="padding:0.2rem; text-align:center; color:#64748b;" id="cmMirror' + i + '_' + j + '">·</td>';
+            else if (j === i) html += '<td style="padding:0.2rem; text-align:center; font-weight:700;">1</td>';
+            else html += '<td style="padding:0.2rem;"><input id="cmR' + i + '_' + j + '" type="number" value="' + cmDefaults[i][j] + '" min="-1" max="1" step="0.05" oninput="cmCompute()" style="width: 70px; padding:0.25rem; border-radius:6px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);"></td>';
+        }
+        html += '<td style="padding:0.2rem;"><input id="cmV' + i + '" type="number" value="' + [0.20, 0.25, 0.30, 0.18][i] + '" min="0.01" step="0.01" oninput="cmCompute()" style="width: 70px; padding:0.25rem; border-radius:6px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);"></td>';
+        html += '<td style="padding:0.2rem;"><input id="cmW' + i + '" type="number" value="' + (1 / n).toFixed(2) + '" step="0.05" oninput="cmCompute()" style="width: 70px; padding:0.25rem; border-radius:6px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);"></td>';
+        html += '</tr>';
+    }
+    html += '</table>';
+    document.getElementById('cmInputs').innerHTML = html;
+    cmCompute();
+}
+
+function cmEigenMin(R, n) {
+    // Smallest eigenvalue via inverse-shifted power iteration substitute:
+    // use Jacobi-free approach: power iteration on (cI - R) where c = n (>= max eig)
+    var c = n + 1;
+    var v = []; for (var i = 0; i < n; i++) v.push(Math.random() + 0.1);
+    for (var iter = 0; iter < 300; iter++) {
+        var u = new Array(n).fill(0);
+        for (var i = 0; i < n; i++) {
+            for (var j = 0; j < n; j++) u[i] += (((i === j) ? c : 0) - R[i][j]) * v[j];
+        }
+        var norm = Math.sqrt(u.reduce(function(a, x) { return a + x * x; }, 0));
+        if (norm < 1e-14) break;
+        v = u.map(function(x) { return x / norm; });
+    }
+    // Rayleigh quotient of (cI - R) gives c - lambda_min(R)... (largest of shifted)
+    var Rv = new Array(n).fill(0);
+    for (var i = 0; i < n; i++) for (var j = 0; j < n; j++) Rv[i] += R[i][j] * v[j];
+    var lam = 0; for (var i = 0; i < n; i++) lam += v[i] * Rv[i];
+    return lam; // smallest eigenvalue of R
+}
+
+function cmCompute() {
+    var n = parseInt(document.getElementById('cmN').value);
+    var R = [], vols = [], wts = [];
+    for (var i = 0; i < n; i++) {
+        R.push(new Array(n).fill(0)); R[i][i] = 1;
+        vols.push(parseFloat(document.getElementById('cmV' + i).value) || 0.2);
+        wts.push(parseFloat(document.getElementById('cmW' + i).value) || 0);
+    }
+    for (var i = 0; i < n; i++) for (var j = i + 1; j < n; j++) {
+        var el = document.getElementById('cmR' + i + '_' + j);
+        var rho = Math.max(-1, Math.min(1, parseFloat(el.value) || 0));
+        R[i][j] = rho; R[j][i] = rho;
+        var mir = document.getElementById('cmMirror' + j + '_' + i);
+        if (mir) mir.textContent = rho.toFixed(2);
+    }
+    var lamMin = cmEigenMin(R, n);
+    var psdEl = document.getElementById('cmPsd');
+    if (lamMin >= -1e-9) {
+        psdEl.style.color = '#10b981';
+        psdEl.textContent = '✓ Valid correlation matrix (smallest eigenvalue ≈ ' + lamMin.toFixed(4) + ' ≥ 0) — Cholesky-safe';
+    } else {
+        psdEl.style.color = '#ef4444';
+        psdEl.textContent = '⚠ NOT positive semi-definite (smallest eigenvalue ≈ ' + lamMin.toFixed(4) + ') — impossible correlations; repair before simulating';
+    }
+    // Covariance display
+    var html = '<table style="border-collapse: collapse; font-size: 0.82rem;"><tr><th style="padding:0.3rem;">Σ (cov)</th>';
+    for (var j = 0; j < n; j++) html += '<th style="padding:0.3rem;">A' + (j + 1) + '</th>';
+    html += '</tr>';
+    for (var i = 0; i < n; i++) {
+        html += '<tr><th style="padding:0.3rem;">A' + (i + 1) + '</th>';
+        for (var j = 0; j < n; j++) {
+            html += '<td style="padding:0.3rem; text-align:right; font-family:monospace;">' + (R[i][j] * vols[i] * vols[j]).toFixed(4) + '</td>';
+        }
+        html += '</tr>';
+    }
+    html += '</table>';
+    document.getElementById('cmMatrix').innerHTML = html;
+    // Portfolio metrics
+    var wSum = wts.reduce(function(a, x) { return a + x; }, 0);
+    var varP = 0, wAvgVol = 0;
+    for (var i = 0; i < n; i++) {
+        wAvgVol += wts[i] * vols[i];
+        for (var j = 0; j < n; j++) varP += wts[i] * wts[j] * R[i][j] * vols[i] * vols[j];
+    }
+    var sigP = Math.sqrt(Math.max(varP, 0));
+    var divRatio = sigP > 1e-12 ? wAvgVol / sigP : 0;
+    function card(l, v) {
+        return '<div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.6rem 0.8rem;">' +
+            '<div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">' + l + '</div>' +
+            '<div style="font-size: 1.2rem; font-weight: 800;">' + v + '</div></div>';
+    }
+    document.getElementById('cmPort').innerHTML =
+        card('Weight sum', wSum.toFixed(2)) +
+        card('Weighted avg vol', (100 * wAvgVol).toFixed(2) + '%') +
+        card('Portfolio vol σₚ', (100 * sigP).toFixed(2) + '%') +
+        card('Diversification ratio', divRatio.toFixed(3));
+}
+setTimeout(cmBuildInputs, 400);
+</script>

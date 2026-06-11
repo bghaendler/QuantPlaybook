@@ -1,0 +1,58 @@
+<div id="view-ad-p03" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Algorithmic Adjoint Differentiation — Part 03</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Elemental Operations &amp; Computation Graphs</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The DAG picture that unifies all of AD: nodes, local partials, and the two sweep directions — worked end-to-end on a Black-Scholes-flavored example.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Programs as DAGs</h3>
+        <p>Decompose execution into <strong>elemental operations</strong> — unary/binary primitives with known partials. Each intermediate $v_i = \phi_i(v_{j \prec i})$ is a node; edges carry the local partials $\partial v_i/\partial v_j$. Example function (a stylized $d_1$ computation):</p>
+        $$y = \frac{\ln(S/K) + \sigma^2/2}{\sigma}$$
+        <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.8rem; font-size: 0.8rem; overflow-x: auto;">v1 = S / K          ∂v1/∂S = 1/K        ∂v1/∂K = -S/K²
+v2 = ln(v1)         ∂v2/∂v1 = 1/v1
+v3 = σ * σ          ∂v3/∂σ = 2σ
+v4 = v3 / 2         ∂v4/∂v3 = 1/2
+v5 = v2 + v4        ∂v5/∂v2 = ∂v5/∂v4 = 1
+y  = v5 / σ         ∂y/∂v5 = 1/σ        ∂y/∂σ = -v5/σ²</pre>
+        <p>The graph is a DAG (σ feeds two nodes — "fan-out"); the full derivative is the <strong>sum over all paths</strong> from input to output of the product of edge partials (Baur-Strassen view).</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Forward Sweep on the Graph</h3>
+        <p>Seed $\dot{S} = 1$ (others 0); push tangents through every node in execution order: $\dot{v}_i = \sum_j \frac{\partial v_i}{\partial v_j}\dot{v}_j$.</p>
+        <p>With $S = 100, K = 95, \sigma = 0.2$: $\dot{v}_1 = 1/95$, $\dot{v}_2 = \frac{1}{v_1}\dot{v}_1 = 1/100$, $\dot{v}_5 = 0.01$, $\dot{y} = 0.01/0.2 = \mathbf{0.05} = \partial y/\partial S = \frac{1}{S\sigma}$ ✓. One sweep per input — to get $\partial y/\partial K$ and $\partial y/\partial\sigma$, re-run with the other seeds (or vector mode, Part 05).</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Reverse Sweep on the Graph</h3>
+        <p>Seed $\bar{y} = 1$; pull <strong>adjoints</strong> backwards: $\bar{v}_j \mathrel{+}= \frac{\partial v_i}{\partial v_j}\bar{v}_i$ (note the <strong>accumulation</strong> — fan-out nodes sum contributions over all uses).</p>
+        <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.8rem; font-size: 0.8rem; overflow-x: auto;">ȳ  = 1
+v̄5 = ȳ/σ = 5            σ̄ += ȳ·(-v5/σ²)        ← y-node
+v̄2 = v̄5 = 5             v̄4 = v̄5 = 5            ← sum node
+v̄3 = v̄4/2 = 2.5         σ̄ += v̄3·2σ = +1        ← σ's 2nd use
+v̄1 = v̄2/v1 = 4.75
+S̄  = v̄1/K = 0.05        K̄ = v̄1·(-S/K²) ≈ -0.0526</pre>
+        <p>One backward sweep delivered <strong>all three</strong> sensitivities ($\bar S, \bar K, \bar\sigma$) — the $O(1)$-per-output miracle, visible at graph scale. The missed <code>+=</code> at fan-out nodes is the single most common hand-coded-adjoint bug.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Graph-Level Insights</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Memory = live nodes:</strong> reverse needs intermediate values ($v_1, \sigma, \ldots$) available <em>backwards</em> — store (tape) or recompute (checkpointing, Part 06): the graph makes the trade visible.</li>
+            <li><strong>Mode choice = matrix shape:</strong> Jacobian of $f: \mathbb{R}^n \to \mathbb{R}^m$ costs $n$ forward or $m$ reverse sweeps; cross-country/optimal elimination orders (interleaving) are NP-hard in general — heuristics only.</li>
+            <li><strong>ML framing:</strong> this DAG <em>is</em> TensorFlow/PyTorch's computation graph; backprop's $\delta$'s are the $\bar{v}$'s; "gradient accumulation" is the fan-out rule.</li>
+            <li><strong>Custom nodes:</strong> any subgraph with a known mathematical derivative (a solve, an interpolation, a BS formula) can collapse into one super-node with hand-supplied partials — the optimization that powers Part 02's hybrid pattern.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Execution = DAG of elementals; derivatives = sums over paths of products of local partials.</li>
+            <li>Forward pushes tangents (per input); reverse pulls adjoints (per output) with <code>+=</code> at every fan-out.</li>
+            <li>The reverse sweep's need for stored intermediates is AD's defining engineering constraint.</li>
+            <li>Collapsing subgraphs into super-nodes with analytic partials is the key production optimization.</li>
+        </ul>
+    </div>
+</div>

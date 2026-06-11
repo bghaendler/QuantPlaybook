@@ -1,0 +1,61 @@
+<div id="view-hft-p07" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">High-Frequency Trading &amp; Market Microstructure — Part 07</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Transaction Cost Minimization Frameworks</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Implementation shortfall, the Almgren-Chriss efficient frontier of execution, and the benchmark zoo (VWAP/TWAP/POV) that schedules are judged against.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Implementation Shortfall: The Honest Scorecard</h3>
+        <p>Perold's decomposition against the <strong>decision price</strong> $p_0$ (mid when the order was decided):</p>
+        $$\mathrm{IS} = \underbrace{\sum_k n_k(p_k - p_0)}_{\text{execution cost}} + \underbrace{(Q - \textstyle\sum n_k)(p_T - p_0)}_{\text{opportunity cost of the unfilled}}$$
+        <p>split further into delay cost (decision→start), trading cost (impact + spread), and timing risk (price variance while exposed). IS is the only benchmark aligned with portfolio P&amp;L: VWAP can flatter an algo that drifted with the market all day.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Almgren-Chriss Frontier</h3>
+        <p>Liquidate $X_0$ over $[0, T]$ with trajectory $x(t)$ (inventory), linear impact (Part 02–03 parameters). Expected cost and variance:</p>
+        $$\mathbb{E}[C] = \tfrac{\gamma}{2}X_0^2 + \eta\int_0^T \dot{x}^2dt, \qquad \mathrm{Var}[C] = \sigma^2\int_0^T x^2dt.$$
+        <p>Minimize $\mathbb{E}[C] + \lambda\,\mathrm{Var}[C]$ ⇒ Euler-Lagrange gives the closed-form schedule:</p>
+        $$x(t) = X_0\,\frac{\sinh\!\big(\kappa(T - t)\big)}{\sinh(\kappa T)}, \qquad \kappa = \sqrt{\frac{\lambda\sigma^2}{\eta}}.$$
+        <ul style="line-height: 1.8;">
+            <li>$\lambda \to 0$ (cost-only): linear trajectory = TWAP — slowest, cheapest in expectation, max timing risk.</li>
+            <li>$\lambda$ large (risk-averse): front-loaded exponential — pay impact now to kill exposure. $1/\kappa$ is the strategy's <strong>half-life of urgency</strong>.</li>
+            <li>Varying $\lambda$ traces an <strong>efficient frontier</strong> in (E[cost], Var[cost]) — execution's Markowitz diagram; alpha expectations enter as a drift term tilting schedules forward (sell faster into expected declines).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. The Benchmark Zoo</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;">Algo</th><th style="padding: 0.45rem;">Target</th><th style="padding: 0.45rem;">Character</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">TWAP</td><td style="padding: 0.45rem;">Even in time</td><td style="padding: 0.45rem;">Simple, predictable (gameable); λ→0 limit above</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">VWAP</td><td style="padding: 0.45rem;">Even in volume time (Part 05 profile)</td><td style="padding: 0.45rem;">Benchmark-replicating; ignores price and alpha</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">POV (participation)</td><td style="padding: 0.45rem;">Fixed % of realized volume</td><td style="padding: 0.45rem;">Adapts to activity; unbounded duration; tail-risk via Part 04 spikes</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">IS / Arrival</td><td style="padding: 0.45rem;">Minimize shortfall vs. $p_0$</td><td style="padding: 0.45rem;">The Almgren-Chriss family; risk-aversion knob</td></tr>
+                <tr><td style="padding: 0.45rem;">Adaptive / liquidity-seeking</td><td style="padding: 0.45rem;">Opportunistic</td><td style="padding: 0.45rem;">Speeds up in cheap liquidity (dark fills, spread state, imbalance)</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>4. Practice Notes</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Choose the benchmark to match the intent:</strong> portfolio-transition flow → IS; benchmark-tracking funds → VWAP; "don't be more than x% of the tape" mandates → POV.</li>
+            <li><strong>Micro-layer matters as much as the schedule:</strong> within each slice, passive/aggressive child placement (queue value vs. spread cost, Part 01) moves realized cost more than schedule tweaks.</li>
+            <li><strong>Predictability is leakage:</strong> rigid TWAP/VWAP footprints get anticipated; randomize slice timing/size within the optimal envelope.</li>
+            <li><strong>TCA the loop:</strong> measured shortfall by bucket (Part 03) re-estimates $(\eta, \gamma, \sigma)$ → re-solves the frontier — execution research is this closed loop.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>IS against the decision price is the P&amp;L-aligned cost metric; VWAP comparisons can hide drift.</li>
+            <li>Almgren-Chriss: mean-variance over trajectories ⇒ sinh schedule with urgency $\kappa = \sqrt{\lambda\sigma^2/\eta}$ — an efficient frontier for execution.</li>
+            <li>TWAP/VWAP/POV/IS/adaptive: pick by mandate; alpha tilts schedules, risk aversion front-loads them.</li>
+            <li>Slice placement, randomization, and the TCA re-calibration loop are where production systems earn their keep.</li>
+        </ul>
+    </div>
+</div>

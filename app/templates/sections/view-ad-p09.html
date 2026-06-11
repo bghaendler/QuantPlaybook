@@ -1,0 +1,61 @@
+<div id="view-ad-p09" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Algorithmic Adjoint Differentiation — Part 09</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Automatic Code Generation Tools (Adjoint Applications)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The tool landscape — Tapenade to Enzyme to JAX — what each generates, integration patterns for quant libraries, and the application checklist for adjoint deployments.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Tool Landscape</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.86rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;">Tool</th><th style="padding: 0.45rem;">Approach</th><th style="padding: 0.45rem;">Notes for quant use</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Tapenade</td><td style="padding: 0.45rem;">SCT, Fortran/C</td><td style="padding: 0.45rem;">The reference for generated adjoints + stack discipline (Part 07's conventions are its output style)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Enzyme</td><td style="padding: 0.45rem;">SCT at LLVM-IR level</td><td style="padding: 0.45rem;">Differentiates <em>optimized</em> IR of C++/Rust/Julia — post-optimization AD is often fastest; CUDA support</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">dco/c++, CppAD, ADOL-C</td><td style="padding: 0.45rem;">OO taping, C++</td><td style="padding: 0.45rem;">Bank-standard adoption path (Part 02); dco dominates commercial XVA installs</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">JAX / PyTorch</td><td style="padding: 0.45rem;">Trace → compile (XLA) / dynamic tape</td><td style="padding: 0.45rem;">Research default; <code>vjp/jvp/custom_vjp</code> map 1:1 to this series' concepts; GPU-native</td></tr>
+                <tr><td style="padding: 0.45rem;">Stan Math, Adept</td><td style="padding: 0.45rem;">OO with expression templates</td><td style="padding: 0.45rem;">Expression-level preaccumulation — low overhead for scalar-heavy code</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>2. Integration Patterns for a Quant Library</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Scalar-template the analytics core</strong> (<code>template&lt;class Real&gt;</code>): one source tree serves <code>double</code>, tangent, and adjoint types — the dco/CppAD adoption route; keep I/O, logging and infrastructure passive.</li>
+            <li><strong>Registered primitives at module boundaries:</strong> curve bootstrap (implicit-function adjoint of the solved system), Brent/Newton solvers, SVD/regressions, interpolators — each exposes <code>custom_vjp</code>-style analytic derivatives; tools differentiate only the glue between them.</li>
+            <li><strong>Payoff smoothing policy:</strong> digitals/barriers carry zero a.s. pathwise derivatives but nonzero true Greeks — institutionalize smoothed payoffs (call-spread digitals, barrier shifts) or hybrid likelihood-ratio terms <em>in the library</em>, not per-trade ad hoc.</li>
+            <li><strong>Regression-tested derivative builds:</strong> every release runs tangent-vs-bump, adjoint-vs-tangent dot products, and golden gradients on a trade zoo — generated code changes with the tool version; CI is the safety net.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Flagship Applications</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>XVA risk (the killer app):</strong> CVA's gradient over thousands of curve/vol nodes at ~4–10× one CVA valuation — overnight batches became intraday; Giles-Glasserman's "Smoking adjoints" (2006) started the avalanche.</li>
+            <li><strong>Calibration:</strong> exact gradients/Jacobians for Levenberg-Marquardt — faster, more stable convergence than bumped Jacobians (and Part 05's vector-forward serves the few-parameter side).</li>
+            <li><strong>Capital &amp; XVA second-order:</strong> sensitivities of ES/SIMM margins; second-order needs Part 10's machinery.</li>
+            <li><strong>ML-in-finance crossover:</strong> differentiable pricers embedded in neural training loops (deep hedging, model calibration networks) — possible precisely because the pricer exposes vjp's.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Choosing, Pragmatically</h3>
+        <ul style="line-height: 1.8;">
+            <li>Existing large C++ library → OO templating (dco-style) + custom boundary adjoints; budget the Part 06 memory plan first.</li>
+            <li>New research code / GPU-first → JAX (or PyTorch): AD, JIT and vectorization in one tool; port hot paths later if needed.</li>
+            <li>Legacy Fortran/C kernels → Tapenade/Enzyme generation with hand-review of the emitted reversal.</li>
+            <li>Whatever the tool: the concepts are invariant — tapes, seeds, fan-out accumulation, checkpointing, custom adjoints. Tools change; Parts 03–08 don't.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Landscape: Tapenade/Enzyme generate; dco/CppAD tape; JAX traces and compiles — same mathematics throughout.</li>
+            <li>Template the core, register analytic adjoints at solver/regression boundaries, and standardize payoff smoothing.</li>
+            <li>XVA gradients and calibration Jacobians are the proven payoffs; deep-hedging pipelines are the growth area.</li>
+            <li>Pick tools by codebase reality; protect correctness with dot-product and golden-gradient CI.</li>
+        </ul>
+    </div>
+</div>

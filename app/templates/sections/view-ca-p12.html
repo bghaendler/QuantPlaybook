@@ -1,0 +1,54 @@
+<div id="view-ca-p12" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Complex Analysis for Quants — Part 12</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Definite Real Trigonometric Contour Evaluation</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Integrals of the form $\int_0^{2\pi} R(\cos\theta, \sin\theta)\,d\theta$: substitute the unit circle, collect poles inside, done.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Substitution</h3>
+        <p>On the unit circle $z = e^{i\theta}$, the whole trigonometric alphabet becomes rational in $z$:</p>
+        $$\cos\theta = \frac{1}{2}\left(z + \frac{1}{z}\right), \qquad \sin\theta = \frac{1}{2i}\left(z - \frac{1}{z}\right), \qquad d\theta = \frac{dz}{iz}.$$
+        <p>So any rational integrand in $\cos\theta, \sin\theta$ over a full period becomes a closed contour integral of a rational function:</p>
+        $$\int_0^{2\pi} R(\cos\theta, \sin\theta)\,d\theta = \oint_{|z|=1} R\!\left(\tfrac{z + z^{-1}}{2}, \tfrac{z - z^{-1}}{2i}\right)\frac{dz}{iz},$$
+        <p>evaluated by summing residues of the poles <em>strictly inside</em> the unit circle (Cauchy's formula / Part 15 machinery).</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Worked Example: The Poisson-Kernel Integral</h3>
+        <p>For $|a| < 1$, compute $I = \displaystyle\int_0^{2\pi}\frac{d\theta}{1 - 2a\cos\theta + a^2}$. Substituting:</p>
+        $$I = \oint_{|z|=1}\frac{1}{1 - a(z + z^{-1}) + a^2}\cdot\frac{dz}{iz} = \frac{1}{i}\oint\frac{dz}{(1 - az)(z - a)} \cdot \frac{1}{1}.$$
+        <p>The factorization $-az^2 + (1 + a^2)z - a = -a(z - a)(z - 1/a)$ puts one pole at $z = a$ (inside) and one at $z = 1/a$ (outside). Picking up the inside pole:</p>
+        $$I = 2\pi i \cdot \frac{1}{i}\cdot\frac{1}{1 - a^2} = \frac{2\pi}{1 - a^2}.$$
+        <p>This is exactly the normalization of the <strong>Poisson kernel</strong> from Part 07 — the disk's Dirichlet solver, integrated by the method it motivates. The same integral computes the variance ratio in AR(1) spectral densities ($a$ = autoregressive coefficient): spectral analysis of time series runs on this template.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. More Patterns From the Same Mold</h3>
+        <ul style="line-height: 1.8;">
+            <li>$\displaystyle\int_0^{2\pi}\frac{d\theta}{p + q\cos\theta} = \frac{2\pi}{\sqrt{p^2 - q^2}}$ ($p > |q|$): quadratic in $z$, one root inside — the master formula for this family.</li>
+            <li>$\displaystyle\int_0^{2\pi}\cos^{2n}\theta\,d\theta = 2\pi\binom{2n}{n}2^{-2n}$: binomially expand $(z + z^{-1})^{2n}/2^{2n}$, keep the $z^{-1}$ coefficient — coefficient extraction as in Part 11 (and de Moivre linearization from Part 02, now automated).</li>
+            <li>Numerators with $\cos k\theta$: write as $\frac{1}{2}(z^k + z^{-k})$; only the terms producing a net $z^{-1}$ after division survive.</li>
+            <li><strong>Half-range integrals</strong> $\int_0^\pi$: use symmetry to extend to $[0, 2\pi]$ first (even integrands in $\theta$), then substitute.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Where Quants Meet These Integrals</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Spectral densities:</strong> autocovariances of ARMA processes are exactly $\frac{1}{2\pi}\int_0^{2\pi} f(\omega)e^{ik\omega}d\omega$ with rational $f$ in $\cos\omega$ — unit-circle residues give closed-form autocorrelations (and the AR(1) example above).</li>
+            <li><strong>Characteristic functions of wrapped/circular distributions</strong> (von Mises) used in intraday seasonality modeling normalize through these integrals.</li>
+            <li><strong>Numerical sanity:</strong> these closed forms make excellent unit tests for quadrature code — exact answers with nontrivial structure.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>$z = e^{i\theta}$ converts full-period trig integrals to unit-circle contour integrals of rational functions.</li>
+            <li>Only poles strictly inside $|z| = 1$ contribute; factor the denominator and check moduli.</li>
+            <li>The Poisson-kernel normalization $\frac{2\pi}{1 - a^2}$ and the $\frac{2\pi}{\sqrt{p^2 - q^2}}$ family are the reusable results.</li>
+            <li>Same machinery powers ARMA spectral/autocovariance calculations — time-series analysis on the unit circle.</li>
+        </ul>
+    </div>
+</div>

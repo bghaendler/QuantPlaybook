@@ -1,0 +1,51 @@
+<div id="view-ca-p09" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Complex Analysis for Quants — Part 09</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Contour Parameterization &amp; Complex Integration</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">How to actually compute $\int_\gamma f(z)\,dz$: parameterize, substitute, integrate — plus the ML bound and the one integral that runs the whole subject.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Mechanics</h3>
+        <p>A contour is a piecewise-smooth oriented path $\gamma: [a,b] \to \mathbb{C}$. The integral reduces to a real-parameter integral:</p>
+        $$\int_\gamma f(z)\,dz = \int_a^b f(\gamma(t))\,\gamma'(t)\,dt.$$
+        <p>Standard parameterizations:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Segment</strong> $z_0 \to z_1$: $\gamma(t) = z_0 + t(z_1 - z_0)$, $t \in [0,1]$, $\gamma' = z_1 - z_0$.</li>
+            <li><strong>Circle</strong> $|z - z_0| = r$ (counterclockwise): $\gamma(\theta) = z_0 + re^{i\theta}$, $\theta \in [0, 2\pi]$, $dz = ire^{i\theta}d\theta$.</li>
+            <li><strong>Arc</strong>: same with $\theta$ restricted; <strong>reversal</strong> flips the sign: $\int_{-\gamma} = -\int_\gamma$; concatenation adds.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. The Most Important Integral in Complex Analysis</h3>
+        <p>On the unit circle $\gamma(\theta) = e^{i\theta}$, for integer $n$:</p>
+        $$\oint_{|z|=1} z^n\,dz = \int_0^{2\pi} e^{in\theta}\,ie^{i\theta}\,d\theta = i\int_0^{2\pi} e^{i(n+1)\theta}\,d\theta = \begin{cases} 2\pi i, & n = -1\\ 0, & n \ne -1.\end{cases}$$
+        <p>Every power of $z$ integrates to zero around a closed loop — except $1/z$, which picks up $2\pi i$. This single computation <em>is</em> the residue theorem in miniature: expand any function in powers (Laurent, Part 13), integrate term by term, and only the $1/z$ coefficient survives. Remember this one result and the rest of the series is corollaries.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Path Dependence vs. Antiderivatives</h3>
+        <ul style="line-height: 1.8;">
+            <li>If $f$ has an antiderivative $F$ on a domain containing $\gamma$: $\int_\gamma f\,dz = F(z_1) - F(z_0)$ — path-independent, closed loops give 0. Works for $z^n$ ($n \ne -1$) everywhere, hence the zeros above.</li>
+            <li>$1/z$ has no single-valued antiderivative on any loop around 0 ($\ln z$'s branch jump is exactly the $2\pi i$) — path dependence and branch cuts are the same phenomenon.</li>
+            <li>Example of genuine path dependence for non-holomorphic integrands: $\int \bar{z}\,dz$ from $0$ to $1+i$ gives $1$ along the diagonal but $1 + $ different cross-terms via the corner — CR failure (Part 06) shows up as path sensitivity.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. The ML Inequality (Estimation Lemma)</h3>
+        $$\left|\int_\gamma f(z)\,dz\right| \le M \cdot L, \qquad M = \max_{z \in \gamma}|f(z)|,\; L = \text{length}(\gamma).$$
+        <p>The workhorse for the limiting arguments of Parts 16–17: on a semicircular arc of radius $R$, an integrand decaying like $1/R^2$ against length $\pi R$ contributes $O(1/R) \to 0$ — which is how infinite real integrals get closed into loops. The companion <strong>Jordan's lemma</strong> handles the slower $e^{iaz}/R$ decay of Fourier-type integrands (the characteristic-function case). Numerical echo: when you discretize a contour integral (as FFT pricing does), ML controls the truncation error of cutting the integration range at $u_{max}$.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Parameterize, substitute $dz = \gamma'(t)dt$, integrate — contour integration is calculus plus bookkeeping.</li>
+            <li>$\oint z^n dz = 2\pi i$ iff $n = -1$, else 0: the seed of the entire residue calculus.</li>
+            <li>Antiderivative ⇒ path independence; $\ln z$'s branch jump is why $1/z$ is special.</li>
+            <li>ML bound (and Jordan's lemma) kill arc contributions — the enabling estimates for real-integral evaluation and FFT truncation control.</li>
+        </ul>
+    </div>
+</div>

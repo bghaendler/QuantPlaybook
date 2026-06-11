@@ -1,0 +1,60 @@
+<div id="view-hft-p08" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">High-Frequency Trading &amp; Market Microstructure — Part 08</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Volatility-Based Execution Optimization</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Making schedules volatility-aware: regime-conditional urgency, intraday vol forecasting for execution, and the vol-liquidity feedback that dominates stressed tapes.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Volatility Enters the Schedule Twice</h3>
+        <p>In the Almgren-Chriss frontier (Part 07), σ appears in the timing-risk term <em>and</em>, empirically, inside the impact coefficients:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Direct:</strong> $\kappa = \sqrt{\lambda\sigma^2/\eta}$ — doubling σ raises urgency by ~√2× at fixed risk aversion: trade faster when the world is noisier.</li>
+            <li><strong>Indirect:</strong> spreads widen and depth thins with σ (liquidity providers re-price adverse selection, Part 01) — so $\eta$ rises too, pushing back. The net schedule shift depends on the <em>ratio</em> $\sigma^2/\eta$; empirically urgency still rises in high vol, but less than the naive √ rule.</li>
+            <li><strong>Alpha decay interaction:</strong> signals decay faster in high vol — execution for alpha-driven flow front-loads even harder than risk aversion alone implies.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Forecasting Vol at Execution Horizons</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Baseline:</strong> intraday seasonal profile (Part 05) × daily-level forecast (EWMA/GARCH or implied) — covers most of the variance at horizons of minutes-to-hours.</li>
+            <li><strong>Dynamic residual:</strong> HAR-RV style regressions on realized vol over the last 5/30/390 minutes capture intraday persistence; event dummies (scheduled macro prints) add the spikes the U-shape misses.</li>
+            <li><strong>Real-time signals:</strong> trade intensity (Hawkes activity, Part 02), spread state and book-depletion rates nowcast vol shifts seconds-to-minutes ahead — the inputs adaptive algos actually consume.</li>
+            <li><strong>Discipline:</strong> evaluate forecasts in deseasonalized units and at the schedule's decision frequency; a 1-day GARCH forecast is the wrong object for a 20-minute slice decision.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Regime-Conditional Policies</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;">Regime</th><th style="padding: 0.45rem;">Symptoms</th><th style="padding: 0.45rem;">Policy shift</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Low vol / thick book</td><td style="padding: 0.45rem;">Tight spreads, deep queues</td><td style="padding: 0.45rem;">Patient: high passive ratio, harvest spread, longer horizon</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Elevated vol, orderly</td><td style="padding: 0.45rem;">Wider spreads, active tape</td><td style="padding: 0.45rem;">Raise urgency (κ↑), more midpoint/dark, cap passive queue time</td></tr>
+                <tr><td style="padding: 0.45rem;">Stressed / dislocating</td><td style="padding: 0.45rem;">Quote flickering, depth vanishing, fast markets</td><td style="padding: 0.45rem;">Schedule suspension logic: limit-price collars, participation floors/ceilings, auction deferral — pre-programmed, not improvised</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.6rem;">Regime detection: rolling vol ratios, spread/depth z-scores, or a simple 2–3-state HMM on deseasonalized RV — what matters is hysteresis (don't flip-flop) and pre-committed actions per state.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. The Vol-Liquidity Feedback (Why Stress Is Different)</h3>
+        <ul style="line-height: 1.8;">
+            <li>Vol ↑ ⇒ makers widen/withdraw ⇒ impact ↑ ⇒ each trade moves price more ⇒ measured vol ↑ — a feedback loop; flash events (May 2010) are its extreme expression.</li>
+            <li>Consequence for cost models: $(\sigma, \eta, \gamma)$ calibrated in calm regimes <em>jointly</em> understate stressed costs — stress TCA needs regime-conditional parameters (Part 03's regime note), not scaled-up calm ones.</li>
+            <li>Consequence for risk: timing-risk variance in the AC objective is itself stochastic — vol-of-vol argues for conservative λ when the forecast is uncertain.</li>
+            <li>Circuit breakers, LULD bands and auction fallbacks are the market's own vol-conditional execution policy — algos must encode their mechanics (halt resumption auctions reprice everything).</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>σ raises optimal urgency (√ rule) but also raises impact — schedule on the ratio, and front-load more when alpha decays fast.</li>
+            <li>Execution-horizon vol = seasonal profile × daily forecast + HAR residual + event dummies + book-state nowcasts.</li>
+            <li>Codify regime policies with hysteresis: passive-heavy in calm, urgent in elevated, pre-committed collars in stress.</li>
+            <li>The vol-liquidity feedback makes stressed costs nonlinear — calibrate per regime and respect the market's own circuit-breaker mechanics.</li>
+        </ul>
+    </div>
+</div>

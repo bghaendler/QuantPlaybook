@@ -1,0 +1,65 @@
+<div id="view-normal-cdf-approx" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Univariate Normal CDF Approximations</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">$N(x)$ has no closed form, yet every option formula calls it millions of times: the polynomial, rational and erf-based approximations that make pricing engines run.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Target</h3>
+        $$N(x) = \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{x} e^{-t^2/2}\, dt = \frac{1}{2}\left[1 + \operatorname{erf}\!\left(\frac{x}{\sqrt{2}}\right)\right].$$
+        <p>Requirements differ by use: pricing wants ~7+ digits in the central region; risk and barrier formulas also need accurate <em>tails</em>; calibration loops want speed and smooth derivatives ($N'(x) = \phi(x)$ — exact and free); implied-vol inversion needs monotonicity to machine precision (no wiggles).</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Classics (Abramowitz &amp; Stegun)</h3>
+        <p><strong>A&amp;S 26.2.17 (Hastings), |error| &lt; 7.5×10⁻⁸</strong> — the one inside most textbooks and the original Black-Scholes code:</p>
+        $$N(x) \approx 1 - \phi(x)\left(b_1 k + b_2 k^2 + b_3 k^3 + b_4 k^4 + b_5 k^5\right), \qquad k = \frac{1}{1 + 0.2316419\,x},\; x \ge 0,$$
+        <p>with $b = (0.319381530, -0.356563782, 1.781477937, -1.821255978, 1.330274429)$ and $N(-x) = 1 - N(x)$.</p>
+        <p><strong>A&amp;S 26.2.19</strong>: a cheaper 4-digit rational form for embedded/teaching use. These are fitted minimax polynomials — fast, branchless after the sign fold, accurate enough for pricing but <em>relative</em> tail accuracy degrades far out.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Production-Grade: erf/erfc Rational Approximations</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Cody (1969/1990):</strong> piecewise rational Chebyshev approximations to erf/erfc with full double precision (~10⁻¹⁶ relative, including tails via the scaled complement $e^{x^2}\text{erfc}(x)$). This is what libm's <code>erfc</code> implements — the right answer is usually <code>0.5*erfc(-x/√2)</code>.</li>
+            <li><strong>Hart (1968) algorithm 5666:</strong> the high-precision rational form West popularized for finance.</li>
+            <li><strong>West (2005), "Better approximations to cumulative normal functions":</strong> documented that popular short approximations lose all relative accuracy beyond $|x| > 6$ — fatal for far-barrier and deep-OTM digital prices — and supplied a double-precision routine now standard on desks.</li>
+            <li><strong>Why tails matter:</strong> a deep-OTM option's price <em>is</em> $\sim K e^{-rT} N(-d)$; absolute error 10⁻⁸ at $N(-7) \approx 1.3\times10^{-12}$ is a 10,000× relative error — Greeks and limits computed from it are garbage.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Inverse CDF: The Monte Carlo Door</h3>
+        <p>Simulation needs $N^{-1}(u)$ to map uniforms (especially Sobol points) to normals:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Beasley-Springer-Moro:</strong> rational center + Chebyshev log-tail — the classic finance choice (~9 digits).</li>
+            <li><strong>Acklam / Wichura (AS 241):</strong> full double-precision piecewise rationals; Acklam + one Halley refinement step reaches machine precision.</li>
+            <li>Inversion (vs. Box-Muller) preserves the low-discrepancy structure of quasi-random sequences — use it for QMC always.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>5. Practical Guidance</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Need</th><th style="padding: 0.5rem;">Use</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Anything in production</td><td style="padding: 0.5rem;"><code>0.5·erfc(−x/√2)</code> from the platform libm (Cody-class)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Teaching / spreadsheets / embedded</td><td style="padding: 0.5rem;">Hastings A&amp;S 26.2.17 (know its 7.5e-8 absolute limit)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Deep tails (barriers, digitals, quantiles)</td><td style="padding: 0.5rem;">Scaled erfc; never a short polynomial</td></tr>
+                <tr><td style="padding: 0.5rem;">Monte Carlo / Sobol</td><td style="padding: 0.5rem;">Acklam or AS 241 inverse + refinement</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.75rem;">Validation habit: test $N(x) + N(-x) = 1$, monotonicity on a fine grid, and relative error at $x = -8, -10$ against a high-precision reference before trusting any implementation in a pricing library.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>$N(x) = \frac{1}{2}\text{erfc}(-x/\sqrt{2})$: delegate to libm's erfc whenever possible.</li>
+            <li>Hastings/A&amp;S 26.2.17 (7.5×10⁻⁸) is fine centrally and wrong in relative terms in the tails.</li>
+            <li>West (2005)/Cody-class routines give full double precision including tails — the desk standard.</li>
+            <li>For simulation, invert (Acklam/AS 241), don't Box-Muller, to keep QMC sequences intact.</li>
+            <li>Tail relative accuracy is a correctness issue for barriers, digitals and far-OTM Greeks — test it.</li>
+        </ul>
+    </div>
+</div>

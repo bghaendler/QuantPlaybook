@@ -1,0 +1,61 @@
+<div id="view-collateral-ccp" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Collateral, Margins &amp; Central Clearing (CCPs)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The plumbing of modern derivatives markets: how counterparty credit risk is collateralized bilaterally, mutualized through clearing houses, and priced into valuation.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Counterparty Risk &amp; the Collateral Response</h3>
+        <p>A derivative with positive mark-to-market $V_t$ is an unsecured loan to your counterparty: if they default you lose the replacement cost. Collateralization neutralizes this by posting assets against exposure, governed bilaterally by an ISDA Master Agreement plus <strong>Credit Support Annex (CSA)</strong>, which specifies eligible collateral, thresholds, minimum transfer amounts, and call frequency.</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Variation Margin (VM):</strong> daily (or intraday) cash flows matching mark-to-market changes — keeps current exposure near zero.</li>
+            <li><strong>Initial Margin (IM):</strong> a buffer against the potential move <em>between</em> the last VM exchange and close-out — the <strong>Margin Period of Risk (MPoR)</strong>, typically 5–10 days.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Sizing Margin: Haircuts &amp; IM Models</h3>
+        <p>Non-cash collateral is discounted by a <strong>haircut</strong> $h$: posting value $C$ secures only $(1-h)C$. IM is sized to cover close-out losses at high confidence:</p>
+        $$\text{IM} = \text{VaR}_{99\%}\big(\Delta V \text{ over MPoR}\big) \quad \text{or} \quad \text{ES}_{99\%/99.5\%},$$
+        <p>computed by CCP models (e.g. SPAN-style scenario grids, filtered historical simulation) or, for non-cleared bilateral trades, by the standardized <strong>ISDA SIMM</strong> — a sensitivity-based (delta/vega/curvature) margin model mandated under the Uncleared Margin Rules (UMR). A simple parametric illustration: a 10y swap with DV01 of \$70k and 10bp 99% 10-day rate move needs IM ≈ \$70k × 10 ≈ \$0.7m.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Central Counterparties (CCPs)</h3>
+        <p>Post-2009 (G20 Pittsburgh), standardized OTC derivatives must clear through CCPs (LCH, CME, ICE, Eurex). The CCP interposes itself by <strong>novation</strong>: the bilateral trade becomes two trades, each facing the CCP — buyer to every seller, seller to every buyer.</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Multilateral netting:</strong> offsetting exposures across all members collapse; net exposure (and collateral demand) falls dramatically relative to a bilateral web.</li>
+            <li><strong>Loss waterfall:</strong> defaulter's IM → defaulter's default-fund contribution → CCP "skin in the game" → surviving members' default fund → assessments/recovery tools (VM gains haircutting). Mutualization starts only after the defaulter's own resources are exhausted ("defaulter pays" principle).</li>
+            <li><strong>Default management:</strong> the CCP hedges then auctions the defaulter's portfolio to surviving members (tested in the 2018 Nasdaq Clearing power-spread default, which burned ⅔ of the commodity default fund).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Consequences for Valuation: the XVA World</h3>
+        <p>Collateralization changes discounting and adds valuation adjustments:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>OIS discounting:</strong> cash-collateralized trades earn the overnight rate on VM, so the CSA discount curve is OIS (€STR/SOFR), not LIBOR — the post-2008 multi-curve framework.</li>
+            <li><strong>CVA/DVA:</strong> residual (uncollateralized or gap) counterparty risk: $\text{CVA} = (1-R)\int_0^T \mathbb{E}[\text{EE}(t)]\, dPD(t)$.</li>
+            <li><strong>FVA:</strong> funding cost of posting/receiving collateral mismatches.</li>
+            <li><strong>MVA:</strong> lifetime cost of funding initial margin — material for cleared and UMR portfolios.</li>
+            <li><strong>KVA:</strong> cost of regulatory capital held against the trade.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>5. The Trade-Off: Did CCPs Remove Risk?</h3>
+        <p>Clearing transforms credit risk into <strong>liquidity risk</strong> and <strong>concentration risk</strong>. Margin calls are procyclical: volatility spikes → IM models demand more collateral → fire sales (the March 2020 "dash for cash" and 2022 UK gilt/LDI episode). CCPs themselves are now systemically critical single points of failure, supervised with their own recovery-and-resolution regimes. The system is safer against idiosyncratic default, but funding-stress dynamics are sharper and more synchronized.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>VM tracks mark-to-market; IM covers the close-out gap over the margin period of risk.</li>
+            <li>CSA terms (thresholds, eligible collateral, haircuts) determine residual exposure — and the discount curve (OIS).</li>
+            <li>CCP novation + multilateral netting shrink exposures; the default waterfall mutualizes extreme losses.</li>
+            <li>ISDA SIMM standardizes bilateral IM under the Uncleared Margin Rules.</li>
+            <li>XVA desks price CVA, FVA, MVA, KVA — collateral economics is now part of the derivative's price.</li>
+            <li>Margin procyclicality converts credit risk into system-wide liquidity risk.</li>
+        </ul>
+    </div>
+</div>

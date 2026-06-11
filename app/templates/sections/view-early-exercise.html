@@ -1,0 +1,68 @@
+<div id="view-early-exercise" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Why Analytical Solutions Fail for Early Exercise</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">American options as free-boundary problems: the exercise boundary must be found as part of the solution — which destroys the separable structure that closed forms rely on.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The American Feature</h3>
+        <p>An American option may be exercised at any stopping time $\tau \le T$:</p>
+        $$V(S, t) = \sup_{\tau \in [t, T]} \mathbb{E}^{\mathbb{Q}}\left[e^{-r(\tau - t)}\, \Pi(S_\tau)\right],$$
+        <p>an <strong>optimal stopping problem</strong>. The holder continuously compares continuation value against intrinsic value $\Pi(S) = (K-S)^+$ or $(S-K)^+$. The state space splits into a <em>continuation region</em> and an <em>exercise region</em>, separated by the unknown <strong>early exercise boundary</strong> $S^*(t)$.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Free-Boundary (Obstacle) Problem</h3>
+        <p>Instead of a single PDE on a fixed domain, the American price satisfies a <strong>linear complementarity problem</strong>:</p>
+        $$\mathcal{L}V \le 0, \qquad V \ge \Pi, \qquad (\mathcal{L}V)\,(V - \Pi) = 0,$$
+        <p>where $\mathcal{L}V = V_t + \tfrac{1}{2}\sigma^2 S^2 V_{SS} + bSV_S - rV$. In the continuation region the BS equation holds with equality and $V > \Pi$; in the exercise region $V = \Pi$ and the BS operator is strictly negative. On the boundary $S^*(t)$, two conditions hold:</p>
+        $$V(S^*(t), t) = \Pi(S^*(t)) \quad \text{(value matching)}, \qquad \frac{\partial V}{\partial S}(S^*(t), t) = \Pi'(S^*(t)) \quad \text{(smooth pasting)}.$$
+        <p>The boundary's location is <em>part of the unknown</em>. The domain on which you must solve the PDE depends on the solution itself — this circularity is what closed-form methods cannot digest.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Why the BS Machinery Breaks</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>No fixed domain:</strong> the heat-equation transformation that solves European BS needs a rectangle $[0,T] \times \mathbb{R}$; the American domain is bounded by an unknown curve $S^*(t)$, which is not even known in closed form itself (near expiry it has a famously non-analytic expansion, $S^*(t) \sim K(1 - \sigma\sqrt{(T-t)\ln(\dots)})$).</li>
+            <li><strong>No single expectation:</strong> the price is a supremum over infinitely many stopping rules, not one integral against a lognormal density.</li>
+            <li><strong>Early exercise premium representation</strong> (Kim 1990; Carr-Jarrow-Myneni):
+            $$P_{Am} = P_{Eur} + \int_t^T \left[rKe^{-r(u-t)}N(-d_2(S, S^*_u)) - qSe^{-q(u-t)}N(-d_1(S, S^*_u))\right] du,$$
+            exact — but it is an integral <em>equation</em>, since $S^*_u$ appears inside; solvable only numerically (or by iteration).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. When Early Exercise Is (Never) Optimal</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Contract</th><th style="padding: 0.5rem;">Early exercise?</th><th style="padding: 0.5rem;">Driver</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Call, no dividends</td><td style="padding: 0.5rem;">Never (Merton): $C_{Am} = C_{Eur}$</td><td style="padding: 0.5rem;">Time value of strike + insurance always positive</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Call, discrete dividends</td><td style="padding: 0.5rem;">Possibly, just before ex-div dates</td><td style="padding: 0.5rem;">Capture dividend vs. lose time value</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Put, $r > 0$</td><td style="padding: 0.5rem;">Yes, when deep ITM</td><td style="padding: 0.5rem;">Interest on strike received early</td></tr>
+                <tr><td style="padding: 0.5rem;">Perpetual put/call</td><td style="padding: 0.5rem;">Closed form exists!</td><td style="padding: 0.5rem;">Time-independence ⇒ ODE, boundary is a constant</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.75rem;">The perpetual case (McKean/Merton) is the exception that proves the rule: removing time dependence turns the PDE into an ODE, the boundary into a single number $S^* = \frac{\gamma}{\gamma - 1}K$, and a closed form pops out. It is the time-dependence of the boundary that kills finite-maturity closed forms.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. The Practical Response</h3>
+        <p>Since exact closed forms are impossible (for finite-maturity American puts under BS dynamics), the industry uses:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Lattices &amp; FDM:</strong> trees and PDE grids handle the obstacle condition trivially ($V = \max(\text{cont}, \Pi)$ at each node) — the benchmark.</li>
+            <li><strong>Analytical approximations:</strong> Roll-Geske-Whaley (discrete dividends), Barone-Adesi &amp; Whaley (quadratic), Bjerksund-Stensland (boundary parametrization), Ju-Zhong — covered in the following sections.</li>
+            <li><strong>Monte Carlo:</strong> Longstaff-Schwartz least-squares regression for high-dimensional/multi-asset American problems.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>American pricing = optimal stopping = free-boundary PDE with value-matching and smooth-pasting conditions.</li>
+            <li>The unknown, time-dependent boundary destroys the fixed-domain transforms behind closed forms.</li>
+            <li>The early-exercise premium has an exact representation — as an integral equation, not a formula.</li>
+            <li>No-dividend American calls are European; American puts (r &gt; 0) always carry a premium.</li>
+            <li>Perpetual options admit closed forms because the boundary collapses to a constant.</li>
+        </ul>
+    </div>
+</div>

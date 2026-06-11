@@ -1,0 +1,61 @@
+<div id="view-arm-p10" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Advanced Risk Management — Part 10</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Multi-Asset VaR Projection Mechanics</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Scaling Part 08 to real portfolios: covariance engineering, factor compression, the full simulation pipeline, and risk attribution back to positions.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Covariance Matrix Is the Hard Part</h3>
+        <p>For $n$ assets, $\Sigma$ has $n(n+1)/2$ parameters — at $n = 500$, that's 125k numbers from perhaps 500 daily observations: the sample covariance is <em>singular</em> for $n > T$ and noisy long before. Standard repairs:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Factor models:</strong> $\Sigma = B\,\Sigma_F\,B^\top + D$ — market/sector/style factors (or PCA factors, cf. the term-structure course) reduce dimension from $n^2$ to $n \times k$; simulation then draws $k$ factors + idiosyncratics.</li>
+            <li><strong>Shrinkage (Ledoit-Wolf):</strong> $\hat\Sigma = \delta F + (1-\delta)S$ toward a structured target — optimal δ in closed form; the default fix for mid-size books.</li>
+            <li><strong>EWMA/DCC layers:</strong> time-varying vols (filtered HS logic, Part 05) with slower-moving correlations.</li>
+            <li><strong>PSD repair:</strong> stress overlays and pairwise estimates break positive semi-definiteness — eigenvalue clipping or Higham's nearest-correlation algorithm before Cholesky (the correlation-tool section demonstrates the failure live).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. The Pipeline at Scale</h3>
+        <ol style="line-height: 1.9;">
+            <li><strong>Map positions → risk factors</strong> (the unglamorous 80%): equities to betas, bonds to key-rate buckets, options to underliers + vol surface nodes.</li>
+            <li><strong>Estimate</strong> the factor covariance (above) on the chosen window/weighting.</li>
+            <li><strong>Decompose:</strong> Cholesky $L$ ($\Sigma = LL^\top$) — or eigen-decomposition when near-singular; for $Z \in \mathbb{R}^{N \times k}$ standard normals, correlated draws are $ZL^\top$ (one BLAS call).</li>
+            <li><strong>Revalue:</strong> full pricing for nonlinear positions, sensitivities for verified-linear ones; this dominates runtime — hence grids/AAD/GPU (the AD masterclass and GPU workshop exist for this step).</li>
+            <li><strong>Aggregate:</strong> portfolio P&amp;L per scenario → VaR/ES quantiles, with sampling bands (Part 08 discipline).</li>
+        </ol>
+        <p>Upgrades drop in modularly: t or filtered-historical innovations (Parts 03/05), copulas for tail dependence beyond Gaussian (Part 06's warning — Gaussian correlation has <em>zero</em> tail dependence), stressed parameter sets (Part 07).</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Attribution: Whose Risk Is It?</h3>
+        <p>Euler decomposition allocates portfolio risk to positions exactly (for homogeneous measures like volatility, VaR, ES):</p>
+        $$\mathrm{VaR} = \sum_i w_i\,\frac{\partial \mathrm{VaR}}{\partial w_i}, \qquad \text{component VaR}_i = w_i \cdot \frac{\mathrm{cov}(r_i, r_p)}{\sigma_p}\cdot\frac{\mathrm{VaR}}{\sigma_p}\;(\text{Gaussian case}).$$
+        <ul style="line-height: 1.8;">
+            <li><strong>Marginal VaR</strong> (∂VaR/∂w) ranks the next dollar; <strong>component VaR</strong> sums to the total — the desk report's two columns.</li>
+            <li>In simulation, estimate ES contributions as $\mathbb{E}[w_ir_i \mid L > \mathrm{VaR}]$ — average each position's P&amp;L over tail scenarios; noisy (few tail draws) — use the kernel-smoothed or importance-sampled versions.</li>
+            <li>Attribution is what converts a VaR <em>number</em> into VaR <em>management</em>: limits, hedging priorities, and the diversification accounting of Part 02's cascade.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Validation Checklist for a Multi-Asset Engine</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Limiting cases:</strong> ρ→identity ⇒ sum of standalone VaRs; one-asset reduction matches Part 08; Gaussian-linear book matches the analytic formula.</li>
+            <li><strong>PSD &amp; conditioning:</strong> smallest eigenvalue logged each run; condition number alerts before Cholesky failures.</li>
+            <li><strong>Backtest at portfolio <em>and</em> sub-portfolio level</strong> (Part 07 tests) — aggregation can hide offsetting sub-book failures.</li>
+            <li><strong>Stress the correlation:</strong> ±0.2 parallel shifts and "crisis ρ" overlays — if VaR moves more with ρ than with vols, say so in the report (it usually does for diversified books).</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>At scale the covariance matrix is the model: factors + shrinkage + PSD repair before any simulation.</li>
+            <li>Pipeline: factor-map → estimate → Cholesky → revalue (the cost center) → quantile, with modular non-Gaussian upgrades.</li>
+            <li>Euler/component decomposition turns the headline number into per-desk management information.</li>
+            <li>Validate against analytic limits, log eigenvalues, backtest sub-books, and stress ρ — correlation drives diversified-book VaR.</li>
+        </ul>
+    </div>
+</div>

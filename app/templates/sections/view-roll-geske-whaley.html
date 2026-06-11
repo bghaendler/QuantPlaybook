@@ -1,0 +1,54 @@
+<div id="view-roll-geske-whaley" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Roll-Geske-Whaley Model</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The exact analytical price of an American call on a stock paying one known discrete dividend — early exercise reduced to a compound option.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Setting</h3>
+        <p>American call, maturity $T$, strike $K$; the stock pays a single known cash dividend $D$ at time $t_1 < T$. Without dividends early exercise is never optimal; with a discrete dividend, exercise can be optimal <strong>only at the instant just before the ex-dividend date</strong> — between dividends the no-dividend argument applies. So the American call is really a <em>Bermudan</em> with one extra decision date, and that is analytically tractable.</p>
+        <p>Work with the <strong>escrowed price</strong> $S^x = S - D e^{-r t_1}$: the stock value net of the present value of the known dividend, assumed lognormal with volatility $\sigma$.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Critical Ex-Dividend Price $S^*$</h3>
+        <p>At $t_1^-$ the holder exercises iff cum-dividend exercise beats continuing with the ex-dividend stock. $S^*$ solves</p>
+        $$c_{BS}(S^*, K, T - t_1) = S^* + D - K,$$
+        <p>where $c_{BS}$ is the European call on the ex-dividend price over the remaining life. If no solution exists (small $D$, specifically $D \le K(1 - e^{-r(T-t_1)})$), early exercise is never optimal and the price is just the European call on $S^x$.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. The Formula</h3>
+        <p>With $S^x$ the escrowed price and $\rho = -\sqrt{t_1/T}$ the correlation between the two decision horizons:</p>
+        $$C = S^x \left[N(b_1) + M(a_1, -b_1; -\rho)\right] - K e^{-rT} M(a_2, -b_2; -\rho) - (K - D) e^{-r t_1} N(b_2),$$
+        <p>where $M(\cdot, \cdot; \rho)$ is the bivariate normal CDF and</p>
+        $$a_1 = \frac{\ln(S^x/K) + (r + \sigma^2/2)T}{\sigma\sqrt{T}}, \quad a_2 = a_1 - \sigma\sqrt{T},$$
+        $$b_1 = \frac{\ln(S^x/S^*) + (r + \sigma^2/2)t_1}{\sigma\sqrt{t_1}}, \quad b_2 = b_1 - \sigma\sqrt{t_1}.$$
+        <p>Reading: term 1 = receive the stock either by exercising at $t_1$ ($N(b_1)$) or by surviving to exercise at $T$ ($M$ term); term 2 = pay $K$ at $T$ if exercised then; term 3 = pay $K$ net of dividend $D$ at $t_1$ if exercised early. Structurally this is <strong>Geske's compound-option formula</strong>: the American call is a call on a call, with the ex-div decision as the first strike.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Worked Sketch</h3>
+        <p>$S = 100$, $K = 100$, $T = 0.5$, $r = 5\%$, $\sigma = 25\%$, dividend $D = 4$ at $t_1 = 0.25$. Escrowed price $S^x = 100 - 4e^{-0.0125} = 96.05$. Solve for $S^*$: need $c_{BS}(S^*, 100, 0.25) = S^* - 96$; numerically $S^* \approx 109$. Since $S^x < S^*$ is comfortably possible to cross, the early-exercise branch has real probability and the RGW price exceeds the European-on-escrowed price by the early exercise premium (here ≈ 0.2–0.3). As $D \to 0$, $S^* \to \infty$, $N(b) \to 0$, $M \to N(a)$ and the formula collapses to plain Black-Scholes — a good implementation check.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Limitations &amp; Status</h3>
+        <ul style="line-height: 1.8;">
+            <li>One dividend only — two dividends require trivariate normals (Welch-Chen extensions), and beyond that lattices win.</li>
+            <li>The escrowed-dividend vol assumption distorts the effective volatility (see the Escrowed Dividend section); Haug-Haug-Lewis and Bos-Vandermark adjustments mitigate.</li>
+            <li>American <em>puts</em> get no such formula — exercise can be optimal at any time, not just ex-div instants.</li>
+            <li>Historically central (listed equity options pre-1990s software); today mostly a benchmark and interview classic, with binomial trees handling the general case.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Discrete dividends make American calls exercisable only just before ex-div — a one-date Bermudan.</li>
+            <li>RGW = Geske compound-option logic + critical ex-div price $S^*$ + bivariate normals.</li>
+            <li>No early exercise (and BS recovery) when $D \le K(1 - e^{-r(T-t_1)})$.</li>
+            <li>Exact under its assumptions, but fragile to the escrowed-vol convention; puts and multi-dividend cases need numerics.</li>
+        </ul>
+    </div>
+</div>

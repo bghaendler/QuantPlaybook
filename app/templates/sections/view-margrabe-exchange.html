@@ -1,0 +1,62 @@
+<div id="view-margrabe-exchange" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Exchange Options: Margrabe's Formula</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The right to swap one risky asset for another — priced exactly with no interest rate in sight, by the first great change-of-numeraire argument.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Contract and the Formula</h3>
+        <p>Payoff at $T$: $\max(S_1(T) - S_2(T), 0)$ — receive asset 1, deliver asset 2. With both assets GBM with yields $q_1, q_2$ and correlation $\rho$ (Margrabe 1978):</p>
+        $$V = S_1 e^{-q_1 T} N(d_1) - S_2 e^{-q_2 T} N(d_2),$$
+        $$d_1 = \frac{\ln(S_1/S_2) + (q_2 - q_1 + \hat\sigma^2/2)T}{\hat\sigma\sqrt{T}}, \qquad d_2 = d_1 - \hat\sigma\sqrt{T},$$
+        $$\hat\sigma = \sqrt{\sigma_1^2 + \sigma_2^2 - 2\rho\sigma_1\sigma_2}.$$
+        <p>Black-Scholes with asset 2 playing the role of the strike <em>and</em> the cash account: the risk-free rate cancels entirely.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Numeraire Trick</h3>
+        <p>Measure everything in units of asset 2: define the relative price $X = S_1/S_2$. The payoff is $S_2(T)\max(X_T - 1, 0)$. Under the measure associated with numeraire $S_2 e^{-q_2 t}$, $X$ is a driftless lognormal with volatility $\hat\sigma$ (volatility of the <em>ratio</em> — variances add, covariance subtracts). The problem collapses to a vanilla call on $X$ with strike 1 and zero rates:</p>
+        $$V = S_2 e^{-q_2 T}\, \mathbb{E}^{S_2}\left[\max(X_T - 1, 0)\right] = S_2 e^{-q_2 T}\left[X_0' N(d_1) - N(d_2)\right],$$
+        <p>which rearranges to Margrabe. This is the prototype <strong>change of numeraire</strong>: the same move later yields the forward measure (caplets), the swap measure (swaptions), and FX quanto adjustments. Why does $r$ vanish? The hedge holds the two assets against each other; no cash position is ever needed.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Sanity Checks &amp; Special Cases</h3>
+        <ul style="line-height: 1.8;">
+            <li>$S_2$ deterministic ($\sigma_2 = 0$, $q_2 = r$): $S_2(T) = K$ ⇒ plain Black-Scholes. ✔</li>
+            <li>$\rho \to 1$, $\sigma_1 = \sigma_2$: $\hat\sigma \to 0$ — exchanging an asset for its twin is worthless (beyond the forward difference). Exchange options are <strong>short correlation</strong>.</li>
+            <li>Symmetry: $V(S_1, S_2) + \text{forward}(S_2 - S_1) = V(S_2, S_1)$ — exchange-option put-call parity.</li>
+            <li>Margrabe with strike ($\max(S_1 - S_2 - K, 0)$) breaks the trick (three assets in the payoff) — that is the spread-option problem (Kirk's approximation).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Applications</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Stock-for-stock M&amp;A:</strong> an exchange offer is literally this payoff; merger-arb desks price deal optionality with Margrabe.</li>
+            <li><strong>Outperformance options:</strong> $\max(S_1 - S_2, 0)$ on normalized prices = relative-performance payoffs in structured notes (see Outperformance Note section).</li>
+            <li><strong>Convertible/exchangeable bonds:</strong> the exchange feature into another company's shares.</li>
+            <li><strong>Best-of building block:</strong> $\max(S_1, S_2) = S_2 + \max(S_1 - S_2, 0)$ — Margrabe is one Stulz rainbow building block (next section).</li>
+            <li><strong>Crack/spark spreads with zero strike:</strong> exact pricing where Kirk would approximate.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>5. Worked Example</h3>
+        <p>$S_1 = S_2 = 100$, $\sigma_1 = 30\%$, $\sigma_2 = 20\%$, $\rho = 0.5$, $q_1 = q_2 = 0$, $T = 1$:</p>
+        $$\hat\sigma = \sqrt{0.09 + 0.04 - 2(0.5)(0.3)(0.2)} = \sqrt{0.07} = 26.5\%.$$
+        $$d_1 = \frac{0 + 0.035}{0.265} = 0.132, \quad d_2 = -0.132 \;\Rightarrow\; V = 100\,[N(0.132) - N(-0.132)] = 100 \times 0.105 \approx 10.5.$$
+        <p>Drop correlation to $-0.5$: $\hat\sigma = 43.6\%$, $V \approx 17.3$ — a 65% price increase from correlation alone. The correlation sensitivity (cega) is the dominant risk, and the hardest input to hedge or estimate.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Margrabe: BS on the ratio $S_1/S_2$ with $\hat\sigma^2 = \sigma_1^2 + \sigma_2^2 - 2\rho\sigma_1\sigma_2$; $r$ cancels.</li>
+            <li>The proof is the original change-of-numeraire argument — ancestor of forward and swap measures.</li>
+            <li>Exchange options are short correlation; cega is the key risk.</li>
+            <li>Exact for zero-strike spreads; with a strike you're in Kirk-approximation territory.</li>
+            <li>M&amp;A exchanges, outperformance notes and best-of payoffs all reduce to Margrabe blocks.</li>
+        </ul>
+    </div>
+</div>

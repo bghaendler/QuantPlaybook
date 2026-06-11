@@ -13,96 +13,166 @@
             svg: { fontCache: 'global' },
             startup: {
                 typeset: false,
-                pageReady: () => {
-                    console.log('MathJax fully loaded. Initializing without auto-typeset.');
-                    if (MathJax.typesetPromise && typeof MathJax.typesetPromise === 'function') {
-                        const originalTypesetPromise = MathJax.typesetPromise;
-                        let globalQueue = Promise.resolve();
+                // Install the safe typeset overrides at component-ready time, NOT at
+                // pageReady. MathJax creates its native typeset()/typesetPromise() in
+                // defaultReady(), but pageReady only fires after fonts load — leaving a
+                // window where section scripts (setTimeout inits) could reach the raw
+                // native methods and trigger sync "MathJax retry" errors and NaN-sized
+                // SVGs from unmeasurable hidden elements.
+                ready: () => {
+                    MathJax.startup.defaultReady();
 
-                        const customTypesetPromise = function(elements) {
-                            let elementsToTypeset = elements;
-                            if (elementsToTypeset) {
-                                if (!Array.isArray(elementsToTypeset)) {
-                                    elementsToTypeset = [elementsToTypeset];
-                                }
-                                elementsToTypeset = elementsToTypeset.filter(el => {
-                                    if (el && el.id && el.id.startsWith('view-cqf-')) {
-                                        if (el.getAttribute('data-math-typeset') === 'true') {
-                                            return false;
-                                        }
-                                    }
-                                    return true;
-                                });
-                                if (elementsToTypeset.length === 0) {
-                                    return Promise.resolve();
+                    const originalTypesetPromise = MathJax.typesetPromise;
+                    // Nothing may typeset before startup (fonts/document) completes.
+                    let globalQueue = MathJax.startup.promise.then(() => {}).catch(() => {});
+
+                    const notAlreadyTypeset = el => {
+                        if (el && el.id && el.id.startsWith('view-cqf-')) {
+                            return el.getAttribute('data-math-typeset') !== 'true';
+                        }
+                        return true;
+                    };
+
+                    // MathJax cannot measure font metrics (the 'ex' unit) inside a
+                    // display:none element and emits NaN width/height/viewBox. Before
+                    // typesetting, temporarily reveal any inline-style-hidden element
+                    // (the target itself or nested sub-tabs) via the .mjx-metric-reveal
+                    // class — off-screen and invisible. Using a class (instead of saving
+                    // and restoring inline cssText) means navigation that toggles
+                    // style.display while a typeset is in flight is never clobbered:
+                    // removing the class simply returns the element to whatever its
+                    // inline style says at that moment.
+                    const revealHidden = (roots) => {
+                        const revealed = [];
+                        const candidates = [];
+                        roots.forEach(root => {
+                            if (!(root instanceof Element)) return;
+                            candidates.push(root);
+                            root.querySelectorAll('[style]').forEach(el => candidates.push(el));
+                        });
+                        candidates.forEach(el => {
+                            if (el.style && el.style.display === 'none' && !el.classList.contains('mjx-metric-reveal')) {
+                                el.classList.add('mjx-metric-reveal');
+                                revealed.push(el);
+                            }
+                        });
+                        return () => revealed.forEach(el => el.classList.remove('mjx-metric-reveal'));
+                    };
+
+                    const customTypesetPromise = function(elements) {
+                        let requested = elements;
+                        if (requested && !Array.isArray(requested)) {
+                            requested = [requested];
+                        }
+                        if (requested) {
+                            requested = requested.filter(notAlreadyTypeset);
+                            if (requested.length === 0) return Promise.resolve();
+                        }
+
+                        globalQueue = globalQueue.then(() => {
+                            let els = requested;
+                            if (els) {
+                                els = els.filter(el => el && document.body.contains(el) && notAlreadyTypeset(el));
+                            } else {
+                                // No-arg call: scope to visible sections only — a whole-
+                                // document pass would churn through every hidden section.
+                                const inner = document.querySelector('.main-content-inner');
+                                if (inner) {
+                                    els = Array.prototype.filter.call(
+                                        inner.children,
+                                        el => el.offsetParent !== null
+                                    );
                                 }
                             }
+                            if (!els || els.length === 0) return;
 
-                            globalQueue = globalQueue.then(() => {
-                                if (elementsToTypeset) {
-                                    elementsToTypeset = elementsToTypeset.filter(el => {
+                            if (typeof MathJax.typesetClear === 'function') {
+                                try {
+                                    MathJax.typesetClear(els);
+                                } catch (e) {
+                                    console.warn('MathJax typesetClear error:', e);
+                                }
+                            }
+                            const unhide = revealHidden(els);
+                            return originalTypesetPromise.call(MathJax, els)
+                                .then(() => {
+                                    unhide();
+                                    els.forEach(el => {
                                         if (el && el.id && el.id.startsWith('view-cqf-')) {
-                                            if (el.getAttribute('data-math-typeset') === 'true') {
-                                                return false;
-                                            }
+                                            el.setAttribute('data-math-typeset', 'true');
                                         }
-                                        return true;
                                     });
-                                    if (elementsToTypeset.length === 0) {
-                                        return;
-                                    }
-                                }
-
-                                if (typeof MathJax.typesetClear === 'function' && elementsToTypeset) {
-                                    try {
-                                        MathJax.typesetClear(elementsToTypeset);
-                                    } catch (e) {
-                                        console.warn('MathJax typesetClear error:', e);
-                                    }
-                                }
-                                return originalTypesetPromise.call(MathJax, elementsToTypeset).then(() => {
-                                    if (elementsToTypeset) {
-                                        elementsToTypeset.forEach(el => {
-                                            if (el && el.id && el.id.startsWith('view-cqf-')) {
-                                                el.setAttribute('data-math-typeset', 'true');
-                                            }
-                                        });
-                                    }
+                                }, err => {
+                                    unhide();
+                                    throw err;
                                 });
-                            }).catch(err => {
-                                console.warn('Queued MathJax typesetPromise error:', err);
-                            });
-                            return globalQueue;
-                        };
-
-                        Object.defineProperty(MathJax, 'typesetPromise', {
-                            value: customTypesetPromise,
-                            writable: true,
-                            configurable: true
+                        }).catch(err => {
+                            console.warn('Queued MathJax typesetPromise error:', err);
                         });
-                    }
+                        return globalQueue;
+                    };
 
-                    if (MathJax.typeset && typeof MathJax.typeset === 'function') {
-                        Object.defineProperty(MathJax, 'typeset', {
-                            value: function(elements) {
-                                MathJax.typesetPromise(elements);
-                            },
-                            writable: true,
-                            configurable: true
-                        });
-                    }
-                    MathJax.startup.defaultPageReady();
-                    if (window.onMathJaxReady) {
-                        window.onMathJaxReady();
-                    } else {
-                        window.mathJaxLoaded = true;
-                    }
+                    Object.defineProperty(MathJax, 'typesetPromise', {
+                        value: customTypesetPromise,
+                        writable: true,
+                        configurable: true
+                    });
+
+                    // Route the synchronous API through the safe async queue: the native
+                    // sync typeset() throws "MathJax retry" if fonts aren't loaded yet.
+                    Object.defineProperty(MathJax, 'typeset', {
+                        value: function(elements) {
+                            return MathJax.typesetPromise(elements);
+                        },
+                        writable: true,
+                        configurable: true
+                    });
+                },
+                pageReady: () => {
+                    console.log('MathJax fully loaded. Initializing without auto-typeset.');
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        if (window.onMathJaxReady) {
+                            window.onMathJaxReady();
+                        } else {
+                            window.mathJaxLoaded = true;
+                        }
+                    });
                 }
+            }
+        };
+
+        window.safeUpdateMath = function(container, newHTML) {
+            if (!container) return;
+            if (window.MathJax && typeof window.MathJax.typesetClear === 'function') {
+                try {
+                    window.MathJax.typesetClear([container]);
+                } catch (e) {
+                    console.warn('MathJax typesetClear error:', e);
+                }
+            }
+            container.innerHTML = newHTML;
+            if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+                window.MathJax.typesetPromise([container]).catch(err => {
+                    console.warn('MathJax typesetPromise error:', err);
+                });
+            } else if (window.MathJax && typeof window.MathJax.typeset === 'function') {
+                window.MathJax.typeset([container]);
             }
         };
     </script>
 <script async="" id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"></script>
 <style>
+        /* Applied transiently by the MathJax bootstrap while typesetting math inside
+           display:none containers: makes font metrics measurable without being seen
+           and without ever touching the element's own inline styles. */
+        .mjx-metric-reveal {
+            display: block !important;
+            visibility: hidden !important;
+            position: absolute !important;
+            left: -99999px !important;
+            top: 0 !important;
+        }
+
         :root {
             --bg-color: #ffffff;
             --text-color: #37352f;
@@ -1459,7 +1529,7 @@
 
     <!-- ════ PHASE 0 ════ -->
     <details class="nav-level-2" open="">
-    <summary class="nav-section-title">Preparatory Primers</summary>
+    <summary class="nav-section-title">Maths Fundamentals</summary>
     <div class="nav-group">
 
         <details class="nav-level-3">
@@ -1538,7 +1608,7 @@
         <div class="nav-group">
             <a class="nav-item" href="#cqf-m1-l1" onclick="showSection('cqf-m1-l1')">Random Walks &amp; Brownian Motion</a>
             <a class="nav-item" href="#cqf-m1-l1" onclick="showSection('cqf-m1-l1')">Geometric Brownian Motion (GBM)</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Stylised Facts of Asset Returns</a>
+            <a class="nav-item" href="#stylised-facts" onclick="showSection('stylised-facts')">Stylised Facts of Asset Returns</a>
         </div>
         </details>
         <details class="nav-level-3">
@@ -1552,14 +1622,14 @@
         <summary class="nav-section-title nav-summary-clickable" onclick="showSection('cqf-m1-l6');">Martingale Theory Foundations</summary>
         <div class="nav-group">
             <a class="nav-item" href="#cqf-m1-l6" onclick="showSection('cqf-m1-l6')">Martingale Theory &amp; Girsanov's Theorem</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Radon-Nikodym &amp; Change of Measure</a>
+            <a class="nav-item" href="#radon-nikodym" onclick="showSection('radon-nikodym')">Radon-Nikodym &amp; Change of Measure</a>
         </div>
         </details>
         <details class="nav-level-3">
         <summary class="nav-section-title">The Mathematics of Gambling</summary>
         <div class="nav-group">
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Kelly Criterion &amp; Optimal Bet Sizing</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Coin-Tossing &amp; Random Walk Limits</a>
+            <a class="nav-item" href="#kelly-criterion" onclick="showSection('kelly-criterion')">Kelly Criterion &amp; Optimal Bet Sizing</a>
+            <a class="nav-item" href="#coin-tossing" onclick="showSection('coin-tossing')">Coin-Tossing &amp; Random Walk Limits</a>
         </div>
         </details>
 
@@ -1575,30 +1645,30 @@
         <summary class="nav-section-title nav-summary-clickable" onclick="showSection('cqf-m2-l1');">Classical Portfolio Theory</summary>
         <div class="nav-group">
             <a class="nav-item" href="#cqf-m2-l1" onclick="showSection('cqf-m2-l1')">Markowitz Mean-Variance Optimization</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">CAPM &amp; Arbitrage Pricing Theory (APT)</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Black-Litterman Model</a>
+            <a class="nav-item" href="#capm-apt" onclick="showSection('capm-apt')">CAPM &amp; Arbitrage Pricing Theory (APT)</a>
+            <a class="nav-item" href="#black-litterman" onclick="showSection('black-litterman')">Black-Litterman Model</a>
         </div>
         </details>
         <details class="nav-level-3">
         <summary class="nav-section-title nav-summary-clickable" onclick="showSection('cqf-m2-l3');">Value at Risk &amp; Expected Shortfall</summary>
         <div class="nav-group">
             <a class="nav-item" href="#cqf-m2-l3" onclick="showSection('cqf-m2-l3')">Parametric, Historical &amp; Monte Carlo VaR</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Coherent Risk Measures &amp; Expected Shortfall</a>
+            <a class="nav-item" href="#coherent-risk" onclick="showSection('coherent-risk')">Coherent Risk Measures &amp; Expected Shortfall</a>
         </div>
         </details>
         <details class="nav-level-3">
         <summary class="nav-section-title">Empirical Volatility Modeling</summary>
         <div class="nav-group">
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">ARCH &amp; GARCH Models</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">EGARCH &amp; GJR-GARCH Extensions</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Realized vs. Implied Volatility Dynamics</a>
+            <a class="nav-item" href="#arch-garch" onclick="showSection('arch-garch')">ARCH &amp; GARCH Models</a>
+            <a class="nav-item" href="#egarch-gjr" onclick="showSection('egarch-gjr')">EGARCH &amp; GJR-GARCH Extensions</a>
+            <a class="nav-item" href="#realized-implied-vol" onclick="showSection('realized-implied-vol')">Realized vs. Implied Volatility Dynamics</a>
         </div>
         </details>
         <details class="nav-level-3">
         <summary class="nav-section-title">Risk Regulation &amp; Operational Realities</summary>
         <div class="nav-group">
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Basel Accord Evolution (I &#8594; IV)</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Collateral, Margins &amp; Central Clearing (CCPs)</a>
+            <a class="nav-item" href="#basel-accords" onclick="showSection('basel-accords')">Basel Accord Evolution (I &#8594; IV)</a>
+            <a class="nav-item" href="#collateral-ccp" onclick="showSection('collateral-ccp')">Collateral, Margins &amp; Central Clearing (CCPs)</a>
         </div>
         </details>
 
@@ -1615,31 +1685,31 @@
         <div class="nav-group">
             <a class="nav-item" href="#cqf-m1-l3" onclick="showSection('cqf-m1-l3')">Black-Scholes PDE Derivation</a>
             <a class="nav-item" href="#cqf-m1-l2" onclick="showSection('cqf-m1-l2')">Binomial Tree Pricing Theory</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Cost of Carry (b) Framework (Black-76, Garman-Kohlhagen)</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Historical Models: Bachelier, Sprenkle, Boness</a>
+            <a class="nav-item" href="#cost-of-carry" onclick="showSection('cost-of-carry')">Cost of Carry (b) Framework (Black-76, Garman-Kohlhagen)</a>
+            <a class="nav-item" href="#historical-models" onclick="showSection('historical-models')">Historical Models: Bachelier, Sprenkle, Boness</a>
         </div>
         </details>
         <details class="nav-level-3">
         <summary class="nav-section-title">Closed-Form Options Greeks</summary>
         <div class="nav-group">
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">First-Order Greeks (Delta, Gamma, Theta, Vega, Rho)</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Higher-Order Greeks (Vanna, Volga, Charm, Color)</a>
+            <a class="nav-item" href="#greeks-first-order" onclick="showSection('greeks-first-order')">First-Order Greeks (Delta, Gamma, Theta, Vega, Rho)</a>
+            <a class="nav-item" href="#greeks-higher-order" onclick="showSection('greeks-higher-order')">Higher-Order Greeks (Vanna, Volga, Charm, Color)</a>
         </div>
         </details>
         <details class="nav-level-3">
         <summary class="nav-section-title">Analytical American Option Approx.</summary>
         <div class="nav-group">
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Why Analytical Solutions Fail for Early Exercise</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Roll-Geske-Whaley Model</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Barone-Adesi &amp; Whaley Quadratic Approx.</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Bjerksund-Stensland (1993 &amp; 2002)</a>
+            <a class="nav-item" href="#early-exercise" onclick="showSection('early-exercise')">Why Analytical Solutions Fail for Early Exercise</a>
+            <a class="nav-item" href="#roll-geske-whaley" onclick="showSection('roll-geske-whaley')">Roll-Geske-Whaley Model</a>
+            <a class="nav-item" href="#baw-approximation" onclick="showSection('baw-approximation')">Barone-Adesi &amp; Whaley Quadratic Approx.</a>
+            <a class="nav-item" href="#bjerksund-stensland" onclick="showSection('bjerksund-stensland')">Bjerksund-Stensland (1993 &amp; 2002)</a>
         </div>
         </details>
         <details class="nav-level-3">
         <summary class="nav-section-title">Discrete Dividends &amp; Vol Solvers</summary>
         <div class="nav-group">
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Escrowed Dividend Model</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Implied Vol: Bisection, Newton-Raphson, Corrado-Miller</a>
+            <a class="nav-item" href="#escrowed-dividend" onclick="showSection('escrowed-dividend')">Escrowed Dividend Model</a>
+            <a class="nav-item" href="#implied-vol-solvers" onclick="showSection('implied-vol-solvers')">Implied Vol: Bisection, Newton-Raphson, Corrado-Miller</a>
         </div>
         </details>
 
@@ -1663,7 +1733,7 @@
         <div class="nav-group">
             <a class="nav-item" href="#cqf-m1-l1" onclick="showSection('cqf-m1-l1')">Path Generation under GBM</a>
             <a class="nav-item" href="#cqf-m3-l12" onclick="showSection('cqf-m3-l12')">Quasi-Monte Carlo &amp; Variance Reduction</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Antithetic Variables &amp; Control Variates</a>
+            <a class="nav-item" href="#antithetic-control-variates" onclick="showSection('antithetic-control-variates')">Antithetic Variables &amp; Control Variates</a>
         </div>
         </details>
         <details class="nav-level-3">
@@ -1671,9 +1741,9 @@
         <div class="nav-group">
             <a class="nav-item" href="#cqf-dashboard" onclick="showSection('cqf-dashboard')">Supervised Learning: Lasso, Ridge, Random Forests, XGBoost</a>
             <a class="nav-item" href="#cqf-dashboard" onclick="showSection('cqf-dashboard')">Support Vector Machines (SVM)</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Unsupervised Learning: K-Means &amp; GMM Regime Detection</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Deep Learning &amp; NLP: LSTM &amp; Sentiment Analysis</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Reinforcement Learning for Portfolio Management</a>
+            <a class="nav-item" href="#ml-unsupervised" onclick="showSection('ml-unsupervised')">Unsupervised Learning: K-Means &amp; GMM Regime Detection</a>
+            <a class="nav-item" href="#ml-deep-nlp" onclick="showSection('ml-deep-nlp')">Deep Learning &amp; NLP: LSTM &amp; Sentiment Analysis</a>
+            <a class="nav-item" href="#ml-reinforcement" onclick="showSection('ml-reinforcement')">Reinforcement Learning for Portfolio Management</a>
             <a class="nav-item" href="#pca" onclick="showSection('pca')">PCA for Yield Curves</a>
         </div>
         </details>
@@ -1689,9 +1759,9 @@
         <details class="nav-level-3">
         <summary class="nav-section-title">Commodity &amp; Energy Options</summary>
         <div class="nav-group">
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Black '76 Model for Commodity Options</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Spread Options: Spark &amp; Crack Spreads</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Swing Contracts: Flexible Volume Take-up</a>
+            <a class="nav-item" href="#black76-commodities" onclick="showSection('black76-commodities')">Black '76 Model for Commodity Options</a>
+            <a class="nav-item" href="#spark-crack-spreads" onclick="showSection('spark-crack-spreads')">Spread Options: Spark &amp; Crack Spreads</a>
+            <a class="nav-item" href="#swing-contracts" onclick="showSection('swing-contracts')">Swing Contracts: Flexible Volume Take-up</a>
         </div>
         </details>
         <details class="nav-level-3">
@@ -1699,7 +1769,7 @@
         <div class="nav-group">
             <a class="nav-item" href="#smoothing" onclick="showSection('smoothing')">Term Structure: Bootstrapping &amp; Splines</a>
             <a class="nav-item" href="#vasicek" onclick="showSection('vasicek')">Short Rate Models (Vasicek, CIR, Hull-White)</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Caps, Floors &amp; Swaptions (Black Lognormal)</a>
+            <a class="nav-item" href="#caps-floors-black" onclick="showSection('caps-floors-black')">Caps, Floors &amp; Swaptions (Black Lognormal)</a>
             <a class="nav-item" href="#hjm" onclick="showSection('hjm')">Heath-Jarrow-Morton (HJM) Framework</a>
             <a class="nav-item" href="#forward-measures" onclick="showSection('forward-measures')">LIBOR Market Model (LMM) &amp; Forward Measures</a>
         </div>
@@ -1716,43 +1786,43 @@
         <details class="nav-level-3">
         <summary class="nav-section-title">Single-Asset Exotic Options</summary>
         <div class="nav-group">
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Binary / Digital Options (Rubinstein-Reiner)</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Barrier Options: Down &amp; Out, Up &amp; In, etc.</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Lookback Options (Goldman-Soshin-Gatto)</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Asian Options: Geometric &amp; Arithmetic Approx.</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Compound &amp; Chooser Options (Geske, Rubinstein)</a>
+            <a class="nav-item" href="#binary-digital-options" onclick="showSection('binary-digital-options')">Binary / Digital Options (Rubinstein-Reiner)</a>
+            <a class="nav-item" href="#barrier-options" onclick="showSection('barrier-options')">Barrier Options: Down &amp; Out, Up &amp; In, etc.</a>
+            <a class="nav-item" href="#lookback-options" onclick="showSection('lookback-options')">Lookback Options (Goldman-Soshin-Gatto)</a>
+            <a class="nav-item" href="#asian-options" onclick="showSection('asian-options')">Asian Options: Geometric &amp; Arithmetic Approx.</a>
+            <a class="nav-item" href="#compound-chooser-options" onclick="showSection('compound-chooser-options')">Compound &amp; Chooser Options (Geske, Rubinstein)</a>
         </div>
         </details>
         <details class="nav-level-3">
         <summary class="nav-section-title">Two-Asset Exotic Options</summary>
         <div class="nav-group">
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Exchange Options: Margrabe's Formula</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Rainbow Options: Min/Max of Two Assets (Stulz)</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Basket &amp; Spread Options (Kirk's Approximation)</a>
+            <a class="nav-item" href="#margrabe-exchange" onclick="showSection('margrabe-exchange')">Exchange Options: Margrabe's Formula</a>
+            <a class="nav-item" href="#rainbow-options" onclick="showSection('rainbow-options')">Rainbow Options: Min/Max of Two Assets (Stulz)</a>
+            <a class="nav-item" href="#basket-spread-options" onclick="showSection('basket-spread-options')">Basket &amp; Spread Options (Kirk's Approximation)</a>
         </div>
         </details>
         <details class="nav-level-3">
         <summary class="nav-section-title">BSM Adjustments &amp; Alternatives</summary>
         <div class="nav-group">
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Merton Jump-Diffusion Model</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Gram-Charlier Expansion (Skew &amp; Kurtosis Adj.)</a>
+            <a class="nav-item" href="#merton-jump-diffusion" onclick="showSection('merton-jump-diffusion')">Merton Jump-Diffusion Model</a>
+            <a class="nav-item" href="#gram-charlier" onclick="showSection('gram-charlier')">Gram-Charlier Expansion (Skew &amp; Kurtosis Adj.)</a>
         </div>
         </details>
         <details class="nav-level-3">
         <summary class="nav-section-title">Credit Risk Modeling</summary>
         <div class="nav-group">
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Merton Structural Default Model</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Reduced-Form Intensity Models</a>
+            <a class="nav-item" href="#merton-structural" onclick="showSection('merton-structural')">Merton Structural Default Model</a>
+            <a class="nav-item" href="#reduced-form-credit" onclick="showSection('reduced-form-credit')">Reduced-Form Intensity Models</a>
             <a class="nav-item" href="#cqf-m6-l9" onclick="showSection('cqf-m6-l9')">Credit Default Swaps (CDS) Valuation</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">CDO Pricing &amp; Copula Correlation</a>
+            <a class="nav-item" href="#cdo-copula" onclick="showSection('cdo-copula')">CDO Pricing &amp; Copula Correlation</a>
         </div>
         </details>
         <details class="nav-level-3">
         <summary class="nav-section-title">Statistical Distribution Helpers</summary>
         <div class="nav-group">
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Univariate Normal CDF Approximations</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Bivariate Normal Distribution (Drezner, Genz)</a>
-            <a class="nav-item" href="#pending" onclick="showSection('pending')">Trivariate Normal Distribution</a>
+            <a class="nav-item" href="#normal-cdf-approx" onclick="showSection('normal-cdf-approx')">Univariate Normal CDF Approximations</a>
+            <a class="nav-item" href="#bivariate-normal" onclick="showSection('bivariate-normal')">Bivariate Normal Distribution (Drezner, Genz)</a>
+            <a class="nav-item" href="#trivariate-normal" onclick="showSection('trivariate-normal')">Trivariate Normal Distribution</a>
         </div>
         </details>
 
@@ -1901,16 +1971,16 @@
     <details class="nav-level-2">
     <summary class="nav-section-title">Structured Products: Capital Preservation &amp; Yield</summary>
     <div class="nav-group">
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Principal Protected Note (PPN)</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Capital Guaranteed Note</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Classic Reverse Convertible (ZCB + Short Put)</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Barrier Reverse Convertible (BRC)</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Range Accrual Corridor Note</a>
+        <a class="nav-item" href="#sp-ppn" onclick="showSection('sp-ppn')">Principal Protected Note (PPN)</a>
+        <a class="nav-item" href="#sp-capital-guaranteed" onclick="showSection('sp-capital-guaranteed')">Capital Guaranteed Note</a>
+        <a class="nav-item" href="#sp-reverse-convertible" onclick="showSection('sp-reverse-convertible')">Classic Reverse Convertible (ZCB + Short Put)</a>
+        <a class="nav-item" href="#sp-barrier-reverse-convertible" onclick="showSection('sp-barrier-reverse-convertible')">Barrier Reverse Convertible (BRC)</a>
+        <a class="nav-item" href="#sp-range-accrual" onclick="showSection('sp-range-accrual')">Range Accrual Corridor Note</a>
         <a class="nav-item nav-model-item" data-model="ratchet" href="#cqf-option-pricer" onclick="selectModel('ratchet')">Cliquet / Ratchet Note</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Phoenix Autocallable Note</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Target Redemption Note (TARN)</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Worst-Of Autocallable Phoenix</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Outperformance Note</a>
+        <a class="nav-item" href="#sp-phoenix-autocallable" onclick="showSection('sp-phoenix-autocallable')">Phoenix Autocallable Note</a>
+        <a class="nav-item" href="#sp-tarn" onclick="showSection('sp-tarn')">Target Redemption Note (TARN)</a>
+        <a class="nav-item" href="#sp-worst-of-phoenix" onclick="showSection('sp-worst-of-phoenix')">Worst-Of Autocallable Phoenix</a>
+        <a class="nav-item" href="#sp-outperformance" onclick="showSection('sp-outperformance')">Outperformance Note</a>
     </div>
     </details>
 
@@ -1929,13 +1999,13 @@
     <details class="nav-level-2">
     <summary class="nav-section-title">Developer Desk</summary>
     <div class="nav-group">
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Live Python Sandbox (WebAssembly Notebook)</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Model Code Export to QuantLib Python</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Production API Documentation &amp; Integration Hub</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">SDK Code Exporter (C++ / Python / C# DLL)</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Custom JSON Schema Generator</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">JSON Input/Output Payload Viewer</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">📦 Code Export to Python Templates &amp; Excel</a>
+        <a class="nav-item" href="#dev-python-sandbox" onclick="showSection('dev-python-sandbox')">Live Python Sandbox (WebAssembly Notebook)</a>
+        <a class="nav-item" href="#dev-quantlib-export" onclick="showSection('dev-quantlib-export')">Model Code Export to QuantLib Python</a>
+        <a class="nav-item" href="#dev-api-docs" onclick="showSection('dev-api-docs')">Production API Documentation &amp; Integration Hub</a>
+        <a class="nav-item" href="#dev-sdk-exporter" onclick="showSection('dev-sdk-exporter')">SDK Code Exporter (C++ / Python / C# DLL)</a>
+        <a class="nav-item" href="#dev-json-schema" onclick="showSection('dev-json-schema')">Custom JSON Schema Generator</a>
+        <a class="nav-item" href="#dev-json-viewer" onclick="showSection('dev-json-viewer')">JSON Input/Output Payload Viewer</a>
+        <a class="nav-item" href="#dev-code-export" onclick="showSection('dev-code-export')">📦 Code Export to Python Templates &amp; Excel</a>
     </div>
     </details>
 </div>
@@ -1948,16 +2018,16 @@
 <summary class="nav-section-title unified-section-title" onclick="accordionToggle('section-calibration-risk')">CALIBRATION &amp; RISK DESK</summary>
 <div class="nav-group">
     <a class="nav-item" href="#bootstrapping" onclick="showSection('bootstrapping')">Yield Curve Bootstrapper (Linear &amp; Spline Interpolation)</a>
-    <a class="nav-item" href="#pending" onclick="showSection('pending')">Historical Volatility Tracker</a>
+    <a class="nav-item" href="#tool-hist-vol" onclick="showSection('tool-hist-vol')">Historical Volatility Tracker</a>
     <a class="nav-item" href="#cqf-option-pricer" onclick="selectModel('bsm')">Sensitivity Desk: First-Order Greeks (Delta, Vega, Theta, Rho)</a>
-    <a class="nav-item" href="#pending" onclick="showSection('pending')">Implied Volatility Surface Fitter (SVI)</a>
-    <a class="nav-item" href="#pending" onclick="showSection('pending')">Delta-Gamma Dynamic Portfolio Hedging Simulator</a>
+    <a class="nav-item" href="#tool-svi-fitter" onclick="showSection('tool-svi-fitter')">Implied Volatility Surface Fitter (SVI)</a>
+    <a class="nav-item" href="#tool-delta-gamma-hedge" onclick="showSection('tool-delta-gamma-hedge')">Delta-Gamma Dynamic Portfolio Hedging Simulator</a>
     <a class="nav-item" href="#cqf-m2-l3" onclick="showSection('cqf-m2-l3')">Portfolio Value-at-Risk (VaR) &amp; Expected Shortfall (ES)</a>
     <a class="nav-item" href="#cqf-m3-l6" onclick="showSection('cqf-m3-l6')">Implied Volatility Surface Calibration (SABR Params)</a>
     <a class="nav-item" href="#cqf-m3-l11" onclick="showSection('cqf-m3-l11')">Local Volatility Surface Grid Generator (Dupire Engine)</a>
     <a class="nav-item" href="#cqf-m3-l12" onclick="showSection('cqf-m3-l12')">L12: Further Monte Carlo (Jaeckel)</a>
     <a class="nav-item" href="#cqf-m3-l13" onclick="showSection('cqf-m3-l13')">L13: Cointegration for Trading (Diamond)</a>
-    <a class="nav-item" href="#pending" onclick="showSection('pending')">Multi-Asset Correlation Matrix Builder</a>
+    <a class="nav-item" href="#tool-correlation-matrix" onclick="showSection('tool-correlation-matrix')">Multi-Asset Correlation Matrix Builder</a>
     <a class="nav-item" href="#cqf-dashboard" onclick="showSection('cqf-dashboard')">Stress Scenario Analysis &amp; Shock Engine</a>
     <a class="nav-item" href="#cqf-dashboard" onclick="showSection('cqf-dashboard')">Counterparty Credit Risk &amp; XVA Desk (CVA, DVA, FVA, MVA)</a>
 </div>
@@ -1972,108 +2042,108 @@
     <details class="nav-level-2">
     <summary class="nav-section-title">Mathematical Methods in Financial Markets</summary>
     <div class="nav-group">
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 01: Number Sets, Mappings, Functions</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 02: Polynomials, Implied Volatility &amp; Complex Numbers</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 03: Taylor Series Approximations</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 04: Functional Integration Techniques</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 05: Random Variables &amp; Probability Moments</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 06: Ordinary, Partial &amp; Stochastic Differential Equations</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 07: Solving First-Order ODEs with Boundary Values</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 08: Cauchy-Euler Equations (Perpetual Option Solutions)</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 09: Simulating Asset Randomness &amp; Brownian Paths</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 10: Itô\'s Lemma &amp; Corrective Terms</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 11: Lognormal Stock Price Evolution Derivation</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 12: Short Rate Mechanics (Vasicek vs. CIR)</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 13: Black-Scholes PDE Parabolic Framework</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 14: Practical Stochastic Path Generation in Excel</a>
+        <a class="nav-item" href="#mm-p01" onclick="showSection('mm-p01')">Part 01: Number Sets, Mappings, Functions</a>
+        <a class="nav-item" href="#mm-p02" onclick="showSection('mm-p02')">Part 02: Polynomials, Implied Volatility &amp; Complex Numbers</a>
+        <a class="nav-item" href="#mm-p03" onclick="showSection('mm-p03')">Part 03: Taylor Series Approximations</a>
+        <a class="nav-item" href="#mm-p04" onclick="showSection('mm-p04')">Part 04: Functional Integration Techniques</a>
+        <a class="nav-item" href="#mm-p05" onclick="showSection('mm-p05')">Part 05: Random Variables &amp; Probability Moments</a>
+        <a class="nav-item" href="#mm-p06" onclick="showSection('mm-p06')">Part 06: Ordinary, Partial &amp; Stochastic Differential Equations</a>
+        <a class="nav-item" href="#mm-p07" onclick="showSection('mm-p07')">Part 07: Solving First-Order ODEs with Boundary Values</a>
+        <a class="nav-item" href="#mm-p08" onclick="showSection('mm-p08')">Part 08: Cauchy-Euler Equations (Perpetual Option Solutions)</a>
+        <a class="nav-item" href="#mm-p09" onclick="showSection('mm-p09')">Part 09: Simulating Asset Randomness &amp; Brownian Paths</a>
+        <a class="nav-item" href="#mm-p10" onclick="showSection('mm-p10')">Part 10: Itô\'s Lemma &amp; Corrective Terms</a>
+        <a class="nav-item" href="#mm-p11" onclick="showSection('mm-p11')">Part 11: Lognormal Stock Price Evolution Derivation</a>
+        <a class="nav-item" href="#mm-p12" onclick="showSection('mm-p12')">Part 12: Short Rate Mechanics (Vasicek vs. CIR)</a>
+        <a class="nav-item" href="#mm-p13" onclick="showSection('mm-p13')">Part 13: Black-Scholes PDE Parabolic Framework</a>
+        <a class="nav-item" href="#mm-p14" onclick="showSection('mm-p14')">Part 14: Practical Stochastic Path Generation in Excel</a>
     </div>
     </details>
 
     <details class="nav-level-2">
     <summary class="nav-section-title">Complex Analysis Masterclass</summary>
     <div class="nav-group">
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 01: Complex Variable Integration &amp; Holomorphic Motivation</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 02: De Moivre\'s Theorem &amp; Euler Integrals</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 03: Geometric Moduli Interpretations</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 04: Mapping z-Plane to w-Plane (f(z))</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 05: Holomorphic Functions &amp; Power Series Convergence</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 06: Cauchy-Riemann Differentiability Tests</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 07: Harmonic Conjugates &amp; Laplace Solutions</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 08: Cauchy-Riemann Polar Coordinate Derivations</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 09: Contour Parameterization &amp; Complex Integration</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 10: Cauchy\'s Integral Theorem</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 11: Cauchy\'s Integral Formula with Singularity Splitting</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 12: Definite Real Trigonometric Contour Evaluation</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 13: Taylor vs. Laurent Expansions</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 14: Classifying Singularities (Poles vs. Essential)</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 15: Residue Theorem &amp; Polynomial Contour Integration</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 16: Infinite Real Domain Contour Integrals</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 17: Infinite Definite Trigonometric Residue Evaluation</a>
+        <a class="nav-item" href="#ca-p01" onclick="showSection('ca-p01')">Part 01: Complex Variable Integration &amp; Holomorphic Motivation</a>
+        <a class="nav-item" href="#ca-p02" onclick="showSection('ca-p02')">Part 02: De Moivre\'s Theorem &amp; Euler Integrals</a>
+        <a class="nav-item" href="#ca-p03" onclick="showSection('ca-p03')">Part 03: Geometric Moduli Interpretations</a>
+        <a class="nav-item" href="#ca-p04" onclick="showSection('ca-p04')">Part 04: Mapping z-Plane to w-Plane (f(z))</a>
+        <a class="nav-item" href="#ca-p05" onclick="showSection('ca-p05')">Part 05: Holomorphic Functions &amp; Power Series Convergence</a>
+        <a class="nav-item" href="#ca-p06" onclick="showSection('ca-p06')">Part 06: Cauchy-Riemann Differentiability Tests</a>
+        <a class="nav-item" href="#ca-p07" onclick="showSection('ca-p07')">Part 07: Harmonic Conjugates &amp; Laplace Solutions</a>
+        <a class="nav-item" href="#ca-p08" onclick="showSection('ca-p08')">Part 08: Cauchy-Riemann Polar Coordinate Derivations</a>
+        <a class="nav-item" href="#ca-p09" onclick="showSection('ca-p09')">Part 09: Contour Parameterization &amp; Complex Integration</a>
+        <a class="nav-item" href="#ca-p10" onclick="showSection('ca-p10')">Part 10: Cauchy\'s Integral Theorem</a>
+        <a class="nav-item" href="#ca-p11" onclick="showSection('ca-p11')">Part 11: Cauchy\'s Integral Formula with Singularity Splitting</a>
+        <a class="nav-item" href="#ca-p12" onclick="showSection('ca-p12')">Part 12: Definite Real Trigonometric Contour Evaluation</a>
+        <a class="nav-item" href="#ca-p13" onclick="showSection('ca-p13')">Part 13: Taylor vs. Laurent Expansions</a>
+        <a class="nav-item" href="#ca-p14" onclick="showSection('ca-p14')">Part 14: Classifying Singularities (Poles vs. Essential)</a>
+        <a class="nav-item" href="#ca-p15" onclick="showSection('ca-p15')">Part 15: Residue Theorem &amp; Polynomial Contour Integration</a>
+        <a class="nav-item" href="#ca-p16" onclick="showSection('ca-p16')">Part 16: Infinite Real Domain Contour Integrals</a>
+        <a class="nav-item" href="#ca-p17" onclick="showSection('ca-p17')">Part 17: Infinite Definite Trigonometric Residue Evaluation</a>
     </div>
     </details>
 
     <details class="nav-level-2">
     <summary class="nav-section-title">Intraday High-Frequency Trading</summary>
     <div class="nav-group">
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 01: Limit Order Books, Spreads &amp; Liquidity Flows</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 02: Market Impact Functions &amp; Order Distribution</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 03: Estimating Impact Models via Statistical Volatility</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 04: Volume Distribution Modeling &amp; Heavy-Tail Spikes</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 05: Intraday Microstructure Seasonality Modeling</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 06: Multi-Venue Trade Execution (Dark Pools vs Lit Markets)</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 07: Transaction Cost Minimization Frameworks</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 08: Volatility-Based Execution Optimization Algorithms</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 09: Stock Diffusion Modeling with Numeric Boundaries</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 10: Stochastic Control Theory &amp; Trade Execution</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 11: MATLAB High-Frequency Data Manipulation Labs</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 12: Identifying Microstructure Price Relationships</a>
+        <a class="nav-item" href="#hft-p01" onclick="showSection('hft-p01')">Part 01: Limit Order Books, Spreads &amp; Liquidity Flows</a>
+        <a class="nav-item" href="#hft-p02" onclick="showSection('hft-p02')">Part 02: Market Impact Functions &amp; Order Distribution</a>
+        <a class="nav-item" href="#hft-p03" onclick="showSection('hft-p03')">Part 03: Estimating Impact Models via Statistical Volatility</a>
+        <a class="nav-item" href="#hft-p04" onclick="showSection('hft-p04')">Part 04: Volume Distribution Modeling &amp; Heavy-Tail Spikes</a>
+        <a class="nav-item" href="#hft-p05" onclick="showSection('hft-p05')">Part 05: Intraday Microstructure Seasonality Modeling</a>
+        <a class="nav-item" href="#hft-p06" onclick="showSection('hft-p06')">Part 06: Multi-Venue Trade Execution (Dark Pools vs Lit Markets)</a>
+        <a class="nav-item" href="#hft-p07" onclick="showSection('hft-p07')">Part 07: Transaction Cost Minimization Frameworks</a>
+        <a class="nav-item" href="#hft-p08" onclick="showSection('hft-p08')">Part 08: Volatility-Based Execution Optimization Algorithms</a>
+        <a class="nav-item" href="#hft-p09" onclick="showSection('hft-p09')">Part 09: Stock Diffusion Modeling with Numeric Boundaries</a>
+        <a class="nav-item" href="#hft-p10" onclick="showSection('hft-p10')">Part 10: Stochastic Control Theory &amp; Trade Execution</a>
+        <a class="nav-item" href="#hft-p11" onclick="showSection('hft-p11')">Part 11: MATLAB High-Frequency Data Manipulation Labs</a>
+        <a class="nav-item" href="#hft-p12" onclick="showSection('hft-p12')">Part 12: Identifying Microstructure Price Relationships</a>
     </div>
     </details>
 
     <details class="nav-level-2">
     <summary class="nav-section-title">Advanced Risk Management &amp; Regulation</summary>
     <div class="nav-group">
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 01: Calibration &amp; Modeling Risk Overview</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 02: Multidisciplinary Risk Assessment Frameworks</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 03: Non-Normal Distributions in Risk Assets</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 04: Classic Risk Categorizations (Market, Credit, Liquidity, OpRisk)</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 05: Calculating Value-at-Risk (VaR) via Historical Simulation</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 06: Return Distribution Fat-Tail Realities</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 07: Limitations of Classical VaR Measures</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 08: Monte Carlo VaR Projection for Two Assets</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 09: Excel Random Number Generators vs. Industry Standards</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 10: Multi-Asset VaR Projection Mechanics</a>
+        <a class="nav-item" href="#arm-p01" onclick="showSection('arm-p01')">Part 01: Calibration &amp; Modeling Risk Overview</a>
+        <a class="nav-item" href="#arm-p02" onclick="showSection('arm-p02')">Part 02: Multidisciplinary Risk Assessment Frameworks</a>
+        <a class="nav-item" href="#arm-p03" onclick="showSection('arm-p03')">Part 03: Non-Normal Distributions in Risk Assets</a>
+        <a class="nav-item" href="#arm-p04" onclick="showSection('arm-p04')">Part 04: Classic Risk Categorizations (Market, Credit, Liquidity, OpRisk)</a>
+        <a class="nav-item" href="#arm-p05" onclick="showSection('arm-p05')">Part 05: Calculating Value-at-Risk (VaR) via Historical Simulation</a>
+        <a class="nav-item" href="#arm-p06" onclick="showSection('arm-p06')">Part 06: Return Distribution Fat-Tail Realities</a>
+        <a class="nav-item" href="#arm-p07" onclick="showSection('arm-p07')">Part 07: Limitations of Classical VaR Measures</a>
+        <a class="nav-item" href="#arm-p08" onclick="showSection('arm-p08')">Part 08: Monte Carlo VaR Projection for Two Assets</a>
+        <a class="nav-item" href="#arm-p09" onclick="showSection('arm-p09')">Part 09: Excel Random Number Generators vs. Industry Standards</a>
+        <a class="nav-item" href="#arm-p10" onclick="showSection('arm-p10')">Part 10: Multi-Asset VaR Projection Mechanics</a>
     </div>
     </details>
 
     <details class="nav-level-2">
     <summary class="nav-section-title">Introduction to Algorithmic Differentiation</summary>
     <div class="nav-group">
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 01: Source Code Transformation Principles</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 02: Operator Overloading vs. Source-to-Source compilers</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 03: Elemental Operations Computation Graphs</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 04: Implementing Manual Tangent Linear Code</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 05: Tangent Linear Efficiency Tricks (Vector Mode &amp; Sparsity)</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 06: Adjoint Code Mechanics &amp; Memory Constraints</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 07: Adjoint Reverse Mode Implementation &amp; Stacks</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 08: Code Overloading for Backward Interpretation</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 09: Automatic Code Generation Tools (Adjoint Applications)</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 10: Second-Order Adjoints &amp; Hessian Matrix Extraction</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 11: Iterative Code Optimization &amp; Performance Profiles</a>
+        <a class="nav-item" href="#ad-p01" onclick="showSection('ad-p01')">Part 01: Source Code Transformation Principles</a>
+        <a class="nav-item" href="#ad-p02" onclick="showSection('ad-p02')">Part 02: Operator Overloading vs. Source-to-Source compilers</a>
+        <a class="nav-item" href="#ad-p03" onclick="showSection('ad-p03')">Part 03: Elemental Operations Computation Graphs</a>
+        <a class="nav-item" href="#ad-p04" onclick="showSection('ad-p04')">Part 04: Implementing Manual Tangent Linear Code</a>
+        <a class="nav-item" href="#ad-p05" onclick="showSection('ad-p05')">Part 05: Tangent Linear Efficiency Tricks (Vector Mode &amp; Sparsity)</a>
+        <a class="nav-item" href="#ad-p06" onclick="showSection('ad-p06')">Part 06: Adjoint Code Mechanics &amp; Memory Constraints</a>
+        <a class="nav-item" href="#ad-p07" onclick="showSection('ad-p07')">Part 07: Adjoint Reverse Mode Implementation &amp; Stacks</a>
+        <a class="nav-item" href="#ad-p08" onclick="showSection('ad-p08')">Part 08: Code Overloading for Backward Interpretation</a>
+        <a class="nav-item" href="#ad-p09" onclick="showSection('ad-p09')">Part 09: Automatic Code Generation Tools (Adjoint Applications)</a>
+        <a class="nav-item" href="#ad-p10" onclick="showSection('ad-p10')">Part 10: Second-Order Adjoints &amp; Hessian Matrix Extraction</a>
+        <a class="nav-item" href="#ad-p11" onclick="showSection('ad-p11')">Part 11: Iterative Code Optimization &amp; Performance Profiles</a>
     </div>
     </details>
 
     <details class="nav-level-2">
     <summary class="nav-section-title">Asymptotics for Stochastic Volatility Models</summary>
     <div class="nav-group">
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 01: Hyperbolic Metrics &amp; Heat Kernels in SABR Toy Models</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 02: SABR Implied Volatility Smile Corrections</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 03: Small-Time vs. Large-Time Asymptotic Limits</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 04: SABR vs. CEV/Heston Large-Time Limit Comparisons</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 05: Exponential Lévy Option Asymptotics</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 06: Share Measures &amp; Small-Time Asymptotics</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 07: CEV-Heston and Kou/CGMY Hybrid Frameworks</a>
-        <a class="nav-item" href="#pending" onclick="showSection('pending')">Part 08: Large Deviation Principles (LDP) in Option Pricing</a>
+        <a class="nav-item" href="#asv-p01" onclick="showSection('asv-p01')">Part 01: Hyperbolic Metrics &amp; Heat Kernels in SABR Toy Models</a>
+        <a class="nav-item" href="#asv-p02" onclick="showSection('asv-p02')">Part 02: SABR Implied Volatility Smile Corrections</a>
+        <a class="nav-item" href="#asv-p03" onclick="showSection('asv-p03')">Part 03: Small-Time vs. Large-Time Asymptotic Limits</a>
+        <a class="nav-item" href="#asv-p04" onclick="showSection('asv-p04')">Part 04: SABR vs. CEV/Heston Large-Time Limit Comparisons</a>
+        <a class="nav-item" href="#asv-p05" onclick="showSection('asv-p05')">Part 05: Exponential Lévy Option Asymptotics</a>
+        <a class="nav-item" href="#asv-p06" onclick="showSection('asv-p06')">Part 06: Share Measures &amp; Small-Time Asymptotics</a>
+        <a class="nav-item" href="#asv-p07" onclick="showSection('asv-p07')">Part 07: CEV-Heston and Kou/CGMY Hybrid Frameworks</a>
+        <a class="nav-item" href="#asv-p08" onclick="showSection('asv-p08')">Part 08: Large Deviation Principles (LDP) in Option Pricing</a>
     </div>
     </details>
 
@@ -2340,6 +2410,144 @@
             {% include "templates/sections/view-cqf-fp-sec-gov-securities.html" %}
             {% include "templates/sections/view-cqf-fp-tvm-compounding.html" %}
             {% include "templates/sections/view-cqf-fp-tvm-discounting.html" %}
+            {% include "templates/sections/view-asv-p01.html" %}
+            {% include "templates/sections/view-asv-p02.html" %}
+            {% include "templates/sections/view-asv-p03.html" %}
+            {% include "templates/sections/view-asv-p04.html" %}
+            {% include "templates/sections/view-asv-p05.html" %}
+            {% include "templates/sections/view-asv-p06.html" %}
+            {% include "templates/sections/view-asv-p07.html" %}
+            {% include "templates/sections/view-asv-p08.html" %}
+            {% include "templates/sections/view-ad-p01.html" %}
+            {% include "templates/sections/view-ad-p02.html" %}
+            {% include "templates/sections/view-ad-p03.html" %}
+            {% include "templates/sections/view-ad-p04.html" %}
+            {% include "templates/sections/view-ad-p05.html" %}
+            {% include "templates/sections/view-ad-p06.html" %}
+            {% include "templates/sections/view-ad-p07.html" %}
+            {% include "templates/sections/view-ad-p08.html" %}
+            {% include "templates/sections/view-ad-p09.html" %}
+            {% include "templates/sections/view-ad-p10.html" %}
+            {% include "templates/sections/view-ad-p11.html" %}
+            {% include "templates/sections/view-arm-p01.html" %}
+            {% include "templates/sections/view-arm-p02.html" %}
+            {% include "templates/sections/view-arm-p03.html" %}
+            {% include "templates/sections/view-arm-p04.html" %}
+            {% include "templates/sections/view-arm-p05.html" %}
+            {% include "templates/sections/view-arm-p06.html" %}
+            {% include "templates/sections/view-arm-p07.html" %}
+            {% include "templates/sections/view-arm-p08.html" %}
+            {% include "templates/sections/view-arm-p09.html" %}
+            {% include "templates/sections/view-arm-p10.html" %}
+            {% include "templates/sections/view-hft-p01.html" %}
+            {% include "templates/sections/view-hft-p02.html" %}
+            {% include "templates/sections/view-hft-p03.html" %}
+            {% include "templates/sections/view-hft-p04.html" %}
+            {% include "templates/sections/view-hft-p05.html" %}
+            {% include "templates/sections/view-hft-p06.html" %}
+            {% include "templates/sections/view-hft-p07.html" %}
+            {% include "templates/sections/view-hft-p08.html" %}
+            {% include "templates/sections/view-hft-p09.html" %}
+            {% include "templates/sections/view-hft-p10.html" %}
+            {% include "templates/sections/view-hft-p11.html" %}
+            {% include "templates/sections/view-hft-p12.html" %}
+            {% include "templates/sections/view-ca-p01.html" %}
+            {% include "templates/sections/view-ca-p02.html" %}
+            {% include "templates/sections/view-ca-p03.html" %}
+            {% include "templates/sections/view-ca-p04.html" %}
+            {% include "templates/sections/view-ca-p05.html" %}
+            {% include "templates/sections/view-ca-p06.html" %}
+            {% include "templates/sections/view-ca-p07.html" %}
+            {% include "templates/sections/view-ca-p08.html" %}
+            {% include "templates/sections/view-ca-p09.html" %}
+            {% include "templates/sections/view-ca-p10.html" %}
+            {% include "templates/sections/view-ca-p11.html" %}
+            {% include "templates/sections/view-ca-p12.html" %}
+            {% include "templates/sections/view-ca-p13.html" %}
+            {% include "templates/sections/view-ca-p14.html" %}
+            {% include "templates/sections/view-ca-p15.html" %}
+            {% include "templates/sections/view-ca-p16.html" %}
+            {% include "templates/sections/view-ca-p17.html" %}
+            {% include "templates/sections/view-mm-p12.html" %}
+            {% include "templates/sections/view-mm-p13.html" %}
+            {% include "templates/sections/view-mm-p14.html" %}
+            {% include "templates/sections/view-mm-p01.html" %}
+            {% include "templates/sections/view-mm-p02.html" %}
+            {% include "templates/sections/view-mm-p03.html" %}
+            {% include "templates/sections/view-mm-p04.html" %}
+            {% include "templates/sections/view-mm-p05.html" %}
+            {% include "templates/sections/view-mm-p06.html" %}
+            {% include "templates/sections/view-mm-p07.html" %}
+            {% include "templates/sections/view-mm-p08.html" %}
+            {% include "templates/sections/view-mm-p09.html" %}
+            {% include "templates/sections/view-mm-p10.html" %}
+            {% include "templates/sections/view-mm-p11.html" %}
+            {% include "templates/sections/view-dev-python-sandbox.html" %}
+            {% include "templates/sections/view-dev-quantlib-export.html" %}
+            {% include "templates/sections/view-dev-api-docs.html" %}
+            {% include "templates/sections/view-dev-sdk-exporter.html" %}
+            {% include "templates/sections/view-dev-json-schema.html" %}
+            {% include "templates/sections/view-dev-json-viewer.html" %}
+            {% include "templates/sections/view-dev-code-export.html" %}
+            {% include "templates/sections/view-tool-hist-vol.html" %}
+            {% include "templates/sections/view-tool-svi-fitter.html" %}
+            {% include "templates/sections/view-tool-delta-gamma-hedge.html" %}
+            {% include "templates/sections/view-tool-correlation-matrix.html" %}
+            {% include "templates/sections/view-sp-ppn.html" %}
+            {% include "templates/sections/view-sp-capital-guaranteed.html" %}
+            {% include "templates/sections/view-sp-reverse-convertible.html" %}
+            {% include "templates/sections/view-sp-barrier-reverse-convertible.html" %}
+            {% include "templates/sections/view-sp-range-accrual.html" %}
+            {% include "templates/sections/view-sp-phoenix-autocallable.html" %}
+            {% include "templates/sections/view-sp-tarn.html" %}
+            {% include "templates/sections/view-sp-worst-of-phoenix.html" %}
+            {% include "templates/sections/view-sp-outperformance.html" %}
+            {% include "templates/sections/view-black76-commodities.html" %}
+            {% include "templates/sections/view-spark-crack-spreads.html" %}
+            {% include "templates/sections/view-swing-contracts.html" %}
+            {% include "templates/sections/view-caps-floors-black.html" %}
+            {% include "templates/sections/view-binary-digital-options.html" %}
+            {% include "templates/sections/view-barrier-options.html" %}
+            {% include "templates/sections/view-lookback-options.html" %}
+            {% include "templates/sections/view-asian-options.html" %}
+            {% include "templates/sections/view-compound-chooser-options.html" %}
+            {% include "templates/sections/view-margrabe-exchange.html" %}
+            {% include "templates/sections/view-rainbow-options.html" %}
+            {% include "templates/sections/view-basket-spread-options.html" %}
+            {% include "templates/sections/view-merton-jump-diffusion.html" %}
+            {% include "templates/sections/view-gram-charlier.html" %}
+            {% include "templates/sections/view-merton-structural.html" %}
+            {% include "templates/sections/view-reduced-form-credit.html" %}
+            {% include "templates/sections/view-cdo-copula.html" %}
+            {% include "templates/sections/view-normal-cdf-approx.html" %}
+            {% include "templates/sections/view-bivariate-normal.html" %}
+            {% include "templates/sections/view-trivariate-normal.html" %}
+            {% include "templates/sections/view-cost-of-carry.html" %}
+            {% include "templates/sections/view-historical-models.html" %}
+            {% include "templates/sections/view-greeks-first-order.html" %}
+            {% include "templates/sections/view-greeks-higher-order.html" %}
+            {% include "templates/sections/view-early-exercise.html" %}
+            {% include "templates/sections/view-roll-geske-whaley.html" %}
+            {% include "templates/sections/view-baw-approximation.html" %}
+            {% include "templates/sections/view-bjerksund-stensland.html" %}
+            {% include "templates/sections/view-escrowed-dividend.html" %}
+            {% include "templates/sections/view-implied-vol-solvers.html" %}
+            {% include "templates/sections/view-antithetic-control-variates.html" %}
+            {% include "templates/sections/view-ml-unsupervised.html" %}
+            {% include "templates/sections/view-ml-deep-nlp.html" %}
+            {% include "templates/sections/view-ml-reinforcement.html" %}
+            {% include "templates/sections/view-stylised-facts.html" %}
+            {% include "templates/sections/view-radon-nikodym.html" %}
+            {% include "templates/sections/view-kelly-criterion.html" %}
+            {% include "templates/sections/view-coin-tossing.html" %}
+            {% include "templates/sections/view-capm-apt.html" %}
+            {% include "templates/sections/view-black-litterman.html" %}
+            {% include "templates/sections/view-coherent-risk.html" %}
+            {% include "templates/sections/view-arch-garch.html" %}
+            {% include "templates/sections/view-egarch-gjr.html" %}
+            {% include "templates/sections/view-realized-implied-vol.html" %}
+            {% include "templates/sections/view-basel-accords.html" %}
+            {% include "templates/sections/view-collateral-ccp.html" %}
         </div>
 </main>
 <script>
@@ -2489,7 +2697,145 @@
             'cqf-fp-tvm-compounding':  { el: 'view-cqf-fp-tvm-compounding', math: true },
             'cqf-fp-tvm-discounting':  { el: 'view-cqf-fp-tvm-discounting', math: true },
             'cqf-mp-calculus':         { el: 'view-cqf-mp-calculus', math: true },
-            'cqf-mp-probability':      { el: 'view-cqf-mp-probability', math: true }
+            'cqf-mp-probability':      { el: 'view-cqf-mp-probability', math: true },
+            'asv-p01': { el: 'view-asv-p01', math: true },
+            'asv-p02': { el: 'view-asv-p02', math: true },
+            'asv-p03': { el: 'view-asv-p03', math: true },
+            'asv-p04': { el: 'view-asv-p04', math: true },
+            'asv-p05': { el: 'view-asv-p05', math: true },
+            'asv-p06': { el: 'view-asv-p06', math: true },
+            'asv-p07': { el: 'view-asv-p07', math: true },
+            'asv-p08': { el: 'view-asv-p08', math: true },
+            'ad-p01': { el: 'view-ad-p01', math: true },
+            'ad-p02': { el: 'view-ad-p02', math: true },
+            'ad-p03': { el: 'view-ad-p03', math: true },
+            'ad-p04': { el: 'view-ad-p04', math: true },
+            'ad-p05': { el: 'view-ad-p05', math: true },
+            'ad-p06': { el: 'view-ad-p06', math: true },
+            'ad-p07': { el: 'view-ad-p07', math: true },
+            'ad-p08': { el: 'view-ad-p08', math: true },
+            'ad-p09': { el: 'view-ad-p09', math: true },
+            'ad-p10': { el: 'view-ad-p10', math: true },
+            'ad-p11': { el: 'view-ad-p11', math: true },
+            'arm-p01': { el: 'view-arm-p01', math: true },
+            'arm-p02': { el: 'view-arm-p02', math: true },
+            'arm-p03': { el: 'view-arm-p03', math: true },
+            'arm-p04': { el: 'view-arm-p04', math: true },
+            'arm-p05': { el: 'view-arm-p05', math: true },
+            'arm-p06': { el: 'view-arm-p06', math: true },
+            'arm-p07': { el: 'view-arm-p07', math: true },
+            'arm-p08': { el: 'view-arm-p08', math: true },
+            'arm-p09': { el: 'view-arm-p09', math: true },
+            'arm-p10': { el: 'view-arm-p10', math: true },
+            'hft-p01': { el: 'view-hft-p01', math: true },
+            'hft-p02': { el: 'view-hft-p02', math: true },
+            'hft-p03': { el: 'view-hft-p03', math: true },
+            'hft-p04': { el: 'view-hft-p04', math: true },
+            'hft-p05': { el: 'view-hft-p05', math: true },
+            'hft-p06': { el: 'view-hft-p06', math: true },
+            'hft-p07': { el: 'view-hft-p07', math: true },
+            'hft-p08': { el: 'view-hft-p08', math: true },
+            'hft-p09': { el: 'view-hft-p09', math: true },
+            'hft-p10': { el: 'view-hft-p10', math: true },
+            'hft-p11': { el: 'view-hft-p11', math: true },
+            'hft-p12': { el: 'view-hft-p12', math: true },
+            'ca-p01': { el: 'view-ca-p01', math: true },
+            'ca-p02': { el: 'view-ca-p02', math: true },
+            'ca-p03': { el: 'view-ca-p03', math: true },
+            'ca-p04': { el: 'view-ca-p04', math: true },
+            'ca-p05': { el: 'view-ca-p05', math: true },
+            'ca-p06': { el: 'view-ca-p06', math: true },
+            'ca-p07': { el: 'view-ca-p07', math: true },
+            'ca-p08': { el: 'view-ca-p08', math: true },
+            'ca-p09': { el: 'view-ca-p09', math: true },
+            'ca-p10': { el: 'view-ca-p10', math: true },
+            'ca-p11': { el: 'view-ca-p11', math: true },
+            'ca-p12': { el: 'view-ca-p12', math: true },
+            'ca-p13': { el: 'view-ca-p13', math: true },
+            'ca-p14': { el: 'view-ca-p14', math: true },
+            'ca-p15': { el: 'view-ca-p15', math: true },
+            'ca-p16': { el: 'view-ca-p16', math: true },
+            'ca-p17': { el: 'view-ca-p17', math: true },
+            'mm-p12': { el: 'view-mm-p12', math: true },
+            'mm-p13': { el: 'view-mm-p13', math: true },
+            'mm-p14': { el: 'view-mm-p14', math: true },
+            'mm-p01': { el: 'view-mm-p01', math: true },
+            'mm-p02': { el: 'view-mm-p02', math: true },
+            'mm-p03': { el: 'view-mm-p03', math: true },
+            'mm-p04': { el: 'view-mm-p04', math: true },
+            'mm-p05': { el: 'view-mm-p05', math: true },
+            'mm-p06': { el: 'view-mm-p06', math: true },
+            'mm-p07': { el: 'view-mm-p07', math: true },
+            'mm-p08': { el: 'view-mm-p08', math: true },
+            'mm-p09': { el: 'view-mm-p09', math: true },
+            'mm-p10': { el: 'view-mm-p10', math: true },
+            'mm-p11': { el: 'view-mm-p11', math: true },
+            'dev-python-sandbox': { el: 'view-dev-python-sandbox', math: true },
+            'dev-quantlib-export': { el: 'view-dev-quantlib-export', math: true },
+            'dev-api-docs': { el: 'view-dev-api-docs', math: true },
+            'dev-sdk-exporter': { el: 'view-dev-sdk-exporter', math: true },
+            'dev-json-schema': { el: 'view-dev-json-schema', math: true },
+            'dev-json-viewer': { el: 'view-dev-json-viewer', math: true },
+            'dev-code-export': { el: 'view-dev-code-export', math: true },
+            'tool-hist-vol': { el: 'view-tool-hist-vol', math: true },
+            'tool-svi-fitter': { el: 'view-tool-svi-fitter', math: true },
+            'tool-delta-gamma-hedge': { el: 'view-tool-delta-gamma-hedge', math: true },
+            'tool-correlation-matrix': { el: 'view-tool-correlation-matrix', math: true },
+            'sp-ppn': { el: 'view-sp-ppn', math: true },
+            'sp-capital-guaranteed': { el: 'view-sp-capital-guaranteed', math: true },
+            'sp-reverse-convertible': { el: 'view-sp-reverse-convertible', math: true },
+            'sp-barrier-reverse-convertible': { el: 'view-sp-barrier-reverse-convertible', math: true },
+            'sp-range-accrual': { el: 'view-sp-range-accrual', math: true },
+            'sp-phoenix-autocallable': { el: 'view-sp-phoenix-autocallable', math: true },
+            'sp-tarn': { el: 'view-sp-tarn', math: true },
+            'sp-worst-of-phoenix': { el: 'view-sp-worst-of-phoenix', math: true },
+            'sp-outperformance': { el: 'view-sp-outperformance', math: true },
+            'black76-commodities': { el: 'view-black76-commodities', math: true },
+            'spark-crack-spreads': { el: 'view-spark-crack-spreads', math: true },
+            'swing-contracts': { el: 'view-swing-contracts', math: true },
+            'caps-floors-black': { el: 'view-caps-floors-black', math: true },
+            'binary-digital-options': { el: 'view-binary-digital-options', math: true },
+            'barrier-options': { el: 'view-barrier-options', math: true },
+            'lookback-options': { el: 'view-lookback-options', math: true },
+            'asian-options': { el: 'view-asian-options', math: true },
+            'compound-chooser-options': { el: 'view-compound-chooser-options', math: true },
+            'margrabe-exchange': { el: 'view-margrabe-exchange', math: true },
+            'rainbow-options': { el: 'view-rainbow-options', math: true },
+            'basket-spread-options': { el: 'view-basket-spread-options', math: true },
+            'merton-jump-diffusion': { el: 'view-merton-jump-diffusion', math: true },
+            'gram-charlier': { el: 'view-gram-charlier', math: true },
+            'merton-structural': { el: 'view-merton-structural', math: true },
+            'reduced-form-credit': { el: 'view-reduced-form-credit', math: true },
+            'cdo-copula': { el: 'view-cdo-copula', math: true },
+            'normal-cdf-approx': { el: 'view-normal-cdf-approx', math: true },
+            'bivariate-normal': { el: 'view-bivariate-normal', math: true },
+            'trivariate-normal': { el: 'view-trivariate-normal', math: true },
+            'cost-of-carry': { el: 'view-cost-of-carry', math: true },
+            'historical-models': { el: 'view-historical-models', math: true },
+            'greeks-first-order': { el: 'view-greeks-first-order', math: true },
+            'greeks-higher-order': { el: 'view-greeks-higher-order', math: true },
+            'early-exercise': { el: 'view-early-exercise', math: true },
+            'roll-geske-whaley': { el: 'view-roll-geske-whaley', math: true },
+            'baw-approximation': { el: 'view-baw-approximation', math: true },
+            'bjerksund-stensland': { el: 'view-bjerksund-stensland', math: true },
+            'escrowed-dividend': { el: 'view-escrowed-dividend', math: true },
+            'implied-vol-solvers': { el: 'view-implied-vol-solvers', math: true },
+            'antithetic-control-variates': { el: 'view-antithetic-control-variates', math: true },
+            'ml-unsupervised': { el: 'view-ml-unsupervised', math: true },
+            'ml-deep-nlp': { el: 'view-ml-deep-nlp', math: true },
+            'ml-reinforcement': { el: 'view-ml-reinforcement', math: true },
+            'stylised-facts': { el: 'view-stylised-facts', math: true },
+            'radon-nikodym': { el: 'view-radon-nikodym', math: true },
+            'kelly-criterion': { el: 'view-kelly-criterion', math: true },
+            'coin-tossing': { el: 'view-coin-tossing', math: true },
+            'capm-apt': { el: 'view-capm-apt', math: true },
+            'black-litterman': { el: 'view-black-litterman', math: true },
+            'coherent-risk': { el: 'view-coherent-risk', math: true },
+            'arch-garch': { el: 'view-arch-garch', math: true },
+            'egarch-gjr': { el: 'view-egarch-gjr', math: true },
+            'realized-implied-vol': { el: 'view-realized-implied-vol', math: true },
+            'basel-accords': { el: 'view-basel-accords', math: true },
+            'collateral-ccp': { el: 'view-collateral-ccp', math: true }
         };
         let _activeSection = null;      // currently visible section key
         let _activeNavLink = null;      // currently highlighted nav link
@@ -2614,11 +2960,17 @@
 
             // 4. MathJax — scope to ONLY this section, and skip if already done
             if (cfg.math && !_mathTypeset.has(section)) {
+                // Force a reflow to ensure dimensions are calculated before MathJax renders
+                targetEl.offsetHeight;
+
                 if (typeof window.safeTypeset === 'function') {
                     window.safeTypeset([targetEl]);
                     _mathTypeset.add(section);
                 } else if (window.MathJax && typeof MathJax.typesetPromise === 'function') {
-                    MathJax.typesetPromise([targetEl]).then(() => _mathTypeset.add(section)).catch(err => console.log(err));
+                    // Defer slightly to ensure DOM is fully reflowed
+                    requestAnimationFrame(() => {
+                        MathJax.typesetPromise([targetEl]).then(() => _mathTypeset.add(section)).catch(err => console.log(err));
+                    });
                 }
             }
 

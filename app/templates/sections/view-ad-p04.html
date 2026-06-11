@@ -1,0 +1,68 @@
+<div id="view-ad-p04" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Algorithmic Adjoint Differentiation — Part 04</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Implementing Manual Tangent-Linear Code</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Writing forward-mode AD by hand: the line-by-line discipline, control flow rules, and a full tangent-linear Monte Carlo pricer.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Mechanical Rules</h3>
+        <p>For every active variable <code>v</code>, introduce <code>v_d</code> (its tangent, $\dot{v}$). For every assignment, write the differentiated line <em>first</em> (it reads old values), then the original:</p>
+        <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.8rem; font-size: 0.8rem; overflow-x: auto;">// original              // tangent-linear (before the original line)
+v = a * b;               v_d = a_d * b + a * b_d;
+w = exp(v);              w_d = exp(v) * v_d;        // or: w_d = w * v_d AFTER w computed
+u = v / w;               u_d = (v_d - u * w_d) / w; // reuse u: cheaper & stabler
+s = sqrt(v);             s_d = 0.5 / s * v_d;       // guard v=0 like the primal must</pre>
+        <ul style="line-height: 1.8;">
+            <li><strong>Seeding:</strong> to get $\partial y/\partial x_k$, set <code>xk_d = 1</code>, all other input tangents 0; outputs' tangents are the column of the Jacobian.</li>
+            <li><strong>Re-use computed primals</strong> (the <code>u</code>, <code>s</code> tricks): halves the flops and mirrors what good AD tools emit.</li>
+            <li><strong>Passive variables</strong> (ints, flags, anything provably derivative-free) get no tangent — "activity analysis" by hand.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Control Flow</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Branches:</strong> differentiate each branch's body; the condition itself is not differentiated (it's piecewise definition). Mind the kinks: <code>max(x,0)</code> has tangent <code>x &gt; 0 ? x_d : 0</code> — correct a.e., undefined at the kink (the payoff-smoothing issue Part 09 revisits).</li>
+            <li><strong>Loops:</strong> the tangent loop runs <em>in step with</em> the primal loop, same iteration count — forward mode never reverses anything (the adjoint's reversal pain, Part 07, doesn't exist here).</li>
+            <li><strong>Function calls:</strong> each function gets a tangent version <code>f_d(x, x_d, &amp;y, &amp;y_d)</code> computing value <em>and</em> tangent — composability by signature convention (Tapenade's <code>_d</code> convention).</li>
+            <li><strong>Iterative solvers:</strong> don't differentiate the iterations; differentiate the <em>solved equation</em>: from $F(x, \theta) = 0$, $\;\dot{x} = -F_x^{-1}F_\theta\dot{\theta}$ at the converged point (implicit function theorem) — exact, cheap, and avoids the convergence-of-derivatives question.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Worked: Tangent-Linear Monte Carlo (Vega of a Call)</h3>
+        <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.8rem; font-size: 0.78rem; overflow-x: auto;">def mc_call_vega(S0, K, T, r, sigma, Z):           # Z: fixed normals (CRN!)
+    drift   = (r - 0.5*sigma**2)*T
+    drift_d = -sigma*T                              # d(drift)/d(sigma)
+    vol     = sigma*np.sqrt(T)
+    vol_d   = np.sqrt(T)
+    ST     = S0*np.exp(drift + vol*Z)
+    ST_d   = ST*(drift_d + vol_d*Z)                 # chain rule through exp
+    pay    = np.maximum(ST - K, 0.0)
+    pay_d  = np.where(ST > K, ST_d, 0.0)            # kink rule
+    disc   = np.exp(-r*T)
+    return disc*pay.mean(), disc*pay_d.mean()       # price, vega</pre>
+        <p>Checks that should pass: vega vs. central bump ($\sigma \pm 10^{-5}$) to ~10 digits <em>using the same Z</em> (common random numbers — pathwise derivatives require the randomness held fixed); and vs. BS analytic vega within MC error. This <em>is</em> the pathwise Greek method of the Monte Carlo literature — tangent-linear AD and pathwise sensitivities are the same thing.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. When Manual Forward Mode Is the Right Tool</h3>
+        <ul style="line-height: 1.8;">
+            <li>Few inputs, many outputs: curve bumps through a cash-flow generator, scenario engines, $\partial(\text{whole smile})/\partial(\text{one model param})$ in calibration Jacobians.</li>
+            <li>As the <strong>validation layer</strong> for adjoints: the dot-product identity $\langle\dot y, \bar y\rangle = \langle\dot x, \bar x\rangle$ tests both implementations against each other (Part 11).</li>
+            <li>Small kernels where introducing a tool dependency isn't worth it — the rules above are entirely mechanical and code-reviewable.</li>
+            <li>Complex-step shortcut for a single derivative of real-analytic code: $f'(x) \approx \mathrm{Im}\,f(x + ih)/h$, $h = 10^{-20}$ — forward mode smuggled through the complex type, no cancellation (CA Part 11's trick).</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Tangent line before primal line, reuse primal results, seed one input at a time.</li>
+            <li>Branches differentiate piecewise (mind kinks); loops stay in step; solvers differentiate the equation, not the iterations.</li>
+            <li>Tangent-linear MC with frozen randomness = pathwise Greeks; validate against bumps with CRN.</li>
+            <li>Forward mode is the right tool for few-input maps and as the adjoint's CI cross-check.</li>
+        </ul>
+    </div>
+</div>

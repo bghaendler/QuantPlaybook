@@ -1,0 +1,58 @@
+<div id="view-historical-models" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Historical Models: Bachelier, Sprenkle, Boness</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Seventy years of option pricing before Black-Scholes: each precursor had the right structure but the wrong discounting — until the hedging argument removed preferences entirely.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Bachelier (1900): Arithmetic Brownian Motion</h3>
+        <p>Louis Bachelier's <em>Théorie de la Spéculation</em> modeled prices as arithmetic Brownian motion, $dS = \sigma\, dW$, five years before Einstein's Brownian-motion paper. The (undiscounted) call price:</p>
+        $$c = (S - K)\, N(d) + \sigma\sqrt{T}\, \phi(d), \qquad d = \frac{S - K}{\sigma\sqrt{T}},$$
+        <p>with normal volatility $\sigma$ in <em>price units</em> (e.g. \$/year<sup>1/2</sup>). Defects: prices can go negative, no discounting, zero drift assumed. Yet the model never died — it is the market standard for <strong>spread options</strong> (which can be negative) and was revived wholesale for <strong>negative interest rates</strong> (normal vols for swaptions post-2014) and the negative WTI futures episode of April 2020.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Sprenkle (1961): Lognormal Prices, Unknown Preferences</h3>
+        <p>Sprenkle switched to lognormal dynamics with drift $\rho$ and added a risk-aversion discount $k$ on the strike leg:</p>
+        $$c = S e^{\rho T} N(d_1) - (1-k)\, K\, N(d_2), \qquad d_1 = \frac{\ln(S/K) + (\rho + \sigma^2/2)T}{\sigma\sqrt{T}}.$$
+        <p>Structurally this <em>is</em> Black-Scholes — but $\rho$ (the stock's expected growth) and $k$ (the market's risk premium) are free preference parameters nobody could estimate. Sprenkle himself could not pin them down empirically.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Boness (1964): Discounting at the Stock's Expected Return</h3>
+        <p>Boness introduced time-value-of-money consistently, discounting the terminal payoff at the stock's expected return $\rho$:</p>
+        $$c = S\, N(d_1) - K e^{-\rho T} N(d_2), \qquad d_1 = \frac{\ln(S/K) + (\rho + \sigma^2/2)T}{\sigma\sqrt{T}}.$$
+        <p>This is <em>literally the Black-Scholes formula with $\rho$ in place of $r$</em>. One substitution away from the answer — but justifying that substitution requires the no-arbitrage hedging argument, not assumptions about investor expectations. Samuelson (1965) generalized further, letting the option and stock earn different expected returns ($\alpha \ne \rho$), adding a second unknown.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. The Conceptual Leap (1973)</h3>
+        <p>Black, Scholes and Merton showed that a continuously rebalanced portfolio $\Pi = V - \Delta S$ with $\Delta = \partial V/\partial S$ is instantaneously riskless, so it must earn $r$. The drift $\mu$ (alias $\rho$) cancels out of the PDE:</p>
+        $$\frac{\partial V}{\partial t} + \tfrac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} + r S \frac{\partial V}{\partial S} - rV = 0.$$
+        <p><strong>Preference-free pricing:</strong> every earlier model failed because it needed expected returns and risk premia; the hedge eliminates both. Boness's formula becomes correct once $\rho \to r$ — not because investors are risk-neutral, but because the hedged position is riskless.</p>
+    </div>
+
+    <div class="card">
+        <h3>5. Lineage Table</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Model</th><th style="padding: 0.5rem;">Dynamics</th><th style="padding: 0.5rem;">Discounting</th><th style="padding: 0.5rem;">Missing piece</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Bachelier 1900</td><td style="padding: 0.5rem;">Arithmetic BM</td><td style="padding: 0.5rem;">None</td><td style="padding: 0.5rem;">Positivity, interest</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Sprenkle 1961</td><td style="padding: 0.5rem;">Lognormal</td><td style="padding: 0.5rem;">Ad hoc $(1-k)$</td><td style="padding: 0.5rem;">Estimable preferences</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Boness 1964</td><td style="padding: 0.5rem;">Lognormal</td><td style="padding: 0.5rem;">at $\rho$ (stock drift)</td><td style="padding: 0.5rem;">Why $\rho \to r$</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Samuelson 1965</td><td style="padding: 0.5rem;">Lognormal</td><td style="padding: 0.5rem;">at $\alpha$ (option drift)</td><td style="padding: 0.5rem;">Two unknown drifts</td></tr>
+                <tr><td style="padding: 0.5rem;">Black-Scholes-Merton 1973</td><td style="padding: 0.5rem;">Lognormal</td><td style="padding: 0.5rem;">at $r$, forced by hedging</td><td style="padding: 0.5rem;">—</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Bachelier solved the mathematics (normal model, heat equation) 73 years early; his model survives for spreads and negative rates.</li>
+            <li>Sprenkle and Boness had the lognormal formula's shape but with preference parameters ($\rho$, $k$) in place of $r$.</li>
+            <li>The 1973 breakthrough is economic, not mathematical: delta hedging makes drift and risk premia irrelevant.</li>
+            <li>Knowing the precursors clarifies what Black-Scholes actually proves — and when its logic (continuous, frictionless hedging) fails.</li>
+        </ul>
+    </div>
+</div>

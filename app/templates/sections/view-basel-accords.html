@@ -1,0 +1,72 @@
+<div id="view-basel-accords" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Basel Accord Evolution (I → IV)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Four decades of bank capital regulation: from a single crude ratio to a multi-metric framework of risk-weighted capital, leverage, liquidity and output floors.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Core Idea: Risk-Weighted Capital</h3>
+        <p>All accords revolve around one ratio:</p>
+        $$\text{Capital Ratio} = \frac{\text{Eligible Capital}}{\text{Risk-Weighted Assets (RWA)}} \ge \text{minimum}.$$
+        <p>The story of Basel is the progressive refinement of both numerator (what counts as loss-absorbing capital) and denominator (how risk is measured) — punctuated by crises that exposed each generation's blind spots.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Basel I (1988): The Blunt Instrument</h3>
+        <ul style="line-height: 1.8;">
+            <li>Credit risk only; five crude risk-weight buckets (0% sovereigns, 20% banks, 50% mortgages, 100% corporates).</li>
+            <li>Minimum 8% of RWA (the "Cooke ratio"), half in Tier 1.</li>
+            <li>1996 Market Risk Amendment: trading books charged via 10-day 99% <strong>VaR × multiplier (≥3)</strong> — the regulatory debut of internal models.</li>
+            <li>Fatal flaw: a 100% weight for both AAA and CCC corporates invited <strong>regulatory arbitrage</strong> — securitize the good loans, keep the bad.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Basel II (2004): Risk Sensitivity &amp; Three Pillars</h3>
+        <p><strong>Pillar 1</strong> minimum capital, <strong>Pillar 2</strong> supervisory review (ICAAP), <strong>Pillar 3</strong> market discipline/disclosure. Credit risk gained internal-ratings-based (IRB) options built on a single-factor Gaussian copula (Vasicek/ASRF) formula:</p>
+        $$K = LGD \cdot \left[\Phi\!\left(\frac{\Phi^{-1}(PD) + \sqrt{\rho}\,\Phi^{-1}(0.999)}{\sqrt{1-\rho}}\right) - PD\right] \cdot \text{(maturity adj.)},$$
+        <p>capital covering the 99.9% unexpected loss given banks' own $PD$, $LGD$, $EAD$ estimates. Operational risk was added (Basic Indicator / Standardised / AMA). Flaw exposed in 2008: model risk, procyclicality, far too little capital against trading books and securitizations — banks levered to 40–50× on thin Tier 1.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Basel III (2010–): The Crisis Response</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Capital quality:</strong> Common Equity Tier 1 (CET1) ≥ 4.5%, Tier 1 ≥ 6%, total ≥ 8% — plus a 2.5% conservation buffer, 0–2.5% countercyclical buffer, and G-SIB surcharges (1–3.5%). Effective CET1 demands ~10%+ for large banks.</li>
+            <li><strong>Leverage ratio:</strong> Tier 1 / total exposure ≥ 3% — a non-risk-based backstop against RWA gaming.</li>
+            <li><strong>Liquidity:</strong> LCR (30-day stress survival: HQLA ≥ net outflows) and NSFR (one-year stable funding).</li>
+            <li><strong>Counterparty credit:</strong> CVA capital charge, central-clearing incentives, margin rules for non-cleared derivatives.</li>
+            <li><strong>Trading book (FRTB, finalized within "Basel IV"):</strong> stressed <strong>Expected Shortfall at 97.5%</strong> with liquidity horizons replaces VaR; strict trading/banking-book boundary; desk-level model approval with P&amp;L attribution tests.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>5. "Basel IV" (2017 finalization, phased to 2028)</h3>
+        <p>Officially the completion of Basel III; the industry nickname reflects its impact. Centerpiece: the <strong>output floor</strong> —</p>
+        $$\text{RWA} \ge 72.5\% \times \text{RWA}_{\text{standardised}},$$
+        <p>capping the benefit of internal models. Plus: removal of AMA (op-risk now a single Standardised Measurement Approach), constraints on IRB (no advanced IRB for large corporates/banks, input floors on PD/LGD), revised standardised approaches for credit and CVA. Net effect: convergence of model-based and standardised capital, dramatically reduced RWA variability across banks — at the cost of weaker risk sensitivity.</p>
+    </div>
+
+    <div class="card">
+        <h3>6. Timeline at a Glance</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Accord</th><th style="padding: 0.5rem;">Trigger / Era</th><th style="padding: 0.5rem;">Key innovation</th><th style="padding: 0.5rem;">Blind spot exposed</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Basel I (1988)</td><td style="padding: 0.5rem;">LDC debt crisis</td><td style="padding: 0.5rem;">8% RWA ratio</td><td style="padding: 0.5rem;">Arbitrage via securitization</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Basel II (2004)</td><td style="padding: 0.5rem;">Risk-model era</td><td style="padding: 0.5rem;">IRB, 3 pillars, op-risk</td><td style="padding: 0.5rem;">Leverage, liquidity, trading book</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">Basel III (2010)</td><td style="padding: 0.5rem;">2008 GFC</td><td style="padding: 0.5rem;">CET1 buffers, leverage, LCR/NSFR</td><td style="padding: 0.5rem;">RWA variability across banks</td></tr>
+                <tr><td style="padding: 0.5rem;">"Basel IV" (2017)</td><td style="padding: 0.5rem;">Model distrust</td><td style="padding: 0.5rem;">72.5% output floor, FRTB ES</td><td style="padding: 0.5rem;">(2023: interest-rate/run risk — SVB)</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Each accord refines Capital / RWA; each crisis exposes the current measurement gap.</li>
+            <li>Basel II introduced internal models (IRB, 99.9% Vasicek formula); Basel III re-armored capital and added leverage + liquidity metrics.</li>
+            <li>FRTB replaces trading-book VaR with stressed 97.5% Expected Shortfall.</li>
+            <li>Basel IV's output floor (72.5% of standardised) reins internal models back in.</li>
+            <li>For quants: regulation now defines much of the demand for risk modeling — and its constraints.</li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,63 @@
+<div id="view-cost-of-carry" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Cost of Carry (b) Framework</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">One formula to price them all: how a single carry parameter $b$ unifies Black-Scholes, Merton, Black-76, Asay and Garman-Kohlhagen.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Generalized Black-Scholes-Merton Formula</h3>
+        <p>Let $b$ denote the <strong>cost of carry</strong>: the net rate at which holding the underlying costs (financing minus income). The generalized BSM price is</p>
+        $$c = S e^{(b-r)T} N(d_1) - K e^{-rT} N(d_2), \qquad p = K e^{-rT} N(-d_2) - S e^{(b-r)T} N(-d_1),$$
+        $$d_1 = \frac{\ln(S/K) + (b + \sigma^2/2)T}{\sigma\sqrt{T}}, \qquad d_2 = d_1 - \sigma\sqrt{T}.$$
+        <p>The factor $e^{(b-r)T}$ converts spot into the present value of the <em>forward</em>: indeed $F = S e^{bT}$, and the formula is Black-76 on that forward.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Carry Dial: One Parameter, Five Models</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Setting</th><th style="padding: 0.5rem;">Model</th><th style="padding: 0.5rem;">Underlying</th><th style="padding: 0.5rem;">Forward $F = Se^{bT}$</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">$b = r$</td><td style="padding: 0.5rem;">Black-Scholes (1973)</td><td style="padding: 0.5rem;">Non-dividend stock</td><td style="padding: 0.5rem;">$Se^{rT}$</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">$b = r - q$</td><td style="padding: 0.5rem;">Merton (1973)</td><td style="padding: 0.5rem;">Stock with dividend yield $q$ / index</td><td style="padding: 0.5rem;">$Se^{(r-q)T}$</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">$b = 0$</td><td style="padding: 0.5rem;">Black-76</td><td style="padding: 0.5rem;">Futures/forwards</td><td style="padding: 0.5rem;">$F = S$ (already forward)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.5rem;">$b = 0,\ r = 0$</td><td style="padding: 0.5rem;">Asay (1982)</td><td style="padding: 0.5rem;">Margined futures options</td><td style="padding: 0.5rem;">premium fully margined</td></tr>
+                <tr><td style="padding: 0.5rem;">$b = r - r_f$</td><td style="padding: 0.5rem;">Garman-Kohlhagen (1983)</td><td style="padding: 0.5rem;">FX (foreign rate $r_f$)</td><td style="padding: 0.5rem;">covered-interest parity</td></tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 0.75rem;">For commodities, $b = r + u - y$: financing plus storage cost $u$ minus convenience yield $y$. Backwardation ($F < S$) corresponds to $b < 0$ — strong convenience yield.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Why It Works: Carry Is Just the Hedge's Drift</h3>
+        <p>The hedging argument never uses the real-world drift of $S$; it uses the cost of <em>holding the hedge</em>. A delta hedge in a stock costs financing $r$ and earns dividends $q$, so the risk-neutral drift of $S$ is $b = r - q$. For a futures hedge, no capital is tied up — the position costs nothing to carry — hence $b = 0$. The generalized PDE is</p>
+        $$\frac{\partial V}{\partial t} + \tfrac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} + b S \frac{\partial V}{\partial S} - rV = 0,$$
+        <p>with $b$ in the convection term but $r$ in the discounting term — they coincide only in the textbook stock case.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. Carry-Sensitive Greeks</h3>
+        <p>Two distinct rate sensitivities exist under carry:</p>
+        $$\rho = \frac{\partial c}{\partial r}, \qquad \text{carry rho} = \frac{\partial c}{\partial b} = T\, S e^{(b-r)T} N(d_1) > 0.$$
+        <p>For FX options, $\partial c/\partial r_f = -T S e^{-r_f T} N(d_1)$ (foreign rho). Delta also changes: $\Delta_c = e^{(b-r)T} N(d_1)$, so an ITM call on a high-yield currency has delta noticeably below $N(d_1)$. Put-call parity generalizes to</p>
+        $$c - p = S e^{(b-r)T} - K e^{-rT}.$$
+    </div>
+
+    <div class="card">
+        <h3>5. Worked Example: FX Option</h3>
+        <p>EUR/USD spot $S = 1.10$, domestic (USD) $r = 5\%$, foreign (EUR) $r_f = 3\%$ → $b = 2\%$. Strike $K = 1.10$, $T = 1$, $\sigma = 10\%$.</p>
+        $$d_1 = \frac{0 + (0.02 + 0.005)}{0.10} = 0.25, \qquad d_2 = 0.15.$$
+        $$c = 1.10\, e^{-0.03} N(0.25) - 1.10\, e^{-0.05} N(0.15) = 1.0675 \times 0.5987 - 1.0464 \times 0.5596 \approx 0.0535.$$
+        <p>The call is worth ≈ 5.35 USD cents per EUR. The positive carry (interest differential) makes the ATM forward sit above spot, favoring the call over the put by parity.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>One formula with carry $b$ spans BSM ($b=r$), Merton ($r-q$), Black-76 ($0$), Asay ($0, r=0$), Garman-Kohlhagen ($r-r_f$).</li>
+            <li>$Se^{bT}$ is the forward; generalized BSM ≡ Black-76 applied to it.</li>
+            <li>$b$ enters the PDE drift; $r$ enters discounting — separate roles.</li>
+            <li>Commodities: $b = r + \text{storage} - \text{convenience yield}$; sign of $b - r$ ↔ contango/backwardation.</li>
+            <li>Under carry there are two rhos: with respect to $r$ and to $b$ (or $r_f$, $q$).</li>
+        </ul>
+    </div>
+</div>

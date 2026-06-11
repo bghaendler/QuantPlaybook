@@ -1,0 +1,57 @@
+<div id="view-mm-p06" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Mathematical Methods in Financial Markets — Part 06</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Ordinary, Partial &amp; Stochastic Differential Equations</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The three species of differential equation in quantitative finance, what distinguishes them, and which financial objects each one governs.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. ODEs: One Independent Variable</h3>
+        <p>$\frac{dy}{dt} = f(t, y)$ — deterministic evolution. Financial specimens:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Compounding:</strong> $dB/dt = rB \Rightarrow B_t = B_0e^{rt}$ — the money market account, the simplest ODE in the subject.</li>
+            <li><strong>Bond-pricing Riccati systems:</strong> affine models (Vasicek, CIR) reduce the bond PDE to ODEs for $A(t,T), B(t,T)$ in $P = e^{A - Br}$.</li>
+            <li><strong>Perpetual options:</strong> time-independence turns the BS PDE into a Cauchy-Euler ODE (Part 08).</li>
+            <li>Classification matters for technique: order, linear vs nonlinear, homogeneous vs forced, constant vs variable coefficients.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. PDEs: Several Independent Variables</h3>
+        <p>Finance's canonical PDE is parabolic (heat-equation family):</p>
+        $$\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2S^2\frac{\partial^2 V}{\partial S^2} + rS\frac{\partial V}{\partial S} - rV = 0,$$
+        <p>backward in time with terminal condition $V(S, T) = $ payoff. Second-order PDE taxonomy — elliptic / parabolic / hyperbolic by the discriminant of the principal part — matters because each type has its own well-posedness and numerics; Black-Scholes transforms exactly into the heat equation $u_\tau = u_{xx}$ (diffusion of value backwards from the payoff). Boundary conditions encode the contract: barriers impose $V(H, t) = $ rebate; American constraints make it a free-boundary problem.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. SDEs: Noise Enters the Dynamics</h3>
+        $$dX_t = \mu(X_t, t)\,dt + \sigma(X_t, t)\,dW_t$$
+        <p>— an integral equation in disguise, $X_t = X_0 + \int\mu\,ds + \int\sigma\,dW$, where the second integral is the Itô integral (defined as a mean-square limit, since $W$ has unbounded variation). The drift steers, the diffusion shakes. The model zoo in one table:</p>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.4rem;">SDE</th><th style="padding: 0.4rem;">Name</th><th style="padding: 0.4rem;">Used for</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;">$dS = \mu S\,dt + \sigma S\,dW$</td><td style="padding: 0.4rem;">GBM</td><td style="padding: 0.4rem;">Stocks, FX</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;">$dr = \kappa(\theta - r)dt + \sigma dW$</td><td style="padding: 0.4rem;">Ornstein-Uhlenbeck / Vasicek</td><td style="padding: 0.4rem;">Rates, spreads, mean reversion</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.4rem;">$dr = \kappa(\theta - r)dt + \sigma\sqrt{r}\,dW$</td><td style="padding: 0.4rem;">CIR / square-root</td><td style="padding: 0.4rem;">Rates, variance (Heston), intensities</td></tr>
+                <tr><td style="padding: 0.4rem;">+ $dN_t$ jump terms</td><td style="padding: 0.4rem;">Jump-diffusions</td><td style="padding: 0.4rem;">Crashes, defaults</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>4. The Bridge: Feynman-Kac</h3>
+        <p>The three species are one theory. If $V$ solves the parabolic PDE</p>
+        $$V_t + \mu(x,t)V_x + \tfrac{1}{2}\sigma^2(x,t)V_{xx} - rV = 0, \qquad V(x,T) = g(x),$$
+        <p>then $V(x, t) = \mathbb{E}\left[e^{-r(T-t)}g(X_T) \mid X_t = x\right]$ where $X$ solves the corresponding SDE. <strong>PDE solutions are expectations over SDE paths</strong> — which is why trees, finite differences and Monte Carlo must agree, and why you may always pick the cheapest representation: PDE for low dimension and early exercise, expectation/MC for high dimension and path dependence.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>ODE: deterministic paths (compounding, affine bond coefficients). PDE: value surfaces (Black-Scholes ≅ heat equation). SDE: noisy state dynamics (GBM, OU, CIR).</li>
+            <li>Terminal/boundary conditions are the contract; the operator is the model.</li>
+            <li>SDEs are shorthand for integral equations; the Itô integral gives them meaning.</li>
+            <li>Feynman-Kac unifies: price = PDE solution = discounted expectation along SDE paths.</li>
+        </ul>
+    </div>
+</div>
