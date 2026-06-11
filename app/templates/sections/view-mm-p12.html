@@ -5,15 +5,30 @@
         <p style="color: #64748b; margin-top: 0.5rem;">The two canonical mean-reverting short-rate models side by side: dynamics, distributions, bond prices, and the trade-offs that decide which one you reach for.</p>
     </header>
 
-    <div class="card">
-        <h3>1. The Common Skeleton: Mean Reversion</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Common Skeleton: Mean Reversion</h3>
         <p>Both models write the short rate as a pull toward a long-run level $\theta$ at speed $\kappa$, plus noise:</p>
         $$\text{Vasicek:}\quad dr = \kappa(\theta - r)\,dt + \sigma\,dW, \qquad \text{CIR:}\quad dr = \kappa(\theta - r)\,dt + \sigma\sqrt{r}\,dW.$$
         <p>The single difference — $\sigma$ vs. $\sigma\sqrt{r}$ — cascades into everything: distribution shape, positivity, bond formulas and calibration behavior. Half-life of a shock in both: $t_{1/2} = \ln 2 / \kappa$ (κ = 0.5 ⇒ ~1.4 years), the most intuitive way to quote mean-reversion speed.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Short rate models use mean reversion to capture how interest rates pull back to a long-term average, resembling a rubber band.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Drift Pull:</strong> If rates are high, the drift is negative; if rates are low, the drift is positive, scaling with the distance to the mean.</li>
+            <li style="margin-bottom: 0;"><strong>Equilibrium:</strong> Simulates how central banks adjust interest rates to maintain economic stability.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Distributions</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Distributions</h3>
         <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
             <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;"></th><th style="padding: 0.45rem;">Vasicek</th><th style="padding: 0.45rem;">CIR</th></tr></thead>
             <tbody>
@@ -25,24 +40,61 @@
             </tbody>
         </table>
         <p style="margin-top: 0.6rem;">Pre-2008, "Vasicek goes negative" was a defect; the negative-rate era made it a feature. CIR's $\sqrt{r}$ also reappears as the variance process in Heston — learn it once, use it twice.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The choice of model dictates whether interest rates can mathematically become negative.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Vasicek:</strong> Rates are normally distributed, meaning they can mathematically drop below zero.</li>
+            <li style="margin-bottom: 0;"><strong>CIR:</strong> Rates follow a non-central chi-squared distribution, which is bounded at zero, keeping rates positive.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Bond Pricing: Both Are Affine</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Bond Pricing: Both Are Affine</h3>
         <p>Both admit exponential-affine bond prices $P(t, T) = A(\tau)e^{-B(\tau)r_t}$, $\tau = T - t$, with the ODE machinery of Part 07:</p>
         $$\text{Vasicek:}\quad B(\tau) = \frac{1 - e^{-\kappa\tau}}{\kappa}, \qquad \ln A = \left(\theta - \frac{\sigma^2}{2\kappa^2}\right)(B - \tau) - \frac{\sigma^2 B^2}{4\kappa},$$
         $$\text{CIR:}\quad B(\tau) = \frac{2(e^{\gamma\tau} - 1)}{(\gamma + \kappa)(e^{\gamma\tau} - 1) + 2\gamma}, \qquad \gamma = \sqrt{\kappa^2 + 2\sigma^2},$$
         <p>with the matching $A(\tau)$ power formula. Yields are affine in $r$: $y(\tau) = -\frac{\ln A}{\tau} + \frac{B}{\tau}r$ — so each model generates a one-factor family of yield curves (normal, inverted, mildly humped), all perfectly correlated across maturities: the known one-factor limitation that multi-factor and HJM models address.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Both Vasicek and CIR are 'affine' models, meaning bond prices are simple exponential functions of the current short rate.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Bond Pricing:</strong> Zero-coupon bond prices take the form of an exponential affine function, making pricing fast.</li>
+            <li style="margin-bottom: 0;"><strong>Analytical Tractability:</strong> Allows quants to price complex interest rate derivatives (caps, floors, swaptions) analytically.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Choosing in Practice</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Choosing in Practice</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Analytical convenience:</strong> Vasicek wins — Gaussian closed forms for bonds <em>and</em> bond options (Jamshidian); Hull-White is exactly Vasicek with time-dependent $\theta(t)$ fitted to today's curve.</li>
             <li><strong>Positivity / realism near zero:</strong> CIR wins (with Feller satisfied); intensity models for credit reuse CIR precisely because default intensities must stay positive.</li>
             <li><strong>Simulation:</strong> Vasicek exact and trivial; CIR needs the noncentral-χ² exact sampler or full-truncation Euler (Part 09's warning).</li>
             <li><strong>Calibration habit:</strong> fit κ from autocorrelation/half-life, θ from the long-run mean, σ from residual vol — then accept that one factor can't match cap/swaption surfaces and move to Hull-White/multi-factor for desk use.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Desks choose between Vasicek and CIR based on the complexity of the options and whether negative rates are expected.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Vasicek Usage:</strong> Preferred for complex multi-factor models because the math is simpler and yields closed-form solutions.</li>
+            <li style="margin-bottom: 0;"><strong>CIR Usage:</strong> Preferred when pricing long-term contracts where negative rates would corrupt the pricing engine.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -55,39 +107,5 @@
         </ul>
     </div>
 
-        <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700; border-bottom: 1px solid #fed7aa; padding-bottom: 0.5rem; margin-bottom: 1.25rem;">Plain English Notes</h3>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">1. The Common Skeleton: Mean Reversion</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Short rate models use mean reversion to capture how interest rates pull back to a long-term average, resembling a rubber band.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Drift Pull:</strong> If rates are high, the drift is negative; if rates are low, the drift is positive, scaling with the distance to the mean.</li>
-            <li style="margin-bottom: 0;"><strong>Equilibrium:</strong> Simulates how central banks adjust interest rates to maintain economic stability.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">2. Distributions</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> The choice of model dictates whether interest rates can mathematically become negative.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Vasicek:</strong> Rates are normally distributed, meaning they can mathematically drop below zero.</li>
-            <li style="margin-bottom: 0;"><strong>CIR:</strong> Rates follow a non-central chi-squared distribution, which is bounded at zero, keeping rates positive.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">3. Bond Pricing: Both Are Affine</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Both Vasicek and CIR are 'affine' models, meaning bond prices are simple exponential functions of the current short rate.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Bond Pricing:</strong> Zero-coupon bond prices take the form of an exponential affine function, making pricing fast.</li>
-            <li style="margin-bottom: 0;"><strong>Analytical Tractability:</strong> Allows quants to price complex interest rate derivatives (caps, floors, swaptions) analytically.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 0;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">4. Choosing in Practice</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Desks choose between Vasicek and CIR based on the complexity of the options and whether negative rates are expected.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Vasicek Usage:</strong> Preferred for complex multi-factor models because the math is simpler and yields closed-form solutions.</li>
-            <li style="margin-bottom: 0;"><strong>CIR Usage:</strong> Preferred when pricing long-term contracts where negative rates would corrupt the pricing engine.</li>
-            </ul>
-        </div>
-    </div>
+    
 </div>

@@ -5,33 +5,85 @@
         <p style="color: #64748b; margin-top: 0.5rem;">The equidimensional ODE whose power-law solutions price perpetual options in closed form — the one American option you can solve on paper.</p>
     </header>
 
-    <div class="card">
-        <h3>1. The Cauchy-Euler Equation</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Cauchy-Euler Equation</h3>
         $$a x^2 y'' + b x y' + c y = 0.$$
         <p>Coefficients scale with derivatives' orders ("equidimensional": invariant under $x \to \lambda x$). Try $y = x^m$:</p>
         $$a\,m(m-1) + b\,m + c = 0$$
         <p>— the <strong>auxiliary quadratic</strong>. Real distinct roots $m_1, m_2$ ⇒ $y = Ax^{m_1} + Bx^{m_2}$; repeated root ⇒ $x^m(A + B\ln x)$; complex $\alpha \pm i\beta$ ⇒ $x^\alpha(A\cos(\beta\ln x) + B\sin(\beta\ln x))$. Equivalently, substitute $x = e^z$ to get constant coefficients — Cauchy-Euler is the constant-coefficient equation in log coordinates, which is exactly why it appears under geometric Brownian motion.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Cauchy-Euler equations are special ODEs where the coefficients scale with the power of the variable (e.g. S^2 V'').</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Power Solutions:</strong> The solution takes the form of S^&gamma;. We solve the characteristic quadratic equation to find &gamma;.</li>
+            <li style="margin-bottom: 0;"><strong>Scale Invariance:</strong> These equations model systems where risks scale proportionally with the asset price.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Perpetual Options: Time Drops Out</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Perpetual Options: Time Drops Out</h3>
         <p>With no expiry, $V_t = 0$ and the Black-Scholes PDE becomes a Cauchy-Euler ODE in $S$:</p>
         $$\tfrac{1}{2}\sigma^2 S^2 V'' + (r - q) S V' - rV = 0,$$
         <p>auxiliary quadratic $\tfrac{1}{2}\sigma^2 m(m-1) + (r-q)m - r = 0$ with roots $m_1 > 1 > 0 > m_2$ (for $r > 0$). General solution $V = AS^{m_1} + BS^{m_2}$: the two power solutions are the building blocks of every perpetual and first-passage formula (they are the same powers in Bjerksund-Stensland's $\beta$ and the one-touch exponents $\mu \pm \lambda$).</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Perpetual options have no expiration date. Because time doesn't affect their value, the Black-Scholes PDE simplifies into a Cauchy-Euler ODE.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>No Theta:</strong> Since the option never expires, the derivative with respect to time is zero.</li>
+            <li style="margin-bottom: 0;"><strong>One-Dimensional:</strong> Reduces the options problem from a complex 2D PDE grid to a simple 1D ODE.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. The Perpetual American Put (McKean/Merton)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. The Perpetual American Put (McKean/Merton)</h3>
         <p>Hold region $S > S^*$: $V = BS^{m_2}$ (discard $S^{m_1}$ — value must vanish as $S \to \infty$). Two conditions at the unknown boundary:</p>
         $$V(S^*) = K - S^* \;\;\text{(value matching)}, \qquad V'(S^*) = -1 \;\;\text{(smooth pasting)}.$$
         <p>Solving:</p>
         $$S^* = \frac{m_2}{m_2 - 1}K, \qquad V(S) = \frac{K - S^*}{(S^*)^{m_2}}\, S^{m_2} = \frac{K}{1 - m_2}\left(\frac{m_2 - 1}{m_2}\cdot\frac{S}{K}\right)^{m_2}.$$
         <p>With $q = 0$: $m_2 = -2r/\sigma^2$. Numbers: $r = 5\%$, $\sigma = 20\%$, $K = 100$ ⇒ $m_2 = -2.5$, $S^* = \frac{-2.5}{-3.5}\times100 = 71.4$ — exercise the perpetual put when spot falls below ~71. The perpetual call (with $q > 0$) mirrors with $m_1$: $S^* = \frac{m_1}{m_1 - 1}K$.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The perpetual American put is the classic model for analyzing early exercise. We solve it analytically using the Cauchy-Euler roots.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Exercise Boundary:</strong> Traders use this formula to find the exact stock price threshold where they should exercise the option.</li>
+            <li style="margin-bottom: 0;"><strong>Value Function:</strong> The option value is a power function of the stock price, decaying to zero as the stock price rises.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Why Smooth Pasting?</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Why Smooth Pasting?</h3>
         <p>Value matching alone leaves a one-parameter family — one for each candidate boundary. Smooth pasting (equal first derivatives) is the <em>optimality</em> condition: exercising at any other boundary gives a value function with a kink, and a kinked value can be improved (the holder could do better by waiting or acting earlier). Economically it equates the marginal value of waiting to the marginal intrinsic gain. This pair of conditions — match value, match slope, solve for the free boundary — recurs throughout real options (investment timing à la McDonald-Siegel, abandonment, debt default in Leland's model), all of which are Cauchy-Euler problems with different payoffs.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Smooth pasting is the condition that determines the optimal exercise boundary by matching both the option price and its Delta.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Price Matching:</strong> The option value must equal the payoff value at the boundary (continuity).</li>
+            <li style="margin-bottom: 0;"><strong>Slope Matching:</strong> The slope (Delta) of the option price must match the slope of the payoff at the boundary (smoothness), preventing arbitrage.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -44,39 +96,5 @@
         </ul>
     </div>
 
-        <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700; border-bottom: 1px solid #fed7aa; padding-bottom: 0.5rem; margin-bottom: 1.25rem;">Plain English Notes</h3>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">1. The Cauchy-Euler Equation</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Cauchy-Euler equations are special ODEs where the coefficients scale with the power of the variable (e.g. S^2 V'').</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Power Solutions:</strong> The solution takes the form of S^&gamma;. We solve the characteristic quadratic equation to find &gamma;.</li>
-            <li style="margin-bottom: 0;"><strong>Scale Invariance:</strong> These equations model systems where risks scale proportionally with the asset price.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">2. Perpetual Options: Time Drops Out</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Perpetual options have no expiration date. Because time doesn't affect their value, the Black-Scholes PDE simplifies into a Cauchy-Euler ODE.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>No Theta:</strong> Since the option never expires, the derivative with respect to time is zero.</li>
-            <li style="margin-bottom: 0;"><strong>One-Dimensional:</strong> Reduces the options problem from a complex 2D PDE grid to a simple 1D ODE.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">3. The Perpetual American Put (McKean/Merton)</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> The perpetual American put is the classic model for analyzing early exercise. We solve it analytically using the Cauchy-Euler roots.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Exercise Boundary:</strong> Traders use this formula to find the exact stock price threshold where they should exercise the option.</li>
-            <li style="margin-bottom: 0;"><strong>Value Function:</strong> The option value is a power function of the stock price, decaying to zero as the stock price rises.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 0;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">4. Why Smooth Pasting?</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Smooth pasting is the condition that determines the optimal exercise boundary by matching both the option price and its Delta.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Price Matching:</strong> The option value must equal the payoff value at the boundary (continuity).</li>
-            <li style="margin-bottom: 0;"><strong>Slope Matching:</strong> The slope (Delta) of the option price must match the slope of the payoff at the boundary (smoothness), preventing arbitrage.</li>
-            </ul>
-        </div>
-    </div>
+    
 </div>

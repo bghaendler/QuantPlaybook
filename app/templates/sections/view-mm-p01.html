@@ -5,8 +5,10 @@
         <p style="color: #64748b; margin-top: 0.5rem;">The vocabulary everything else is written in: which numbers we work with, what a function really is, and why finance forces precision about domains.</p>
     </header>
 
-    <div class="card">
-        <h3>1. The Tower of Number Sets</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Tower of Number Sets</h3>
         $$\mathbb{N} \subset \mathbb{Z} \subset \mathbb{Q} \subset \mathbb{R} \subset \mathbb{C}$$
         <ul style="line-height: 1.8;">
             <li>$\mathbb{N}$ counts (trading days, coupon dates); $\mathbb{Z}$ adds signed quantities (long/short positions).</li>
@@ -15,26 +17,63 @@
             <li>$\mathbb{C}$ enters via characteristic functions and Fourier option pricing (Parts 02 and the Complex Analysis masterclass).</li>
             <li>Interval notation matters in term sheets: a barrier "in $[L, U)$" vs "$[L, U]$" is a legal difference, not a stylistic one.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Mathematical sets define the boundaries of our inputs. Understanding them prevents errors like trying to calculate volatilities for negative numbers.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Reals (&Ropf;):</strong> Volatilities, interest rates, and stock prices are modeled as continuous real numbers.</li>
+            <li style="margin-bottom: 0;"><strong>Rationals (&Qopf;):</strong> Market exchange price ticks and finite difference grids are rational numbers.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Mappings: Domain, Codomain, Image</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Mappings: Domain, Codomain, Image</h3>
         <p>A function $f: X \to Y$ assigns each element of the domain exactly one element of the codomain. The distinctions that pay rent:</p>
         <ul style="line-height: 1.8;">
             <li><strong>Injective</strong> (one-to-one): no two inputs share an output — invertible on its image. The Black-Scholes price as a function of vol, $\sigma \mapsto C_{BS}(\sigma)$, is strictly increasing hence injective: <em>this is why implied vol is well-defined</em>.</li>
             <li><strong>Surjective</strong> (onto): every codomain point is hit. $C_{BS}: (0,\infty) \to (\text{intrinsic}, S)$ is surjective onto the no-arbitrage interval — implied vol <em>exists</em> exactly for prices in that range.</li>
             <li><strong>Bijective</strong> = both ⇒ a true inverse $f^{-1}$ exists. Quantile functions $F^{-1}$ (Monte Carlo sampling, VaR) are the inverse of a CDF made bijective by restricting to where it strictly increases.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Mappings define how inputs relate to outputs. In option markets, this explains why we can translate market prices into unique implied volatilities.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Injectivity:</strong> The Black-Scholes pricing function is strictly increasing in volatility, ensuring a unique implied volatility exists.</li>
+            <li style="margin-bottom: 0;"><strong>Surjectivity:</strong> You can only solve for implied volatility if the option price lies between its intrinsic value and the stock price.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Function Properties Finance Leans On</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Function Properties Finance Leans On</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Monotonicity:</strong> prices monotone in vol (vega &gt; 0) and in strike (calls decreasing) — the basis of no-arbitrage bounds and root-finding.</li>
             <li><strong>Convexity:</strong> $f(\lambda x + (1-\lambda)y) \le \lambda f(x) + (1-\lambda)f(y)$. Option payoffs are convex in $S_T$; price convex in strike ⇔ positive risk-neutral density (butterfly no-arbitrage). Jensen's inequality — $\mathbb{E}[f(X)] \ge f(\mathbb{E}[X])$ for convex $f$ — <em>is</em> the value of optionality.</li>
             <li><strong>Continuity &amp; piecewise definitions:</strong> payoffs are continuous but kinked (vanilla) or discontinuous (digitals) — and the kink's location is where all the gamma lives.</li>
             <li><strong>Composition:</strong> $\ln$, $\exp$ as the bridge between returns and prices: $S_T = S_0 e^{r_{log}}$; compose carefully — $\mathbb{E}[e^X] \ne e^{\mathbb{E}[X]}$ (the $\frac{1}{2}\sigma^2$ correction is Part 10's subject).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Functions in finance describe how portfolios behave under price movements, such as whether a strategy gains or loses from volatility.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Monotonicity:</strong> Option prices increase with volatility, which simplifies root-solving algorithms.</li>
+            <li style="margin-bottom: 0;"><strong>Convexity:</strong> Option payoffs are convex, meaning buying options always benefits from price swings (optionality has positive value).</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -47,31 +86,5 @@
         </ul>
     </div>
 
-        <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700; border-bottom: 1px solid #fed7aa; padding-bottom: 0.5rem; margin-bottom: 1.25rem;">Plain English Notes</h3>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">1. The Tower of Number Sets</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Mathematical sets define the boundaries of our inputs. Understanding them prevents errors like trying to calculate volatilities for negative numbers.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Reals (&Ropf;):</strong> Volatilities, interest rates, and stock prices are modeled as continuous real numbers.</li>
-            <li style="margin-bottom: 0;"><strong>Rationals (&Qopf;):</strong> Market exchange price ticks and finite difference grids are rational numbers.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">2. Mappings: Domain, Codomain, Image</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Mappings define how inputs relate to outputs. In option markets, this explains why we can translate market prices into unique implied volatilities.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Injectivity:</strong> The Black-Scholes pricing function is strictly increasing in volatility, ensuring a unique implied volatility exists.</li>
-            <li style="margin-bottom: 0;"><strong>Surjectivity:</strong> You can only solve for implied volatility if the option price lies between its intrinsic value and the stock price.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 0;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">3. Function Properties Finance Leans On</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Functions in finance describe how portfolios behave under price movements, such as whether a strategy gains or loses from volatility.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Monotonicity:</strong> Option prices increase with volatility, which simplifies root-solving algorithms.</li>
-            <li style="margin-bottom: 0;"><strong>Convexity:</strong> Option payoffs are convex, meaning buying options always benefits from price swings (optionality has positive value).</li>
-            </ul>
-        </div>
-    </div>
+    
 </div>

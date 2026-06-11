@@ -5,13 +5,28 @@
         <p style="color: #64748b; margin-top: 0.5rem;">From sample spaces to the four moments every risk report quotes — mean, variance, skew, kurtosis — and the distributions that carry them in finance.</p>
     </header>
 
-    <div class="card">
-        <h3>1. Random Variables, CDF, PDF</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. Random Variables, CDF, PDF</h3>
         <p>A random variable $X$ maps outcomes to numbers; its law is captured by the CDF $F(x) = \mathbb{P}(X \le x)$ (non-decreasing, right-continuous, limits 0 and 1) and, when it exists, the density $f = F'$ with $\mathbb{P}(a < X \le b) = \int_a^b f$. Quantiles invert it: $\text{VaR}_\alpha$ is precisely $F^{-1}_{loss}(\alpha)$ — risk management is applied CDF inversion. Expectations of transforms: $\mathbb{E}[g(X)] = \int g(x)f(x)dx$ (LOTUS) — option pricing is $g = $ discounted payoff under the risk-neutral $f$.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Random variables model future asset returns, with PDFs showing probability density and CDFs showing cumulative probability.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>PDF:</strong> Shows the probability of the stock price landing at a specific value (options price scales with this density).</li>
+            <li style="margin-bottom: 0;"><strong>CDF:</strong> Represents the probability of the stock price staying below a specific value (used directly to value cash-or-nothing digitals).</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. The Four Moments</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. The Four Moments</h3>
         <table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
             <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.5rem;">Moment</th><th style="padding: 0.5rem;">Definition</th><th style="padding: 0.5rem;">Finance reading</th></tr></thead>
             <tbody>
@@ -22,10 +37,23 @@
             </tbody>
         </table>
         <p style="margin-top: 0.75rem;">Useful algebra: $\operatorname{Var}(X) = \mathbb{E}[X^2] - \mu^2$; $\operatorname{Var}(aX + bY) = a^2\sigma_X^2 + b^2\sigma_Y^2 + 2ab\operatorname{Cov}(X,Y)$ — the two-line foundation of portfolio theory. Moment generating function $M(t) = \mathbb{E}[e^{tX}]$ packages all moments: $\mathbb{E}[X^n] = M^{(n)}(0)$.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Moments mathematically describe the shape, width, and asymmetry of financial risks.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Mean &amp; Variance:</strong> Mean is the average expected return; Variance is the volatility or uncertainty.</li>
+            <li style="margin-bottom: 0;"><strong>Skewness &amp; Kurtosis:</strong> Negative skewness measures downside crash risk; Kurtosis measures fat tails (extreme moves).</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. The Cast of Distributions</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. The Cast of Distributions</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Normal $\mathcal{N}(\mu, \sigma^2)$:</strong> closed under sums, CLT-blessed, MGF $e^{\mu t + \sigma^2t^2/2}$ — log-returns' default model and its known understatement of tails.</li>
             <li><strong>Lognormal:</strong> $e^{\mathcal{N}}$ — prices; mean $e^{\mu + \sigma^2/2}$ (note the convexity bump), all moments finite but the MGF doesn't exist.</li>
@@ -33,15 +61,39 @@
             <li><strong>Student-t:</strong> power tails, kurtosis from $\nu$; the GARCH-residual standard; variance infinite for $\nu \le 2$.</li>
             <li><strong>Empirical daily equity returns:</strong> $\gamma_1 \approx -0.5$ to $-1$, $\gamma_2 \approx 5$–$30$ — the numbers any candidate model must reproduce (cf. Stylised Facts).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Different financial assets require different probability distributions to capture their returns.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Normal vs. Lognormal:</strong> Normal is used for returns (which can be negative); Lognormal is used for stock prices (which must stay positive).</li>
+            <li style="margin-bottom: 0;"><strong>Student-t:</strong> Captures the fat tails of real-world asset returns, showing higher risk of extreme tail events.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Moments → Prices and Risk</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Moments → Prices and Risk</h3>
         <ul style="line-height: 1.8;">
             <li>Variance prices vanillas (BS needs only $\sigma$); skew and kurtosis price the smile (Gram-Charlier: slope ∝ $-\gamma_1$, curvature ∝ $\gamma_2$).</li>
             <li>Cornish-Fisher adjusts VaR quantiles for $\gamma_1, \gamma_2$: $z^{CF} = z + \frac{\gamma_1}{6}(z^2 - 1) + \frac{\gamma_2}{24}(z^3 - 3z) - \frac{\gamma_1^2}{36}(2z^3 - 5z)$.</li>
             <li>Sample moments are noisy in the tails: kurtosis estimates need thousands of observations and are dominated by a handful of extreme days — quote them with suspicion, prefer robust/quantile-based diagnostics.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> We price options by integrating the payoff function against the asset's probability distribution.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Risk-Neutral expectation:</strong> Options prices are the discounted expected payoffs under the risk-neutral probability distribution.</li>
+            <li style="margin-bottom: 0;"><strong>Moment Matching:</strong> Calibration algorithms align model parameters so that the model's moments match market prices.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -54,39 +106,5 @@
         </ul>
     </div>
 
-        <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700; border-bottom: 1px solid #fed7aa; padding-bottom: 0.5rem; margin-bottom: 1.25rem;">Plain English Notes</h3>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">1. Random Variables, CDF, PDF</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Random variables model future asset returns, with PDFs showing probability density and CDFs showing cumulative probability.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>PDF:</strong> Shows the probability of the stock price landing at a specific value (options price scales with this density).</li>
-            <li style="margin-bottom: 0;"><strong>CDF:</strong> Represents the probability of the stock price staying below a specific value (used directly to value cash-or-nothing digitals).</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">2. The Four Moments</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Moments mathematically describe the shape, width, and asymmetry of financial risks.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Mean &amp; Variance:</strong> Mean is the average expected return; Variance is the volatility or uncertainty.</li>
-            <li style="margin-bottom: 0;"><strong>Skewness &amp; Kurtosis:</strong> Negative skewness measures downside crash risk; Kurtosis measures fat tails (extreme moves).</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">3. The Cast of Distributions</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Different financial assets require different probability distributions to capture their returns.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Normal vs. Lognormal:</strong> Normal is used for returns (which can be negative); Lognormal is used for stock prices (which must stay positive).</li>
-            <li style="margin-bottom: 0;"><strong>Student-t:</strong> Captures the fat tails of real-world asset returns, showing higher risk of extreme tail events.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 0;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">4. Moments &rarr; Prices and Risk</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> We price options by integrating the payoff function against the asset's probability distribution.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Risk-Neutral expectation:</strong> Options prices are the discounted expected payoffs under the risk-neutral probability distribution.</li>
-            <li style="margin-bottom: 0;"><strong>Moment Matching:</strong> Calibration algorithms align model parameters so that the model's moments match market prices.</li>
-            </ul>
-        </div>
-    </div>
+    
 </div>

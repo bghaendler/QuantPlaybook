@@ -5,8 +5,10 @@
         <p style="color: #64748b; margin-top: 0.5rem;">The three species of differential equation in quantitative finance, what distinguishes them, and which financial objects each one governs.</p>
     </header>
 
-    <div class="card">
-        <h3>1. ODEs: One Independent Variable</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. ODEs: One Independent Variable</h3>
         <p>$\frac{dy}{dt} = f(t, y)$ — deterministic evolution. Financial specimens:</p>
         <ul style="line-height: 1.8;">
             <li><strong>Compounding:</strong> $dB/dt = rB \Rightarrow B_t = B_0e^{rt}$ — the money market account, the simplest ODE in the subject.</li>
@@ -14,17 +16,43 @@
             <li><strong>Perpetual options:</strong> time-independence turns the BS PDE into a Cauchy-Euler ODE (Part 08).</li>
             <li>Classification matters for technique: order, linear vs nonlinear, homogeneous vs forced, constant vs variable coefficients.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Ordinary differential equations describe deterministic systems changing over a single variable, like time.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Continuous Compounding:</strong> The growth of money in a bank account is modeled as a simple first-order ODE.</li>
+            <li style="margin-bottom: 0;"><strong>Yield Curves:</strong> Zero-coupon bond yield curves are solved as ODEs under simple rate assumptions.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. PDEs: Several Independent Variables</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. PDEs: Several Independent Variables</h3>
         <p>Finance's canonical PDE is parabolic (heat-equation family):</p>
         $$\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2S^2\frac{\partial^2 V}{\partial S^2} + rS\frac{\partial V}{\partial S} - rV = 0,$$
         <p>backward in time with terminal condition $V(S, T) = $ payoff. Second-order PDE taxonomy — elliptic / parabolic / hyperbolic by the discriminant of the principal part — matters because each type has its own well-posedness and numerics; Black-Scholes transforms exactly into the heat equation $u_\tau = u_{xx}$ (diffusion of value backwards from the payoff). Boundary conditions encode the contract: barriers impose $V(H, t) = $ rebate; American constraints make it a free-boundary problem.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Option values depend on multiple variables (stock price and time), requiring PDEs to describe their behavior.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Black-Scholes PDE:</strong> The fundamental equation balancing option decay (Theta), asset change (Delta), and volatility risk (Gamma).</li>
+            <li style="margin-bottom: 0;"><strong>Parabolic PDE:</strong> Option pricing PDEs are parabolic, meaning they behave like heat diffusion equations in physics.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. SDEs: Noise Enters the Dynamics</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. SDEs: Noise Enters the Dynamics</h3>
         $$dX_t = \mu(X_t, t)\,dt + \sigma(X_t, t)\,dW_t$$
         <p>— an integral equation in disguise, $X_t = X_0 + \int\mu\,ds + \int\sigma\,dW$, where the second integral is the Itô integral (defined as a mean-square limit, since $W$ has unbounded variation). The drift steers, the diffusion shakes. The model zoo in one table:</p>
         <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
@@ -36,13 +64,37 @@
                 <tr><td style="padding: 0.4rem;">+ $dN_t$ jump terms</td><td style="padding: 0.4rem;">Jump-diffusions</td><td style="padding: 0.4rem;">Crashes, defaults</td></tr>
             </tbody>
         </table>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> SDEs model random asset paths by combining a deterministic trend (drift) with random noise (diffusion).</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Drift &amp; Diffusion:</strong> Drift is the expected average return; Diffusion is the random volatility component.</li>
+            <li style="margin-bottom: 0;"><strong>Continuous Jaggedness:</strong> Stock prices are modeled as SDEs because market returns are continuous but unpredictable.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. The Bridge: Feynman-Kac</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. The Bridge: Feynman-Kac</h3>
         <p>The three species are one theory. If $V$ solves the parabolic PDE</p>
         $$V_t + \mu(x,t)V_x + \tfrac{1}{2}\sigma^2(x,t)V_{xx} - rV = 0, \qquad V(x,T) = g(x),$$
         <p>then $V(x, t) = \mathbb{E}\left[e^{-r(T-t)}g(X_T) \mid X_t = x\right]$ where $X$ solves the corresponding SDE. <strong>PDE solutions are expectations over SDE paths</strong> — which is why trees, finite differences and Monte Carlo must agree, and why you may always pick the cheapest representation: PDE for low dimension and early exercise, expectation/MC for high dimension and path dependence.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The Feynman-Kac theorem is the mathematical bridge that connects differential equations (PDEs) and probability expectations.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Equivalence:</strong> Proves that solving the Black-Scholes PDE is identical to finding the discounted expected option payoff.</li>
+            <li style="margin-bottom: 0;"><strong>Desks Choice:</strong> Allows quants to choose the fastest method: solving the PDE on a grid, or running Monte Carlo paths.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -55,39 +107,5 @@
         </ul>
     </div>
 
-        <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700; border-bottom: 1px solid #fed7aa; padding-bottom: 0.5rem; margin-bottom: 1.25rem;">Plain English Notes</h3>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">1. ODEs: One Independent Variable</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Ordinary differential equations describe deterministic systems changing over a single variable, like time.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Continuous Compounding:</strong> The growth of money in a bank account is modeled as a simple first-order ODE.</li>
-            <li style="margin-bottom: 0;"><strong>Yield Curves:</strong> Zero-coupon bond yield curves are solved as ODEs under simple rate assumptions.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">2. PDEs: Several Independent Variables</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Option values depend on multiple variables (stock price and time), requiring PDEs to describe their behavior.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Black-Scholes PDE:</strong> The fundamental equation balancing option decay (Theta), asset change (Delta), and volatility risk (Gamma).</li>
-            <li style="margin-bottom: 0;"><strong>Parabolic PDE:</strong> Option pricing PDEs are parabolic, meaning they behave like heat diffusion equations in physics.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">3. SDEs: Noise Enters the Dynamics</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> SDEs model random asset paths by combining a deterministic trend (drift) with random noise (diffusion).</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Drift &amp; Diffusion:</strong> Drift is the expected average return; Diffusion is the random volatility component.</li>
-            <li style="margin-bottom: 0;"><strong>Continuous Jaggedness:</strong> Stock prices are modeled as SDEs because market returns are continuous but unpredictable.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 0;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">4. The Bridge: Feynman-Kac</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> The Feynman-Kac theorem is the mathematical bridge that connects differential equations (PDEs) and probability expectations.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Equivalence:</strong> Proves that solving the Black-Scholes PDE is identical to finding the discounted expected option payoff.</li>
-            <li style="margin-bottom: 0;"><strong>Desks Choice:</strong> Allows quants to choose the fastest method: solving the PDE on a grid, or running Monte Carlo paths.</li>
-            </ul>
-        </div>
-    </div>
+    
 </div>

@@ -5,17 +5,32 @@
         <p style="color: #64748b; margin-top: 0.5rem;">The Black-Scholes equation as a parabolic PDE: derivation by hedging, reduction to the heat equation, boundary conditions as contracts, and what parabolicity buys you.</p>
     </header>
 
-    <div class="card">
-        <h3>1. Derivation in Five Lines (Hedging Argument)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. Derivation in Five Lines (Hedging Argument)</h3>
         <p>Hold the option $V(S,t)$, short $\Delta$ shares: $\Pi = V - \Delta S$. Itô (Part 10) gives</p>
         $$d\Pi = \left(V_t + \tfrac{1}{2}\sigma^2S^2V_{SS}\right)dt + \left(V_S - \Delta\right)dS.$$
         <p>Choose $\Delta = V_S$ — the $dS$ (risky) term vanishes; the portfolio is instantaneously riskless and must earn $r$: $d\Pi = r\Pi\,dt$. Equate:</p>
         $$\frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2S^2\frac{\partial^2 V}{\partial S^2} + rS\frac{\partial V}{\partial S} - rV = 0.$$
         <p>Note what's absent: $\mu$. The drift hedges away — the economic content of risk-neutral pricing, visible directly in the PDE.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The Black-Scholes PDE is derived by constructing a risk-free portfolio of the option and the stock, eliminating random noise.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Delta Hedging:</strong> We hold exactly the derivative shares of stock to cancel out the option's price risk.</li>
+            <li style="margin-bottom: 0;"><strong>No Arbitrage:</strong> Since the hedged portfolio has zero risk, it must earn exactly the risk-free interest rate.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Why "Parabolic" Matters</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Why "Parabolic" Matters</h3>
         <p>For $a V_{xx} + b V_{xt} + c V_{tt} + \dots$, the discriminant $b^2 - 4ac$ classifies: elliptic (&lt;0), parabolic (=0), hyperbolic (&gt;0). Black-Scholes has $b = c = 0$ ⇒ parabolic — the diffusion/heat family. Consequences:</p>
         <ul style="line-height: 1.8;">
             <li><strong>Smoothing:</strong> kinked payoffs become $C^\infty$ instantly before expiry — gamma is finite for $t < T$ and blows up only at the kink at expiry.</li>
@@ -23,17 +38,43 @@
             <li><strong>Maximum principle:</strong> solutions attain extremes on the boundary — the PDE-level reason for no-arbitrage price bounds and monotonicity in volatility.</li>
             <li><strong>Numerics:</strong> the parabolic toolkit applies verbatim: explicit/implicit/Crank-Nicolson finite differences with the $\Delta t \lesssim \Delta S^2$ stability constraint for explicit schemes.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Parabolic PDEs describe diffusion processes (like heat spreading). In finance, this means option values diffuse smoothly from expiration.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Smoothing Payoffs:</strong> The sharp, angled payoff of an option at expiration diffuses into a smooth pricing curve today.</li>
+            <li style="margin-bottom: 0;"><strong>Stability:</strong> Parabolic PDEs have stable solutions that can be solved backward using standard numerical grids.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Reduction to the Heat Equation</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Reduction to the Heat Equation</h3>
         <p>Substitute $S = Ke^x$, $t = T - \frac{2\tau}{\sigma^2}$, $V = K e^{\alpha x + \beta\tau} u(x, \tau)$ with $\alpha = -\frac{1}{2}(k-1)$, $\beta = -\frac{1}{4}(k+1)^2$, $k = \frac{2r}{\sigma^2}$:</p>
         $$\frac{\partial u}{\partial \tau} = \frac{\partial^2 u}{\partial x^2}.$$
         <p>Black-Scholes <em>is</em> the heat equation in log-price coordinates — option value diffuses backwards from the payoff exactly as heat spreads from an initial temperature profile. The fundamental solution (heat kernel) $\frac{1}{\sqrt{4\pi\tau}}e^{-x^2/4\tau}$ becomes, after untransforming, the lognormal risk-neutral density; convolving the call payoff against it reproduces the Black-Scholes formula — the PDE route to the same Gaussian integral as Part 04.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> We solve the Black-Scholes PDE by transforming it into the standard heat equation from physics, using change-of-variables.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Log-Price Mapping:</strong> Mapping the logarithm of the stock price removes variable coefficients, turning it into a constant-coefficient heat equation.</li>
+            <li style="margin-bottom: 0;"><strong>Known Solution:</strong> Allows quants to reuse centuries of physics math to write the closed-form Black-Scholes formula.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Boundary &amp; Terminal Conditions = The Contract</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Boundary &amp; Terminal Conditions = The Contract</h3>
         <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
             <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;">Contract</th><th style="padding: 0.45rem;">Terminal ($t = T$)</th><th style="padding: 0.45rem;">Spatial boundaries</th></tr></thead>
             <tbody>
@@ -43,6 +84,17 @@
             </tbody>
         </table>
         <p style="margin-top: 0.6rem;">Same operator every time; only the conditions change. That is the practical power of the PDE view: one solver, many products — and exotic features (barriers, early exercise, discrete dividends as jump conditions $V(S, t_d^-) = V(S - D, t_d^+)$) enter as conditions, not new theory.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The boundary and terminal conditions of the PDE are what define the specific option contract being priced.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Terminal Condition:</strong> The option payoff at expiration serves as the terminal condition of the equation.</li>
+            <li style="margin-bottom: 0;"><strong>Boundary Conditions:</strong> Define what happens at the extremes, such as when the stock price goes to zero or infinity.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -55,39 +107,5 @@
         </ul>
     </div>
 
-        <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700; border-bottom: 1px solid #fed7aa; padding-bottom: 0.5rem; margin-bottom: 1.25rem;">Plain English Notes</h3>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">1. Derivation in Five Lines (Hedging Argument)</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> The Black-Scholes PDE is derived by constructing a risk-free portfolio of the option and the stock, eliminating random noise.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Delta Hedging:</strong> We hold exactly the derivative shares of stock to cancel out the option's price risk.</li>
-            <li style="margin-bottom: 0;"><strong>No Arbitrage:</strong> Since the hedged portfolio has zero risk, it must earn exactly the risk-free interest rate.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">2. Why "Parabolic" Matters</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Parabolic PDEs describe diffusion processes (like heat spreading). In finance, this means option values diffuse smoothly from expiration.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Smoothing Payoffs:</strong> The sharp, angled payoff of an option at expiration diffuses into a smooth pricing curve today.</li>
-            <li style="margin-bottom: 0;"><strong>Stability:</strong> Parabolic PDEs have stable solutions that can be solved backward using standard numerical grids.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">3. Reduction to the Heat Equation</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> We solve the Black-Scholes PDE by transforming it into the standard heat equation from physics, using change-of-variables.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Log-Price Mapping:</strong> Mapping the logarithm of the stock price removes variable coefficients, turning it into a constant-coefficient heat equation.</li>
-            <li style="margin-bottom: 0;"><strong>Known Solution:</strong> Allows quants to reuse centuries of physics math to write the closed-form Black-Scholes formula.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 0;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">4. Boundary &amp; Terminal Conditions = The Contract</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> The boundary and terminal conditions of the PDE are what define the specific option contract being priced.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Terminal Condition:</strong> The option payoff at expiration serves as the terminal condition of the equation.</li>
-            <li style="margin-bottom: 0;"><strong>Boundary Conditions:</strong> Define what happens at the extremes, such as when the stock price goes to zero or infinity.</li>
-            </ul>
-        </div>
-    </div>
+    
 </div>

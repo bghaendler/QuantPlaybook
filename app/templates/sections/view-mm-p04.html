@@ -5,41 +5,93 @@
         <p style="color: #64748b; margin-top: 0.5rem;">The integration toolkit finance actually uses: substitution, parts, Gaussian integrals — and the handful of canonical computations behind closed-form prices.</p>
     </header>
 
-    <div class="card">
-        <h3>1. The Core Techniques</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Core Techniques</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Substitution</strong> (chain rule backwards): $\int f(g(x))g'(x)dx = \int f(u)du$. The standardization $z = \frac{\ln(S/S_0) - \mu T}{\sigma\sqrt{T}}$ that turns every lognormal expectation into a Gaussian integral is one substitution.</li>
             <li><strong>Integration by parts:</strong> $\int u\,dv = uv - \int v\,du$. Behind: $\mathbb{E}[X] = \int_0^\infty (1 - F(x))dx$ for positive $X$, the put-call decomposition of any payoff into vanillas (Carr-Madan static replication: $f(S_T)$ = bonds + forwards + $\int f''(K)\,\text{options}(K)dK$ — parts twice!), and expected shortfall formulas.</li>
             <li><strong>Differentiation under the integral</strong> (Leibniz): how Greeks are derived — differentiate the pricing integral in $S$ or $\sigma$ before integrating; also the Breeden-Litzenberger relation $\partial^2 C/\partial K^2 = e^{-rT}q(K)$.</li>
             <li><strong>Improper integrals &amp; convergence:</strong> tails must decay fast enough — lognormal moments all exist, power-law tails ($t$-distributions) lose moments above the tail index; variance-of-variance integrals in vol models live on this edge.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Integration in finance is used to calculate the present value of continuous cash flows and expected payoffs.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Substitution:</strong> Standardizes variable asset distributions into standard normal shapes to make integration solvable.</li>
+            <li style="margin-bottom: 0;"><strong>Integration by Parts:</strong> The mathematical engine behind static replication (valuing any payoff using puts and calls).</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. The Gaussian Integral Family</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. The Gaussian Integral Family</h3>
         <p>Everything reduces to:</p>
         $$\int_{-\infty}^{\infty} e^{-z^2/2}\,dz = \sqrt{2\pi}, \qquad \int_{-\infty}^{\infty} e^{az}\phi(z)\,dz = e^{a^2/2},$$
         <p>the second being the normal MGF — i.e. $\mathbb{E}[e^{aZ}] = e^{a^2/2}$, the identity that prices everything lognormal. The <strong>completing-the-square</strong> move:</p>
         $$\int_d^{\infty} e^{az}\phi(z)\,dz = e^{a^2/2}\,N(a - d)$$
         <p>is, in one line, the entire derivation of the $S N(d_1)$ term of Black-Scholes: the truncated lognormal mean splits into MGF × shifted normal probability. Master this single computation and BS, Margrabe, exchange and quanto formulas are bookkeeping.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The Gaussian integral is the core equation of all normal and lognormal asset pricing models.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Normal MGF:</strong> The identity &Eopf;[e^{aZ}] = e^{a^2/2} is why stock drift terms resolve into simple analytical exponents.</li>
+            <li style="margin-bottom: 0;"><strong>Completing the Square:</strong> The calculus trick that allows us to integrate normal distributions over partial ranges.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Worked Example: The BS Call in Four Lines</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Worked Example: The BS Call in Four Lines</h3>
         <p>With $S_T = S_0 e^{(r - \sigma^2/2)T + \sigma\sqrt{T}Z}$:</p>
         $$C = e^{-rT}\mathbb{E}[(S_T - K)^+] = e^{-rT}\int_{-d_2}^{\infty}\left(S_0e^{(r-\sigma^2/2)T + \sigma\sqrt{T}z} - K\right)\phi(z)\,dz$$
         <p>where $-d_2$ is the exercise threshold. The second piece is $-Ke^{-rT}N(d_2)$ by symmetry $\int_{-d}^\infty \phi = N(d)$; the first applies the completed square with $a = \sigma\sqrt{T}$:</p>
         $$e^{-rT}S_0 e^{(r - \sigma^2/2)T} e^{\sigma^2 T/2} N(\sigma\sqrt{T} + d_2) = S_0\,N(d_1). \;\;\blacksquare$$
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The Black-Scholes formula is derived by integrating the lognormal stock distribution over the range where the option is in-the-money.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Integral Splitting:</strong> Separates option pricing into stock delivery (S N(d1)) and cash payment (K e^{-rT} N(d2)).</li>
+            <li style="margin-bottom: 0;"><strong>Threshold Boundary:</strong> The integration limit -d2 represents the boundary where the option finishes in-the-money.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Numerical Integration (When Closed Forms Stop)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Numerical Integration (When Closed Forms Stop)</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Trapezoid/Simpson:</strong> $O(h^2)$/$O(h^4)$ on smooth integrands — fine for densities; split the domain at payoff kinks to keep the rate.</li>
             <li><strong>Gauss-Hermite quadrature:</strong> built for $\int f(z)e^{-z^2}dz$ — 20 nodes price smooth payoffs under Gaussians to near machine precision; the inner loop of many stochastic-vol and conditioning methods (e.g. spread options, Asian conditioning).</li>
             <li><strong>FFT (Carr-Madan):</strong> integrate characteristic functions across all strikes at once — the production method for Heston/Lévy calibration.</li>
             <li>Dimension &gt; 3 ⇒ Monte Carlo: quadrature cost is exponential in dimension; MC error is $O(N^{-1/2})$ regardless.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> When options cannot be solved analytically, quants use numerical integration grids or simulations.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Gauss-Hermite Quadrature:</strong> Prices options under normal distributions with high accuracy using only a few grid points.</li>
+            <li style="margin-bottom: 0;"><strong>FFT:</strong> Prices options at hundreds of different strikes in a single millisecond, making model calibration fast.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -52,39 +104,5 @@
         </ul>
     </div>
 
-        <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700; border-bottom: 1px solid #fed7aa; padding-bottom: 0.5rem; margin-bottom: 1.25rem;">Plain English Notes</h3>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">1. The Core Techniques</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Integration in finance is used to calculate the present value of continuous cash flows and expected payoffs.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Substitution:</strong> Standardizes variable asset distributions into standard normal shapes to make integration solvable.</li>
-            <li style="margin-bottom: 0;"><strong>Integration by Parts:</strong> The mathematical engine behind static replication (valuing any payoff using puts and calls).</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">2. The Gaussian Integral Family</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> The Gaussian integral is the core equation of all normal and lognormal asset pricing models.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Normal MGF:</strong> The identity &Eopf;[e^{aZ}] = e^{a^2/2} is why stock drift terms resolve into simple analytical exponents.</li>
-            <li style="margin-bottom: 0;"><strong>Completing the Square:</strong> The calculus trick that allows us to integrate normal distributions over partial ranges.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">3. Worked Example: The BS Call in Four Lines</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> The Black-Scholes formula is derived by integrating the lognormal stock distribution over the range where the option is in-the-money.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Integral Splitting:</strong> Separates option pricing into stock delivery (S N(d1)) and cash payment (K e^{-rT} N(d2)).</li>
-            <li style="margin-bottom: 0;"><strong>Threshold Boundary:</strong> The integration limit -d2 represents the boundary where the option finishes in-the-money.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 0;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">4. Numerical Integration (When Closed Forms Stop)</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> When options cannot be solved analytically, quants use numerical integration grids or simulations.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Gauss-Hermite Quadrature:</strong> Prices options under normal distributions with high accuracy using only a few grid points.</li>
-            <li style="margin-bottom: 0;"><strong>FFT:</strong> Prices options at hundreds of different strikes in a single millisecond, making model calibration fast.</li>
-            </ul>
-        </div>
-    </div>
+    
 </div>

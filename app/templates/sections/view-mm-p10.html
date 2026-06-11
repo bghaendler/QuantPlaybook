@@ -5,24 +5,52 @@
         <p style="color: #64748b; margin-top: 0.5rem;">The chain rule for noisy paths: why $dW^2 = dt$ refuses to vanish, where the extra $\frac{1}{2}\sigma^2 f''$ term comes from, and what it buys.</p>
     </header>
 
-    <div class="card">
-        <h3>1. Why Ordinary Calculus Fails</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. Why Ordinary Calculus Fails</h3>
         <p>Brownian paths move like $\sqrt{dt}$, not $dt$: over a step, $\Delta W \sim \mathcal{N}(0, \Delta t)$ so $(\Delta W)^2$ has <em>mean $\Delta t$</em> — first order, not second. Taylor-expanding $f(X)$ along a path:</p>
         $$df = f'\,dX + \tfrac{1}{2}f''\,(dX)^2 + \dots$$
         <p>For smooth paths $(dX)^2 = O(dt^2)$ dies; for Itô processes $dX = \mu dt + \sigma dW$ the box rules apply:</p>
         $$dt^2 = 0, \qquad dt\,dW = 0, \qquad dW^2 = dt,$$
         <p>(the last is the quadratic-variation identity — exact in the limit, not just on average). The second-order term survives at first order.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Regular calculus assumes curves are smooth. Random asset paths are extremely jagged, meaning their squared changes do not vanish.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Infinite Variation:</strong> Brownian motion moves so jaggedly that it travels an infinite distance in any finite time interval.</li>
+            <li style="margin-bottom: 0;"><strong>First-Order Limit:</strong> In standard calculus, dx^2 = 0. In random paths, dW^2 = dt, meaning variance behaves like time.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Itô's Lemma</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Itô's Lemma</h3>
         <p>For $f(X_t, t)$ with $dX = \mu\,dt + \sigma\,dW$:</p>
         $$df = \left(\frac{\partial f}{\partial t} + \mu\frac{\partial f}{\partial x} + \frac{1}{2}\sigma^2\frac{\partial^2 f}{\partial x^2}\right)dt + \sigma\frac{\partial f}{\partial x}\,dW.$$
         <p>The chain rule plus one corrective term $\tfrac{1}{2}\sigma^2 f_{xx}$ — convexity times variance. Mnemonic: noise + curvature = drift.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> It&circ;'s Lemma is the chain rule for random variables. It adds a second-order derivative term to capture the effect of volatility.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>The Volatility Term:</strong> The formula adds a term scaled by the second derivative and volatility squared to the standard derivative expansion.</li>
+            <li style="margin-bottom: 0;"><strong>Curvature Effect:</strong> Captures how the convexity of the pricing function interacts with the asset's random fluctuations.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. The Canonical Applications</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. The Canonical Applications</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Log of GBM</strong> ($f = \ln S$, $f'' = -1/S^2$):
             $$d\ln S = \left(\mu - \tfrac{1}{2}\sigma^2\right)dt + \sigma\,dW$$
@@ -31,16 +59,40 @@
             <li><strong>$W^2$:</strong> $d(W^2) = 2W\,dW + dt$ ⇒ $\mathbb{E}[W_t^2] = t$, and $W_t^2 - t$ is a martingale — the simplest nontrivial Itô computation and a favorite interview check.</li>
             <li><strong>Black-Scholes derivation:</strong> apply Itô to $V(S, t)$, form the hedged portfolio $\Pi = V - V_S\,S$; the $dW$ terms cancel and the surviving drift identity <em>is</em> the BS PDE, with $\tfrac{1}{2}\sigma^2S^2V_{SS}$ — the option's convexity cost/income — coming straight from the corrective term.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> It&circ;'s Lemma is used to solve the drift of log-prices, derive the Black-Scholes PDE, and price volatility assets.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Lognormal Drift:</strong> Explains why the growth rate of ln(S) is reduced by half of its volatility squared.</li>
+            <li style="margin-bottom: 0;"><strong>Hedging:</strong> Derives the replication portfolio that eliminates random risk, establishing the Black-Scholes PDE.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Extensions in One Breath</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Extensions in One Breath</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Two processes (product rule):</strong> $d(XY) = X\,dY + Y\,dX + dX\,dY$ — the cross-variation $\rho\sigma_X\sigma_Y dt$ term drives quanto adjustments and covariance hedging.</li>
             <li><strong>Multidimensional:</strong> replace $\tfrac{1}{2}\sigma^2 f_{xx}$ by $\tfrac{1}{2}\sum_{ij}\rho_{ij}\sigma_i\sigma_j f_{x_ix_j}$.</li>
             <li><strong>Jumps:</strong> add $[f(X_{t^-} + J) - f(X_{t^-})]dN_t$ — convexity correction by finite differences instead of derivatives.</li>
             <li><strong>Stratonovich</strong> ($\circ$): the symmetric integral that obeys ordinary calculus, at the cost of a drift adjustment — physics prefers it; finance prefers Itô because the Itô integral is a martingale (no peeking into the future inside the integrand).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> It&circ;'s Lemma extends to multi-asset portfolios and jump-diffusion models, adding cross-Gamma and jump risk terms.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Cross-Gamma:</strong> Captures how options are affected by correlations between multiple underlying assets.</li>
+            <li style="margin-bottom: 0;"><strong>Jumps:</strong> Adds a discrete term to capture the sudden, discontinuous price gaps of jump models.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -53,39 +105,5 @@
         </ul>
     </div>
 
-        <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700; border-bottom: 1px solid #fed7aa; padding-bottom: 0.5rem; margin-bottom: 1.25rem;">Plain English Notes</h3>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">1. Why Ordinary Calculus Fails</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Regular calculus assumes curves are smooth. Random asset paths are extremely jagged, meaning their squared changes do not vanish.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Infinite Variation:</strong> Brownian motion moves so jaggedly that it travels an infinite distance in any finite time interval.</li>
-            <li style="margin-bottom: 0;"><strong>First-Order Limit:</strong> In standard calculus, dx^2 = 0. In random paths, dW^2 = dt, meaning variance behaves like time.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">2. It&circ;'s Lemma</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> It&circ;'s Lemma is the chain rule for random variables. It adds a second-order derivative term to capture the effect of volatility.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>The Volatility Term:</strong> The formula adds a term scaled by the second derivative and volatility squared to the standard derivative expansion.</li>
-            <li style="margin-bottom: 0;"><strong>Curvature Effect:</strong> Captures how the convexity of the pricing function interacts with the asset's random fluctuations.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">3. The Canonical Applications</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> It&circ;'s Lemma is used to solve the drift of log-prices, derive the Black-Scholes PDE, and price volatility assets.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Lognormal Drift:</strong> Explains why the growth rate of ln(S) is reduced by half of its volatility squared.</li>
-            <li style="margin-bottom: 0;"><strong>Hedging:</strong> Derives the replication portfolio that eliminates random risk, establishing the Black-Scholes PDE.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 0;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">4. Extensions in One Breath</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> It&circ;'s Lemma extends to multi-asset portfolios and jump-diffusion models, adding cross-Gamma and jump risk terms.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Cross-Gamma:</strong> Captures how options are affected by correlations between multiple underlying assets.</li>
-            <li style="margin-bottom: 0;"><strong>Jumps:</strong> Adds a discrete term to capture the sudden, discontinuous price gaps of jump models.</li>
-            </ul>
-        </div>
-    </div>
+    
 </div>

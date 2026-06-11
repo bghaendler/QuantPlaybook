@@ -5,13 +5,28 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Roots, where they live, and how root-finding becomes a daily production task the moment markets quote prices instead of parameters.</p>
     </header>
 
-    <div class="card">
-        <h3>1. Polynomials &amp; Their Roots</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. Polynomials &amp; Their Roots</h3>
         <p>A degree-$n$ polynomial $p(x) = a_n x^n + \dots + a_0$ has exactly $n$ roots in $\mathbb{C}$ (Fundamental Theorem of Algebra) — the reason $\mathbb{C}$ exists in this course at all. Quadratics solve by formula; the discriminant $b^2 - 4ac$ decides real vs. complex-conjugate pairs. Finance hits polynomials constantly: characteristic equations of difference/differential equations (Cauchy-Euler, Part 08), the "fundamental quadratic" of perpetual options $\frac{1}{2}\sigma^2\gamma(\gamma-1) + b\gamma - r = 0$, and bond-yield equations $\sum c_i x^{t_i} = P$ with $x = e^{-y}$ — degree = number of cash flows, no closed form beyond degree 4 (Abel-Ruffini), hence numerics.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Financial equations (like bond yields or option values) are polynomials where we must solve for the roots (interest rate or yield).</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Degree Constraints:</strong> Equations of degree higher than 4 cannot be solved algebraically and require numerical solvers.</li>
+            <li style="margin-bottom: 0;"><strong>Bond Yields:</strong> Finding the Yield to Maturity (YTM) of a bond requires finding the roots of a cash-flow polynomial.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Implied Volatility as Inverse-Problem Prototype</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Implied Volatility as Inverse-Problem Prototype</h3>
         <p>Markets quote prices; models want parameters. Implied vol solves $C_{BS}(\sigma) = C_{mkt}$ — no algebraic solution exists (the normal CDF is not elementary-invertible), so we use the structure instead:</p>
         <ul style="line-height: 1.8;">
             <li>$C_{BS}$ is continuous, strictly increasing in σ (vega &gt; 0), with known limits — a unique root is guaranteed inside the no-arbitrage bracket (Bolzano/IVT).</li>
@@ -19,16 +34,40 @@
             <li>Seed with the ATM expansion $C \approx 0.4\, S\sigma\sqrt{T}$ ⇒ $\sigma_0 \approx C/(0.4 S\sqrt{T})$.</li>
         </ul>
         <p>This pattern — monotone pricing function, bracketed root, derivative known analytically — recurs for yields, OAS, CDS hazard bootstraps, and SABR calibration. Learn it once here.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Implied volatility is an inverse problem: we know the option price and want to find the input volatility that matches it.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Newton-Raphson:</strong> Uses the slope of the pricing curve (Vega) to quickly converge to the implied volatility.</li>
+            <li style="margin-bottom: 0;"><strong>Bisection:</strong> A slower but guaranteed solver that brackets the volatility root until it finds the exact value.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Complex Numbers: The Minimum Working Set</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Complex Numbers: The Minimum Working Set</h3>
         <p>$z = x + iy = re^{i\theta}$ with $r = |z| = \sqrt{x^2 + y^2}$, $\theta = \arg z$. Euler's formula $e^{i\theta} = \cos\theta + i\sin\theta$ converts multiplication into angle addition: $z_1 z_2 = r_1 r_2 e^{i(\theta_1 + \theta_2)}$.</p>
         <ul style="line-height: 1.8;">
             <li>Complex roots of real polynomials come in conjugate pairs $\lambda = \alpha \pm i\beta$ — in ODEs they produce damped oscillations $e^{\alpha t}(\cos\beta t, \sin\beta t)$ (mean-reverting models with cyclical components).</li>
             <li><strong>Characteristic functions</strong> $\varphi_X(u) = \mathbb{E}[e^{iuX}]$ encode whole distributions; Heston and Lévy models price options by integrating $\varphi$ (Carr-Madan FFT) — the single most practical reason a quant needs $\mathbb{C}$.</li>
             <li>de Moivre: $(\cos\theta + i\sin\theta)^n = \cos n\theta + i\sin n\theta$ — the generator of trig identities and $n$-th roots of unity (FFT grids).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Complex numbers are the foundation of characteristic functions, enabling fast Fourier options pricing.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Euler's Formula:</strong> Converts complex numbers into angles and rotations, simplifying trigonometric integrals.</li>
+            <li style="margin-bottom: 0;"><strong>Fourier Transform:</strong> Solves option pricing under stochastic volatility (like Heston) by integrating waves in the complex plane.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -41,31 +80,5 @@
         </ul>
     </div>
 
-        <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700; border-bottom: 1px solid #fed7aa; padding-bottom: 0.5rem; margin-bottom: 1.25rem;">Plain English Notes</h3>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">1. Polynomials &amp; Their Roots</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Financial equations (like bond yields or option values) are polynomials where we must solve for the roots (interest rate or yield).</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Degree Constraints:</strong> Equations of degree higher than 4 cannot be solved algebraically and require numerical solvers.</li>
-            <li style="margin-bottom: 0;"><strong>Bond Yields:</strong> Finding the Yield to Maturity (YTM) of a bond requires finding the roots of a cash-flow polynomial.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">2. Implied Volatility as Inverse-Problem Prototype</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Implied volatility is an inverse problem: we know the option price and want to find the input volatility that matches it.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Newton-Raphson:</strong> Uses the slope of the pricing curve (Vega) to quickly converge to the implied volatility.</li>
-            <li style="margin-bottom: 0;"><strong>Bisection:</strong> A slower but guaranteed solver that brackets the volatility root until it finds the exact value.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 0;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">3. Complex Numbers: The Minimum Working Set</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Complex numbers are the foundation of characteristic functions, enabling fast Fourier options pricing.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Euler's Formula:</strong> Converts complex numbers into angles and rotations, simplifying trigonometric integrals.</li>
-            <li style="margin-bottom: 0;"><strong>Fourier Transform:</strong> Solves option pricing under stochastic volatility (like Heston) by integrating waves in the complex plane.</li>
-            </ul>
-        </div>
-    </div>
+    
 </div>

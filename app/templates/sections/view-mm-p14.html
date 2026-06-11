@@ -5,17 +5,32 @@
         <p style="color: #64748b; margin-top: 0.5rem;">GBM, Vasicek and CIR paths with nothing but native worksheet functions — plus the discipline (seeding, recalculation control, error reporting) that separates a demo from a tool.</p>
     </header>
 
-    <div class="card">
-        <h3>1. The Building Blocks</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Building Blocks</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Uniforms:</strong> <code>RAND()</code> — volatile (recalculates on every edit; F9 = new scenario). For reproducibility, paste-values a block of draws or seed a Wichmann-Hill style LCG in cells.</li>
             <li><strong>Normals:</strong> <code>=NORM.S.INV(RAND())</code> — the inverse-CDF method (Part 09's preferred route). Avoid the legacy 12-uniform trick; it truncates tails at ±6.</li>
             <li><strong>Time grid:</strong> daily steps $\Delta t = 1/252$ in a column; parameters ($S_0$, μ, σ, κ, θ) in absolute-referenced cells (<code>$B$1</code> style) so paths fill down cleanly.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Generating random paths in Excel requires combining the uniform RAND() function with the normal CDF transformation.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>RAND():</strong> Generates flat, uniform random numbers between 0 and 1.</li>
+            <li style="margin-bottom: 0;"><strong>NORM.S.INV:</strong> Transforms uniform numbers into standard normal bell curves.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. The Three Recipes</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. The Three Recipes</h3>
         <p>With parameters in <code>B1:B5</code> ($S_0/r_0$, μ, σ, κ, θ), $\Delta t$ in <code>B6</code>, and the previous value in <code>C1</code>:</p>
         <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.8rem; font-size: 0.78rem; overflow-x: auto;">GBM (exact — Part 09):
 C2 =C1*EXP(($B$2-$B$3^2/2)*$B$6 + $B$3*SQRT($B$6)*NORM.S.INV(RAND()))
@@ -28,26 +43,63 @@ CIR (full-truncation Euler — keeps the rate non-negative):
 C2 =C1 + $B$4*($B$5-MAX(C1,0))*$B$6
      + $B$3*SQRT(MAX(C1,0))*SQRT($B$6)*NORM.S.INV(RAND())</pre>
         <p>Fill down 252 rows = one year. GBM and Vasicek use their <em>exact</em> transition laws (no discretization error at any step size); CIR has no elementary exact scheme, so truncated Euler with <code>MAX(·,0)</code> is the worksheet-grade compromise — check the Feller ratio $2\kappa\theta/\sigma^2$ in a cell and flag it red below 1.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Asset paths can be generated in Excel using different discretization schemes (Exact lognormal, Euler, or Milstein).</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Exact Recipe:</strong> Excel cells calculate paths using the exact lognormal SDE solution, which has zero step error.</li>
+            <li style="margin-bottom: 0;"><strong>Euler Recipe:</strong> Steps the price linearly. It is simpler but introduces errors if the time steps are too large.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. From One Path to a Monte Carlo</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. From One Path to a Monte Carlo</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Layout:</strong> paths across columns (C:GT for 200 paths), time down rows — one block of <code>NORM.S.INV(RAND())</code> draws, one block of prices referencing it, so antithetics are just a third block using the negated draws.</li>
             <li><strong>Pricing:</strong> terminal row → <code>=AVERAGE(MAX-payoff row)</code> discounted; standard error <code>=STDEV.S(payoffs)/SQRT(n)</code> — quote it, always (Part 09's rule).</li>
             <li><strong>Recalculation control:</strong> Formulas → Calculation Options → Manual; F9 to redraw. A <strong>Data Table</strong> (What-If Analysis) with a blank input cell re-runs the sheet $n$ times — the classic trick for thousands of scenarios without VBA.</li>
             <li><strong>Convergence check:</strong> running mean <code>=AVERAGE($H$2:H2)</code> filled down, charted — visually confirms the $1/\sqrt{N}$ settle and catches bugs (a drifting running mean means a wrong drift term).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> To run a Monte Carlo simulation in Excel, we use Data Tables to copy and recalculate a single path thousands of times.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Data Tables:</strong> Reruns the entire sheet for different random seeds without writing VBA macros.</li>
+            <li style="margin-bottom: 0;"><strong>Average Payoff:</strong> The final option price is calculated by taking the average of the discounted payoffs across all table rows.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Excel's Limits (Know When to Leave)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Excel's Limits (Know When to Leave)</h3>
         <ul style="line-height: 1.8;">
             <li><code>RAND()</code> is fine for teaching; it is not a production PRNG — period and statistical quality lag Mersenne/PCG (Part 09); regulated risk numbers should come from a coded engine.</li>
             <li>Volatility of recalculation makes audit trails hard: paste-values the draws for any result you intend to keep.</li>
             <li>Practical ceiling ≈ 10⁴–10⁵ cells of path data before the workbook crawls; beyond that, the same recipes are five lines of NumPy (Part 09's reference code).</li>
             <li>Excel remains unbeatable for <em>communication</em>: a live path chart with parameter spinners teaches mean reversion faster than any equation — build intuition here, ship code elsewhere.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Excel is great for quick models but fails for large simulations due to slow calculation speeds and size limits.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Speed Bottleneck:</strong> Running 100,000 paths with multiple assets will freeze Excel; quants switch to Python or C++.</li>
+            <li style="margin-bottom: 0;"><strong>Auditability:</strong> Spreadsheet formulas are easily overwritten by accident, making them risky for production financial audits.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -60,39 +112,5 @@ C2 =C1 + $B$4*($B$5-MAX(C1,0))*$B$6
         </ul>
     </div>
 
-        <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700; border-bottom: 1px solid #fed7aa; padding-bottom: 0.5rem; margin-bottom: 1.25rem;">Plain English Notes</h3>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">1. The Building Blocks</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Generating random paths in Excel requires combining the uniform RAND() function with the normal CDF transformation.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>RAND():</strong> Generates flat, uniform random numbers between 0 and 1.</li>
-            <li style="margin-bottom: 0;"><strong>NORM.S.INV:</strong> Transforms uniform numbers into standard normal bell curves.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">2. The Three Recipes</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Asset paths can be generated in Excel using different discretization schemes (Exact lognormal, Euler, or Milstein).</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Exact Recipe:</strong> Excel cells calculate paths using the exact lognormal SDE solution, which has zero step error.</li>
-            <li style="margin-bottom: 0;"><strong>Euler Recipe:</strong> Steps the price linearly. It is simpler but introduces errors if the time steps are too large.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">3. From One Path to a Monte Carlo</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> To run a Monte Carlo simulation in Excel, we use Data Tables to copy and recalculate a single path thousands of times.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Data Tables:</strong> Reruns the entire sheet for different random seeds without writing VBA macros.</li>
-            <li style="margin-bottom: 0;"><strong>Average Payoff:</strong> The final option price is calculated by taking the average of the discounted payoffs across all table rows.</li>
-            </ul>
-        </div>
-        <div style="margin-bottom: 0;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">4. Excel's Limits (Know When to Leave)</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Excel is great for quick models but fails for large simulations due to slow calculation speeds and size limits.</p>
-            <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;"><strong>Speed Bottleneck:</strong> Running 100,000 paths with multiple assets will freeze Excel; quants switch to Python or C++.</li>
-            <li style="margin-bottom: 0;"><strong>Auditability:</strong> Spreadsheet formulas are easily overwritten by accident, making them risky for production financial audits.</li>
-            </ul>
-        </div>
-    </div>
+    
 </div>
