@@ -5,8 +5,10 @@
         <p style="color: #64748b; margin-top: 0.5rem;">The taxonomy of isolated singularities, how to diagnose each type quickly, and what each implies for integration and for the transforms quants integrate.</p>
     </header>
 
-    <div class="card">
-        <h3>1. The Three Types (Isolated Singularities)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Three Types (Isolated Singularities)</h3>
         <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
             <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;">Type</th><th style="padding: 0.45rem;">Laurent principal part</th><th style="padding: 0.45rem;">Behavior of $|f|$ near $z_0$</th><th style="padding: 0.45rem;">Example</th></tr></thead>
             <tbody>
@@ -16,36 +18,86 @@
             </tbody>
         </table>
         <p style="margin-top: 0.6rem;">Non-isolated honorable mention: <strong>branch points</strong> ($\sqrt{z}$, $\ln z$ at 0) — not Laurent-expandable at all; handled by cuts (Part 08), not residues.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Complex analysis allows quants to solve option prices analytically instead of running slow simulations, by integrating functions in the complex plane.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Laurent series expand functions around singular points, helping model option boundaries where values change abruptly.</li>
+            <li style="margin-bottom: 0;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Fast Diagnostics</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Fast Diagnostics</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Limit test:</strong> $\lim (z - z_0)f(z)$ finite &amp; nonzero ⇒ simple pole; more generally $\lim (z - z_0)^m f$ finite-nonzero ⇒ pole of order exactly $m$; $\lim f$ finite ⇒ removable.</li>
             <li><strong>Zeros-to-poles:</strong> if $f = g/h$ with $g(z_0) \ne 0$ and $h$ has a zero of order $m$, then $f$ has a pole of order $m$. Order of zero = first nonvanishing derivative.</li>
             <li><strong>Cancellation first!</strong> $\frac{\sin z}{z}$, $\frac{e^z - 1}{z}$: numerator zeros cancel denominator zeros — classify <em>after</em> reducing. $\frac{z}{\sin z}$ at $0$: removable; at $z = \pi$: simple pole.</li>
             <li><strong>Essential red flags:</strong> functions of $1/z$ ($e^{1/z}$, $\sin(1/z)$) — infinite principal parts by construction.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Complex analysis allows quants to solve option prices analytically instead of running slow simulations, by integrating functions in the complex plane.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            <li style="margin-bottom: 0;">Integrating along closed complex loops eliminates numerical instabilities in Fourier pricing.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Why Classification Matters for Integration</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Why Classification Matters for Integration</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Removable:</strong> contributes nothing — extend and forget.</li>
             <li><strong>Pole of order $m$:</strong> residue from the derivative formula $\;a_{-1} = \frac{1}{(m-1)!}\lim_{z \to z_0}\frac{d^{m-1}}{dz^{m-1}}\left[(z - z_0)^m f(z)\right]$ — mechanical (Part 15).</li>
             <li><strong>Essential:</strong> no formula; compute the residue from the Laurent series itself (e.g. $\mathrm{Res}_0\, e^{1/z} = 1$). Integrals still work — only the extraction is less automatic.</li>
             <li><strong>Branch points:</strong> keyhole/dog-bone contours around the cut — a different (Part 16-adjacent) technique entirely.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The Residue Theorem simplifies complex integration to simple algebra by summing values at poles.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The Residue Theorem simplifies complex integration to simple algebra by summing values at poles.</li>
+            <li style="margin-bottom: 0;">Laurent series expand functions around singular points, helping model option boundaries where values change abruptly.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Singularity Types in Quant Transforms</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Singularity Types in Quant Transforms</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Rational characteristic functions</strong> (Ornstein-Uhlenbeck-driven, double-exponential/Kou jumps): finitely many <em>poles</em> — Fourier inversions close with clean residue sums; Kou's model owes its tractable first-passage results to exactly this.</li>
             <li><strong>Gaussian/Heston-type exponents:</strong> entire or with <em>branch points</em> (the Heston square root!) — integration-line placement and branch tracking (Part 08's trap) matter more than residues.</li>
             <li><strong>MGF boundary singularities:</strong> the type at the strip edge governs tail behavior — a simple pole at $t^* $ ⇒ exponential tail $e^{-t^*x}$ with polynomial correction (Tauberian reading used in saddlepoint VaR/ES approximations); essential-type growth ⇒ heavier corrections.</li>
             <li><strong>Padé/rational approximation:</strong> replacing a transcendental transform by a rational one converts branch cuts into pole strings along the cut — numerically excellent precisely because poles are the easy singularity.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The Residue Theorem simplifies complex integration to simple algebra by summing values at poles.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The Residue Theorem simplifies complex integration to simple algebra by summing values at poles.</li>
+            <li style="margin-bottom: 0;">A singularity is a point where a pricing formula breaks down or goes to infinity.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -58,13 +110,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Singularities are points where a pricing formula breaks down or blows up. Classifying them helps quants design stable numerical algorithms that avoid division-by-zero errors.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Removable Singularities:</strong> Flaws in the formula that can be fixed by redefining a single point (like $\sin(x)/x$ at $x=0$).</li>
-            <li style="margin-bottom: 1rem;"><strong>Poles:</strong> Points where the function goes to infinity (like leverage ratios in debt defaults). The order of the pole measures how fast it blows up.</li>
-            <li style="margin-bottom: 0;"><strong>Essential Singularities:</strong> Points where the function behaves chaotically, oscillating infinitely (like certain path-dependent exotic payoffs).</li>
-        </ul>
-    </div>
+    
 </div>

@@ -5,40 +5,92 @@
         <p style="color: #64748b; margin-top: 0.5rem;">The pair of first-order PDEs that decide holomorphy: derivation, use as a test, and what they say geometrically.</p>
     </header>
 
-    <div class="card">
-        <h3>1. Derivation: Two Directions Must Agree</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. Derivation: Two Directions Must Agree</h3>
         <p>Write $f(z) = u(x,y) + iv(x,y)$. Compute $f'(z_0)$ approaching horizontally ($h = \Delta x$) and vertically ($h = i\Delta y$):</p>
         $$f' = u_x + iv_x \qquad\text{and}\qquad f' = \frac{u_y + iv_y}{i} = v_y - iu_y.$$
         <p>Equating real and imaginary parts gives the <strong>Cauchy-Riemann equations</strong>:</p>
         $$\boxed{\;u_x = v_y, \qquad u_y = -v_x\;}$$
         <p><strong>Test:</strong> if $u, v$ have continuous partials and satisfy CR on an open set, $f$ is holomorphic there (sufficiency needs the continuity); if CR fails anywhere, $f$ is not complex-differentiable there. When they hold: $f' = u_x + iv_x$.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</li>
+            <li style="margin-bottom: 0;">Cauchy-Riemann equations ensure that the real and imaginary parts of complex models are in perfect sync.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Worked Checks</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Worked Checks</h3>
         <ul style="line-height: 1.8;">
             <li><strong>$f = z^2$:</strong> $u = x^2 - y^2$, $v = 2xy$ ⇒ $u_x = 2x = v_y$, $u_y = -2y = -v_x$ ✓ everywhere; $f' = 2x + i2y = 2z$.</li>
             <li><strong>$f = e^z$:</strong> $u = e^x\cos y$, $v = e^x\sin y$ ⇒ CR holds everywhere; $f' = e^z$ — the exponential really is its own derivative in ℂ.</li>
             <li><strong>$f = \bar{z}$:</strong> $u = x$, $v = -y$ ⇒ $u_x = 1 \ne -1 = v_y$ ✗ — nowhere holomorphic despite being perfectly smooth as a map of $\mathbb{R}^2$. Conjugation is the canonical non-example.</li>
             <li><strong>$f = |z|^2$:</strong> $u = x^2 + y^2$, $v = 0$ ⇒ CR only at the origin — differentiable at one point, holomorphic nowhere (holomorphy needs an open set).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</li>
+            <li style="margin-bottom: 0;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. The Wirtinger Shortcut: No $\bar{z}$ Allowed</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. The Wirtinger Shortcut: No $\bar{z}$ Allowed</h3>
         <p>Define $\frac{\partial}{\partial\bar{z}} = \frac{1}{2}\left(\frac{\partial}{\partial x} + i\frac{\partial}{\partial y}\right)$. The CR equations compress to one line:</p>
         $$\frac{\partial f}{\partial \bar{z}} = 0$$
         <p>— holomorphic functions are exactly those with no $\bar{z}$-dependence. Practical scanning rule: expressions built from $z$ alone ($z^2$, $e^z$, $1/(z-a)$) pass; anything smuggling in $\bar z$, $|z|$, $\mathrm{Re}\,z$, $\arg z$ fails. This is also the form used in generalized (quasi-conformal) settings and in some SABR/heat-kernel literature.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</li>
+            <li style="margin-bottom: 0;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Geometric and Analytic Consequences</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Geometric and Analytic Consequences</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Orthogonal level curves:</strong> $\nabla u \cdot \nabla v = u_xv_x + u_yv_y = -u_xu_y + u_yu_x = 0$ — the families $u = $ const and $v = $ const always cross at right angles (the conformal grid of Part 04).</li>
             <li><strong>Harmonicity:</strong> differentiating CR crosswise: $u_{xx} + u_{yy} = 0 = v_{xx} + v_{yy}$ — both components solve Laplace's equation (Part 07's subject).</li>
             <li><strong>Jacobian:</strong> $\det J = u_xv_y - u_yv_x = u_x^2 + u_y^2 = |f'(z)|^2 \ge 0$ — holomorphic maps preserve orientation and scale areas by $|f'|^2$.</li>
             <li><strong>Rigidity:</strong> if $f' \equiv 0$ on a connected open set, or if $|f|$ is constant, then $f$ is constant — first hints of the maximum-modulus principle.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</li>
+            <li style="margin-bottom: 0;">Conformal mapping preserves angles, letting us solve option pricing equations on simple circles rather than complex shapes.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -51,13 +103,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The Cauchy-Riemann equations are the strict test for differentiability in the complex plane. They ensure the real and imaginary parts of a function are perfectly synchronized.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>The CR Equations:</strong> Connect the rate of change along the real axis to the rate of change along the imaginary axis.</li>
-            <li style="margin-bottom: 1rem;"><strong>Orthogonal Grids:</strong> The real and imaginary parts form grids that cross at exactly 90 degrees, creating smooth potential fields.</li>
-            <li style="margin-bottom: 0;"><strong>No-Arbitrage Condition:</strong> CR equations ensure that the derived pricing functions are mathematically stable and free of arbitrage.</li>
-        </ul>
-    </div>
+    
 </div>

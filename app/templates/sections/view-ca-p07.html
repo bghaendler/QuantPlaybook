@@ -5,41 +5,93 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Real and imaginary parts of holomorphic functions solve Laplace's equation — and CR lets you reconstruct one from the other. Steady states, perpetual claims, and the mean-value property.</p>
     </header>
 
-    <div class="card">
-        <h3>1. Harmonic Functions</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. Harmonic Functions</h3>
         <p>$u(x,y)$ is harmonic if $\nabla^2 u = u_{xx} + u_{yy} = 0$. From Part 06, the real and imaginary parts of any holomorphic $f = u + iv$ are harmonic; conversely, every harmonic function on a simply connected domain is the real part of some holomorphic function. $v$ is called the <strong>harmonic conjugate</strong> of $u$ (unique up to a constant). Where Laplace appears in finance:</p>
         <ul style="line-height: 1.8;">
             <li><strong>Time-independent expected values:</strong> for 2-D Brownian motion, $h(x,y) = \mathbb{P}[\text{exit through boundary segment }A]$ is harmonic with boundary data $\mathbf{1}_A$ — exit probabilities solve the Dirichlet problem.</li>
             <li><strong>Perpetual/steady-state claims:</strong> infinite-horizon problems shed their time derivative (cf. MM Part 08) and become elliptic — Laplace/Poisson-type equations in the state variables.</li>
             <li><strong>The heat equation's equilibrium:</strong> as $t \to \infty$, parabolic problems relax to harmonic profiles.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</li>
+            <li style="margin-bottom: 0;">The harmonic conjugate is the imaginary partner of a complex function, ensuring smooth equilibrium paths.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Reconstructing the Conjugate (Worked)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Reconstructing the Conjugate (Worked)</h3>
         <p>Given harmonic $u = x^2 - y^2 + x$. CR demands $v_y = u_x = 2x + 1$ and $v_x = -u_y = 2y$:</p>
         $$v = \int (2x + 1)\,dy = 2xy + y + g(x), \qquad v_x = 2y + g'(x) \overset{!}{=} 2y \Rightarrow g' = 0.$$
         <p>So $v = 2xy + y + C$ and $f = u + iv = z^2 + z + iC$ — recognizing the pattern is the quick check (replace $x \to z$, $y \to 0$ heuristic). Always verify the candidate $u$ is harmonic <em>first</em>: a non-harmonic $u$ has no conjugate, and the integration produces an inconsistency in $g$.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Complex analysis allows quants to solve option prices analytically instead of running slow simulations, by integrating functions in the complex plane.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            <li style="margin-bottom: 0;">Integrating along closed complex loops eliminates numerical instabilities in Fourier pricing.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Mean Value &amp; Maximum Principles</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Mean Value &amp; Maximum Principles</h3>
         $$u(z_0) = \frac{1}{2\pi}\int_0^{2\pi} u(z_0 + re^{i\theta})\,d\theta$$
         <p>— a harmonic function's value at a point equals its average on any surrounding circle (a corollary of Cauchy's formula, Part 11). Probabilistically: Brownian motion started at $z_0$ exits a centered disk uniformly in angle, so $u(z_0) = \mathbb{E}[u(\text{exit point})]$ — harmonic functions are martingales of BM. Consequences:</p>
         <ul style="line-height: 1.8;">
             <li><strong>Maximum principle:</strong> no interior maxima/minima — extremes live on the boundary. The PDE backbone of arbitrage-bound arguments and a free sanity test for any elliptic solver ("interior hot spot ⇒ bug").</li>
             <li><strong>Uniqueness:</strong> two solutions of the Dirichlet problem with equal boundary data differ by a harmonic function that is 0 on the boundary ⇒ 0 everywhere.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Cauchy's theorems relate the values of smooth functions on a boundary to their values inside, enabling analytical option solutions.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            <li style="margin-bottom: 0;">Integrating along closed complex loops eliminates numerical instabilities in Fourier pricing.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Solving Laplace by Conformal Transport</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Solving Laplace by Conformal Transport</h3>
         <p>Harmonicity is conformally invariant: if $\varphi$ is harmonic and $f$ holomorphic, $\varphi \circ f$ is harmonic. Recipe: map your domain to a standard one (disk, half-plane) with a conformal $f$ (Part 04), solve there, pull back.</p>
         <ul style="line-height: 1.8;">
             <li>On the half-plane, the bounded harmonic function with boundary data jumping from $0$ to $1$ at the origin is $\frac{1}{\pi}\arg z = \frac{1}{\pi}\arctan(y/x)$ — exit probabilities by inspection.</li>
             <li>On the disk, the Poisson kernel $\frac{1 - |z|^2}{|e^{i\theta} - z|^2}$ integrates boundary data to the interior solution — the closed-form Dirichlet solver.</li>
         </ul>
         <p>This transport trick — solve where the geometry is easy — is the same philosophy as changing numéraire or coordinates in pricing: move the problem, not the difficulty.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</li>
+            <li style="margin-bottom: 0;">Conformal mapping preserves angles, letting us solve option pricing equations on simple circles rather than complex shapes.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -52,13 +104,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The real and imaginary parts of a holomorphic function are harmonic conjugates. They both solve Laplace's equation, representing steady-state diffusion in option pricing.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Harmonic Functions:</strong> Functions with no local peaks or valleys—the value at any point is the average of the surrounding values.</li>
-            <li style="margin-bottom: 1rem;"><strong>Laplace Equation:</strong> Describes equilibrium states, such as the static pricing distribution of options with no time decay.</li>
-            <li style="margin-bottom: 0;"><strong>Reconstructing Functions:</strong> Knowing only the real part (like the option price) allows us to uniquely reconstruct the imaginary part (its conjugate risk vector).</li>
-        </ul>
-    </div>
+    
 </div>

@@ -5,43 +5,95 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Dynamic portfolio choice as a control problem: Merton's framework, the HJB route to optimal weights, and why dynamic solutions differ from repeated one-period ones.</p>
     </header>
 
-    <div class="card">
-        <h3>1. The Merton Problem</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Merton Problem</h3>
         <p>Wealth $W_t$ split between a risky asset ($\mu$, σ) and cash ($r$); control = risky fraction $\pi_t$ (and consumption, in the full version):</p>
         $$dW = W\big[r + \pi(\mu - r)\big]dt + W\pi\sigma\,dW_t^B.$$
         <p>Maximize $\mathbb{E}[U(W_T)]$ for CRRA utility $U(w) = w^{1-\gamma}/(1-\gamma)$. The HJB equation (the same machinery as HFT Part 10) admits the famous closed form:</p>
         $$\pi^* = \frac{\mu - r}{\gamma\sigma^2}$$
         <p>— constant in time and wealth. With μ−r = 5%, σ = 18%, γ = 3: $\pi^* = 0.05/(3 \times 0.0324) \approx 51\%$. CRRA's scale-invariance does the simplifying; γ = 1 (log utility) gives the growth-optimal Kelly portfolio (Part 03's subject).</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The Kelly criterion determines the exact position size to maximize long-term wealth compounding without going broke.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The Kelly criterion calculates the exact position size to maximize long-term wealth compounding without going broke.</li>
+            <li style="margin-bottom: 0;">Risk-sensitive control generalizes Mean-Variance optimization by accounting for higher-order moments and tail risks.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Why Dynamic ≠ Repeated Static</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Why Dynamic ≠ Repeated Static</h3>
         <ul style="line-height: 1.8;">
             <li><strong>With constant opportunities</strong>, Merton's answer coincides with myopic mean-variance-like weights — the famous "as if static" result.</li>
             <li><strong>With stochastic opportunities</strong> (predictable returns, stochastic vol or rates), the optimal control adds <strong>intertemporal hedging demands</strong> (Merton's term): hold assets that pay off when investment opportunities deteriorate. Formally the HJB's cross-derivative terms $V_{Wx}$ tilt $\pi^*$ away from myopic weights.</li>
             <li>Example: mean-reverting equity premium ⇒ long-horizon investors hold <em>more</em> equity than myopic ones (bad returns today predict better opportunities tomorrow — equities partially self-hedge across time).</li>
             <li>This is the structural argument behind horizon-dependent advice — and it lives or dies on the predictability model (estimation risk: Part 04's Black-Litterman discipline).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Risk-sensitive investment solves the problem of making optimal rebalancing decisions over time, penalizing drawdown risk dynamically.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Risk-sensitive control generalizes Mean-Variance optimization by accounting for higher-order moments and tail risks.</li>
+            <li style="margin-bottom: 0;">Asset Liability Management (ALM) matches asset returns with future payout obligations under market shocks.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. The Control Toolkit for Allocation</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. The Control Toolkit for Allocation</h3>
         <ul style="line-height: 1.8;">
             <li><strong>State augmentation:</strong> predictors, vol, rates, liabilities (Part 05) enter as extra states $x$; HJB in $(W, x, t)$; affine/quadratic structures (linear dynamics + CRRA/exponential utility) reduce to ODE systems — the tractable class this series exploits repeatedly.</li>
             <li><strong>Constraints:</strong> leverage caps, no-shorting, drawdown floors → variational inequalities / reflected controls (the boundary machinery of HFT Part 09).</li>
             <li><strong>Transaction costs:</strong> proportional costs create a <em>no-trade region</em> around $\pi^*$ (Davis-Norman): trade only at the band edges — the practically decisive modification (rebalance bands, not continuous trading).</li>
             <li><strong>Numerics:</strong> low-dimensional HJB by finite differences/policy iteration; high-dimensional by regression Monte Carlo or deep-control methods (the ML masterclass's reinforcement-learning bridge).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Risk-sensitive investment solves the problem of making optimal rebalancing decisions over time, penalizing drawdown risk dynamically.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Risk-sensitive control generalizes Mean-Variance optimization by accounting for higher-order moments and tail risks.</li>
+            <li style="margin-bottom: 0;">Asset Liability Management (ALM) matches asset returns with future payout obligations under market shocks.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Series Roadmap</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Series Roadmap</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Part 02:</strong> risk-sensitive control — utility on the <em>growth rate</em>, the elegant infinite-horizon formulation.</li>
             <li><strong>Parts 03–04:</strong> Kelly/fractional Kelly in practice; Black-Litterman with jump benchmarks.</li>
             <li><strong>Parts 05–06:</strong> ALM under jump-diffusions; stochastic-factor asset/liability strategies.</li>
             <li><strong>Part 07:</strong> finite vs. infinite horizon — what actually matters at implementation.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The Kelly criterion determines the exact position size to maximize long-term wealth compounding without going broke.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The Kelly criterion calculates the exact position size to maximize long-term wealth compounding without going broke.</li>
+            <li style="margin-bottom: 0;">Asset Liability Management (ALM) matches asset returns with future payout obligations under market shocks.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -54,13 +106,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Stochastic Control solves the problem of making optimal decisions over time in an uncertain environment, such as dynamically rebalancing a portfolio.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Dynamic Allocation:</strong> Instead of a static mix, allocation changes continuously based on price movements and volatility.</li>
-            <li style="margin-bottom: 1rem;"><strong>Bellman's Principle:</strong> Breaks a long-term optimization problem into a series of simple step-by-step decisions.</li>
-            <li style="margin-bottom: 0;"><strong>HJB Equation:</strong> The partial differential equation solved to find the optimal portfolio weights at any given moment.</li>
-        </ul>
-    </div>
+    
 </div>

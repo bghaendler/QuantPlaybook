@@ -5,15 +5,30 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Dynamic programming for trading: the HJB equation, the Avellaneda-Stoikov market-making solution, and execution as a controlled diffusion problem.</p>
     </header>
 
-    <div class="card">
-        <h3>1. The Control Framework</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Control Framework</h3>
         <p>State $X_t$ (price, inventory $q_t$, cash) evolves under a control $u_t$ (trade rate, quote offsets); maximize expected utility of terminal wealth. The value function $V(t, x)$ satisfies the <strong>Hamilton-Jacobi-Bellman</strong> equation:</p>
         $$\partial_t V + \sup_{u}\Big\{\mathcal{L}^{u}V + f(x, u)\Big\} = 0, \qquad V(T, x) = \text{terminal payoff},$$
         <p>where $\mathcal{L}^u$ is the controlled generator. Dynamic programming replaces a path-space optimization with a PDE: solve backwards, the maximizing $u^*(t,x)$ <em>is</em> the policy. Verification theorems certify that a smooth solution is genuinely optimal. The deterministic Almgren-Chriss schedule (Part 07) is this machinery with no feedback; the gain here is <strong>closed-loop</strong> policies that react to inventory and prices.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> High-frequency trading dynamics rely on analyzing limit order book imbalances and price formation at millisecond scales.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Inventory risk is the cost of holding too many long or short shares while the market moves against you.</li>
+            <li style="margin-bottom: 0;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Avellaneda-Stoikov Market Making (The Canonical Solve)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Avellaneda-Stoikov Market Making (The Canonical Solve)</h3>
         <p>Mid follows $dS = \sigma dW$; quoting at distances $\delta^{\pm}$ from mid attracts fills with intensity $\lambda(\delta) = Ae^{-k\delta}$; exponential utility with risk aversion $\gamma$. The HJB system reduces (via the ansatz $V = -e^{-\gamma(w + \theta(t, q, s))}$) to closed-form quotes:</p>
         $$\text{reservation price: } r(t) = s - q\,\gamma\sigma^2(T - t), \qquad \text{total spread: } \delta^+ + \delta^- = \gamma\sigma^2(T - t) + \frac{2}{\gamma}\ln\!\left(1 + \frac{\gamma}{k}\right).$$
         <ul style="line-height: 1.8;">
@@ -21,25 +36,62 @@
             <li><strong>Spread anatomy:</strong> a risk term (σ, γ, horizon) + a liquidity-elasticity term ($k$): exactly Part 01's inventory + adverse-selection decomposition, now derived rather than asserted.</li>
             <li>Extensions: inventory limits (reflecting boundaries, Part 09), Hawkes-driven intensities, adverse-selection terms (Guéant-Lehalle-Tapia generalizations with ODE-system solutions).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> High-frequency trading dynamics rely on analyzing limit order book imbalances and price formation at millisecond scales.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The bid-ask spread is the transaction cost or tax paid to execute a trade immediately.</li>
+            <li style="margin-bottom: 0;">Inventory risk is the cost of holding too many long or short shares while the market moves against you.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Optimal Execution as Control</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Optimal Execution as Control</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Liquidation with temporary impact</strong> $\dot{x} = -u$, cost $\eta u^2$, risk $\sigma^2x^2$: HJB yields the same sinh trajectory as Part 07 — but now state-dependent variants are easy: stochastic σ (regime urgency, Part 08), price-dependent alpha (trade faster into favorable drift), terminal penalties for residual inventory.</li>
             <li><strong>Limit-vs-market order control:</strong> impulse/optimal-switching formulations — quasi-variational inequalities decide when to cross the spread vs. keep resting; numerically: policy iteration on a discretized state grid.</li>
             <li><strong>Order routing as control:</strong> the bandit/assignment view of Part 06 is the discrete-action sibling of the same DP principle.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Intraday trading focuses on order queue mechanics, bid-ask spreads, and minimizing the market impact of large orders.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The bid-ask spread is the transaction cost or tax paid to execute a trade immediately.</li>
+            <li style="margin-bottom: 0;">Inventory risk is the cost of holding too many long or short shares while the market moves against you.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Solving in Practice</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Solving in Practice</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Dimensionality:</strong> 1–3 state dimensions → finite differences with policy iteration (boundary care per Part 09); higher → approximate DP / neural policy methods; reinforcement learning is HJB by sampling when dynamics aren't trusted analytically (cf. the ML masterclass).</li>
             <li><strong>Ansatz first:</strong> exponential utility + linear-quadratic structures collapse HJB to ODE systems — try the literature's ansatz before discretizing a PDE.</li>
             <li><strong>Robustness beats elegance:</strong> mis-specified $\lambda(\delta)$ or σ degrades the "optimal" policy below a tuned heuristic — control output should be policy <em>shapes</em> (skew with inventory, widen with vol and horizon) with parameters fitted in production telemetry.</li>
             <li><strong>Sanity anchors:</strong> γ→0 must recover risk-neutral limits (TWAP-like schedules, symmetric quotes); horizon→0 must liquidate/flatten — check the corners.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> High-frequency trading dynamics rely on analyzing limit order book imbalances and price formation at millisecond scales.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Inventory risk is the cost of holding too many long or short shares while the market moves against you.</li>
+            <li style="margin-bottom: 0;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -52,13 +104,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Stochastic Control Theory solves for the optimal trading strategy under uncertainty. In HFT, it dictates the exact limit order prices a market maker should post to maximize profit while managing inventory risk.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Inventory Risk:</strong> The risk of holding too many long or short shares while the market moves against you.</li>
-            <li style="margin-bottom: 1rem;"><strong>Avellaneda-Stoikov:</strong> The benchmark model that shifts bids and asks based on inventory—if you hold too many shares, you lower your ask to encourage selling.</li>
-            <li style="margin-bottom: 0;"><strong>Hamilton-Jacobi-Bellman (HJB):</strong> The PDE solved to find the optimal dynamic feedback control for HFT execution.</li>
-        </ul>
-    </div>
+    
 </div>

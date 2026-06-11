@@ -5,8 +5,10 @@
         <p style="color: #64748b; margin-top: 0.5rem;">The tool landscape — Tapenade to Enzyme to JAX — what each generates, integration patterns for quant libraries, and the application checklist for adjoint deployments.</p>
     </header>
 
-    <div class="card">
-        <h3>1. The Tool Landscape</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Tool Landscape</h3>
         <table style="width:100%; border-collapse: collapse; font-size: 0.86rem;">
             <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;">Tool</th><th style="padding: 0.45rem;">Approach</th><th style="padding: 0.45rem;">Notes for quant use</th></tr></thead>
             <tbody>
@@ -17,36 +19,86 @@
                 <tr><td style="padding: 0.45rem;">Stan Math, Adept</td><td style="padding: 0.45rem;">OO with expression templates</td><td style="padding: 0.45rem;">Expression-level preaccumulation — low overhead for scalar-heavy code</td></tr>
             </tbody>
         </table>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Algorithmic Differentiation calculates exact computer derivatives by propagating chain-rule terms forward or backward through code.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">AD tapes record all math operations in memory during the pricing run so they can be traversed backward.</li>
+            <li style="margin-bottom: 0;">Operator overloading replaces standard variables with custom variables that track their own derivatives.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Integration Patterns for a Quant Library</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Integration Patterns for a Quant Library</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Scalar-template the analytics core</strong> (<code>template&lt;class Real&gt;</code>): one source tree serves <code>double</code>, tangent, and adjoint types — the dco/CppAD adoption route; keep I/O, logging and infrastructure passive.</li>
             <li><strong>Registered primitives at module boundaries:</strong> curve bootstrap (implicit-function adjoint of the solved system), Brent/Newton solvers, SVD/regressions, interpolators — each exposes <code>custom_vjp</code>-style analytic derivatives; tools differentiate only the glue between them.</li>
             <li><strong>Payoff smoothing policy:</strong> digitals/barriers carry zero a.s. pathwise derivatives but nonzero true Greeks — institutionalize smoothed payoffs (call-spread digitals, barrier shifts) or hybrid likelihood-ratio terms <em>in the library</em>, not per-trade ad hoc.</li>
             <li><strong>Regression-tested derivative builds:</strong> every release runs tangent-vs-bump, adjoint-vs-tangent dot products, and golden gradients on a trade zoo — generated code changes with the tool version; CI is the safety net.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Adjoint mode (Reverse AD) is the quant holy grail: it computes sensitivities for infinite inputs in a single backward pass.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Adjoint mode calculates portfolio risk sensitivities with respect to all market factors in a single backward pass.</li>
+            <li style="margin-bottom: 0;">Operator overloading replaces standard variables with custom variables that track their own derivatives.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Flagship Applications</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Flagship Applications</h3>
         <ul style="line-height: 1.8;">
             <li><strong>XVA risk (the killer app):</strong> CVA's gradient over thousands of curve/vol nodes at ~4–10× one CVA valuation — overnight batches became intraday; Giles-Glasserman's "Smoking adjoints" (2006) started the avalanche.</li>
             <li><strong>Calibration:</strong> exact gradients/Jacobians for Levenberg-Marquardt — faster, more stable convergence than bumped Jacobians (and Part 05's vector-forward serves the few-parameter side).</li>
             <li><strong>Capital &amp; XVA second-order:</strong> sensitivities of ES/SIMM margins; second-order needs Part 10's machinery.</li>
             <li><strong>ML-in-finance crossover:</strong> differentiable pricers embedded in neural training loops (deep hedging, model calibration networks) — possible precisely because the pricer exposes vjp's.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Algorithmic Differentiation calculates exact computer derivatives by propagating chain-rule terms forward or backward through code.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Operator overloading replaces standard variables with custom variables that track their own derivatives.</li>
+            <li style="margin-bottom: 0;">Source compilers read your pricing code and write new code that calculates derivatives exactly.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Choosing, Pragmatically</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Choosing, Pragmatically</h3>
         <ul style="line-height: 1.8;">
             <li>Existing large C++ library → OO templating (dco-style) + custom boundary adjoints; budget the Part 06 memory plan first.</li>
             <li>New research code / GPU-first → JAX (or PyTorch): AD, JIT and vectorization in one tool; port hot paths later if needed.</li>
             <li>Legacy Fortran/C kernels → Tapenade/Enzyme generation with hand-review of the emitted reversal.</li>
             <li>Whatever the tool: the concepts are invariant — tapes, seeds, fan-out accumulation, checkpointing, custom adjoints. Tools change; Parts 03–08 don't.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Algorithmic Differentiation calculates exact computer derivatives by propagating chain-rule terms forward or backward through code.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">AD tapes record all math operations in memory during the pricing run so they can be traversed backward.</li>
+            <li style="margin-bottom: 0;">Checkpointing saves key variables during the forward run to reduce the memory tape size.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -59,13 +111,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Production AD engines combine automatic tools with custom adjoint overrides for complex mathematical bottlenecks (like root solvers and eigen-decompositions).</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Custom Nodes:</strong> Instead of taping every step of an iterative solver, we use implicit differentiation to write a single custom analytical adjoint.</li>
-            <li style="margin-bottom: 1rem;"><strong>Memory Savings:</strong> Bypassing the tape for large solvers reduces memory usage by up to 99%, making Adjoint AD feasible for massive XVA books.</li>
-            <li style="margin-bottom: 0;"><strong>Hybrid Pipelines:</strong> Integrating code generators (like Enzyme or JAX) with hand-optimized C++ kernels.</li>
-        </ul>
-    </div>
+    
 </div>

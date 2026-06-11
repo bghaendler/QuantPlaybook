@@ -5,36 +5,88 @@
         <p style="color: #64748b; margin-top: 0.5rem;">The CR equations rewritten for $z = re^{i\theta}$: derivation by chain rule, the polar Laplacian, and why log and power functions are best handled in polar form.</p>
     </header>
 
-    <div class="card">
-        <h3>1. The Polar CR Equations</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Polar CR Equations</h3>
         <p>With $f = u(r, \theta) + iv(r, \theta)$ and $x = r\cos\theta$, $y = r\sin\theta$, the chain rule transforms $u_x = v_y$, $u_y = -v_x$ into:</p>
         $$\boxed{\;\frac{\partial u}{\partial r} = \frac{1}{r}\frac{\partial v}{\partial \theta}, \qquad \frac{\partial v}{\partial r} = -\frac{1}{r}\frac{\partial u}{\partial \theta}\;} \qquad (r \ne 0)$$
         <p>with derivative $f'(z) = e^{-i\theta}\left(u_r + iv_r\right)$. The $1/r$ factors are the price of curvilinear coordinates (arc length along $\theta$ is $r\,d\theta$); the structure — each component's radial derivative tied to the other's angular derivative — is unchanged.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Complex analysis allows quants to solve option prices analytically instead of running slow simulations, by integrating functions in the complex plane.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            <li style="margin-bottom: 0;">Integrating along closed complex loops eliminates numerical instabilities in Fourier pricing.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. The Functions Born Polar</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. The Functions Born Polar</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Logarithm:</strong> $\ln z = \ln r + i\theta$, so $u = \ln r$, $v = \theta$. Check: $u_r = 1/r = \frac{1}{r}v_\theta$ ✓, $v_r = 0 = -\frac{1}{r}u_\theta$ ✓ — holomorphic wherever $\theta$ is single-valued, i.e. off a <strong>branch cut</strong>; $f' = e^{-i\theta}/r = 1/z$.</li>
             <li><strong>Powers:</strong> $z^\alpha = r^\alpha e^{i\alpha\theta}$ ⇒ $u = r^\alpha\cos\alpha\theta$, $v = r^\alpha\sin\alpha\theta$ — CR verified in two lines, for <em>any</em> real α (the fractional powers of MM Part 08's Cauchy-Euler solutions). In Cartesian coordinates the same check is a mess.</li>
             <li><strong>$1/z$, $z^n$:</strong> immediate by the same pattern — polar CR is the natural habitat of everything with circular symmetry.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</li>
+            <li style="margin-bottom: 0;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. The Polar Laplacian</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. The Polar Laplacian</h3>
         <p>Combining the polar CR pair reproduces harmonicity in polar form:</p>
         $$\nabla^2 u = u_{rr} + \frac{1}{r}u_r + \frac{1}{r^2}u_{\theta\theta} = 0.$$
         <p>Separable solutions $u = R(r)\Theta(\theta)$ give $\Theta = \cos n\theta, \sin n\theta$ and the radial <strong>Cauchy-Euler equation</strong> $r^2R'' + rR' - n^2R = 0$ ⇒ $R = r^{\pm n}$ (and $\ln r$ for $n = 0$) — the same equidimensional ODE that priced perpetual options. The general disk solution $u = a_0 + \sum r^n(a_n\cos n\theta + b_n\sin n\theta)$ is a Fourier series in the angle with powers in the radius: summing it against boundary data yields the Poisson kernel of Part 07.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Complex analysis allows quants to solve option prices analytically instead of running slow simulations, by integrating functions in the complex plane.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            <li style="margin-bottom: 0;">Integrating along closed complex loops eliminates numerical instabilities in Fourier pricing.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Branch Cuts: The Practical Lesson</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Branch Cuts: The Practical Lesson</h3>
         <p>$\theta$ is only defined mod $2\pi$ — so $\ln z$ and $z^\alpha$ (α non-integer) need a chosen branch: conventionally $\theta \in (-\pi, \pi]$ with a cut along the negative real axis. Crossing the cut jumps $v = \theta$ by $2\pi$ — the function is holomorphic on the cut plane, not on any loop around the origin. Consequences a quant actually hits:</p>
         <ul style="line-height: 1.8;">
             <li><strong>Heston's "little trap":</strong> the model's characteristic function contains a complex log; naive principal-branch evaluation makes the integrand discontinuous in $u$ and corrupts prices — the well-known fix (Albrecher et al.) reformulates to keep the argument off the cut.</li>
             <li><strong>Library behavior:</strong> <code>log</code>/<code>sqrt</code> of complex arrays in NumPy use the principal branch — track winding manually when integrating along paths that circle singularities.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</li>
+            <li style="margin-bottom: 0;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -47,13 +99,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Expressing the Cauchy-Riemann equations in polar coordinates ($r, \theta$) aligns the math with interest rates, volatility, and circular contours in option pricing.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Polar Form:</strong> Crucial for assets where changes are proportional (geometric) rather than additive (arithmetic).</li>
-            <li style="margin-bottom: 1rem;"><strong>Log-Polar Maps:</strong> Mapping $\ln(r)$ and $\theta$ simplifies the math of geometric Brownian motion and stock price ratios.</li>
-            <li style="margin-bottom: 0;"><strong>Symmetry:</strong> Polar CR equations make it easy to solve pricing models that have rotational symmetry around the strike price.</li>
-        </ul>
-    </div>
+    
 </div>

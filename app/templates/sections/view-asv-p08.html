@@ -5,8 +5,10 @@
         <p style="color: #64748b; margin-top: 0.5rem;">The unifying formalism behind every expansion in this series: rate functions, Varadhan and Gärtner-Ellis, and how LDP turns "rare event" into "computable exponent".</p>
     </header>
 
-    <div class="card">
-        <h3>1. The LDP Template</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The LDP Template</h3>
         <p>A family $(X^\epsilon)$ satisfies a large deviation principle with rate function $I$ if, for nice sets $A$:</p>
         $$\mathbb{P}(X^\epsilon \in A) \;\asymp\; \exp\!\Big(-\frac{1}{\epsilon}\inf_{x \in A} I(x)\Big), \qquad \epsilon \to 0.$$
         <p>Probabilities of rare events decay exponentially, and <em>only the cheapest point of the set matters</em> ("the most likely of the unlikely paths"). The two production theorems:</p>
@@ -14,10 +16,23 @@
             <li><strong>Schilder/Freidlin-Wentzell:</strong> small-noise diffusion paths — $I(\phi) = \frac{1}{2}\int|\dot\phi - b(\phi)|^2/\sigma^2(\phi)\,dt$: rare events follow energy-minimizing (geodesic) paths — Part 01's geometry is this theorem.</li>
             <li><strong>Gärtner-Ellis:</strong> from the limiting cumulant function $\Lambda(u) = \lim\epsilon\ln\mathbb{E}[e^{u X^\epsilon/\epsilon}]$, the rate is its Legendre transform $I = \Lambda^*$ — Part 03's large-time smile is this theorem.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Asymptotics simplify complex stochastic volatility equations by studying their behavior at extreme limits (like very short maturities).</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Large deviation theory focuses on the single most likely path of a rare crash to price deep out-of-the-money options.</li>
+            <li style="margin-bottom: 0;">Large deviation theory focuses on the single most likely path of a rare crash to price deep out-of-the-money options.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Option Prices as Rare-Event Probabilities</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Option Prices as Rare-Event Probabilities</h3>
         <p>Deep OTM options <em>are</em> large deviation functionals: with $\epsilon = T$ (short time) or $\epsilon = 1/T$ (long time, scaled strikes):</p>
         $$-\lim\,\epsilon\ln C(K) = I(k) \quad\Longrightarrow\quad \sigma_{BS}(k) = \frac{|k|}{\sqrt{2I(k)}}\;(\text{short time}),$$
         <p>so the <strong>entire asymptotic smile is the rate function in disguise</strong>. The series in one diagram:</p>
@@ -30,24 +45,61 @@
                 <tr><td style="padding: 0.45rem;">Wings, fixed T (Parts 05–06)</td><td style="padding: 0.45rem;">Moment/Cramér-type bounds</td><td style="padding: 0.45rem;">Lee's formula = exponential-moment LDP in strike</td></tr>
             </tbody>
         </table>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Asymptotics simplify complex stochastic volatility equations by studying their behavior at extreme limits (like very short maturities).</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Asymptotic analysis simplifies complex models by studying them at extreme limits (like very short maturities).</li>
+            <li style="margin-bottom: 0;">Large deviation theory focuses on the single most likely path of a rare crash to price deep out-of-the-money options.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. LDP as a Computational Device</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. LDP as a Computational Device</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Saddlepoint pricing:</strong> the Lugannani-Rice/saddlepoint approximations of tail probabilities are the practical, finite-$\epsilon$ face of Gärtner-Ellis — used for CDO tranche losses, portfolio VaR (ARM connection) and quick wing quotes from any characteristic function.</li>
             <li><strong>Importance sampling done right:</strong> the optimal exponential tilt for rare-event Monte Carlo is the LDP-optimal change of measure (tilt to make the rare event typical) — variance reduction by factors of 10³+ for deep barriers/far wings; the rate function tells you the tilt before any simulation.</li>
             <li><strong>Optimal paths as diagnostics:</strong> the minimizing path (instanton) shows <em>how</em> the rare event happens — e.g. for a far OTM equity put under SV: vol spikes early, spot then dives — matching crash phenomenology and guiding stress-scenario design (reverse stress testing's mathematical cousin).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Asymptotics simplify complex stochastic volatility equations by studying their behavior at extreme limits (like very short maturities).</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Large deviation theory focuses on the single most likely path of a rare crash to price deep out-of-the-money options.</li>
+            <li style="margin-bottom: 0;">Analyzing models at extreme limits (like very short maturities) simplifies option pricing equations.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Limits of the Lens</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Limits of the Lens</h3>
         <ul style="line-height: 1.8;">
             <li>LDP gives <em>exponents</em>, not constants — a price known "up to subexponential factors" can still be off 2× in level: pair with heat-kernel prefactors (Part 01) or saddlepoint corrections for usable numbers.</li>
             <li>Order-of-limits discipline (Part 03's warning): small-T-then-wing ≠ wing-then-small-T; every formula carries its regime.</li>
             <li>Non-Markovian frontiers: rough volatility satisfies modified LDPs (rate functionals over fractional paths) reproducing the $T^{-0.4}$ skew — the active research edge extending exactly this framework.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Asymptotics simplify complex stochastic volatility equations by studying their behavior at extreme limits (like very short maturities).</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Large deviation theory focuses on the single most likely path of a rare crash to price deep out-of-the-money options.</li>
+            <li style="margin-bottom: 0;">Analyzing models at extreme limits (like very short maturities) simplifies option pricing equations.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -60,13 +112,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The Large Deviation Principle (LDP) is the mathematical theory of rare events. In finance, it calculates the exact rate at which out-of-the-money options lose value.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Rate Functions:</strong> LDP calculates the probability of rare events (like a 50% market drop) as $e^{-I/\epsilon}$, where $I$ is the rate function.</li>
-            <li style="margin-bottom: 1rem;"><strong>Schilder's Theorem:</strong> Applies LDP to Brownian motion, showing that the most likely path to a rare event is the path of minimum energy (geodesic).</li>
-            <li style="margin-bottom: 0;"><strong>Tail Volatility:</strong> Allows quants to price deep out-of-the-money options analytically by focusing only on the most likely crash trajectory.</li>
-        </ul>
-    </div>
+    
 </div>

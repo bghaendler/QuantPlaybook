@@ -5,18 +5,33 @@
         <p style="color: #64748b; margin-top: 0.5rem;">The U-shapes of the trading day: volume, volatility, and spread profiles, how to estimate them robustly, and how schedules and signals must deseasonalize.</p>
     </header>
 
-    <div class="card">
-        <h3>1. The Stylized Intraday Shapes</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Stylized Intraday Shapes</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Volume:</strong> U-shaped (often "J-shaped") — heavy at the open (overnight information), trough at midday, surge into the close (benchmark/index flows, MOC auctions). The close share has grown structurally with passive investing.</li>
             <li><strong>Volatility:</strong> elevated open (price discovery), midday lull, modest close pickup; scheduled macro releases (8:30/10:00/14:00 ET) put spikes <em>inside</em> the U.</li>
             <li><strong>Spreads:</strong> widest at the open (information asymmetry, thin books), tighten through the day, near-minimum at the close — spread and volatility seasonality move together; depth runs inverse.</li>
             <li><strong>Cross-market clocks:</strong> FX follows the Tokyo→London→NY session relay; futures inherit the cash-open of their underlying.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> High-frequency trading dynamics rely on analyzing limit order book imbalances and price formation at millisecond scales.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The bid-ask spread is the transaction cost or tax paid to execute a trade immediately.</li>
+            <li style="margin-bottom: 0;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Estimating the Seasonal Profile</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Estimating the Seasonal Profile</h3>
         <p>For a quantity $x_{d,b}$ (day $d$, intraday bin $b$), the standard multiplicative decomposition:</p>
         $$x_{d,b} = T_d \cdot s_b \cdot \epsilon_{d,b}, \qquad \hat{s}_b = \mathrm{median}_d\left(\frac{x_{d,b}}{\sum_b x_{d,b}}\right)\;\text{(normalized)},$$
         <ul style="line-height: 1.8;">
@@ -25,25 +40,62 @@
             <li><strong>Condition:</strong> separate profiles for expiry days, rebalance days, half days, earnings names; one pooled curve mixes regimes (Part 04's warning again).</li>
             <li><strong>Update:</strong> exponentially weight recent days — the close-heavy migration means static profiles drift stale within quarters.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> High-frequency trading dynamics rely on analyzing limit order book imbalances and price formation at millisecond scales.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            <li style="margin-bottom: 0;">Smart order routers dynamically split trades across exchanges and dark pools to find the best liquidity.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Deseasonalizing Signals and Risk</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Deseasonalizing Signals and Risk</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Volatility per bin:</strong> intraday z-scores must divide by $s_b^{vol}$ — otherwise every signal "fires" at the open simply because variance does. Realized-vol forecasting at horizon &lt; 1 day is mostly seasonality plus a small dynamic residual.</li>
             <li><strong>"Volume time":</strong> reclock the day by cumulative expected volume $\tau(t) = \sum_{b \le t}\hat{s}_b$ — in volume time, returns are closer to homoskedastic and arrival processes closer to Poisson; many HFT models are built in this clock and only mapped back to wall time at the end.</li>
             <li><strong>Spread-aware tactics:</strong> passive ratios should rise when the profile says spreads are wide (open) and urgency is low; crossing the spread at 9:31 costs multiples of 15:50.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> High-frequency trading dynamics rely on analyzing limit order book imbalances and price formation at millisecond scales.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The bid-ask spread is the transaction cost or tax paid to execute a trade immediately.</li>
+            <li style="margin-bottom: 0;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Seasonality in Execution Schedules</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Seasonality in Execution Schedules</h3>
         <ul style="line-height: 1.8;">
             <li><strong>VWAP:</strong> the benchmark <em>is</em> the volume profile — a VWAP algo trades $\hat{s}_b \times Q$ per bin; profile error is the dominant VWAP tracking error, hence the median/conditioning care above.</li>
             <li><strong>IS/Almgren-Chriss with seasonality:</strong> time-varying $\sigma_b$, $\eta_b$ tilt the optimal trajectory — more in liquid cheap bins, less at the expensive open (Part 07 formalizes).</li>
             <li><strong>Auction participation:</strong> the close auction is now 5–15% of equity volume — schedules end with a deliberate MOC slice, sized from the auction's own seasonal share.</li>
             <li><strong>Evaluation:</strong> compare algos in deseasonalized cost units; otherwise the time-of-day mix of parent orders masquerades as skill.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Execution algorithms optimize how large orders are sliced and routed to balance market impact costs and price risks.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            <li style="margin-bottom: 0;">Smart order routers dynamically split trades across exchanges and dark pools to find the best liquidity.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -56,13 +108,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Intraday volume and volatility follow a highly predictable U-shaped pattern: high at the open and close, and low during lunchtime. Modeling this seasonality is key for benchmark execution.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>U-Shape Pattern:</strong> The market open (price discovery) and close (index rebalancing) have the highest liquidity and volatility.</li>
-            <li style="margin-bottom: 1rem;"><strong>VWAP Benchmark:</strong> Volume-Weighted Average Price algorithms distribute orders to match the historical U-shape volume curve.</li>
-            <li style="margin-bottom: 0;"><strong>Deseasonalization:</strong> Quants strip out the predictable daily cycle to detect abnormal market events in real time.</li>
-        </ul>
-    </div>
+    
 </div>

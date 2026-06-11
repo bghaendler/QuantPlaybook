@@ -5,8 +5,10 @@
         <p style="color: #64748b; margin-top: 0.5rem;">The minimal complete example of simulation-based VaR: two correlated assets, Cholesky, full revaluation, quantile extraction — every multi-asset engine is this, scaled up.</p>
     </header>
 
-    <div class="card">
-        <h3>1. Setup and Algorithm</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. Setup and Algorithm</h3>
         <p>Portfolio: $w_1$ in asset 1, $w_2$ in asset 2; daily vols $\sigma_1, \sigma_2$, correlation $\rho$ (estimated per the equities course; or t-innovations per Part 03). The engine:</p>
         <ol style="line-height: 1.9;">
             <li>Draw $Z_1, Z_2 \sim \mathcal{N}(0,1)$ i.i.d. (inverse-CDF; seeds fixed — Part 09 hygiene from MM).</li>
@@ -15,27 +17,66 @@
             <li>Revalue: $\Delta V = w_1V_1(e^{r_1} - 1) + w_2V_2(e^{r_2} - 1)$ (full revaluation; options through their pricers).</li>
             <li>Repeat $N$ = 100k times; <strong>VaR₉₉ = −(1st percentile of ΔV)</strong>, ES = mean beyond.</li>
         </ol>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Risk management quantifies potential portfolio losses under normal and extreme market conditions, using VaR and Expected Shortfall.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Value-at-Risk (VaR) is the maximum loss expected under normal market conditions at a given confidence level.</li>
+            <li style="margin-bottom: 0;">Dynamic models like GARCH adjust risk limits as market volatility clusters and spikes.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Worked Numbers</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Worked Numbers</h3>
         <p>$5m each in two assets; $\sigma_1 = 1.6\%$, $\sigma_2 = 1.0\%$ daily, $\rho = 0.3$. Portfolio daily vol:</p>
         $$\sigma_p = \sqrt{w_1^2\sigma_1^2 + w_2^2\sigma_2^2 + 2\rho w_1w_2\sigma_1\sigma_2}\;(\text{in \$}) = \sqrt{80^2 + 50^2 + 2(.3)(80)(50)}\,\text{k} \approx \$106.6\text{k}.$$
         <p>Analytic check: VaR₉₉ ≈ 2.326 × 106.6k ≈ <strong>$248k</strong>; the Gaussian MC must reproduce this within its standard error (~±1% at 100k paths) — <em>always validate the engine on the case with a closed form before trusting it where there isn't one</em>. Diversification visible: undiversified sum of standalone VaRs ≈ 2.326×(80+50)k = $302k ⇒ benefit ≈ $54k; at ρ = 1 the benefit vanishes, at ρ = −0.5, σ_p ≈ \$70k — re-run the engine across ρ to see correlation as the third asset.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Risk management quantifies potential portfolio losses under normal and extreme market conditions, using VaR and Expected Shortfall.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Value-at-Risk (VaR) is the maximum loss expected under normal market conditions at a given confidence level.</li>
+            <li style="margin-bottom: 0;">Dynamic models like GARCH adjust risk limits as market volatility clusters and spikes.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Why Bother With MC When the Formula Exists?</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Why Bother With MC When the Formula Exists?</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Nonlinearity:</strong> add one option and the analytic quantile dies; MC's full revaluation prices the gamma/vega into the tail correctly (delta-normal VaR on an option book understates short-gamma risk badly).</li>
             <li><strong>Non-Gaussian inputs:</strong> swap step 1 for t-draws or filtered-historical innovations — the engine is unchanged (the Part 03/05 upgrades drop in).</li>
             <li><strong>Horizon flexibility:</strong> path-dependent revaluation over 10 days with intermediate margining/rebalancing — impossible in closed form.</li>
             <li><strong>The cost:</strong> sampling noise (quantify: bootstrap the P&amp;L vector or use the binomial band on the tail count) and model risk now <em>twice</em> — in dynamics and in correlation (Part 09 scrutinizes the generator; Part 10 scales the correlation machinery).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Risk management quantifies potential portfolio losses under normal and extreme market conditions, using VaR and Expected Shortfall.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Value-at-Risk (VaR) is the maximum loss expected under normal market conditions at a given confidence level.</li>
+            <li style="margin-bottom: 0;">Model risk is the risk of losses due to using the wrong mathematical model or incorrect assumptions.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Implementation Notes (Spreadsheet → Code)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Implementation Notes (Spreadsheet → Code)</h3>
         <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.8rem; font-size: 0.78rem; overflow-x: auto;">rng = np.random.default_rng(7)
 Z = rng.standard_normal((100_000, 2))
 eps1 = Z[:,0]; eps2 = rho*Z[:,0] + np.sqrt(1-rho**2)*Z[:,1]
@@ -44,6 +85,17 @@ var99 = -np.percentile(pnl, 1)
 es99  = -pnl[pnl <= -var99].mean()
 se    = pnl.std() / np.sqrt(len(pnl))     # report it</pre>
         <p style="font-size: 0.9rem;">Excel version: two <code>NORM.S.INV(RAND())</code> columns, the Cholesky combination in a third, P&amp;L in a fourth, <code>PERCENTILE.INC(range, 0.01)</code> at the bottom — a Data-Table re-run gives the sampling distribution of VaR itself (MM Part 14 mechanics). Antithetics and Sobol sequences cut the tail-quantile noise ~2–5× at no model cost.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Risk management quantifies potential portfolio losses under normal and extreme market conditions, using VaR and Expected Shortfall.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Value-at-Risk (VaR) is the maximum loss expected under normal market conditions at a given confidence level.</li>
+            <li style="margin-bottom: 0;">Dynamic models like GARCH adjust risk limits as market volatility clusters and spikes.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -56,13 +108,5 @@ se    = pnl.std() / np.sqrt(len(pnl))     # report it</pre>
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Monte Carlo VaR projects future portfolio values by simulating thousands of paths for multiple assets, accounting for their correlation and non-linear options payoffs.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Simulating P&L:</strong> We draw correlated random paths for all assets, revalue the portfolio in each scenario, and extract the 99% loss threshold.</li>
-            <li style="margin-bottom: 1rem;"><strong>Cholesky Decomposition:</strong> The mathematical tool used to inject historical correlations into independent random number generators.</li>
-            <li style="margin-bottom: 0;"><strong>Non-Linear Risk:</strong> Essential for options portfolios where delta, gamma, and vega make price changes non-linear.</li>
-        </ul>
-    </div>
+    
 </div>

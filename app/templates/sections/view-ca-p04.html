@@ -5,40 +5,92 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Complex functions as geometric transformations: how grids, circles and strips travel under w = f(z), and why conformality is the property worth tracking.</p>
     </header>
 
-    <div class="card">
-        <h3>1. Functions as Transformations</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. Functions as Transformations</h3>
         <p>A complex function $w = f(z) = u(x,y) + iv(x,y)$ cannot be graphed (4 real dimensions); instead we watch how it <em>transports</em> sets from the $z$-plane to the $w$-plane. The basic alphabet:</p>
         <ul style="line-height: 1.8;">
             <li>$w = z + b$: translation. $w = az$: rotation by $\arg a$, scaling by $|a|$. $w = az + b$: every similarity.</li>
             <li>$w = \bar{z}$: reflection in the real axis (orientation-reversing — <em>not</em> holomorphic, by Part 06).</li>
             <li>$w = 1/z$: inversion — moduli reciprocate ($|w| = 1/|z|$), arguments negate; maps the family of lines-and-circles to itself (a line through the origin ↔ itself; a line missing the origin ↔ a circle through the origin).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</li>
+            <li style="margin-bottom: 0;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. The Two Mappings Behind Pricing Coordinates</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. The Two Mappings Behind Pricing Coordinates</h3>
         <ul style="line-height: 1.8;">
             <li><strong>$w = z^2$:</strong> doubles arguments, squares moduli — the right half-plane opens to the whole plane (minus a slit); Cartesian grid lines map to orthogonal parabolas. Where angles at the origin get doubled is exactly where conformality fails ($f'(0) = 0$).</li>
             <li><strong>$w = e^z$:</strong> horizontal lines $y = c$ → rays $\arg w = c$; vertical lines $x = c$ → circles $|w| = e^c$; the strip $0 < y < \pi$ → the upper half-plane. Its inverse $\ln z$ is multi-valued (add $2\pi i k$) — the reason log-price coordinates need a branch choice, and the prototype for branch cuts.</li>
         </ul>
         <p>The substitution $S = Ke^x$ from the Black-Scholes-to-heat-equation reduction (MM Part 13) is precisely the $e^z$ mapping restricted to the real line: pricing already works in mapped coordinates.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Complex analysis allows quants to solve option prices analytically instead of running slow simulations, by integrating functions in the complex plane.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            <li style="margin-bottom: 0;">Integrating along closed complex loops eliminates numerical instabilities in Fourier pricing.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Conformality</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Conformality</h3>
         <p>Where $f$ is holomorphic and $f'(z_0) \ne 0$, the map preserves <strong>angles</strong> (magnitude and orientation) between intersecting curves: locally it is rotation by $\arg f'(z_0)$ plus scaling by $|f'(z_0)|$. Consequences:</p>
         <ul style="line-height: 1.8;">
             <li>Orthogonal grids stay orthogonal — the level curves of $u$ and $v$ always cross at right angles (the geometric face of Cauchy-Riemann, Part 06).</li>
             <li>Harmonic functions stay harmonic under conformal pullback — solve Laplace problems on a simple domain (disk/half-plane) and transport the solution (Part 07's method).</li>
             <li>Möbius maps $w = \frac{az + b}{cz + d}$ ($ad - bc \ne 0$): the conformal automorphisms taking lines/circles to lines/circles, with exactly three degrees of freedom — pick any three points to send to any three points.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</li>
+            <li style="margin-bottom: 0;">Cauchy-Riemann equations ensure that the real and imaginary parts of complex models are in perfect sync.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Worked Example: Strip → Disk</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Worked Example: Strip → Disk</h3>
         <p>Map the analyticity strip $-1 < \mathrm{Im}\,z < 1$ to the unit disk: first $\zeta = e^{\pi z/2}$ sends it to the right half-plane $\mathrm{Re}\,\zeta > 0$; then the Cayley-type Möbius $w = \frac{\zeta - 1}{\zeta + 1}$ sends the half-plane to $|w| < 1$. Composition:</p>
         $$w = \frac{e^{\pi z/2} - 1}{e^{\pi z/2} + 1} = \tanh\!\left(\frac{\pi z}{4}\right).$$
         <p>This is the standard trick for numerics on strips (where characteristic functions live): transplant the problem to the disk or half-plane where quadrature nodes, kernels and convergence theory are off-the-shelf.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Complex analysis allows quants to solve option prices analytically instead of running slow simulations, by integrating functions in the complex plane.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            <li style="margin-bottom: 0;">Integrating along closed complex loops eliminates numerical instabilities in Fourier pricing.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -51,13 +103,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Mapping transforms one complex coordinate space to another. Quants use it to wrap complex, boundary-restricted options into simple circles or planes that are easy to price.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Conformal Mapping:</strong> Transforms the grid while preserving angles. This keeps the underlying physics (and Black-Scholes PDE structure) intact.</li>
-            <li style="margin-bottom: 1rem;"><strong>Simplifying Boundaries:</strong> A complex boundary (like a double barrier option) can be mapped into a simple half-plane, making the math solvable.</li>
-            <li style="margin-bottom: 0;"><strong>Visualizing Risk:</strong> Allows quants to map how changes in model parameters warp the volatility smile.</li>
-        </ul>
-    </div>
+    
 </div>

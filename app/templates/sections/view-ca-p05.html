@@ -5,34 +5,86 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Complex differentiability, why it is so much stronger than the real kind, and the disk-of-convergence calculus for power series.</p>
     </header>
 
-    <div class="card">
-        <h3>1. The Definition and Its Hidden Strength</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Definition and Its Hidden Strength</h3>
         $$f'(z_0) = \lim_{h \to 0}\frac{f(z_0 + h) - f(z_0)}{h}, \qquad h \in \mathbb{C}.$$
         <p>The limit must agree for $h$ approaching from <em>every direction in the plane</em> — infinitely many constraints where the real derivative has two. That over-determination is why holomorphy implies so much: $f$ holomorphic on an open set is automatically $C^\infty$ and analytic (equal to its Taylor series locally). Contrast the real world: $f(x) = e^{-1/x^2}$ is $C^\infty$ but not analytic at 0; $|x|^3$ is differentiable but not twice. In ℂ those pathologies are impossible.</p>
         <p>Standard rules survive intact: sums, products, quotients (away from zeros), chain rule. Polynomials and $e^z$, $\sin z$, $\cos z$ are entire (holomorphic on all of ℂ); rational functions are holomorphic except at the zeros of the denominator — the future "poles" of Part 14.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</li>
+            <li style="margin-bottom: 0;">Poles are isolated singular points where a function goes to infinity; finding them is key to residue integration.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Power Series and the Radius of Convergence</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Power Series and the Radius of Convergence</h3>
         <p>For $\sum_{n=0}^\infty a_n(z - z_0)^n$ there is a radius $R \in [0, \infty]$ with absolute convergence for $|z - z_0| < R$ and divergence for $|z - z_0| > R$:</p>
         $$\frac{1}{R} = \limsup_{n\to\infty}|a_n|^{1/n} \;\text{(Cauchy-Hadamard)}, \qquad R = \lim_{n\to\infty}\left|\frac{a_n}{a_{n+1}}\right| \;\text{(ratio, when it exists)}.$$
         <p>Inside the disk: term-by-term differentiation and integration are legal and preserve $R$. Examples: $\sum z^n/n!$ ⇒ $R = \infty$; $\sum z^n$ ⇒ $R = 1$; $\sum n! z^n$ ⇒ $R = 0$ (an asymptotic-only series — these appear in SABR-type vol expansions, which is why those formulas are "valid for small T" rather than convergent).</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Complex analysis allows quants to solve option prices analytically instead of running slow simulations, by integrating functions in the complex plane.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            <li style="margin-bottom: 0;">Integrating along closed complex loops eliminates numerical instabilities in Fourier pricing.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Singularities Set the Radius</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Singularities Set the Radius</h3>
         <p>The radius of convergence is exactly the distance from $z_0$ to the nearest singularity of the function. The classic real-variable mystery:</p>
         $$\frac{1}{1 + x^2} = 1 - x^2 + x^4 - \dots \quad\text{diverges for } |x| > 1$$
         <p>— nothing is wrong on the real line, but the function has poles at $z = \pm i$, distance 1 from the origin. <em>Complex singularities limit real expansions.</em> Quant relevance: Taylor expansions of moment generating functions converge only up to the nearest singularity — e.g. an exponential tail at rate $\lambda$ caps the MGF at $t = \lambda$; Heston's MGF explodes at a finite real point, which bounds the damping parameter $\alpha$ usable in Carr-Madan and explains wing behavior of its smile (Lee's moment formula).</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Complex analysis allows quants to solve option prices analytically instead of running slow simulations, by integrating functions in the complex plane.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">A singularity is a point where a pricing formula breaks down or goes to infinity.</li>
+            <li style="margin-bottom: 0;">Poles are isolated singular points where a function goes to infinity; finding them is key to residue integration.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Operating with Series</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Operating with Series</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Multiplication (Cauchy product)</strong> and <strong>composition</strong> work formally and converge inside the common disk — how one derives series for $e^z\sin z$ etc.</li>
             <li><strong>Uniqueness:</strong> if two power series agree on a sequence accumulating at $z_0$, all coefficients match — the identity theorem in embryo, and the licence for "match coefficients" arguments in asymptotics.</li>
             <li><strong>Generating functions:</strong> $\mathbb{E}[z^N]$ for integer-valued $N$ (counts of jumps, defaults) is a power series on $|z| \le 1$; probabilities are coefficients, extracted by differentiation — or by contour integrals (Part 11's formula), which is how saddlepoint methods read tail probabilities out of MGFs.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Integrating along paths in the complex plane simplifies options calculations by replacing infinite integrals with simple algebraic sums of residues.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">A contour is the path in the complex plane along which we integrate to find options probabilities.</li>
+            <li style="margin-bottom: 0;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -45,13 +97,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Holomorphic functions are the complex equivalent of smooth real functions. They are infinitely differentiable and can be represented as convergent power series.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Power Series:</strong> If a function is holomorphic, we can expand it as an infinite sum of polynomials, just like a Taylor series.</li>
-            <li style="margin-bottom: 1rem;"><strong>Radius of Convergence:</strong> Tells us the exact range where our series approximation is accurate before hitting a mathematical singularity.</li>
-            <li style="margin-bottom: 0;"><strong>Analytic Continuation:</strong> A tool that allows quants to extend option pricing formulas beyond their original mathematical limits.</li>
-        </ul>
-    </div>
+    
 </div>

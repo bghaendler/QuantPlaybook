@@ -5,28 +5,56 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Writing adjoint code by hand: the statement-reversal rules, the push/pop stack discipline for overwritten variables and control flow, and a complete worked kernel.</p>
     </header>
 
-    <div class="card">
-        <h3>1. The Reversal Rules</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Reversal Rules</h3>
         <p>For each primal assignment, the adjoint statements run in <em>reverse program order</em>; each <code>v = φ(a, b)</code> becomes:</p>
         <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.8rem; font-size: 0.8rem; overflow-x: auto;">ā += (∂φ/∂a)·v̄ ;   b̄ += (∂φ/∂b)·v̄ ;   v̄ = 0   // v consumed: reset its adjoint</pre>
         <ul style="line-height: 1.8;">
             <li><strong>Always <code>+=</code></strong> (fan-out accumulates — Part 03's rule); <strong>reset</strong> the assigned variable's adjoint after distributing it (it was overwritten in the primal, so its old adjoint chain ends here). Missed resets corrupt gradients in loops — the second-most-common bug after missed <code>+=</code>.</li>
             <li>In-place updates: <code>v = v*a</code> ⇒ <code>ā += v_old·v̄; v̄ = a·v̄</code> — needs the <em>old</em> v: store it (stack) before overwriting.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Adjoint mode (Reverse AD) is the quant holy grail: it computes sensitivities for infinite inputs in a single backward pass.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Adjoint mode calculates portfolio risk sensitivities with respect to all market factors in a single backward pass.</li>
+            <li style="margin-bottom: 0;">Operator overloading replaces standard variables with custom variables that track their own derivatives.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Stacks: The Reversal Data Structure</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Stacks: The Reversal Data Structure</h3>
         <p>Reversal is LIFO by nature, so the canonical implementation pairs every forward <code>PUSH</code> with a backward <code>POP</code>:</p>
         <ul style="line-height: 1.8;">
             <li><strong>Value stack:</strong> push any value about to be overwritten that the adjoint will need (Tapenade's <code>PUSHREAL/POPREAL</code>); pop restores it just before the corresponding adjoint statement.</li>
             <li><strong>Control-flow stack:</strong> push which branch was taken / how many loop iterations ran; the backward sweep pops to replay decisions in reverse — <code>if</code> reverses to the same branch's adjoint, a <code>for</code> of $n$ iterations reverses as $n$ adjoint iterations in reverse order.</li>
             <li><strong>Call stack discipline:</strong> each function gets <code>f_fwd</code> (primal + pushes) and <code>f_bwd</code> (pops + adjoints); composite reversal nests like brackets. This signature pair is exactly JAX's <code>custom_vjp</code> contract.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Adjoint mode (Reverse AD) is the quant holy grail: it computes sensitivities for infinite inputs in a single backward pass.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Adjoint mode calculates portfolio risk sensitivities with respect to all market factors in a single backward pass.</li>
+            <li style="margin-bottom: 0;">Operator overloading replaces standard variables with custom variables that track their own derivatives.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Worked Kernel: Adjoint GBM Loop</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Worked Kernel: Adjoint GBM Loop</h3>
         <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.8rem; font-size: 0.76rem; overflow-x: auto;"># forward (per path): tape S_t before overwrite
 S = S0
 for t in range(n):
@@ -46,16 +74,40 @@ for t in reversed(range(n)):
 S0_bar = S_bar
 # then: sigma_bar = vol_bar*sqrt(T/n) + drift_bar*(-sigma*T/n), r_bar = ...</pre>
         <p>Validation: $\;S0\_bar$ must equal the pathwise delta (= tangent-linear run, Part 04) and the dot-product test $\langle\dot y,\bar y\rangle = \langle\dot x,\bar x\rangle$ must hold to machine precision for random seeds — the two tests that catch essentially all reversal bugs.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Adjoint mode (Reverse AD) is the quant holy grail: it computes sensitivities for infinite inputs in a single backward pass.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Adjoint mode calculates portfolio risk sensitivities with respect to all market factors in a single backward pass.</li>
+            <li style="margin-bottom: 0;">AD tapes record all math operations in memory during the pricing run so they can be traversed backward.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Hand-Coding in Practice</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Hand-Coding in Practice</h3>
         <ul style="line-height: 1.8;">
             <li><strong>When to hand-code:</strong> hot kernels (inner MC loops, PDE steppers), library boundaries (solvers, regressions — Part 02's symbolic-adjoint rule), and anywhere a tool's tape would blow Part 06's memory budget.</li>
             <li><strong>Style that prevents bugs:</strong> single-assignment locals where possible (no pushes needed); explicit <code>_bar</code> naming; adjoint code blocks mirroring primal blocks in reverse order with comments pairing them.</li>
             <li><strong>Discontinuities:</strong> the digital part of payoffs has zero pathwise derivative <em>almost surely</em> but the expectation's derivative is not zero where the payoff jumps — smooth the payoff or add likelihood-ratio/vibrato terms for digitals and barriers; silent omission biases Greeks (flagged again in Part 09).</li>
             <li><strong>Accumulation order:</strong> floating-point adjoint sums across paths/threads need deterministic reduction (pairwise/Kahan, fixed ordering) if bit-reproducibility is a governance requirement (ARM Part 09's theme).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Adjoint mode (Reverse AD) is the quant holy grail: it computes sensitivities for infinite inputs in a single backward pass.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Adjoint mode calculates portfolio risk sensitivities with respect to all market factors in a single backward pass.</li>
+            <li style="margin-bottom: 0;">AD tapes record all math operations in memory during the pricing run so they can be traversed backward.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -68,13 +120,5 @@ S0_bar = S_bar
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Implementing Adjoint mode by hand requires reversing the control flow of your code, pushing values onto memory stacks, and accumulating derivatives backward.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Always Accumulate:</strong> In reverse mode, derivatives are always added ($+=$) to handle variables that are used multiple times.</li>
-            <li style="margin-bottom: 1rem;"><strong>The Stack:</strong> Intermediate variables must be stored in a stack during the forward run and popped off in reverse order.</li>
-            <li style="margin-bottom: 0;"><strong>Validation:</strong> Hand-coded adjoints must be validated using dot-product tests against forward mode to catch accumulation bugs.</li>
-        </ul>
-    </div>
+    
 </div>

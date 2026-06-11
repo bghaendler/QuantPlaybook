@@ -5,39 +5,91 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Putting numbers on impact: volatility-anchored calibration, regression designs that survive endogeneity, and the diagnostics that catch a mis-fit model.</p>
     </header>
 
-    <div class="card">
-        <h3>1. Volatility as the Natural Unit</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. Volatility as the Natural Unit</h3>
         <p>Impact is quoted in units of volatility because both scale the same way with information flow: cost in bps is noisy and instrument-specific; cost in <em>daily sigmas</em> transfers across assets. The square-root law in calibration form:</p>
         $$\frac{\Delta p}{\sigma_{day}} = Y\left(\frac{Q}{V_{day}}\right)^{\delta}, \qquad \text{fit } (Y, \delta) \text{ by regression in logs:}$$
         $$\ln\left(\frac{|\Delta p|}{\sigma}\right) = \ln Y + \delta\,\ln\left(\frac{Q}{V}\right) + \epsilon.$$
         <p>Typical output: $\delta \approx 0.5$, $Y \approx 0.5$–$1$. The estimate of $\sigma$ itself comes from the realized-vol toolkit (5-minute RV, or the EWMA/GARCH layer of the equities course) — impact estimation inherits all the care of volatility estimation.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Market impact is the price change caused by your own order size depleting the order book.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            <li style="margin-bottom: 0;">Smart order routers dynamically split trades across exchanges and dark pools to find the best liquidity.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Regression Designs (and Their Traps)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Regression Designs (and Their Traps)</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Kyle-λ regressions:</strong> $\Delta m_t = \lambda\,\mathrm{SOF}_t + \epsilon_t$ — mid change on signed order flow over fixed intervals; sign trades by Lee-Ready (trade vs. mid) when aggressor flags are absent.</li>
             <li><strong>Metaorder datasets:</strong> the clean way (broker/proprietary data with known parent orders): regress implementation shortfall on participation; public-data proxies must reconstruct metaorders and inherit splitting noise.</li>
             <li><strong>Endogeneity, the central trap:</strong> traders size orders <em>conditional on</em> liquidity and expected moves — naive OLS conflates impact with timing alpha. Mitigations: control for momentum, use scheduled/uninformed flows (index rebalances) as natural experiments, instrument flow with exogenous shifters.</li>
             <li><strong>Survivorship of completed orders:</strong> cancelled-on-adverse-move parents bias measured impact downward; condition on completion regime.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Intraday trading focuses on order queue mechanics, bid-ask spreads, and minimizing the market impact of large orders.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Order flow is the stream of trades entering the book, conveying real-time information about price direction.</li>
+            <li style="margin-bottom: 0;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. From Estimates to an Almgren-Chriss Cost Model</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. From Estimates to an Almgren-Chriss Cost Model</h3>
         <p>Map the fitted curve to model parameters: with temporary impact $h(v) = \eta v$ and permanent $g(v) = \gamma v$ per unit time,</p>
         $$\mathbb{E}[\text{cost}] = \frac{\gamma}{2}Q^2 + \eta\sum_k \frac{n_k^2}{\tau_k}, \qquad \mathrm{Var}[\text{cost}] = \sigma^2\sum_k \tau_k x_k^2,$$
         <p>($n_k$ slice sizes, $x_k$ remaining inventory). Calibrate $\eta$ from short-burst executions (pure temporary), $\gamma$ from post-completion price levels (the permanent residue ≈ 1/2–2/3 of peak impact empirically). The fitted $(\sigma, \eta, \gamma)$ triple feeds the optimal scheduler of Part 07 — estimation quality propagates straight into execution quality.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Execution algorithms optimize how large orders are sliced and routed to balance market impact costs and price risks.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Inventory risk is the cost of holding too many long or short shares while the market moves against you.</li>
+            <li style="margin-bottom: 0;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Diagnostics &amp; Validation</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Diagnostics &amp; Validation</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Out-of-sample shortfall prediction:</strong> the only test that matters — predicted vs. realized cost by participation bucket; a good model is unbiased per bucket with stable $Y$.</li>
             <li><strong>Decay check:</strong> plot average price path during/after metaorders — peak at completion, partial reversion to the permanent level; no reversion suggests information-dominated samples, full reversion suggests pure mechanical impact.</li>
             <li><strong>Cross-asset stability:</strong> in volatility/participation units, parameters should travel across names; instability flags data or endogeneity problems.</li>
             <li><strong>Regime sensitivity:</strong> recalibrate by volatility regime — impact coefficients are themselves vol-dependent (liquidity evaporates exactly when σ spikes).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Market impact is the price change caused by your own order size depleting the order book.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            <li style="margin-bottom: 0;">Smart order routers dynamically split trades across exchanges and dark pools to find the best liquidity.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -50,13 +102,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Estimating market impact requires calibrating models to statistical market volatility. Volatility dictates how easily the order book absorbs large volume spikes.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Vol Scaling:</strong> Higher market volatility leads to wider spreads and thinner books, increasing the price impact of your trades.</li>
-            <li style="margin-bottom: 1rem;"><strong>Kyle's Lambda:</strong> A parameter measuring the illiquidity of the market—how much the price moves per unit of traded volume.</li>
-            <li style="margin-bottom: 0;"><strong>Real-Time Calibration:</strong> High-frequency execution desks constantly recalibrate impact coefficients as volume and volatility fluctuate throughout the day.</li>
-        </ul>
-    </div>
+    
 </div>

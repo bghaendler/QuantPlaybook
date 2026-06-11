@@ -5,15 +5,30 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Implementation shortfall, the Almgren-Chriss efficient frontier of execution, and the benchmark zoo (VWAP/TWAP/POV) that schedules are judged against.</p>
     </header>
 
-    <div class="card">
-        <h3>1. Implementation Shortfall: The Honest Scorecard</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. Implementation Shortfall: The Honest Scorecard</h3>
         <p>Perold's decomposition against the <strong>decision price</strong> $p_0$ (mid when the order was decided):</p>
         $$\mathrm{IS} = \underbrace{\sum_k n_k(p_k - p_0)}_{\text{execution cost}} + \underbrace{(Q - \textstyle\sum n_k)(p_T - p_0)}_{\text{opportunity cost of the unfilled}}$$
         <p>split further into delay cost (decision→start), trading cost (impact + spread), and timing risk (price variance while exposed). IS is the only benchmark aligned with portfolio P&amp;L: VWAP can flatter an algo that drifted with the market all day.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Intraday trading focuses on order queue mechanics, bid-ask spreads, and minimizing the market impact of large orders.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The bid-ask spread is the transaction cost or tax paid to execute a trade immediately.</li>
+            <li style="margin-bottom: 0;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. The Almgren-Chriss Frontier</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. The Almgren-Chriss Frontier</h3>
         <p>Liquidate $X_0$ over $[0, T]$ with trajectory $x(t)$ (inventory), linear impact (Part 02–03 parameters). Expected cost and variance:</p>
         $$\mathbb{E}[C] = \tfrac{\gamma}{2}X_0^2 + \eta\int_0^T \dot{x}^2dt, \qquad \mathrm{Var}[C] = \sigma^2\int_0^T x^2dt.$$
         <p>Minimize $\mathbb{E}[C] + \lambda\,\mathrm{Var}[C]$ ⇒ Euler-Lagrange gives the closed-form schedule:</p>
@@ -23,10 +38,23 @@
             <li>$\lambda$ large (risk-averse): front-loaded exponential — pay impact now to kill exposure. $1/\kappa$ is the strategy's <strong>half-life of urgency</strong>.</li>
             <li>Varying $\lambda$ traces an <strong>efficient frontier</strong> in (E[cost], Var[cost]) — execution's Markowitz diagram; alpha expectations enter as a drift term tilting schedules forward (sell faster into expected declines).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Execution algorithms optimize how large orders are sliced and routed to balance market impact costs and price risks.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Inventory risk is the cost of holding too many long or short shares while the market moves against you.</li>
+            <li style="margin-bottom: 0;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. The Benchmark Zoo</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. The Benchmark Zoo</h3>
         <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
             <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;">Algo</th><th style="padding: 0.45rem;">Target</th><th style="padding: 0.45rem;">Character</th></tr></thead>
             <tbody>
@@ -37,16 +65,40 @@
                 <tr><td style="padding: 0.45rem;">Adaptive / liquidity-seeking</td><td style="padding: 0.45rem;">Opportunistic</td><td style="padding: 0.45rem;">Speeds up in cheap liquidity (dark fills, spread state, imbalance)</td></tr>
             </tbody>
         </table>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> High-frequency trading dynamics rely on analyzing limit order book imbalances and price formation at millisecond scales.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The bid-ask spread is the transaction cost or tax paid to execute a trade immediately.</li>
+            <li style="margin-bottom: 0;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Practice Notes</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Practice Notes</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Choose the benchmark to match the intent:</strong> portfolio-transition flow → IS; benchmark-tracking funds → VWAP; "don't be more than x% of the tape" mandates → POV.</li>
             <li><strong>Micro-layer matters as much as the schedule:</strong> within each slice, passive/aggressive child placement (queue value vs. spread cost, Part 01) moves realized cost more than schedule tweaks.</li>
             <li><strong>Predictability is leakage:</strong> rigid TWAP/VWAP footprints get anticipated; randomize slice timing/size within the optimal envelope.</li>
             <li><strong>TCA the loop:</strong> measured shortfall by bucket (Part 03) re-estimates $(\eta, \gamma, \sigma)$ → re-solves the frontier — execution research is this closed loop.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Execution algorithms optimize how large orders are sliced and routed to balance market impact costs and price risks.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The bid-ask spread is the transaction cost or tax paid to execute a trade immediately.</li>
+            <li style="margin-bottom: 0;">Transaction Cost Analysis (TCA) measures slippage against benchmarks to optimize trading algorithms.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -59,13 +111,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Transaction Cost Analysis (TCA) measures the difference between where you wanted to trade and where you actually got filled. Minimizing this 'implementation shortfall' is critical.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Implementation Shortfall:</strong> The benchmark price minus the average execution price, including fees, commissions, and market impact.</li>
-            <li style="margin-bottom: 1rem;"><strong>Opportunity Cost:</strong> The loss from unfilled orders when the price moves away before your execution finishes.</li>
-            <li style="margin-bottom: 0;"><strong>The Trade-Off:</strong> Executing too fast increases market impact; executing too slowly increases opportunity cost (price risk).</li>
-        </ul>
-    </div>
+    
 </div>

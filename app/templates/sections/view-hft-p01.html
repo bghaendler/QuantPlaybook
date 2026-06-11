@@ -5,8 +5,10 @@
         <p style="color: #64748b; margin-top: 0.5rem;">The central data structure of modern markets: how the book is built, what the spread compensates, and the liquidity metrics execution algorithms consume.</p>
     </header>
 
-    <div class="card">
-        <h3>1. Anatomy of the Limit Order Book (LOB)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. Anatomy of the Limit Order Book (LOB)</h3>
         <p>A double auction maintained continuously: <strong>bids</strong> (buy limits) stacked below, <strong>asks</strong> (sell limits) above. Key vocabulary:</p>
         <ul style="line-height: 1.8;">
             <li><strong>Best bid/ask:</strong> highest buy / lowest sell — their difference is the <strong>quoted spread</strong> $s = a - b$; the <strong>mid-price</strong> $m = (a + b)/2$ is the standard reference value.</li>
@@ -14,10 +16,23 @@
             <li><strong>Order types:</strong> limit (joins the book — supplies liquidity, earns the spread, risks non-execution), market (crosses the spread — demands liquidity, pays it, executes now), cancel (the most common message: cancel-to-trade ratios of 10–50× are normal in equities).</li>
             <li><strong>Priority:</strong> price first, then time (FIFO) on most equity venues; pro-rata on many futures (Eurodollars) — priority rules reshape optimal quoting entirely.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Intraday trading focuses on order queue mechanics, bid-ask spreads, and minimizing the market impact of large orders.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Limit orders provide liquidity to the market by waiting in a queue to be filled at a specific price.</li>
+            <li style="margin-bottom: 0;">The bid-ask spread is the transaction cost or tax paid to execute a trade immediately.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. What the Spread Compensates</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. What the Spread Compensates</h3>
         <p>Classical decomposition of the spread earned by a liquidity provider:</p>
         <ul style="line-height: 1.8;">
             <li><strong>Order-processing costs</strong> — infrastructure, exchange fees, capital.</li>
@@ -25,22 +40,59 @@
             <li><strong>Adverse selection</strong> (Glosten-Milgrom, Kyle) — limit orders get filled <em>precisely when</em> the counterparty knows more; the spread is the break-even price of trading against information. Kyle's λ (price impact per unit flow) and the Glosten-Milgrom sequential model are the canonical formalizations.</li>
         </ul>
         <p>Empirical spread measures: <strong>quoted</strong> ($a - b$), <strong>effective</strong> ($2|p_{trade} - m|$ — captures inside-spread executions), <strong>realized</strong> (effective minus subsequent mid move — what the maker actually kept after adverse selection).</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Market impact is the price change caused by your own order size depleting the order book.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The bid-ask spread is the transaction cost or tax paid to execute a trade immediately.</li>
+            <li style="margin-bottom: 0;">Inventory risk is the cost of holding too many long or short shares while the market moves against you.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Liquidity Flows and Imbalance</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Liquidity Flows and Imbalance</h3>
         <p>The book is a queueing system: limit arrivals ↔ cancellations ↔ market-order departures. The most-used state variable is <strong>order-flow imbalance</strong>:</p>
         $$\mathrm{OFI}_t = \frac{Q^{bid}_t - Q^{ask}_t}{Q^{bid}_t + Q^{ask}_t} \in [-1, 1],$$
         <p>(best-level or depth-weighted). Empirically, imbalance is among the strongest short-horizon predictors of the next mid-price move — queue depletion on one side precedes the tick. Related diagnostics: arrival intensities per level, queue position (expected time-to-fill), and the "microprice" $\,m^* = \frac{Q^{bid}a + Q^{ask}b}{Q^{bid} + Q^{ask}}$ — an imbalance-weighted fair value that leads the mid.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> High-frequency trading dynamics rely on analyzing limit order book imbalances and price formation at millisecond scales.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            <li style="margin-bottom: 0;">Smart order routers dynamically split trades across exchanges and dark pools to find the best liquidity.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Why This Layer Matters to Every Quant</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Why This Layer Matters to Every Quant</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Execution costs are a strategy's tax:</strong> a 5 bps alpha traded through a 10 bps round-trip cost is a losing strategy — microstructure decides which signals are monetizable (the theme of Parts 02–08).</li>
             <li><strong>Microstructure noise contaminates estimates:</strong> bid-ask bounce induces negative autocorrelation in trade-price returns (Roll's model: spread $= 2\sqrt{-\mathrm{cov}(r_t, r_{t-1})}$) and biases realized volatility at high sampling frequencies — the reason RV uses 5-minute, not tick, returns.</li>
             <li><strong>The book is the ground truth of supply/demand:</strong> models in Parts 09–10 (diffusion limits, stochastic control) are built on these queue dynamics.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Execution algorithms optimize how large orders are sliced and routed to balance market impact costs and price risks.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The bid-ask spread is the transaction cost or tax paid to execute a trade immediately.</li>
+            <li style="margin-bottom: 0;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -53,13 +105,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Intraday trading happens in the Limit Order Book (LOB), where buyers and sellers post limit and market orders. Spreads and liquidity flow dynamically in milliseconds.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Limit vs. Market:</strong> Limit orders provide liquidity (waiting to be filled); Market orders consume liquidity (demanding instant execution).</li>
-            <li style="margin-bottom: 1rem;"><strong>Bid-Ask Spread:</strong> The difference between the best buy price (bid) and best sell price (ask)—the tax paid for immediate execution.</li>
-            <li style="margin-bottom: 0;"><strong>Order Flow Toxicity:</strong> Measures whether market orders are coming from informed traders (bad for market makers) or uninformed retail traders.</li>
-        </ul>
-    </div>
+    
 </div>

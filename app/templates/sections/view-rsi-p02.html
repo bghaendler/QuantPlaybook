@@ -5,17 +5,32 @@
         <p style="color: #64748b; margin-top: 0.5rem;">The risk-sensitive criterion — exponential-of-growth utility — as the dynamic, higher-moment-aware upgrade of Markowitz, and the precise sense in which it nests both Kelly and mean-variance.</p>
     </header>
 
-    <div class="card">
-        <h3>1. The Risk-Sensitive Criterion</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Risk-Sensitive Criterion</h3>
         <p>Maximize the long-run <strong>risk-adjusted growth rate</strong>:</p>
         $$J_\theta = \liminf_{T\to\infty}\; -\frac{2}{\theta T}\,\ln\,\mathbb{E}\Big[e^{-\frac{\theta}{2}\ln W_T}\Big],$$
         <p>with risk-sensitivity θ &gt; 0. Expanding the cumulant generating function for small θ:</p>
         $$J_\theta \;\approx\; \underbrace{\text{growth rate}}_{\text{Kelly}} \;-\; \frac{\theta}{4}\,\underbrace{\text{variance of growth}}_{\text{penalty}} \;+\; O(\theta^2\,\text{higher cumulants}),$$
         <p>— mean-variance <em>on log-wealth growth</em>, plus automatic penalties on skewness/kurtosis through the higher cumulants: the exponential never truncates the expansion. θ → 0 recovers Kelly (pure growth); larger θ behaves like an effective risk aversion γ = 1 + θ/2 (fractional Kelly — Part 03's bridge).</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The Kelly criterion determines the exact position size to maximize long-term wealth compounding without going broke.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The Kelly criterion calculates the exact position size to maximize long-term wealth compounding without going broke.</li>
+            <li style="margin-bottom: 0;">Mean-Variance (Markowitz) optimization trades off expected returns against portfolio volatility.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. What It Fixes Relative to Markowitz</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. What It Fixes Relative to Markowitz</h3>
         <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
             <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;"></th><th style="padding: 0.45rem;">Mean-variance (one period)</th><th style="padding: 0.45rem;">Risk-sensitive control</th></tr></thead>
             <tbody>
@@ -26,23 +41,60 @@
                 <tr><td style="padding: 0.45rem;">Factor dynamics</td><td style="padding: 0.45rem;">Exogenous estimates</td><td style="padding: 0.45rem;">States in the control problem (hedging demands)</td></tr>
             </tbody>
         </table>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Risk-sensitive investment solves the problem of making optimal rebalancing decisions over time, penalizing drawdown risk dynamically.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Mean-Variance (Markowitz) optimization trades off expected returns against portfolio volatility.</li>
+            <li style="margin-bottom: 0;">Risk-sensitive control generalizes Mean-Variance optimization by accounting for higher-order moments and tail risks.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. The Solution Structure (Bielecki-Pliska / Davis-Lleo)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. The Solution Structure (Bielecki-Pliska / Davis-Lleo)</h3>
         <p>With affine factor dynamics $dx = (a + Ax)dt + \Lambda dW$ driving expected returns, the risk-sensitive HJB reduces to a <strong>matrix Riccati ODE</strong> — the same equation family as Kalman filters and affine term-structure models (MM Part 12's lineage). The optimal portfolio:</p>
         $$\pi^*_t = \frac{1}{1 + \theta/2}\,\Sigma^{-1}\Big[(\mu(x_t) - r) \;+\; \text{(hedging term from the Riccati solution)}\Big],$$
         <p>— a <em>scaled Merton weight plus a factor-hedging tilt</em>. Everything from Part 01 carries over with γ replaced by 1 + θ/2; the criterion's ergodic nature makes the weights stationary policies rather than horizon-dependent schedules (the Part 07 comparison).</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Risk-sensitive investment solves the problem of making optimal rebalancing decisions over time, penalizing drawdown risk dynamically.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Risk-sensitive control generalizes Mean-Variance optimization by accounting for higher-order moments and tail risks.</li>
+            <li style="margin-bottom: 0;">Asset Liability Management (ALM) matches asset returns with future payout obligations under market shocks.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Practice Notes</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Practice Notes</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Calibrating θ:</strong> back it out from a target — long-run vol of the strategy, acceptable 10-year drawdown quantile, or matching a fractional-Kelly habit (θ = 2(1/f − 1) for fraction f) — more communicable than "γ = 3".</li>
             <li><strong>Estimation risk dominates:</strong> $\Sigma^{-1}(\mu - r)$ amplifies μ errors exactly like Markowitz — the cure is identical (shrinkage, Black-Litterman priors: Part 04), the criterion does not exempt you.</li>
             <li><strong>Where it shines:</strong> multi-period institutional mandates with factor predictability (the hedging demands are the value-add) and leverage-sensitive strategies (vol drag and tail cumulants priced natively — cf. Part 06's jump extensions).</li>
             <li><strong>Diagnostics:</strong> simulate the policy and check the realized growth-vs-variance trade sits on the θ-frontier; off-frontier results flag mis-specified factor dynamics.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Risk-sensitive investment solves the problem of making optimal rebalancing decisions over time, penalizing drawdown risk dynamically.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Risk-sensitive control generalizes Mean-Variance optimization by accounting for higher-order moments and tail risks.</li>
+            <li style="margin-bottom: 0;">Asset Liability Management (ALM) matches asset returns with future payout obligations under market shocks.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -55,13 +107,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Risk-Sensitive Control generalizes standard Mean-Variance optimization by accounting for higher-order moments and penalizing large drawdowns dynamically.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Beyond Markowitz:</strong> Mean-variance assumes normal returns; risk-sensitive control adjusts for fat tails and path-dependent drawdown risks.</li>
-            <li style="margin-bottom: 1rem;"><strong>Risk-Aversion Parameter:</strong> A single coefficient that controls how severely the model penalizes portfolio volatility.</li>
-            <li style="margin-bottom: 0;"><strong>Growth vs. Survival:</strong> Balances maximizing the long-term compounding rate with minimizing the probability of portfolio ruin.</li>
-        </ul>
-    </div>
+    
 </div>

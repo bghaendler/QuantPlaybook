@@ -5,28 +5,56 @@
         <p style="color: #64748b; margin-top: 0.5rem;">The two engineering routes to AD compared on speed, memory, intrusiveness and maintainability — and how production quant libraries actually choose.</p>
     </header>
 
-    <div class="card">
-        <h3>1. Operator Overloading (OO)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. Operator Overloading (OO)</h3>
         <p>Replace the numeric type: <code>double</code> → <code>adouble</code> (an "active" type). Every arithmetic operator and math function is overloaded to additionally either propagate a tangent (forward mode, no tape) or <em>record the operation onto a tape</em> for later reversal (adjoint mode).</p>
         <ul style="line-height: 1.8;">
             <li><strong>Pros:</strong> minimal code change (templatize on the scalar type); naturally handles branches, loops, virtual calls — whatever executes gets differentiated; tools: dco/c++, CppAD, ADOL-C, Stan Math; Python autograd/JAX/PyTorch are OO at the tensor level.</li>
             <li><strong>Cons:</strong> runtime overhead (each op does extra work + memory traffic); the <strong>tape</strong> can be huge (per-operation records — a Monte Carlo XVA run can tape billions of ops: Part 06's memory problem); blocks some compiler optimizations (vectorization through an opaque type).</li>
             <li><strong>Typical overhead:</strong> well-engineered C++ OO adjoints run ~3–10× a double-only valuation; naive implementations 50×+ — implementation quality dominates the asymptotics.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Adjoint mode (Reverse AD) is the quant holy grail: it computes sensitivities for infinite inputs in a single backward pass.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Adjoint mode calculates portfolio risk sensitivities with respect to all market factors in a single backward pass.</li>
+            <li style="margin-bottom: 0;">AD tapes record all math operations in memory during the pricing run so they can be traversed backward.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Source-Code Transformation (SCT)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Source-Code Transformation (SCT)</h3>
         <p>A tool (or compiler pass) reads the program and <em>generates new source</em>: tangent-linear code (forward) or adjoint code with explicit reversal (Part 07's structure). Lineage: ADIFOR, Tapenade, OpenAD; modern incarnations: Enzyme (LLVM-level AD), JAX's XLA tracing (a hybrid: trace then compile).</p>
         <ul style="line-height: 1.8;">
             <li><strong>Pros:</strong> the generated code is plain code — the compiler optimizes it fully (vectorization, inlining); no per-op tape (control flow re-executed or recorded compactly); typically the fastest adjoints.</li>
             <li><strong>Cons:</strong> the tool must parse and analyze your whole language subset — templates, pointers, virtual dispatch and external libraries are hard; build-system integration is invasive; debugging generated code is its own skill.</li>
             <li>Best fit: numerical kernels with regular structure (PDE steppers, Monte Carlo loops) — exactly where the speed matters.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Adjoint mode (Reverse AD) is the quant holy grail: it computes sensitivities for infinite inputs in a single backward pass.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Adjoint mode calculates portfolio risk sensitivities with respect to all market factors in a single backward pass.</li>
+            <li style="margin-bottom: 0;">AD tapes record all math operations in memory during the pricing run so they can be traversed backward.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Side-by-Side</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Side-by-Side</h3>
         <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
             <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;"></th><th style="padding: 0.45rem;">Overloading</th><th style="padding: 0.45rem;">Source transformation</th></tr></thead>
             <tbody>
@@ -37,16 +65,40 @@
                 <tr><td style="padding: 0.45rem;">External/closed libraries</td><td style="padding: 0.45rem;">Wrap with manual adjoints</td><td style="padding: 0.45rem;">Same — both need registered "custom derivatives"</td></tr>
             </tbody>
         </table>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Operator overloading replaces standard decimals with active variables that track their own derivatives.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Operator overloading replaces standard decimals with active variables that track their own derivatives.</li>
+            <li style="margin-bottom: 0;">Checkpointing saves key variables during the forward run to reduce the memory tape size.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. How Production Systems Choose</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. How Production Systems Choose</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Banks' C++ libraries:</strong> predominantly OO (dco/c++-style) for adoption across million-line codebases — with hand-written adjoints for hot kernels and linear-algebra/solver primitives (the "symbolic adjoint of the solve, not of the solver iterations" rule: differentiate $Ax = b$ via $\bar{b} = A^{-\top}\bar{x}$, never through the LU steps).</li>
             <li><strong>New code / research:</strong> JAX-style trace-and-compile gives OO ergonomics with SCT-class performance — increasingly the default for new quant models.</li>
             <li><strong>Hybrid pattern (the practical answer):</strong> OO as the backbone; custom adjoints at module boundaries (curve build, root-finders, regressions); SCT/Enzyme for the few kernels where the last 5× matters.</li>
             <li><strong>Validation either way:</strong> tangent-vs-bump and adjoint-vs-tangent dot-product tests ($\langle \dot{y}, \bar{y}\rangle = \langle \dot{x}, \bar{x}\rangle$) wired into CI — Part 11's discipline.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Adjoint mode (Reverse AD) is the quant holy grail: it computes sensitivities for infinite inputs in a single backward pass.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Adjoint mode calculates portfolio risk sensitivities with respect to all market factors in a single backward pass.</li>
+            <li style="margin-bottom: 0;">Operator overloading replaces standard variables with custom variables that track their own derivatives.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -59,13 +111,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> AD is implemented either via Source Code Transformation (SCT) or Operator Overloading (OO). Each has distinct trade-offs in speed and development effort.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Operator Overloading:</strong> Replaces normal decimal variables with custom 'active' variables that record derivatives as code runs. Easy to implement.</li>
-            <li style="margin-bottom: 1rem;"><strong>Source Code Transformation:</strong> A compiler reads your code and writes new code that computes the derivatives. Extremely fast, but complex to set up.</li>
-            <li style="margin-bottom: 0;"><strong>Desks Choice:</strong> Desks often use a hybrid: operator overloading for general code, and hand-written derivatives for bottleneck algorithms.</li>
-        </ul>
-    </div>
+    
 </div>

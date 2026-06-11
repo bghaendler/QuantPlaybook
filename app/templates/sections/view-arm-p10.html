@@ -5,8 +5,10 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Scaling Part 08 to real portfolios: covariance engineering, factor compression, the full simulation pipeline, and risk attribution back to positions.</p>
     </header>
 
-    <div class="card">
-        <h3>1. The Covariance Matrix Is the Hard Part</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Covariance Matrix Is the Hard Part</h3>
         <p>For $n$ assets, $\Sigma$ has $n(n+1)/2$ parameters — at $n = 500$, that's 125k numbers from perhaps 500 daily observations: the sample covariance is <em>singular</em> for $n > T$ and noisy long before. Standard repairs:</p>
         <ul style="line-height: 1.8;">
             <li><strong>Factor models:</strong> $\Sigma = B\,\Sigma_F\,B^\top + D$ — market/sector/style factors (or PCA factors, cf. the term-structure course) reduce dimension from $n^2$ to $n \times k$; simulation then draws $k$ factors + idiosyncratics.</li>
@@ -14,10 +16,23 @@
             <li><strong>EWMA/DCC layers:</strong> time-varying vols (filtered HS logic, Part 05) with slower-moving correlations.</li>
             <li><strong>PSD repair:</strong> stress overlays and pairwise estimates break positive semi-definiteness — eigenvalue clipping or Higham's nearest-correlation algorithm before Cholesky (the correlation-tool section demonstrates the failure live).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Risk management quantifies potential portfolio losses under normal and extreme market conditions, using VaR and Expected Shortfall.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Dynamic models like GARCH adjust risk limits as market volatility clusters and spikes.</li>
+            <li style="margin-bottom: 0;">Basel regulations dictate the size of the capital buffers banks must hold to survive extreme shocks.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. The Pipeline at Scale</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. The Pipeline at Scale</h3>
         <ol style="line-height: 1.9;">
             <li><strong>Map positions → risk factors</strong> (the unglamorous 80%): equities to betas, bonds to key-rate buckets, options to underliers + vol surface nodes.</li>
             <li><strong>Estimate</strong> the factor covariance (above) on the chosen window/weighting.</li>
@@ -26,10 +41,23 @@
             <li><strong>Aggregate:</strong> portfolio P&amp;L per scenario → VaR/ES quantiles, with sampling bands (Part 08 discipline).</li>
         </ol>
         <p>Upgrades drop in modularly: t or filtered-historical innovations (Parts 03/05), copulas for tail dependence beyond Gaussian (Part 06's warning — Gaussian correlation has <em>zero</em> tail dependence), stressed parameter sets (Part 07).</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Risk management quantifies potential portfolio losses under normal and extreme market conditions, using VaR and Expected Shortfall.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Value-at-Risk (VaR) is the maximum loss expected under normal market conditions at a given confidence level.</li>
+            <li style="margin-bottom: 0;">Dynamic models like GARCH adjust risk limits as market volatility clusters and spikes.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Attribution: Whose Risk Is It?</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Attribution: Whose Risk Is It?</h3>
         <p>Euler decomposition allocates portfolio risk to positions exactly (for homogeneous measures like volatility, VaR, ES):</p>
         $$\mathrm{VaR} = \sum_i w_i\,\frac{\partial \mathrm{VaR}}{\partial w_i}, \qquad \text{component VaR}_i = w_i \cdot \frac{\mathrm{cov}(r_i, r_p)}{\sigma_p}\cdot\frac{\mathrm{VaR}}{\sigma_p}\;(\text{Gaussian case}).$$
         <ul style="line-height: 1.8;">
@@ -37,16 +65,40 @@
             <li>In simulation, estimate ES contributions as $\mathbb{E}[w_ir_i \mid L > \mathrm{VaR}]$ — average each position's P&amp;L over tail scenarios; noisy (few tail draws) — use the kernel-smoothed or importance-sampled versions.</li>
             <li>Attribution is what converts a VaR <em>number</em> into VaR <em>management</em>: limits, hedging priorities, and the diversification accounting of Part 02's cascade.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Risk management quantifies potential portfolio losses under normal and extreme market conditions, using VaR and Expected Shortfall.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Value-at-Risk (VaR) is the maximum loss expected under normal market conditions at a given confidence level.</li>
+            <li style="margin-bottom: 0;">Dynamic models like GARCH adjust risk limits as market volatility clusters and spikes.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Validation Checklist for a Multi-Asset Engine</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Validation Checklist for a Multi-Asset Engine</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Limiting cases:</strong> ρ→identity ⇒ sum of standalone VaRs; one-asset reduction matches Part 08; Gaussian-linear book matches the analytic formula.</li>
             <li><strong>PSD &amp; conditioning:</strong> smallest eigenvalue logged each run; condition number alerts before Cholesky failures.</li>
             <li><strong>Backtest at portfolio <em>and</em> sub-portfolio level</strong> (Part 07 tests) — aggregation can hide offsetting sub-book failures.</li>
             <li><strong>Stress the correlation:</strong> ±0.2 parallel shifts and "crisis ρ" overlays — if VaR moves more with ρ than with vols, say so in the report (it usually does for diversified books).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Risk management quantifies potential portfolio losses under normal and extreme market conditions, using VaR and Expected Shortfall.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Value-at-Risk (VaR) is the maximum loss expected under normal market conditions at a given confidence level.</li>
+            <li style="margin-bottom: 0;">Dynamic models like GARCH adjust risk limits as market volatility clusters and spikes.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -59,13 +111,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Multi-asset risk projection models the joint behavior of international portfolios, requiring careful handling of covariance matrices and correlation breakdowns.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Dimension Curse:</strong> A portfolio with 100 assets has 4,950 correlation pairs—calibrating and keeping this matrix stable is a massive task.</li>
-            <li style="margin-bottom: 1rem;"><strong>Correlation Breakdowns:</strong> During market crises, historical correlations break down and shoot toward 1.0 (everything crashes together).</li>
-            <li style="margin-bottom: 0;"><strong>Stress Testing:</strong> Risk managers artificially inflate correlations to ensure the portfolio can survive joint systemic shocks.</li>
-        </ul>
-    </div>
+    
 </div>

@@ -5,8 +5,10 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Making forward mode pay: propagate many directions at once, exploit Jacobian sparsity via graph coloring, and amortize the primal work.</p>
     </header>
 
-    <div class="card">
-        <h3>1. Vector (Multi-Directional) Mode</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. Vector (Multi-Directional) Mode</h3>
         <p>Naive forward mode re-runs the primal once per input. Vector mode carries a <em>block</em> of tangents $\dot{V} \in \mathbb{R}^{1 \times p}$ per variable — one primal execution, $p$ directions:</p>
         <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.8rem; font-size: 0.8rem; overflow-x: auto;">w = exp(v)        →   w_d[0..p-1] = w * v_d[0..p-1]     // one primal exp, p mults</pre>
         <ul style="line-height: 1.8;">
@@ -14,10 +16,23 @@
             <li><strong>Jacobian assembly:</strong> seed $\dot{X} = I_n$ (in blocks of $p$) → full $J$ in $\lceil n/p\rceil$ vectorized passes.</li>
             <li>This is exactly JAX's <code>jacfwd</code>/vmap pattern and Tapenade's "vector mode" — also how bump grids should have been done all along.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Algorithmic Differentiation calculates exact computer derivatives by propagating chain-rule terms forward or backward through code.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Operator overloading replaces standard variables with custom variables that track their own derivatives.</li>
+            <li style="margin-bottom: 0;">Source compilers read your pricing code and write new code that calculates derivatives exactly.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Sparsity: Don't Compute Zeros</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Sparsity: Don't Compute Zeros</h3>
         <p>Real quant Jacobians are sparse: a 40-bucket curve build where each swap touches ~4 buckets; a local-vol PDE where each output node depends on a few surface nodes. <strong>Compression by coloring:</strong></p>
         <ul style="line-height: 1.8;">
             <li>Two inputs whose columns share no nonzero <em>row</em> can be seeded <strong>together</strong> (their effects never overlap) — finding the minimal seed count is graph coloring on the column-intersection graph (Curtis-Powell-Reid).</li>
@@ -25,26 +40,63 @@
             <li>Workflow: detect the sparsity pattern (one boolean propagation pass or static analysis) → color → seed compressed blocks → scatter back into $J$.</li>
             <li>The same compression applies to bumping (it predates AD — "compressed finite differences") and to reverse mode by rows.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Algorithmic Differentiation calculates exact computer derivatives by propagating chain-rule terms forward or backward through code.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">A computation graph maps the flow of arithmetic operations, showing exactly how derivatives propagate.</li>
+            <li style="margin-bottom: 0;">Operator overloading replaces standard variables with custom variables that track their own derivatives.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Quant-Library Plays</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Quant-Library Plays</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Calibration Jacobians:</strong> Levenberg-Marquardt over (instruments × parameters) — parameters are few: vector-forward over all of them in one pass beats adjoint (which would sweep once per instrument residual). Mode choice by shape, as promised in Part 01.</li>
             <li><strong>Curve risk through cash-flow generators:</strong> bucket sparsity (each trade hits few buckets) + coloring ⇒ full bucketed deltas at ~constant cost in bucket count.</li>
             <li><strong>Scenario/"what-if" engines:</strong> the $p$ directions need not be coordinate bumps — seed with <em>scenario vectors</em> (parallel shift, twist, butterfly): vector-forward returns the portfolio's directional derivatives for the whole scenario set in one valuation.</li>
             <li><strong>Stochastic-process tangents:</strong> per-path tangents over $p$ parameters vectorize across both paths and directions — a (paths × p) tangent matrix in NumPy/CUDA, the layout the GPU workshop assumes.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Adjoint mode (Reverse AD) is the quant holy grail: it computes sensitivities for infinite inputs in a single backward pass.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Adjoint mode calculates portfolio risk sensitivities with respect to all market factors in a single backward pass.</li>
+            <li style="margin-bottom: 0;">Operator overloading replaces standard variables with custom variables that track their own derivatives.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Cost Model &amp; Crossover</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Cost Model &amp; Crossover</h3>
         <p>Rule-of-thumb flop counts per primal cost 1: single tangent ≈ 2–2.5; vector-$p$ tangent ≈ 1 + 0.15p (amortized); adjoint ≈ 3–5 (+ memory traffic). Crossover heuristics:</p>
         <ul style="line-height: 1.8;">
             <li>$n \lesssim 20$ inputs (or χ colors ≲ 20): vector forward wins on simplicity <em>and</em> speed.</li>
             <li>$n$ in the hundreds+ with one PV: adjoint, no contest (Part 06 onward).</li>
             <li>Both large (full dense Jacobian): you probably don't need the full Jacobian — re-ask the question (directional scenarios? sparsity? low-rank structure?).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Adjoint mode (Reverse AD) is the quant holy grail: it computes sensitivities for infinite inputs in a single backward pass.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Adjoint mode calculates portfolio risk sensitivities with respect to all market factors in a single backward pass.</li>
+            <li style="margin-bottom: 0;">Operator overloading replaces standard variables with custom variables that track their own derivatives.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -57,13 +109,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Vector-Forward mode speeds up Forward AD by propagating multiple derivative directions in a single execution pass, utilizing modern CPU SIMD registers.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>SIMD Speedup:</strong> Instead of propagating one derivative, we propagate an array of derivatives, doing vector math in parallel.</li>
-            <li style="margin-bottom: 1rem;"><strong>Fused Operations:</strong> Computes the expensive primal functions (like logs and exponentials) once, while calculating multiple derivatives.</li>
-            <li style="margin-bottom: 0;"><strong>Calibration Jacobians:</strong> Essential for calibrating pricing models to option smiles, where parameters are few and target instruments are many.</li>
-        </ul>
-    </div>
+    
 </div>

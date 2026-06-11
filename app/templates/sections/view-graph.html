@@ -1,0 +1,639 @@
+<div id="view-graph" style="display: none; width: 100%; height: calc(100vh - 6rem); position: relative; font-family: var(--font-family-sans); overflow: hidden; background: var(--bg-color);">
+    <!-- Load D3.js CDN -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <!-- Style overrides for Graph View -->
+    <style>
+        .graph-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        .graph-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: grab;
+        }
+        .graph-svg:active {
+            cursor: grabbing;
+        }
+        /* Top Overlay Panel */
+        .graph-overlay-top {
+            position: absolute;
+            top: 1rem;
+            left: 1.5rem;
+            right: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .graph-title-block {
+            pointer-events: auto;
+        }
+        .graph-title-block h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-color);
+        }
+        .graph-title-block p {
+            margin: 0.25rem 0 0 0;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+        .graph-search-box {
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 0.4rem 0.8rem;
+            box-shadow: var(--card-shadow);
+            pointer-events: auto;
+            width: 280px;
+            transition: all 0.2s ease;
+        }
+        .graph-search-box:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .graph-search-input {
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 0.85rem;
+            width: 100%;
+            outline: none;
+        }
+        .graph-search-icon {
+            color: #64748b;
+            margin-right: 0.5rem;
+        }
+        
+        /* Floating Control Panel (Filters) */
+        .graph-control-panel {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: var(--card-shadow);
+            z-index: 10;
+            width: 240px;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+        .graph-control-header {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--text-color);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 0.4rem;
+        }
+        .graph-filter-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.4rem;
+            font-size: 0.8rem;
+            color: var(--text-color);
+            cursor: pointer;
+            user-select: none;
+        }
+        .graph-filter-checkbox {
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+        .graph-color-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            display: inline-block;
+        }
+
+        /* SVG Node Styling */
+        .node-circle {
+            stroke-width: 1.5px;
+            stroke: var(--bg-color);
+            transition: r 0.25s ease, stroke-width 0.25s ease, filter 0.25s ease;
+        }
+        .node-text {
+            font-family: var(--font-family-sans);
+            font-weight: 600;
+            font-size: 10px;
+            fill: var(--text-color);
+            pointer-events: none;
+            transition: font-size 0.25s ease, opacity 0.25s ease;
+        }
+        .link-line {
+            stroke: var(--text-color);
+            stroke-opacity: 0.12;
+            stroke-width: 1px;
+            fill: none;
+            transition: stroke-opacity 0.25s ease, stroke-width 0.25s ease, stroke 0.25s ease;
+        }
+
+        /* Hover states */
+        .node-circle.active-node {
+            stroke: var(--text-color);
+            stroke-width: 2.5px;
+            filter: drop-shadow(0px 0px 8px currentColor);
+        }
+        .node-text.active-text {
+            font-size: 12px;
+            opacity: 1 !important;
+        }
+        .link-line.active-link {
+            stroke: var(--accent) !important;
+            stroke-opacity: 0.75 !important;
+            stroke-width: 1.8px !important;
+        }
+        .link-line.inactive-link {
+            stroke-opacity: 0.02 !important;
+        }
+        .node-circle.inactive-node {
+            opacity: 0.15;
+        }
+        .node-text.inactive-text {
+            opacity: 0.15;
+        }
+
+        /* Tooltip style */
+        .graph-tooltip {
+            position: absolute;
+            background: rgba(15, 23, 42, 0.95);
+            color: #f1f5f9;
+            border-radius: 6px;
+            padding: 0.6rem 0.9rem;
+            font-size: 0.8rem;
+            max-width: 250px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            line-height: 1.4;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .graph-tooltip strong {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: #38bdf8;
+            font-size: 0.85rem;
+        }
+    </style>
+
+    <div class="graph-container">
+        <!-- Overlay Panel -->
+        <div class="graph-overlay-top">
+            <div class="graph-title-block">
+                <h1>Interactive Knowledge Graph</h1>
+                <p>Obsidian-style map of mathematical & financial dependencies. Hover to trace paths, click to read.</p>
+            </div>
+            
+            <div class="graph-search-box">
+                <svg class="graph-search-icon" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" width="14"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+                <input class="graph-search-input" id="graph-search" oninput="searchGraph(this.value)" placeholder="Search ideas (e.g. VaR, Ito, SABR)..." type="text"/>
+            </div>
+        </div>
+
+        <!-- Filter Panel -->
+        <div class="graph-control-panel">
+            <div class="graph-control-header">Playbook Modules</div>
+            <div id="graph-filters">
+                <!-- Programmatically populated checkboxes -->
+            </div>
+        </div>
+
+        <!-- SVG canvas -->
+        <svg class="graph-svg" id="graph-svg-canvas"></svg>
+
+        <!-- Tooltip -->
+        <div class="graph-tooltip" id="graph-tooltip"></div>
+    </div>
+
+    <!-- Graph Rendering Script -->
+    <script>
+        const GRAPH_DATA = {
+            nodes: [
+                // Maths Fundamentals
+                { id: "cqf-mp-calculus-11", name: "Shorthand & Sets", cat: "maths", section: "cqf-mp-calculus-11", desc: "Foundations of math logic, set builder notation, and interval bounds." },
+                { id: "cqf-mp-calculus-12", name: "Mappings & Inverses", cat: "maths", section: "cqf-mp-calculus-12", desc: "Understanding domain, codomain, injectivity, surjectivity, and inverses." },
+                { id: "cqf-mp-calculus-16", name: "Bivariate & Chain Rules", cat: "maths", section: "cqf-mp-calculus-16", desc: "Partial derivatives, total derivatives, and multi-variable chain rules." },
+                { id: "cqf-mp-calculus-19", name: "Taylor Series", cat: "maths", section: "cqf-mp-calculus-19", desc: "Approximating non-linear functions with derivative-based polynomial series." },
+                
+                // MM Masterclass
+                { id: "mm-p01", name: "Number Sets & Mappings", cat: "mm", section: "mm-p01", desc: "Completeness of Reals vs Ticks of Rationals, and bijection checks in pricing." },
+                { id: "mm-p02", name: "Polynomials & Complex Vol", cat: "mm", section: "mm-p02", desc: "Roots of unity, complex numbers, and implied volatility root-finders." },
+                { id: "mm-p03", name: "Taylor Approximations", cat: "mm", section: "mm-p03", desc: "Deriving Delta/Gamma curves and local polynomial hedging approximations." },
+                { id: "mm-p04", name: "Functional Integration", cat: "mm", section: "mm-p04", desc: "Static replication via integration by parts and Leibniz's integral rule." },
+                { id: "mm-p05", name: "Random Variables & Moments", cat: "mm", section: "mm-p05", desc: "Probability density, cumulative distributions, skewness, and kurtosis." },
+                { id: "mm-p06", name: "Differential Equations", cat: "mm", section: "mm-p06", desc: "Ordinary vs. Partial differential equations; analytical vs. numerical solvers." },
+                { id: "mm-p07", name: "First-Order ODEs", cat: "mm", section: "mm-p07", desc: "Solving linear interest rate models using integrating factors." },
+                { id: "mm-p08", name: "Cauchy-Euler Solutions", cat: "mm", section: "mm-p08", desc: "Power-law solutions for differential equations: pricing perpetual options." },
+                { id: "mm-p09", name: "Brownian motion", cat: "mm", section: "mm-p09", desc: "Continuous random walks, path properties, and quadratic variation of noise." },
+                { id: "mm-p10", name: "Itô's Lemma", cat: "mm", section: "mm-p10", desc: "Stochastic chain rule: adding a volatility correction term to capture curvature." },
+                { id: "mm-p11", name: "Lognormal Stock Evolution", cat: "mm", section: "mm-p11", desc: "Solving the geometric Brownian motion SDE to guarantee strictly positive stock prices." },
+                { id: "mm-p12", name: "Short Rate Mechanics", cat: "mm", section: "mm-p12", desc: "Mean reversion and volatility structures: Vasicek vs. CIR models." },
+                { id: "mm-p13", name: "Black-Scholes PDE", cat: "mm", section: "mm-p13", desc: "The parabolic framework: option price evolution under arbitrage-free hedging." },
+                { id: "mm-p14", name: "Path Generation in Excel", cat: "mm", section: "mm-p14", desc: "Euler-Maruyama discretizations for simulating Brownian asset price paths." },
+
+                // Complex Analysis
+                { id: "ca-p01", name: "Complex Integration", cat: "ca", section: "ca-p01", desc: "Integrating along paths in ℂ; path independence and analyticity." },
+                { id: "ca-p05", name: "Holomorphic Functions", cat: "ca", section: "ca-p05", desc: "Unreasonably well-behaved complex-differentiable functions." },
+                { id: "ca-p06", name: "Cauchy-Riemann Tests", cat: "ca", section: "ca-p06", desc: "Differentiability conditions using Cartesian and polar coordinates." },
+                { id: "ca-p07", name: "Harmonic Conjugates", cat: "ca", section: "ca-p07", desc: "Equilibrium partner solutions satisfying Laplace's equations." },
+                { id: "ca-p09", name: "Contour parameterization", cat: "ca", section: "ca-p09", desc: "Evaluating complex line integrals around closed loop paths." },
+                { id: "ca-p10", name: "Cauchy's Theorem", cat: "ca", section: "ca-p10", desc: "Integrating holomorphic functions along closed loops yields zero." },
+                { id: "ca-p11", name: "Cauchy's Integral Formula", cat: "ca", section: "ca-p11", desc: "Calculating interior values of holomorphic functions from boundary values." },
+                { id: "ca-p13", name: "Taylor vs. Laurent Series", cat: "ca", section: "ca-p13", desc: "Expanding functions around singular points using negative powers." },
+                { id: "ca-p14", name: "Classifying Singularities", cat: "ca", section: "ca-p14", desc: "Isolated poles, branch cuts, and essential singularities." },
+                { id: "ca-p15", name: "Residue Theorem", cat: "ca", section: "ca-p15", desc: "Converting closed loop integration to simple algebra via sum of residues." },
+                { id: "ca-p16", name: "Infinite Domain Integrals", cat: "ca", section: "ca-p16", desc: "Evaluating real integrals using semi-circular loops in the complex plane." },
+                { id: "ca-p17", name: "Trigonometric Residues", cat: "ca", section: "ca-p17", desc: "Jordan's lemma and general Fourier-inversion patterns in option pricing." },
+
+                // HFT
+                { id: "hft-p01", name: "Limit Order Books", cat: "hft", section: "hft-p01", desc: "Bid-ask spreads, order book queues, and dynamic liquidity flows." },
+                { id: "hft-p02", name: "Market Impact Functions", cat: "hft", section: "hft-p02", desc: "Temporary vs. permanent impact, and the square-root law of trading." },
+                { id: "hft-p03", name: "Estimating Impact Models", cat: "hft", section: "hft-p03", desc: "Calibrating Almgren-Chriss cost parameters via statistical regressions." },
+                { id: "hft-p06", name: "Multi-Venue Execution", cat: "hft", section: "hft-p06", desc: "Dark pools vs. lit exchanges, and selection bias routing metrics." },
+                { id: "hft-p07", name: "Transaction Cost Minimization", cat: "hft", section: "hft-p07", desc: "Implementation shortfall and the Almgren-Chriss efficient frontier." },
+                { id: "hft-p08", name: "Volatility-Based Schedules", cat: "hft", section: "hft-p08", desc: "Adapting trading speed dynamically in response to intraday volatility regimes." },
+                { id: "hft-p09", name: "Diffusion Boundaries", cat: "hft", section: "hft-p09", desc: "Modeling price movements with absorbing, reflecting, or banded barriers." },
+                { id: "hft-p10", name: "Stochastic Control & HJB", cat: "hft", section: "hft-p10", desc: "Optimal market making: Avellaneda-Stoikov control equations." },
+                { id: "hft-p12", name: "Microstructure Lead-Lag", cat: "hft", section: "hft-p12", desc: "Measuring cross-venue discovery lead times using cross-correlation." },
+
+                // Risk Management
+                { id: "arm-p01", name: "Calibration & Model Risk", cat: "arm", section: "arm-p01", desc: "The cost of incorrect mathematical assumptions or faulty parameter calibration." },
+                { id: "arm-p03", name: "Non-Normal Asset Returns", cat: "arm", section: "arm-p03", desc: "Modeling assets with fat-tailed distributions, skewness, and kurtosis." },
+                { id: "arm-p05", name: "Value-at-Risk (VaR)", cat: "arm", section: "arm-p05", desc: "Calculating maximum losses via historical price simulation." },
+                { id: "arm-p06", name: "Return Fat-Tails", cat: "arm", section: "arm-p06", desc: "The dangers of normal distributions during extreme market crashes." },
+                { id: "arm-p07", name: "Limitations of VaR", cat: "arm", section: "arm-p07", desc: "Why VaR fails to capture tail-loss severity, motivating Expected Shortfall." },
+                { id: "arm-p08", name: "Monte Carlo VaR", cat: "arm", section: "arm-p08", desc: "Simulating portfolio paths to project risk for multi-asset books." },
+                { id: "arm-p10", name: "Multi-Asset Risk Projection", cat: "arm", section: "arm-p10", desc: "Aggregating risk factors and correlation matrices for portfolio VaR." },
+
+                // Algorithmic Differentiation
+                { id: "ad-p01", name: "Source Code Transformation", cat: "ad", section: "ad-p01", desc: "Compiling code-based derivatives exactly rather than approximating formulas." },
+                { id: "ad-p02", name: "Operator Overloading", cat: "ad", section: "ad-p02", desc: "Replacing native floats with active class variables that track derivatives." },
+                { id: "ad-p03", name: "Computation Graphs", cat: "ad", section: "ad-p03", desc: "Decomposing algorithms into primitive operations to trace chain-rule flows." },
+                { id: "ad-p04", name: "Tangent Linear Code", cat: "ad", section: "ad-p04", desc: "Writing code that propagates sensitivities forward alongside price." },
+                { id: "ad-p06", name: "Adjoint Code Mechanics", cat: "ad", section: "ad-p06", desc: "Reversing operations to compute risk parameters in a backward pass." },
+                { id: "ad-p07", name: "Adjoint Reverse Mode", cat: "ad", section: "ad-p07", desc: "Implementing tape memory stacks to traverse calculation trees backward." },
+                { id: "ad-p10", name: "Second-Order Adjoints", cat: "ad", section: "ad-p10", desc: "Adjoint-of-adjoint sweeps to extract Hessian matrices (Greeks) instantly." },
+
+                // Asymptotics
+                { id: "asv-p01", name: "Hyperbolic SABR Models", cat: "asv", section: "asv-p01", desc: "Heat kernels on curved geometry: modeling stochastic volatility." },
+                { id: "asv-p02", name: "SABR Smile Corrections", cat: "asv", section: "asv-p02", desc: "Hagan's asymptotic expansion mapping SABR parameters to BS implied vol." },
+                { id: "asv-p03", name: "Asymptotic Limits", cat: "asv", section: "asv-p03", desc: "Analyzing option pricing behaviors at extreme boundary conditions." },
+                { id: "asv-p08", name: "Large Deviation Principles", "cat": "asv", section: "asv-p08", desc: "Approximating out-of-the-money options as rare-event probabilities." },
+
+                // Risk-Sensitive Investment
+                { id: "rsi-p01", name: "Stochastic Control Models", cat: "rsi", section: "rsi-p01", desc: "Optimal continuous-time rebalancing under asset volatility noise." },
+                { id: "rsi-p02", name: "Risk-Sensitive Control", cat: "rsi", section: "rsi-p02", desc: "Generalizing Markowitz portfolio optimization to penalize drawdown risk." },
+
+                // Desk Tools & Calibration
+                { id: "bootstrapping", name: "Yield Curve Bootstrapper", cat: "desk", section: "bootstrapping", desc: "Extracting discount curves from spot rates, futures, and swaps." },
+                { id: "pca", name: "PCA Yield Curve Analyzer", cat: "desk", section: "pca", desc: "Decomposing interest rate curve movements into Level, Slope, and Curvature." },
+                { id: "cqf-option-pricer", name: "Option Pricing Engine", cat: "desk", section: "cqf-option-pricer", desc: "Standard analytical models, finite difference grid solvers, and trees." }
+            ],
+            links: [
+                // Maths Fundamental connects
+                { source: "cqf-mp-calculus-11", target: "cqf-mp-calculus-12" },
+                { source: "cqf-mp-calculus-12", target: "mm-p01" },
+                { source: "cqf-mp-calculus-16", target: "mm-p10" },
+                { source: "cqf-mp-calculus-19", target: "mm-p03" },
+
+                // MM connects
+                { source: "mm-p01", target: "mm-p02" },
+                { source: "mm-p01", target: "ca-p01" },
+                { source: "mm-p03", target: "mm-p10" },
+                { source: "mm-p04", target: "mm-p09" },
+                { source: "mm-p05", target: "mm-p09" },
+                { source: "mm-p06", target: "mm-p07" },
+                { source: "mm-p06", target: "mm-p08" },
+                { source: "mm-p06", target: "mm-p13" },
+                { source: "mm-p07", target: "mm-p12" },
+                { source: "mm-p09", target: "mm-p10" },
+                { source: "mm-p09", target: "mm-p14" },
+                { source: "mm-p10", target: "mm-p11" },
+                { source: "mm-p10", target: "hft-p09" },
+                { source: "mm-p11", target: "mm-p13" },
+                { source: "mm-p12", target: "mm-p13" },
+                { source: "mm-p13", target: "cqf-option-pricer" },
+                { source: "mm-p14", target: "cqf-option-pricer" },
+
+                // CA connects
+                { source: "ca-p01", target: "ca-p09" },
+                { source: "ca-p05", target: "ca-p06" },
+                { source: "ca-p06", target: "ca-p07" },
+                { source: "ca-p09", target: "ca-p10" },
+                { source: "ca-p10", target: "ca-p11" },
+                { source: "ca-p11", target: "ca-p15" },
+                { source: "ca-p13", target: "ca-p14" },
+                { source: "ca-p14", target: "ca-p15" },
+                { source: "ca-p15", target: "ca-p16" },
+                { source: "ca-p16", target: "ca-p17" },
+                { source: "ca-p17", target: "mm-p02" },
+
+                // HFT connects
+                { source: "hft-p01", target: "hft-p02" },
+                { source: "hft-p02", target: "hft-p03" },
+                { source: "hft-p03", target: "hft-p07" },
+                { source: "hft-p06", target: "hft-p07" },
+                { source: "hft-p07", target: "hft-p08" },
+                { source: "hft-p08", target: "hft-p10" },
+                { source: "hft-p09", target: "hft-p10" },
+                { source: "hft-p10", target: "rsi-p01" },
+
+                // ARM connects
+                { source: "arm-p01", target: "arm-p03" },
+                { source: "arm-p03", target: "arm-p05" },
+                { source: "arm-p03", target: "arm-p06" },
+                { source: "arm-p05", target: "arm-p07" },
+                { source: "arm-p06", target: "arm-p07" },
+                { source: "arm-p07", target: "arm-p08" },
+                { source: "arm-p08", target: "arm-p10" },
+
+                // AD connects
+                { source: "ad-p01", target: "ad-p02" },
+                { source: "ad-p02", target: "ad-p03" },
+                { source: "ad-p03", target: "ad-p04" },
+                { source: "ad-p04", target: "ad-p06" },
+                { source: "ad-p06", target: "ad-p07" },
+                { source: "ad-p07", target: "ad-p10" },
+                { source: "ad-p10", target: "cqf-option-pricer" },
+
+                // Asymptotics connects
+                { source: "asv-p01", target: "asv-p02" },
+                { source: "asv-p02", target: "asv-p03" },
+                { source: "asv-p03", target: "asv-p08" },
+
+                // RSI connects
+                { source: "rsi-p01", target: "rsi-p02" },
+
+                // Desk connects
+                { source: "bootstrapping", target: "pca" },
+                { source: "bootstrapping", target: "mm-p12" }
+            ]
+        };
+
+        const CATEGORIES = {
+            "maths": { label: "Maths Fundamentals", color: "#3b82f6" },
+            "mm": { label: "Mathematical Methods", color: "#4f46e5" },
+            "ca": { label: "Complex Analysis", color: "#a855f7" },
+            "hft": { label: "High-Frequency Trading", color: "#10b981" },
+            "arm": { label: "Risk Management", color: "#ef4444" },
+            "ad": { label: "Algorithmic Diff (AD)", color: "#f59e0b" },
+            "asv": { label: "Asymptotics", color: "#ec4899" },
+            "rsi": { label: "Risk-Sensitive Control", color: "#06b6d4" },
+            "desk": { label: "Pricer Desk & Tools", color: "#14b8a6" }
+        };
+
+        // Populate Filters Panel
+        const filtersContainer = document.getElementById("graph-filters");
+        Object.entries(CATEGORIES).forEach(([key, value]) => {
+            const filterDiv = document.createElement("div");
+            filterDiv.className = "graph-filter-item";
+            filterDiv.innerHTML = `
+                <input type="checkbox" checked value="${key}" class="graph-filter-checkbox" onchange="toggleCategory('${key}', this.checked)">
+                <span class="graph-color-dot" style="background: ${value.color}"></span>
+                <span>${value.label}</span>
+            `;
+            filtersContainer.appendChild(filterDiv);
+        });
+
+        // SVG Dimensions
+        const svg = d3.select("#graph-svg-canvas");
+        const container = svg.append("g");
+        
+        let width = document.getElementById("view-graph").clientWidth;
+        let height = document.getElementById("view-graph").clientHeight;
+
+        // Set viewBox dynamically
+        svg.attr("viewBox", `0 0 ${width} ${height}`);
+
+        // Zoom Behavior
+        const zoom = d3.zoom()
+            .scaleExtent([0.15, 4])
+            .on("zoom", (event) => {
+                container.attr("transform", event.transform);
+            });
+        svg.call(zoom);
+
+        // Simulation Forces
+        const simulation = d3.forceSimulation(GRAPH_DATA.nodes)
+            .force("link", d3.forceLink(GRAPH_DATA.links).id(d => d.id).distance(90))
+            .force("charge", d3.forceManyBody().strength(-200))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collision", d3.forceCollide().radius(40));
+
+        // Render Links
+        const link = container.append("g")
+            .selectAll("line")
+            .data(GRAPH_DATA.links)
+            .join("line")
+            .attr("class", "link-line");
+
+        // Render Nodes
+        const node = container.append("g")
+            .selectAll("g")
+            .data(GRAPH_DATA.nodes)
+            .join("g")
+            .attr("class", d => `node-group node-cat-${d.cat}`)
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
+        // Render Node Circles
+        const circle = node.append("circle")
+            .attr("class", "node-circle")
+            .attr("r", 7)
+            .attr("fill", d => CATEGORIES[d.cat].color)
+            .attr("style", d => `color: ${CATEGORIES[d.cat].color}`); // for drop-shadow filter color
+
+        // Render Node Text Labels
+        const text = node.append("text")
+            .attr("class", "node-text")
+            .attr("dx", 12)
+            .attr("dy", 4)
+            .text(d => d.name);
+
+        // Tooltip element
+        const tooltip = document.getElementById("graph-tooltip");
+
+        // Hover Behavior
+        node.on("mouseover", function(event, d) {
+            // Find connected nodes
+            const connectedNodeIds = new Set();
+            connectedNodeIds.add(d.id);
+            
+            GRAPH_DATA.links.forEach(l => {
+                if (l.source.id === d.id) connectedNodeIds.add(l.target.id);
+                if (l.target.id === d.id) connectedNodeIds.add(l.source.id);
+            });
+
+            // Highlight links
+            link.attr("class", l => {
+                if (l.source.id === d.id || l.target.id === d.id) {
+                    return "link-line active-link";
+                }
+                return "link-line inactive-link";
+            });
+
+            // Highlight circles & texts
+            circle.classed("active-node", n => connectedNodeIds.has(n.id))
+                  .classed("inactive-node", n => !connectedNodeIds.has(n.id));
+            
+            text.classed("active-text", n => n.id === d.id)
+                .classed("inactive-text", n => !connectedNodeIds.has(n.id));
+
+            // Show Tooltip
+            tooltip.style.opacity = 1;
+            tooltip.innerHTML = `<strong>${d.name}</strong>${d.desc}`;
+            
+            // Position Tooltip
+            const mouseX = event.clientX;
+            const mouseY = event.clientY;
+            tooltip.style.left = (mouseX + 15) + "px";
+            tooltip.style.top = (mouseY + 15) + "px";
+        })
+        .on("mousemove", function(event) {
+            tooltip.style.left = (event.clientX + 15) + "px";
+            tooltip.style.top = (event.clientY + 15) + "px";
+        })
+        .on("mouseout", function() {
+            // Revert all classes
+            link.attr("class", "link-line");
+            circle.classed("active-node", false).classed("inactive-node", false);
+            text.classed("active-text", false).classed("inactive-text", false);
+            tooltip.style.opacity = 0;
+        });
+
+        // Click to Navigate
+        node.on("click", function(event, d) {
+            if (typeof showSection === "function") {
+                showSection(d.section);
+            }
+        });
+
+        // Simulation Update
+        simulation.on("tick", () => {
+            link
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+
+        // Drag Physics Functions
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        // Toggle Category Visibility
+        const activeCategories = new Set(Object.keys(CATEGORIES));
+
+        window.toggleCategory = function(cat, isChecked) {
+            if (isChecked) {
+                activeCategories.add(cat);
+            } else {
+                activeCategories.delete(cat);
+            }
+
+            // Update DOM element displays
+            node.style("display", d => activeCategories.has(d.cat) ? "inline" : "none");
+            link.style("display", l => (activeCategories.has(l.source.cat) && activeCategories.has(l.target.cat)) ? "inline" : "none");
+        };
+
+        // Search Graph Nodes
+        window.searchGraph = function(query) {
+            if (!query) {
+                // Revert highlight
+                circle.classed("active-node", false).classed("inactive-node", false);
+                text.classed("active-text", false).classed("inactive-text", false);
+                return;
+            }
+
+            const cleanQuery = query.toLowerCase();
+            let matchedNode = null;
+
+            circle.classed("active-node", n => {
+                const match = n.name.toLowerCase().includes(cleanQuery) || n.desc.toLowerCase().includes(cleanQuery);
+                if (match && !matchedNode) matchedNode = n; // Focus first match
+                return match;
+            });
+            text.classed("active-text", n => n.name.toLowerCase().includes(cleanQuery) || n.desc.toLowerCase().includes(cleanQuery));
+
+            // Pan/Zoom to matched node smoothly
+            if (matchedNode) {
+                const scale = 1.3;
+                svg.transition()
+                    .duration(750)
+                    .call(
+                        zoom.transform,
+                        d3.zoomIdentity
+                            .translate(width / 2, height / 2)
+                            .scale(scale)
+                            .translate(-matchedNode.x, -matchedNode.y)
+                    );
+            }
+        };
+
+        // Handle Window Resizing
+        window.addEventListener("resize", () => {
+            const containerEl = document.getElementById("view-graph");
+            if (containerEl && containerEl.style.display !== "none") {
+                width = containerEl.clientWidth;
+                height = containerEl.clientHeight;
+                svg.attr("viewBox", `0 0 ${width} ${height}`);
+                simulation.force("center", d3.forceCenter(width / 2, height / 2));
+                simulation.alpha(0.3).restart();
+            }
+        });
+
+        // Trigger simulation restart when tab becomes active
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === "style") {
+                    const display = document.getElementById("view-graph").style.display;
+                    if (display !== "none") {
+                        // Re-fetch width/height to make sure it's correct
+                        const containerEl = document.getElementById("view-graph");
+                        width = containerEl.clientWidth;
+                        height = containerEl.clientHeight;
+                        svg.attr("viewBox", `0 0 ${width} ${height}`);
+                        simulation.force("center", d3.forceCenter(width / 2, height / 2));
+                        simulation.alpha(0.5).restart();
+                    }
+                }
+            });
+        });
+        observer.observe(document.getElementById("view-graph"), { attributes: true });
+
+    </script>
+</div>

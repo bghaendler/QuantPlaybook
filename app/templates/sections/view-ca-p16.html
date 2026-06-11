@@ -5,8 +5,10 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Evaluating $\int_{-\infty}^{\infty} f(x)\,dx$ by closing the line into a semicircle: the recipe, the decay conditions, and the density integrals it unlocks.</p>
     </header>
 
-    <div class="card">
-        <h3>1. The Semicircle Recipe</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Semicircle Recipe</h3>
         <p>To compute $\int_{-\infty}^\infty f(x)dx$ for rational $f$:</p>
         <ol style="line-height: 1.9;">
             <li>Close the real segment $[-R, R]$ with the upper semicircle $C_R$ ($z = Re^{i\theta}$, $\theta \in [0, \pi]$).</li>
@@ -16,32 +18,82 @@
         </ol>
         $$\int_{-\infty}^{\infty} f(x)\,dx = 2\pi i \sum_{\mathrm{Im}\,z_j > 0} \mathrm{Res}_{z_j} f.$$
         <p>Closing downward works equally (clockwise ⇒ $-2\pi i\sum$ over lower poles) — the answer agrees; choose whichever half-plane is convenient.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The Residue Theorem simplifies complex integration to simple algebra by summing values at poles.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The Residue Theorem simplifies complex integration to simple algebra by summing values at poles.</li>
+            <li style="margin-bottom: 0;">Poles are isolated singular points where a function goes to infinity; finding them is key to residue integration.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. The Two Canonical Examples</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. The Two Canonical Examples</h3>
         <p><strong>(a)</strong> $\displaystyle\int_{-\infty}^{\infty}\frac{dx}{1 + x^2}$: poles $\pm i$; upper pole $i$, residue $\frac{1}{2i}$ (quotient rule: $1/(2z)|_{z=i}$):</p>
         $$= 2\pi i \cdot \frac{1}{2i} = \pi \quad\checkmark\;(= [\arctan]_{-\infty}^{\infty}).$$
         <p><strong>(b)</strong> $\displaystyle\int_{-\infty}^{\infty}\frac{dx}{(1 + x^2)^2}$: double pole at $i$; residue $= \frac{d}{dz}\left[\frac{1}{(z + i)^2}\right]_{z=i} = \frac{-2}{(2i)^3} = \frac{1}{4i}$ ⇒ integral $= \frac{\pi}{2}$. This is the normalization of the Student-$t_3$-type kernel — fat-tailed densities used for return innovations normalize through exactly these integrals (the $t_\nu$ constant involves $\int (1 + x^2/\nu)^{-(\nu+1)/2}dx$, residue-computable for odd ν).</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The Residue Theorem simplifies complex integration to simple algebra by summing values at poles.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The Residue Theorem simplifies complex integration to simple algebra by summing values at poles.</li>
+            <li style="margin-bottom: 0;">Poles are isolated singular points where a function goes to infinity; finding them is key to residue integration.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Where the Conditions Bite</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Where the Conditions Bite</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Decay degree:</strong> $\int \frac{x\,dx}{1+x^2}$ fails the two-degree gap — and indeed diverges (only a principal value exists). Check the gap before integrating.</li>
             <li><strong>Real-axis poles:</strong> a pole on the path (e.g. $\frac{1}{x}$) requires indenting a small semicircle around it: an indentation around a <em>simple</em> pole contributes half a residue, $\pi i\,\mathrm{Res}$ — yielding principal values like $\mathrm{PV}\int\frac{dx}{x(x^2+1)}$.</li>
             <li><strong>Oscillatory integrands</strong> $e^{iax}f(x)$: the $R^{-2}$ decay isn't needed — Jordan's lemma (next part) closes them with only $f \to 0$.</li>
             <li><strong>Branch points</strong> ($x^{\alpha}$, $\ln x$ on $[0,\infty)$): keyhole contour around the positive real axis; the cut's two sides differ by a phase $e^{2\pi i\alpha}$, and the mismatch solves for the integral — the technique behind Mellin-type identities.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Integrating along paths in the complex plane simplifies options calculations by replacing infinite integrals with simple algebraic sums of residues.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The Residue Theorem simplifies complex integration to simple algebra by summing values at poles.</li>
+            <li style="margin-bottom: 0;">A contour is the path in the complex plane along which we integrate to find options probabilities.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Quant Use: Densities and Tail Integrals from Transforms</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Quant Use: Densities and Tail Integrals from Transforms</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Cauchy/Lévy stable densities:</strong> $f(x) = \frac{1}{2\pi}\int e^{-iux}e^{-|u|}du = \frac{1}{\pi(1+x^2)}$ — the inversion is example (a) run backwards; stable distributions (infinite variance, used for extreme-event modeling) only exist through such integrals.</li>
             <li><strong>Kou double-exponential jumps:</strong> rational characteristic function ⇒ inversion = residue sums ⇒ closed-form first-passage and barrier/lookback prices — the model's whole selling point.</li>
             <li><strong>Hilbert transforms / PV integrals</strong> connect real and imaginary parts of causal transfer functions (Kramers-Kronig style) — used in signal-based alpha research and in verifying that fitted impulse responses are causal.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Cauchy's theorems relate the values of smooth functions on a boundary to their values inside, enabling analytical option solutions.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The Residue Theorem simplifies complex integration to simple algebra by summing values at poles.</li>
+            <li style="margin-bottom: 0;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -54,13 +106,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> We integrate functions from negative to positive infinity by wrapping the real line into a giant semi-circle in the complex plane and applying the Residue Theorem.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Infinite Half-Circle:</strong> We add a path at infinity whose integral vanishes, allowing us to close the loop and use residues.</li>
-            <li style="margin-bottom: 1rem;"><strong>Fourier Transforms:</strong> This is the exact math used to invert Fourier transforms to find risk-neutral probability distributions.</li>
-            <li style="margin-bottom: 0;"><strong>Jordan's Lemma:</strong> A bounding rule showing that the integral along the curved path at infinity goes to zero for exponential integrands.</li>
-        </ul>
-    </div>
+    
 </div>

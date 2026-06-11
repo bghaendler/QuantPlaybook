@@ -5,8 +5,10 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Writing forward-mode AD by hand: the line-by-line discipline, control flow rules, and a full tangent-linear Monte Carlo pricer.</p>
     </header>
 
-    <div class="card">
-        <h3>1. The Mechanical Rules</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Mechanical Rules</h3>
         <p>For every active variable <code>v</code>, introduce <code>v_d</code> (its tangent, $\dot{v}$). For every assignment, write the differentiated line <em>first</em> (it reads old values), then the original:</p>
         <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.8rem; font-size: 0.8rem; overflow-x: auto;">// original              // tangent-linear (before the original line)
 v = a * b;               v_d = a_d * b + a * b_d;
@@ -18,20 +20,46 @@ s = sqrt(v);             s_d = 0.5 / s * v_d;       // guard v=0 like the primal
             <li><strong>Re-use computed primals</strong> (the <code>u</code>, <code>s</code> tricks): halves the flops and mirrors what good AD tools emit.</li>
             <li><strong>Passive variables</strong> (ints, flags, anything provably derivative-free) get no tangent — "activity analysis" by hand.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Algorithmic Differentiation calculates exact computer derivatives by propagating chain-rule terms forward or backward through code.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Operator overloading replaces standard variables with custom variables that track their own derivatives.</li>
+            <li style="margin-bottom: 0;">Source compilers read your pricing code and write new code that calculates derivatives exactly.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Control Flow</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Control Flow</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Branches:</strong> differentiate each branch's body; the condition itself is not differentiated (it's piecewise definition). Mind the kinks: <code>max(x,0)</code> has tangent <code>x &gt; 0 ? x_d : 0</code> — correct a.e., undefined at the kink (the payoff-smoothing issue Part 09 revisits).</li>
             <li><strong>Loops:</strong> the tangent loop runs <em>in step with</em> the primal loop, same iteration count — forward mode never reverses anything (the adjoint's reversal pain, Part 07, doesn't exist here).</li>
             <li><strong>Function calls:</strong> each function gets a tangent version <code>f_d(x, x_d, &amp;y, &amp;y_d)</code> computing value <em>and</em> tangent — composability by signature convention (Tapenade's <code>_d</code> convention).</li>
             <li><strong>Iterative solvers:</strong> don't differentiate the iterations; differentiate the <em>solved equation</em>: from $F(x, \theta) = 0$, $\;\dot{x} = -F_x^{-1}F_\theta\dot{\theta}$ at the converged point (implicit function theorem) — exact, cheap, and avoids the convergence-of-derivatives question.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Adjoint mode (Reverse AD) is the quant holy grail: it computes sensitivities for infinite inputs in a single backward pass.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Adjoint mode calculates portfolio risk sensitivities with respect to all market factors in a single backward pass.</li>
+            <li style="margin-bottom: 0;">Operator overloading replaces standard variables with custom variables that track their own derivatives.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Worked: Tangent-Linear Monte Carlo (Vega of a Call)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Worked: Tangent-Linear Monte Carlo (Vega of a Call)</h3>
         <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.8rem; font-size: 0.78rem; overflow-x: auto;">def mc_call_vega(S0, K, T, r, sigma, Z):           # Z: fixed normals (CRN!)
     drift   = (r - 0.5*sigma**2)*T
     drift_d = -sigma*T                              # d(drift)/d(sigma)
@@ -44,16 +72,40 @@ s = sqrt(v);             s_d = 0.5 / s * v_d;       // guard v=0 like the primal
     disc   = np.exp(-r*T)
     return disc*pay.mean(), disc*pay_d.mean()       # price, vega</pre>
         <p>Checks that should pass: vega vs. central bump ($\sigma \pm 10^{-5}$) to ~10 digits <em>using the same Z</em> (common random numbers — pathwise derivatives require the randomness held fixed); and vs. BS analytic vega within MC error. This <em>is</em> the pathwise Greek method of the Monte Carlo literature — tangent-linear AD and pathwise sensitivities are the same thing.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Algorithmic Differentiation calculates exact computer derivatives by propagating chain-rule terms forward or backward through code.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Operator overloading replaces standard variables with custom variables that track their own derivatives.</li>
+            <li style="margin-bottom: 0;">Source compilers read your pricing code and write new code that calculates derivatives exactly.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. When Manual Forward Mode Is the Right Tool</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. When Manual Forward Mode Is the Right Tool</h3>
         <ul style="line-height: 1.8;">
             <li>Few inputs, many outputs: curve bumps through a cash-flow generator, scenario engines, $\partial(\text{whole smile})/\partial(\text{one model param})$ in calibration Jacobians.</li>
             <li>As the <strong>validation layer</strong> for adjoints: the dot-product identity $\langle\dot y, \bar y\rangle = \langle\dot x, \bar x\rangle$ tests both implementations against each other (Part 11).</li>
             <li>Small kernels where introducing a tool dependency isn't worth it — the rules above are entirely mechanical and code-reviewable.</li>
             <li>Complex-step shortcut for a single derivative of real-analytic code: $f'(x) \approx \mathrm{Im}\,f(x + ih)/h$, $h = 10^{-20}$ — forward mode smuggled through the complex type, no cancellation (CA Part 11's trick).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Algorithmic Differentiation calculates exact computer derivatives by propagating chain-rule terms forward or backward through code.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Operator overloading replaces standard variables with custom variables that track their own derivatives.</li>
+            <li style="margin-bottom: 0;">Source compilers read your pricing code and write new code that calculates derivatives exactly.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -66,13 +118,5 @@ s = sqrt(v);             s_d = 0.5 / s * v_d;       // guard v=0 like the primal
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Tangent-Linear mode (Forward AD) computes how changes in one input propagate through the code. It is best suited when you have few inputs and many outputs.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Forward Propagation:</strong> We seed the input derivative $\dot{x}=1$ and compute how it flows forward alongside the main calculation.</li>
-            <li style="margin-bottom: 1rem;"><strong>One-at-a-Time:</strong> To get derivatives for $N$ inputs, you must run the forward AD sweep $N$ times.</li>
-            <li style="margin-bottom: 0;"><strong>Use Cases:</strong> Ideal for calculating the sensitivity of many options to a single parameter, like a model calibration step.</li>
-        </ul>
-    </div>
+    
 </div>

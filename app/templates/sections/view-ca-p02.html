@@ -5,34 +5,86 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Polar form as a computational engine: powers, roots of unity, trig identities for free, and the Euler-formula integrals that shortcut real calculus.</p>
     </header>
 
-    <div class="card">
-        <h3>1. Polar Form &amp; de Moivre</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. Polar Form &amp; de Moivre</h3>
         <p>Write $z = r(\cos\theta + i\sin\theta) = re^{i\theta}$. Multiplication multiplies moduli and adds arguments, so powers are trivial in polar form:</p>
         $$z^n = r^n e^{in\theta} \quad\Longleftrightarrow\quad (\cos\theta + i\sin\theta)^n = \cos n\theta + i\sin n\theta \;\;\text{(de Moivre)}.$$
         <p>Expanding the left side binomially and matching real/imaginary parts generates trig identities mechanically: $n = 2$ gives $\cos 2\theta = \cos^2\theta - \sin^2\theta$ and $\sin 2\theta = 2\sin\theta\cos\theta$; $n = 3$ gives $\cos 3\theta = 4\cos^3\theta - 3\cos\theta$ — no memorization, just algebra.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Complex analysis allows quants to solve option prices analytically instead of running slow simulations, by integrating functions in the complex plane.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            <li style="margin-bottom: 0;">Integrating along closed complex loops eliminates numerical instabilities in Fourier pricing.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Roots of Unity (and Why FFT Cares)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Roots of Unity (and Why FFT Cares)</h3>
         <p>$z^n = 1$ has exactly $n$ solutions, equally spaced on the unit circle:</p>
         $$\omega_k = e^{2\pi i k/n}, \quad k = 0, 1, \dots, n-1.$$
         <p>General $n$-th roots: $z^n = w = \rho e^{i\phi}$ ⇒ $z_k = \rho^{1/n}e^{i(\phi + 2\pi k)/n}$ — one principal root rotated $n$ times. The roots of unity are the evaluation nodes of the discrete Fourier transform; the FFT's $O(N\log N)$ magic is the algebra $\omega_{2n}^2 = \omega_n$ splitting even/odd indices. Every Carr-Madan FFT pricing run (Part 01) is de Moivre exploited at industrial scale.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Complex analysis allows quants to solve option prices analytically instead of running slow simulations, by integrating functions in the complex plane.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            <li style="margin-bottom: 0;">Integrating along closed complex loops eliminates numerical instabilities in Fourier pricing.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Euler-Formula Integrals</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Euler-Formula Integrals</h3>
         <p>From $e^{i\theta} = \cos\theta + i\sin\theta$: $\cos\theta = \frac{e^{i\theta} + e^{-i\theta}}{2}$, $\sin\theta = \frac{e^{i\theta} - e^{-i\theta}}{2i}$. This turns hard real integrals into easy exponential ones — integrate, then take real/imaginary parts:</p>
         $$\int e^{ax}\cos bx\,dx = \mathrm{Re}\int e^{(a+ib)x}dx = \mathrm{Re}\,\frac{e^{(a+ib)x}}{a+ib} = \frac{e^{ax}(a\cos bx + b\sin bx)}{a^2 + b^2},$$
         <p>— one line instead of two rounds of integration by parts. The same move computes the Gaussian-times-cosine integral behind characteristic functions of normals:</p>
         $$\int_{-\infty}^{\infty} e^{iux}\phi(x)\,dx = e^{-u^2/2} \quad\text{(complete the square with an imaginary shift)},$$
         <p>which is precisely $\varphi_Z(u)$ for $Z \sim \mathcal{N}(0,1)$ — the simplest characteristic function in the pricing toolkit, derived by the simplest complex trick.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Complex analysis allows quants to solve option prices analytically instead of running slow simulations, by integrating functions in the complex plane.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            <li style="margin-bottom: 0;">Integrating along closed complex loops eliminates numerical instabilities in Fourier pricing.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Powers of Trig via Exponentials (Linearization)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Powers of Trig via Exponentials (Linearization)</h3>
         <p>Inverting the substitution linearizes powers — essential for integrating $\cos^n$:</p>
         $$\cos^4\theta = \left(\frac{e^{i\theta} + e^{-i\theta}}{2}\right)^4 = \frac{1}{8}\cos 4\theta + \frac{1}{2}\cos 2\theta + \frac{3}{8},$$
         <p>so $\int_0^{2\pi}\cos^4\theta\,d\theta = \frac{3\pi}{4}$ by inspection (only the constant survives). This "pick out the constant term" instinct is a dry run for the residue theorem: integrating $e^{ik\theta}$ over a full circle gives 0 unless $k = 0$ — orthogonality, Fourier coefficients, and residues are all the same observation.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The Residue Theorem simplifies complex integration to simple algebra by summing values at poles.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The Residue Theorem simplifies complex integration to simple algebra by summing values at poles.</li>
+            <li style="margin-bottom: 0;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -45,13 +97,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Euler's formula ($e^{i\theta} = \cos\theta + i\sin\theta$) bridges exponential growth and sinusoidal waves, converting complex multiplication into simple geometry.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Euler's Bridge:</strong> Allows quants to convert complex exponential formulas into standard sine and cosine waves for Fourier pricing.</li>
-            <li style="margin-bottom: 1rem;"><strong>De Moivre:</strong> Simplifies raising complex numbers to powers, which is used to construct grid steps in FFT option pricers.</li>
-            <li style="margin-bottom: 0;"><strong>Rotation:</strong> Multiplying by a complex number is geometrically equivalent to rotating a point around the origin, simplifying coordinate math.</li>
-        </ul>
-    </div>
+    
 </div>

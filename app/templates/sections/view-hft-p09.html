@@ -5,18 +5,33 @@
         <p style="color: #64748b; margin-top: 0.5rem;">From discrete ticks and queues to diffusions — and back: tick-size boundaries, price bands, and the reflected/absorbed processes that respect them.</p>
     </header>
 
-    <div class="card">
-        <h3>1. Discreteness Meets Diffusion</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. Discreteness Meets Diffusion</h3>
         <p>Microstructure prices live on a grid (tick size $\delta$), yet models and limits are continuous. The reconciliation:</p>
         <ul style="line-height: 1.8;">
             <li><strong>Diffusion limits of queues:</strong> rescaled order-book queue sizes converge to (reflected) Brownian motions; mid-price changes — sums of many ±tick moves — aggregate to diffusions by CLT. The art is matching the diffusion's σ to tick-level dynamics: $\sigma^2_{eff} = \delta^2 \cdot f(\text{queue intensities})$ (Cont-de Larrard-type formulas relating price volatility to order-flow rates).</li>
             <li><strong>Tick-size regimes:</strong> large-tick names (spread ≈ 1 tick, queues deep) behave like queueing systems; small-tick names like diffusions with sparse books — one model family rarely fits both.</li>
             <li><strong>Microstructure noise:</strong> observed price = efficient diffusion + rounding/bounce noise; signature plots (RV vs. sampling frequency) expose the noise floor (Part 01's Roll logic).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> High-frequency trading dynamics rely on analyzing limit order book imbalances and price formation at millisecond scales.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The bid-ask spread is the transaction cost or tax paid to execute a trade immediately.</li>
+            <li style="margin-bottom: 0;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Boundaries: Absorbing, Reflecting, and Banded</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Boundaries: Absorbing, Reflecting, and Banded</h3>
         <p>Real prices face hard numeric boundaries; the right boundary condition is a modeling decision:</p>
         <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
             <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;">Boundary</th><th style="padding: 0.45rem;">Condition</th><th style="padding: 0.45rem;">Microstructure instance</th></tr></thead>
@@ -27,25 +42,62 @@
             </tbody>
         </table>
         <p style="margin-top: 0.6rem;">The first-passage toolkit carries over verbatim from barrier options: reflection principle, method of images, and the exit-probability formulas — for driftless BM on $[0, B]$ started at $x$, $\mathbb{P}[\text{hit } B \text{ before } 0] = x/B$ (the gambler's-ruin identity used for queue-race odds: which side of the book depletes first).</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> High-frequency trading dynamics rely on analyzing limit order book imbalances and price formation at millisecond scales.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Inventory risk is the cost of holding too many long or short shares while the market moves against you.</li>
+            <li style="margin-bottom: 0;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Numerics That Respect Boundaries</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Numerics That Respect Boundaries</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Finite differences:</strong> impose the condition in the scheme — Dirichlet rows for absorbing, ghost-node mirror for reflecting; mis-typed boundaries are the classic source of "leaking probability" (check: total mass conservation under reflecting BCs).</li>
             <li><strong>Monte Carlo with barriers:</strong> discrete monitoring overestimates survival — apply the Brownian-bridge crossing probability $p = \exp(-2\Delta_1\Delta_2/(\sigma^2\Delta t))$ per step (the same correction as barrier-option pricing), or the Broadie-Glasserman-Kou $0.5826\,\sigma\sqrt{\Delta t}$ barrier shift.</li>
             <li><strong>Reflected paths:</strong> simulate via $|X_t|$ (driftless) or the Skorokhod construction $X_t = Y_t + L_t$ with local-time pushes; naive clipping at the boundary biases occupation times.</li>
             <li><strong>Grid alignment:</strong> place FD nodes <em>on</em> the boundary and on tick multiples — interpolating a band between nodes degrades convergence from $O(h^2)$ to $O(h)$.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> High-frequency trading dynamics rely on analyzing limit order book imbalances and price formation at millisecond scales.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            <li style="margin-bottom: 0;">Smart order routers dynamically split trades across exchanges and dark pools to find the best liquidity.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Applications in the HFT Stack</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Applications in the HFT Stack</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Queue-race probabilities</strong> (fill vs. adverse tick) price the value of queue position — the core quantity behind join/cancel decisions in large-tick names.</li>
             <li><strong>Band-aware risk:</strong> LULD/limit-band proximity changes short-horizon return distributions from ~Gaussian to censored — position risk and option hedging near bands must use the truncated laws.</li>
             <li><strong>Inventory control previews Part 10:</strong> a market maker's inventory is a controlled diffusion between reflecting limits — the stochastic-control formulation needs exactly these boundary conditions.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> High-frequency trading dynamics rely on analyzing limit order book imbalances and price formation at millisecond scales.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Inventory risk is the cost of holding too many long or short shares while the market moves against you.</li>
+            <li style="margin-bottom: 0;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -58,13 +110,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Stock prices at microsecond scales don't follow smooth diffusions; they hop discretely across tick grids. Modeling these boundaries is essential for market-making algorithms.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Tick Grid:</strong> Prices can only exist at discrete intervals (e.g., $10.01, $10.02), creating artificial support and resistance lines.</li>
-            <li style="margin-bottom: 1rem;"><strong>Queue Position:</strong> At a given price tick, orders are filled in first-in-first-out (FIFO) order. Your place in the queue is a key asset.</li>
-            <li style="margin-bottom: 0;"><strong>Micro-Price:</strong> A predictive price metric that combines the current bid/ask prices with the volume imbalance to forecast the next tick change.</li>
-        </ul>
-    </div>
+    
 </div>

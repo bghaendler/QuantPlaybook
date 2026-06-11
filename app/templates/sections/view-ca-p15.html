@@ -5,32 +5,73 @@
         <p style="color: #64748b; margin-top: 0.5rem;">The grand assembly: loop integrals = 2πi × (sum of enclosed residues). Computation rules, worked rational-function examples, and the checklist that prevents the standard mistakes.</p>
     </header>
 
-    <div class="card">
-        <h3>1. The Theorem</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Theorem</h3>
         <p>For $f$ holomorphic on and inside a simple closed (counterclockwise) contour $\gamma$ except at isolated singularities $z_1, \dots, z_k$ inside:</p>
         $$\oint_\gamma f(z)\,dz = 2\pi i\sum_{j=1}^{k}\mathrm{Res}_{z_j} f.$$
         <p>Proof in one breath: deform $\gamma$ into $k$ small circles (Part 10), Laurent-expand on each (Part 13), integrate term by term — only $a_{-1}$ survives (Part 09). Everything in the series so far is a lemma for this line.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Integrating along paths in the complex plane simplifies options calculations by replacing infinite integrals with simple algebraic sums of residues.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</li>
+            <li style="margin-bottom: 0;">A contour is the path in the complex plane along which we integrate to find options probabilities.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Computing Residues</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Computing Residues</h3>
         <ul style="line-height: 1.9;">
             <li><strong>Simple pole:</strong> $\mathrm{Res}_{z_0} f = \lim_{z\to z_0}(z - z_0)f(z)$.</li>
             <li><strong>Quotient shortcut</strong> ($f = g/h$, simple zero of $h$): $\mathrm{Res}_{z_0} = \dfrac{g(z_0)}{h'(z_0)}$ — the fastest and least error-prone rule; use it whenever possible.</li>
             <li><strong>Pole of order $m$:</strong> $\mathrm{Res}_{z_0} = \dfrac{1}{(m-1)!}\lim_{z\to z_0}\dfrac{d^{m-1}}{dz^{m-1}}\bigl[(z - z_0)^m f(z)\bigr]$.</li>
             <li><strong>Series extraction:</strong> multiply/divide known Taylor series and read the $z^{-1}$ coefficient — often easier than the derivative formula for order ≥ 3, and the only way at essential singularities.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The Residue Theorem simplifies complex integration to simple algebra by summing values at poles.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            <li style="margin-bottom: 0;">Integrating along closed complex loops eliminates numerical instabilities in Fourier pricing.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Worked Rational Examples</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Worked Rational Examples</h3>
         <p><strong>(a)</strong> $\displaystyle\oint_{|z|=2}\frac{z^2}{(z-1)(z^2+9)}dz$: poles at $1, \pm 3i$; only $z = 1$ inside $|z| = 2$. Residue $= \frac{1}{10}$ ⇒ integral $= \frac{\pi i}{5}$.</p>
         <p><strong>(b)</strong> $\displaystyle\oint_{|z|=4}\frac{z^2}{(z-1)(z^2+9)}dz$: now all three poles inside. By the quotient rule at $\pm 3i$: $\frac{z^2}{(z-1)\cdot 2z}\big|_{z=\pm3i} = \frac{\pm3i}{2(\pm3i - 1)}$. Sum of all residues $= \frac{1}{10} + \frac{9}{10} = 1$ ⇒ integral $= 2\pi i$. (Sanity check: for large $|z|$, $f \sim 1/z$, and $\oint z^{-1} = 2\pi i$ — the "residue at infinity" confirming the sum.)</p>
         <p><strong>(c) Higher-order pole:</strong> $\displaystyle\oint_{|z|=1}\frac{e^{z}}{z^3}dz$: triple pole; residue = coefficient of $z^2$ in $e^z$ = $\frac{1}{2}$ ⇒ integral $= \pi i$. Series beats the double-derivative formula.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The Residue Theorem simplifies complex integration to simple algebra by summing values at poles.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The Residue Theorem simplifies complex integration to simple algebra by summing values at poles.</li>
+            <li style="margin-bottom: 0;">Poles are isolated singular points where a function goes to infinity; finding them is key to residue integration.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Error-Proofing Checklist</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Error-Proofing Checklist</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Which poles are inside?</strong> Compute moduli against the contour radius — the #1 mistake is summing a pole that sits outside (or on!) the contour. Poles <em>on</em> the contour ⇒ principal values/indented contours, a different calculation.</li>
             <li><strong>Orientation:</strong> clockwise traversal flips the sign ($-2\pi i\sum$).</li>
@@ -38,6 +79,17 @@
             <li><strong>Cross-check:</strong> sum of <em>all</em> residues (including at ∞) of a rational function is 0; for $\deg(\text{denom}) \ge \deg(\text{num}) + 2$, the large-circle integral → 0 — free consistency tests, as in example (b).</li>
             <li><strong>Numerical verification:</strong> parameterize and quadrature the contour (50 lines of NumPy) — the habit that catches algebra slips before they reach a pricing formula.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Integrating along paths in the complex plane simplifies options calculations by replacing infinite integrals with simple algebraic sums of residues.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">A contour is the path in the complex plane along which we integrate to find options probabilities.</li>
+            <li style="margin-bottom: 0;">Poles are isolated singular points where a function goes to infinity; finding them is key to residue integration.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -50,13 +102,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The Residue Theorem states that the integral around a loop is determined solely by the 'residues' at the singular points inside the loop. This simplifies integration to basic algebra.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Residue Concept:</strong> The residue is the coefficient of the $1/z$ term in the Laurent series—the only term that survives a loop integration.</li>
-            <li style="margin-bottom: 1rem;"><strong>Integral as Sum:</strong> $\oint f(z) dz = 2\pi i \sum \text{Residues}$. We turn a difficult calculus problem into a simple sum of residues.</li>
-            <li style="margin-bottom: 0;"><strong>Calibration Speed:</strong> Allows pricing engines to run in microseconds by replacing numerical integration loops with algebraic formulas.</li>
-        </ul>
-    </div>
+    
 </div>

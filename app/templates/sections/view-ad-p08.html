@@ -5,8 +5,10 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Building an adjoint by operator overloading: an active type that records a tape during execution, then a backward interpreter that replays it — a minimal working AAD engine.</p>
     </header>
 
-    <div class="card">
-        <h3>1. Architecture of an OO Adjoint</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. Architecture of an OO Adjoint</h3>
         <p>Three components, ~200 lines for a usable core:</p>
         <ul style="line-height: 1.8;">
             <li><strong>Active type</strong> <code>ADouble</code>: holds a value + a node index into the tape.</li>
@@ -14,10 +16,23 @@
             <li><strong>Backward interpreter:</strong> allocate an adjoint per node, seed the output's adjoint with 1, walk the tape <em>backwards</em> applying $\bar{v}_{parent} \mathrel{+}= w \cdot \bar{v}_{node}$ for each stored partial $w$.</li>
         </ul>
         <p>Storing the <em>partials</em> (not op codes) at record time is "preaccumulation at the elemental level" — the interpreter then needs no primal values at all, trading slightly more tape per node for a simpler, faster reverse sweep.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Adjoint mode (Reverse AD) is the quant holy grail: it computes sensitivities for infinite inputs in a single backward pass.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Adjoint mode calculates portfolio risk sensitivities with respect to all market factors in a single backward pass.</li>
+            <li style="margin-bottom: 0;">AD tapes record all math operations in memory during the pricing run so they can be traversed backward.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Minimal Python Implementation</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Minimal Python Implementation</h3>
         <pre style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.8rem; font-size: 0.74rem; overflow-x: auto;">tape = []                                   # records: (parents, partials)
 
 class ADouble:
@@ -43,10 +58,23 @@ def grad(out):                              # backward interpreter
             adj[p] += w * adj[i]            # the += of Part 03
     return adj                              # read inputs' adjoints by their idx</pre>
         <p>Usage: build inputs as <code>ADouble</code>, run the <em>unchanged</em> pricer source (duck typing), call <code>grad(PV)</code> — every input's sensitivity drops out. This 30-line engine is, structurally, PyTorch's autograd.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Algorithmic Differentiation calculates exact computer derivatives by propagating chain-rule terms forward or backward through code.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">AD tapes record all math operations in memory during the pricing run so they can be traversed backward.</li>
+            <li style="margin-bottom: 0;">Operator overloading replaces standard variables with custom variables that track their own derivatives.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Production Concerns the Toy Hides</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Production Concerns the Toy Hides</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Tape memory layout:</strong> contiguous flat arrays (struct-of-arrays) for parents/partials — cache-friendly reverse sweeps; per-object Python lists are 100× off the pace (use C++/NumPy blocks; CppAD/dco do exactly this).</li>
             <li><strong>Tape lifecycle:</strong> per-path tape reset (Part 06's pathwise trick) — <code>tape.clear()</code> between paths keeps memory flat; thread-local tapes for parallelism.</li>
@@ -54,11 +82,35 @@ def grad(out):                              # backward interpreter
             <li><strong>Custom nodes:</strong> register super-node ops (solve, interpolate, BS formula) that append one record with analytic partials (Parts 02–03) — the single biggest speed/memory lever.</li>
             <li><strong>Branches recorded implicitly:</strong> the tape stores what executed — re-running with different inputs requires re-taping (contrast JAX's traced-and-compiled static graphs; dynamic taping is the price of Python-style flexibility).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Algorithmic Differentiation calculates exact computer derivatives by propagating chain-rule terms forward or backward through code.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">AD tapes record all math operations in memory during the pricing run so they can be traversed backward.</li>
+            <li style="margin-bottom: 0;">AD tapes record all math operations in memory during the pricing run so they can be traversed backward.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Checkpointed Interpretation</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Checkpointed Interpretation</h3>
         <p>For long simulations, combine the interpreter with Part 06's checkpoints: tape only the current segment; at segment boundaries, store state snapshots; reverse segment-by-segment, re-taping each from its snapshot. The interpreter doesn't change — only the driver loop does. This composition (OO recording + Revolve scheduling + custom nodes) is, component for component, the architecture of commercial AAD libraries deployed for XVA.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Algorithmic Differentiation calculates exact computer derivatives by propagating chain-rule terms forward or backward through code.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">AD tapes record all math operations in memory during the pricing run so they can be traversed backward.</li>
+            <li style="margin-bottom: 0;">Operator overloading replaces standard variables with custom variables that track their own derivatives.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -71,13 +123,5 @@ def grad(out):                              # backward interpreter
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Operator overloading simplifies Adjoint AD by letting custom classes handle the recording and backward traversal of the computational graph automatically.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Active Types:</strong> Replacing `double` with a custom class (like `adouble`) that records its operations to a global tape.</li>
-            <li style="margin-bottom: 1rem;"><strong>Backward Interpreter:</strong> Once the code finishes, the interpreter traverses the tape in reverse, distributing derivatives.</li>
-            <li style="margin-bottom: 0;"><strong>Development Speed:</strong> Allows quants to convert existing pricing code to AD with minimal changes, though at the cost of some runtime memory overhead.</li>
-        </ul>
-    </div>
+    
 </div>

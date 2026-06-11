@@ -5,17 +5,32 @@
         <p style="color: #64748b; margin-top: 0.5rem;">The generator under your Monte Carlo is a model assumption: what RAND() actually is, how PRNGs are judged, and the industry-standard choices for production risk engines.</p>
     </header>
 
-    <div class="card">
-        <h3>1. What's Inside RAND()</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. What's Inside RAND()</h3>
         <ul style="line-height: 1.8;">
             <li>Legacy Excel (pre-2003) used a weak LCG-style routine with documented failures; modern Excel implements <strong>Mersenne Twister</strong> (MT19937) for <code>RAND()</code> — statistically respectable for teaching-scale work.</li>
             <li>Remaining workflow hazards: <strong>volatility</strong> (every recalculation redraws — results unreproducible unless you paste values), <strong>no seed control</strong> in the function itself (no audit trail), and the <strong>normal-conversion</strong> step: use <code>NORM.S.INV(RAND())</code>; never the sum-of-12-uniforms folklore, which truncates the tails VaR lives in (its support is ±6σ, and tails are badly thin long before that).</li>
             <li>VBA's <code>Rnd</code> is a 24-bit LCG with period $2^{24}$ ≈ 16.7m — exhausted by one serious VaR run; avoid for anything measured.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Risk management quantifies potential portfolio losses under normal and extreme market conditions, using VaR and Expected Shortfall.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Value-at-Risk (VaR) is the maximum loss expected under normal market conditions at a given confidence level.</li>
+            <li style="margin-bottom: 0;">Dynamic models like GARCH adjust risk limits as market volatility clusters and spikes.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. How Generators Are Judged</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. How Generators Are Judged</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Period:</strong> draws before repetition — MT19937: $2^{19937}-1$; PCG64: $2^{128}$; both effectively infinite vs. an LCG's $2^{24}$–$2^{32}$.</li>
             <li><strong>Equidistribution &amp; structure:</strong> classic LCGs lay points on lattice hyperplanes in high dimensions (the RANDU disaster) — fatal for path generation where each path is one high-dimensional point.</li>
@@ -23,10 +38,23 @@
             <li><strong>Reproducibility &amp; streams:</strong> seedable, with independent parallel substreams (jump-ahead/counter-based) — a <em>governance</em> requirement (Part 01): yesterday's VaR must be re-runnable bit-for-bit.</li>
             <li><strong>Cryptographic security is not the bar:</strong> risk MC needs statistical quality and speed, not unpredictability.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Risk management quantifies potential portfolio losses under normal and extreme market conditions, using VaR and Expected Shortfall.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Value-at-Risk (VaR) is the maximum loss expected under normal market conditions at a given confidence level.</li>
+            <li style="margin-bottom: 0;">Dynamic models like GARCH adjust risk limits as market volatility clusters and spikes.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Industry Standards</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Industry Standards</h3>
         <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
             <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;">Generator</th><th style="padding: 0.45rem;">Where</th><th style="padding: 0.45rem;">Notes</th></tr></thead>
             <tbody>
@@ -36,16 +64,40 @@
                 <tr><td style="padding: 0.45rem;">Sobol (quasi-random)</td><td style="padding: 0.45rem;">Pricing/risk where convergence matters</td><td style="padding: 0.45rem;">Not random — low-discrepancy; $O(N^{-1})$-ish error vs. $O(N^{-1/2})$; pair with Brownian-bridge ordering and use scrambling for error bars</td></tr>
             </tbody>
         </table>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Risk management quantifies potential portfolio losses under normal and extreme market conditions, using VaR and Expected Shortfall.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Value-at-Risk (VaR) is the maximum loss expected under normal market conditions at a given confidence level.</li>
+            <li style="margin-bottom: 0;">Dynamic models like GARCH adjust risk limits as market volatility clusters and spikes.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Does It Change the VaR? (The Test That Settles It)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Does It Change the VaR? (The Test That Settles It)</h3>
         <ul style="line-height: 1.8;">
             <li>Re-run Part 08's two-asset engine under MT19937, PCG64 and scrambled Sobol with matched $N$: central VaR estimates agree within sampling error — <em>generator quality shows up in the tails and in convergence rate, not the mean of good generators</em>.</li>
             <li>Swap in a deliberately bad LCG (e.g. RANDU coefficients): tail quantiles bias visibly and path-dependent payoffs (barriers) misprice — the lattice structure interacts with the path dimension.</li>
             <li>Sobol at 10k points typically matches pseudo-random at ~100k on smooth payoffs — the cheapest 10× speedup in risk computing; degrade gracefully (effective dimension) on kinked payoffs.</li>
             <li><strong>Policy:</strong> seedable PCG64/Philox for production engines with logged seeds; Sobol overlay for convergence; Excel + pasted draws acceptable for prototypes <em>with the draw block archived</em>.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Risk management quantifies potential portfolio losses under normal and extreme market conditions, using VaR and Expected Shortfall.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Value-at-Risk (VaR) is the maximum loss expected under normal market conditions at a given confidence level.</li>
+            <li style="margin-bottom: 0;">Dynamic models like GARCH adjust risk limits as market volatility clusters and spikes.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -58,13 +110,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Not all random number generators are created equal. Risk systems must use high-quality generators (like Mersenne Twister or Sobol sequences) to avoid artificial patterns.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Pseudo-Random:</strong> Computers generate deterministic sequences that mimic randomness. Weak generators repeat patterns, biasing risk estimates.</li>
-            <li style="margin-bottom: 1rem;"><strong>Quasi-Monte Carlo (QMC):</strong> Sobol sequences distribute points evenly across the simulation space, making pricing converge up to 10x faster.</li>
-            <li style="margin-bottom: 0;"><strong>Excel Limitations:</strong> Excel's standard random generator historically suffered from correlation flaws; production engines use dedicated libraries.</li>
-        </ul>
-    </div>
+    
 </div>

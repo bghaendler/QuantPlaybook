@@ -5,17 +5,32 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Three model families pushed to long maturities: which smiles flatten, which collapse, and what the comparison teaches about choosing models per book.</p>
     </header>
 
-    <div class="card">
-        <h3>1. The Contenders' Long-Run Anatomy</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Contenders' Long-Run Anatomy</h3>
         <ul style="line-height: 1.8;">
             <li><strong>CEV</strong> ($dF = \alpha F^\beta dW$): no stochastic vol at all — the "smile" is pure local-vol skew. Long-time behavior is degenerate: for β &lt; 1 the origin is attainable (absorption = default-like mass at 0) — the left wing's density mass grows with T; effective smile becomes pure downward skew, no curvature.</li>
             <li><strong>SABR:</strong> vol is a GBM ($d\alpha = \nu\alpha dW_2$) — <em>not mean-reverting, not ergodic</em>: $\alpha_T$ is lognormal with exploding variance. Total variance $\int\alpha^2$ has fat (lognormal-like) tails forever ⇒ the smile does <em>not</em> flatten correctly; moment explosions are immediate ($\mathbb{E}[S_T^{1+\epsilon}] = \infty$ for ρ ≥ 0 cases and generally for large u) — SABR is a short-maturity asymptotic device, not a global model.</li>
             <li><strong>Heston</strong> ($dv = \kappa(\theta - v)dt + \xi\sqrt{v}dW_2$): CIR variance is ergodic (Gamma invariant law) ⇒ genuine large-time limit: fixed-strike smile flattens to $\sqrt{\theta}$-level vol, with the scaled limiting smile computable via the explicit limiting cumulant function $\Lambda(u)$ (Forde-Jacquier) — the only one of the three with honest long-run behavior.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The SABR model is the industry standard interest rate model, fitting volatility smiles instantly using Hagan's asymptotic formulas.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">SABR is the industry standard interest rate model, fitting volatility smiles instantly using Hagan's formula.</li>
+            <li style="margin-bottom: 0;">Asymptotic analysis simplifies complex models by studying them at extreme limits (like very short maturities).</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. Moment Explosions: The Sharp Comparison Tool</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. Moment Explosions: The Sharp Comparison Tool</h3>
         <p>Define $T^*(u) = \sup\{T: \mathbb{E}[S_T^u] < \infty\}$. Lee's moment formula ties wings to moments: right-wing slope of total variance $= \psi(u^* - 1)$ where $u^*$ is the critical moment.</p>
         <ul style="line-height: 1.8;">
             <li><strong>CEV:</strong> all positive moments finite (β &lt; 1) — wings eventually Gaussian-thin on the right; left wing dominated by absorption mass.</li>
@@ -23,10 +38,23 @@
             <li><strong>Heston:</strong> $T^*(u)$ finite and explicitly computable (the Andersen-Piterbarg ODE-blowup criterion); critical moments → constants as $T \to \infty$, wing slopes settle — consistent with ergodic flattening at fixed strikes.</li>
         </ul>
         <p>The practical use: moment explosions decide whether CMS convexity, quanto and power-payoff integrals even <em>converge</em> under each model — checked before any pricing.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The SABR model is the industry standard interest rate model, fitting volatility smiles instantly using Hagan's asymptotic formulas.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">SABR is the industry standard interest rate model, fitting volatility smiles instantly using Hagan's formula.</li>
+            <li style="margin-bottom: 0;">Analyzing models at extreme limits (like very short maturities) simplifies option pricing equations.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Numerical Comparison (Representative Shapes)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Numerical Comparison (Representative Shapes)</h3>
         <p>Calibrate all three to the same 6m smile (same ATM vol 20%, skew, curvature), then push to 10y:</p>
         <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
             <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;"></th><th style="padding: 0.45rem;">ATM vol @10y</th><th style="padding: 0.45rem;">90/110 skew @10y</th><th style="padding: 0.45rem;">Wing behavior</th></tr></thead>
@@ -37,16 +65,40 @@
             </tbody>
         </table>
         <p style="margin-top: 0.6rem;">(Shapes, not universal numbers — the exercise to run in the Python sandbox with this app's pricers.) The disagreement at 10y between models <em>identically calibrated at 6m</em> is the cleanest demonstration of model risk in volatility books (ARM Part 01's theme, made vivid).</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The SABR model is the industry standard interest rate model, fitting volatility smiles instantly using Hagan's asymptotic formulas.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">SABR is the industry standard interest rate model, fitting volatility smiles instantly using Hagan's formula.</li>
+            <li style="margin-bottom: 0;">Analyzing models at extreme limits (like very short maturities) simplifies option pricing equations.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Choosing by Book</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Choosing by Book</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Short-dated smile quoting/risk</strong> (FX options, listed equity): SABR-class asymptotics — unbeatable speed/stability where they're valid.</li>
             <li><strong>Long-dated/hybrid books</strong> (CMS, PRDC, autocall back-ends): mean-reverting SV (Heston-class or LSV) — ergodic structure and finite-moment control are requirements, not luxuries.</li>
             <li><strong>Default-sensitive equity (low strikes):</strong> CEV/local-vol absorption behavior is a feature (links to credit, cf. structural models) — but recognize it's modeling <em>default mass</em>, not smile curvature.</li>
             <li>Mixed desks mark short ends on SABR quotes and long ends on Heston/LSV surfaces — the handover maturity is itself a governance choice; document it.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The SABR model is the industry standard interest rate model, fitting volatility smiles instantly using Hagan's asymptotic formulas.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">SABR is the industry standard interest rate model, fitting volatility smiles instantly using Hagan's formula.</li>
+            <li style="margin-bottom: 0;">Analyzing models at extreme limits (like very short maturities) simplifies option pricing equations.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -59,13 +111,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Comparing SABR, CEV, and Heston models in asymptotic limits reveals how different model assumptions shape long-term volatility smiles.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>CEV Model:</strong> Volatility is a pure deterministic power function of price. Simple, but fails to capture independent vol shocks.</li>
-            <li style="margin-bottom: 1rem;"><strong>Heston Model:</strong> Models volatility as a mean-reverting square-root process, capturing mean reversion but leading to thinner tails than SABR.</li>
-            <li style="margin-bottom: 0;"><strong>Asymptotic Choice:</strong> Quants choose models based on which asymptotic limits best match the structure of their specific market (e.g., rates vs. equities).</li>
-        </ul>
-    </div>
+    
 </div>

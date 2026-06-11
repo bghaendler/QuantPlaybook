@@ -5,36 +5,88 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Boundary values determine interior values — the formula, its derivative ladder, and the split-the-singularity technique that proves it and powers multi-pole integrals.</p>
     </header>
 
-    <div class="card">
-        <h3>1. The Formula</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Formula</h3>
         <p>For $f$ holomorphic on and inside a simple closed contour $\gamma$, and $z_0$ inside:</p>
         $$f(z_0) = \frac{1}{2\pi i}\oint_\gamma \frac{f(z)}{z - z_0}\,dz.$$
         <p><strong>Proof by deformation + splitting:</strong> shrink $\gamma$ to a tiny circle around $z_0$ (Part 10), then split the integrand:</p>
         $$\oint \frac{f(z)}{z - z_0}dz = \oint\frac{f(z_0)}{z - z_0}dz + \oint\frac{f(z) - f(z_0)}{z - z_0}dz = f(z_0)\cdot 2\pi i + 0,$$
         <p>the second piece vanishing by ML (the ratio is bounded by continuity, the circle's length → 0). <em>Splitting off the singular part and bounding the remainder</em> is the move to internalize — it reappears in every residue computation.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Integrating along paths in the complex plane simplifies options calculations by replacing infinite integrals with simple algebraic sums of residues.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</li>
+            <li style="margin-bottom: 0;">The Residue Theorem simplifies complex integration to simple algebra by summing values at poles.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. The Derivative Ladder</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. The Derivative Ladder</h3>
         <p>Differentiating under the integral sign:</p>
         $$f^{(n)}(z_0) = \frac{n!}{2\pi i}\oint_\gamma \frac{f(z)}{(z - z_0)^{n+1}}\,dz.$$
         <p>Holomorphic once ⇒ all derivatives exist (the Part 05 promise, now proved) — and they're <em>computable from boundary data</em>. With ML on a circle of radius $r$: <strong>Cauchy's estimates</strong> $|f^{(n)}(z_0)| \le n!\,M_r/r^n$, whence <strong>Liouville's theorem</strong> (bounded entire ⇒ constant) and the fundamental theorem of algebra in three lines.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Cauchy's theorems relate the values of smooth functions on a boundary to their values inside, enabling analytical option solutions.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Holomorphic functions are smooth complex functions that contain no mathematical sharp points or cuts.</li>
+            <li style="margin-bottom: 0;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Multiple Singularities: Split the Contour</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Multiple Singularities: Split the Contour</h3>
         <p>For an integrand with several enclosed singular points (e.g. $\frac{g(z)}{(z-a)(z-b)}$), partial fractions split the singularity:</p>
         $$\frac{1}{(z-a)(z-b)} = \frac{1}{a-b}\left(\frac{1}{z-a} - \frac{1}{z-b}\right),$$
         <p>and each term gets its own shrunken circle — the integral is the <em>sum</em> of contributions, each evaluated by the formula. Worked: $\oint_{|z|=3}\frac{e^z}{z(z-2)}dz$. Split: $\frac{1}{z(z-2)} = \frac{1}{2}\left(\frac{1}{z-2} - \frac{1}{z}\right)$, so the integral is $\frac{2\pi i}{2}(e^2 - e^0) = \pi i(e^2 - 1)$. This additivity over singularities is the residue theorem (Part 15) in all but name.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Integrating along paths in the complex plane simplifies options calculations by replacing infinite integrals with simple algebraic sums of residues.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The Residue Theorem simplifies complex integration to simple algebra by summing values at poles.</li>
+            <li style="margin-bottom: 0;">A singularity is a point where a pricing formula breaks down or goes to infinity.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Quant Readings of the Formula</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Quant Readings of the Formula</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Coefficient extraction:</strong> $a_n = \frac{1}{2\pi i}\oint \frac{f(z)}{z^{n+1}}dz$ pulls Taylor coefficients off a contour — for probability generating functions this reads off $\mathbb{P}(N = n)$ numerically (evaluate $f$ on a circle, FFT the samples): the standard method for compound-Poisson loss distributions.</li>
             <li><strong>Mean value:</strong> on a centered circle the formula says $f(z_0) = \frac{1}{2\pi}\int_0^{2\pi}f(z_0 + re^{i\theta})d\theta$ — Part 07's harmonic mean-value property, inherited from holomorphy.</li>
             <li><strong>Numerical differentiation without subtraction error:</strong> $f'(z_0)$ via the contour formula (or its tiny-imaginary-step cousin $\mathrm{Im}\,f(x + ih)/h$) computes Greeks of analytic pricers to machine precision — no finite-difference cancellation. The "complex-step derivative" trick used in AAD validation is this formula in disguise.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Integrating along paths in the complex plane simplifies options calculations by replacing infinite integrals with simple algebraic sums of residues.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">A contour is the path in the complex plane along which we integrate to find options probabilities.</li>
+            <li style="margin-bottom: 0;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -47,13 +99,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Cauchy's Integral Formula is a mathematical miracle: it shows that the values of a holomorphic function inside a region are entirely determined by its values on the boundary.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Boundary Control:</strong> If you know the values of an option model on the boundary of a complex plane, you know its values everywhere inside.</li>
-            <li style="margin-bottom: 1rem;"><strong>Singularity Splitting:</strong> Used to isolate singular points (like where an option payout is non-differentiable) and solve them separately.</li>
-            <li style="margin-bottom: 0;"><strong>Derivative Extraction:</strong> Allows quants to calculate high-order option Greeks by integrating the option price along a circle around the stock price.</li>
-        </ul>
-    </div>
+    
 </div>

@@ -5,39 +5,91 @@
         <p style="color: #64748b; margin-top: 0.5rem;">How trading moves the price against you: temporary vs. permanent impact, the square-root law, and the order-size distributions that drive it.</p>
     </header>
 
-    <div class="card">
-        <h3>1. Temporary vs. Permanent Impact</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. Temporary vs. Permanent Impact</h3>
         <p>Executing quantity $Q$ over a horizon decomposes its price effect:</p>
         <ul style="line-height: 1.8;">
             <li><strong>Temporary (mechanical) impact:</strong> walking the book / pressuring queues — decays after you stop trading; you pay it, the market forgets it.</li>
             <li><strong>Permanent (informational) impact:</strong> the lasting mid-price shift — the market's inference that your flow carried information. In Kyle's model, permanent impact is linear: $\Delta p = \lambda \cdot Q$, with $\lambda$ rising in informed-flow share and falling in noise-trade volume.</li>
             <li><strong>Decay kernel view</strong> (propagator models, Bouchaud et al.): $p_t = \sum_{s<t} G(t - s)\,\epsilon_s v_s^\delta + \text{noise}$ — each trade's impact decays as a power law $G(\tau) \sim \tau^{-\beta}$; persistent order-flow autocorrelation and decaying impact balance to keep prices near-martingale ("diffusivity puzzle" resolution).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Market impact is the price change caused by your own order size depleting the order book.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            <li style="margin-bottom: 0;">Smart order routers dynamically split trades across exchanges and dark pools to find the best liquidity.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. The Square-Root Law</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. The Square-Root Law</h3>
         <p>Across asset classes, decades, and venues, the cost of executing a metaorder of size $Q$ empirically follows:</p>
         $$\Delta p \approx Y\,\sigma\sqrt{\frac{Q}{V}},$$
         <p>with $\sigma$ daily volatility, $V$ daily volume, and $Y \approx 0.5$–$1$. Notable features: concavity (the second half of an order costs less <em>per share</em> than the first), near-universality of the exponent ($\approx 0.4$–$0.6$), and dependence on $Q/V$ (participation), not $Q$ alone. Theoretical accounts: latent-liquidity models (locally linear latent supply ⇒ square-root aggregate) and dimensional-analysis arguments. Practical reading: <em>impact cost in bps</em> $\approx Y\sigma_{bps}\sqrt{\text{participation}}$ — the first number any execution-cost model produces.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Intraday trading focuses on order queue mechanics, bid-ask spreads, and minimizing the market impact of large orders.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            <li style="margin-bottom: 0;">Smart order routers dynamically split trades across exchanges and dark pools to find the best liquidity.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Order-Size and Flow Distributions</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Order-Size and Flow Distributions</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Trade sizes are power-law tailed:</strong> $\mathbb{P}(v > x) \sim x^{-\zeta}$ with $\zeta \approx 1.5$–$2.5$ — block trades coexist with odd lots; means exist, variances barely. (Full treatment in Part 04.)</li>
             <li><strong>Order-flow signs are long-memory:</strong> autocorrelation of buy/sell indicators decays as $\tau^{-\gamma}$, $\gamma \approx 0.5$ — metaorder splitting (Part 07's optimal execution!) creates the persistence that propagator models must offset.</li>
             <li><strong>Arrival processes cluster:</strong> Poisson fails; Hawkes self-exciting processes $\lambda_t = \mu + \sum_{t_i < t}\alpha e^{-\beta(t - t_i)}$ capture the bursts — events beget events, the microstructure analogue of GARCH clustering.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Intraday trading focuses on order queue mechanics, bid-ask spreads, and minimizing the market impact of large orders.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Optimal execution balances transaction costs (market impact) and market risk (time delay).</li>
+            <li style="margin-bottom: 0;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Modeling Choices for Execution (Setup for Parts 03 &amp; 07)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Modeling Choices for Execution (Setup for Parts 03 &amp; 07)</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Almgren-Chriss parametrization:</strong> permanent impact $g(v) = \gamma v$, temporary $h(v) = \eta v$ (linear in trade rate) — analytically convenient, gives closed-form optimal schedules; calibration in Part 03.</li>
             <li><strong>Concave (square-root) cost with decay:</strong> more realistic, numerically optimized; matters most for large participation or long horizons.</li>
             <li><strong>Sanity constraints:</strong> no-dynamic-arbitrage (Gatheral): permanent impact must be linear if decay is absent, and decay kernels must avoid round-trip money pumps — concave permanent impact + no decay is internally inconsistent.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Execution algorithms optimize how large orders are sliced and routed to balance market impact costs and price risks.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Order book imbalances predict short-term price moves within milliseconds.</li>
+            <li style="margin-bottom: 0;">Smart order routers dynamically split trades across exchanges and dark pools to find the best liquidity.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -50,13 +102,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Market Impact is the price change caused by your own trade. Large orders push the price against you, making execution cost estimation critical for profitability.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Temporary Impact:</strong> The price drop caused by temporarily depleting the order book, which recovers once new limit orders arrive.</li>
-            <li style="margin-bottom: 1rem;"><strong>Permanent Impact:</strong> The long-term price change caused by the market adjusting to the information content of your trade.</li>
-            <li style="margin-bottom: 0;"><strong>Square-Root Law:</strong> Empirically, the market impact of a large order scales with the square root of the size of the order, not linearly.</li>
-        </ul>
-    </div>
+    
 </div>

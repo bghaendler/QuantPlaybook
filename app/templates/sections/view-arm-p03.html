@@ -5,18 +5,33 @@
         <p style="color: #64748b; margin-top: 0.5rem;">The distributions that actually fit returns: Student-t, skewed families, mixtures and EVT tails — and how each reshapes the risk numbers built on them.</p>
     </header>
 
-    <div class="card">
-        <h3>1. How Returns Violate Normality</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. How Returns Violate Normality</h3>
         <p>Daily equity-index returns typically show excess kurtosis 5–30, skewness −0.3 to −1, and extreme days far beyond Gaussian reach — the August 1987-style "10σ+" events that a normal model prices at once-per-universe frequencies. Diagnostics that make it visible:</p>
         <ul style="line-height: 1.8;">
             <li><strong>QQ-plots</strong> against the normal: S-shaped departure in both tails (heavier), often asymmetric (left worse).</li>
             <li><strong>Jarque-Bera / Anderson-Darling tests:</strong> reject normality at any sample size that matters — the question is never <em>if</em> but <em>how</em> non-normal.</li>
             <li><strong>Aggregational Gaussianity:</strong> monthly returns look more normal than daily (CLT working through time) — tail modeling matters most exactly at risk-management horizons.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Financial returns exhibit fat tails, meaning extreme market crashes happen much more frequently than standard bell curves predict.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Dynamic models like GARCH adjust risk limits as market volatility clusters and spikes.</li>
+            <li style="margin-bottom: 0;">Basel regulations dictate the size of the capital buffers banks must hold to survive extreme shocks.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. The Working Distribution Families</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. The Working Distribution Families</h3>
         <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
             <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;">Family</th><th style="padding: 0.45rem;">Captures</th><th style="padding: 0.45rem;">Notes</th></tr></thead>
             <tbody>
@@ -27,25 +42,62 @@
             </tbody>
         </table>
         <p style="margin-top: 0.6rem;">Two routes to fat tails — <em>unconditional</em> (a heavy-tailed law) vs. <em>conditional</em> (Gaussian innovations + stochastic volatility/GARCH): real data needs both (t-innovations <em>inside</em> a GARCH layer), since clustering alone underexplains tail thickness.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Risk management quantifies potential portfolio losses under normal and extreme market conditions, using VaR and Expected Shortfall.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Value-at-Risk (VaR) is the maximum loss expected under normal market conditions at a given confidence level.</li>
+            <li style="margin-bottom: 0;">Fat tails mean extreme market crashes happen much more frequently than standard bell curves predict.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. Impact on Risk Numbers</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. Impact on Risk Numbers</h3>
         <ul style="line-height: 1.8;">
             <li><strong>VaR scaling breaks:</strong> normal 99% VaR = 2.33σ; a t₄ at the same σ puts 99% VaR ≈ 3.0σ and 99.9% far beyond — the divergence grows with confidence level, i.e. exactly where regulation looks.</li>
             <li><strong>ES vs. VaR gap widens:</strong> under normality ES₉₇.₅ ≈ VaR₉₉; under fat tails ES exceeds VaR by much more — one reason FRTB switched to ES.</li>
             <li><strong>Square-root-of-time fails:</strong> $\sqrt{h}$ scaling assumes i.i.d. normality; clustering and tails make 10-day risk ≠ √10 × 1-day (typically more in stress).</li>
             <li><strong>Cornish-Fisher quick fix:</strong> $z^{CF} = z + \frac{\gamma_1}{6}(z^2 - 1) + \frac{\gamma_2}{24}(z^3 - 3z) - \frac{\gamma_1^2}{36}(2z^3 - 5z)$ — moment-based quantile correction; usable to ~99%, unreliable beyond (use EVT there).</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Risk management quantifies potential portfolio losses under normal and extreme market conditions, using VaR and Expected Shortfall.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Value-at-Risk (VaR) is the maximum loss expected under normal market conditions at a given confidence level.</li>
+            <li style="margin-bottom: 0;">Fat tails mean extreme market crashes happen much more frequently than standard bell curves predict.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. Fitting and Choosing</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. Fitting and Choosing</h3>
         <ul style="line-height: 1.8;">
             <li><strong>MLE for t/skew-t</strong> is routine; check ν stability across subsamples (Part 01's instability lens).</li>
             <li><strong>EVT recipe:</strong> threshold at ~95th percentile via mean-excess-plot linearity, fit GPD ($\xi$ = tail index ≈ 0.2–0.4 for equities), extrapolate quantiles; mind the bias-variance trade in threshold choice (HFT Part 04's Hill discipline applies verbatim).</li>
             <li><strong>Selection criterion:</strong> out-of-sample tail calibration — do 1% exceedances occur 1% of the time? (formal backtests in Part 07) — not AIC on the full density; risk cares only about the tail it quotes.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Financial returns exhibit fat tails, meaning extreme market crashes happen much more frequently than standard bell curves predict.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Dynamic models like GARCH adjust risk limits as market volatility clusters and spikes.</li>
+            <li style="margin-bottom: 0;">Basel regulations dictate the size of the capital buffers banks must hold to survive extreme shocks.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -58,13 +110,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Financial returns are not normally distributed; they have fat tails and display sudden crashes. Modeling risk requires using distributions that capture these extreme events.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Normal Fallacy:</strong> Assuming normality leads to underestimating the likelihood of market crashes by factors of millions.</li>
-            <li style="margin-bottom: 1rem;"><strong>Student-t & EVT:</strong> We use Student-t distributions or Extreme Value Theory (EVT) to model the tail shapes and forecast extreme losses.</li>
-            <li style="margin-bottom: 0;"><strong>Power Laws:</strong> Tail returns often scale as power laws, meaning the probability of a massive drop decreases much slower than a bell curve predicts.</li>
-        </ul>
-    </div>
+    
 </div>

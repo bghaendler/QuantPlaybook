@@ -1520,6 +1520,22 @@
   <button class="sidebar-expand-btn" id="btn-collapse-all" onclick="sidebarCollapseAll()" title="Collapse all sections">&#x25B2; Collapse All</button>
 </div>
 
+<!-- Interactive Graph View -->
+<a class="nav-item" href="#graph-view" onclick="showSection('graph-view')" style="margin: 0.5rem 0.75rem 1rem 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; border: 1px solid var(--card-border); padding: 0.5rem 0.75rem; border-radius: 6px; background: var(--nav-hover); color: var(--text-color); text-decoration: none; font-size: 0.8rem; transition: background 0.2s ease;">
+    <svg fill="none" height="15" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" width="15">
+        <circle cx="12" cy="12" r="3"></circle>
+        <circle cx="5" cy="5" r="3"></circle>
+        <circle cx="19" cy="5" r="3"></circle>
+        <circle cx="5" cy="19" r="3"></circle>
+        <circle cx="19" cy="19" r="3"></circle>
+        <line x1="12" y1="12" x2="5" y2="5"></line>
+        <line x1="12" y1="12" x2="19" y2="5"></line>
+        <line x1="12" y1="12" x2="5" y2="19"></line>
+        <line x1="12" y1="12" x2="19" y2="19"></line>
+    </svg>
+    Interactive Graph View
+</a>
+
 <!-- ============================================================
      SECTION 1: LEARNING PATH
      ============================================================ -->
@@ -2548,12 +2564,14 @@
             {% include "templates/sections/view-realized-implied-vol.html" %}
             {% include "templates/sections/view-basel-accords.html" %}
             {% include "templates/sections/view-collateral-ccp.html" %}
+            {% include "templates/sections/view-graph.html" %}
         </div>
 </main>
 <script>
         // Tab routing logic — performance-optimized
         // Map section keys to their DOM element IDs and optional simulation init functions
         const _sectionMap = {
+            'graph-view':             { el: 'view-graph', display: 'block' },
             'pending':                { el: 'view-pending', display: 'flex' },
             'interest-rates':         { el: 'view-interest-rates', math: true, sim: () => typeof initInterestRatesSimulation === 'function' && initInterestRatesSimulation() },
             'forward-futures':        { el: 'view-forward-futures', math: true, sim: () => typeof initForwardRatesSimulation === 'function' && initForwardRatesSimulation() },

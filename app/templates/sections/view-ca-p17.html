@@ -5,35 +5,87 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Fourier-type integrals $\int e^{iax}f(x)dx$ by residues: Jordan's lemma, the half-plane rule, and the direct line to characteristic-function inversion — the series' capstone.</p>
     </header>
 
-    <div class="card">
-        <h3>1. Jordan's Lemma</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. Jordan's Lemma</h3>
         <p>For $a > 0$ and $f \to 0$ uniformly on the upper semicircle $C_R$:</p>
         $$\lim_{R\to\infty}\int_{C_R} e^{iaz}f(z)\,dz = 0.$$
         <p>The point: $|e^{iaz}| = e^{-a\,\mathrm{Im}\,z}$ decays <em>exponentially</em> in the upper half-plane, so mere decay of $f$ (any rate, even $1/R$) suffices — no two-degree gap needed. The sharp bound $\int_0^\pi e^{-aR\sin\theta}d\theta < \pi/(aR)$ uses $\sin\theta \ge 2\theta/\pi$. <strong>Half-plane rule:</strong> close where the exponential dies — $e^{iax}$ with $a > 0$ upward, $a < 0$ downward. Choosing wrong makes the arc explode; this single sign-check is the most common bug in hand-computed inversions.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Complex analysis allows quants to solve option prices analytically instead of running slow simulations, by integrating functions in the complex plane.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            <li style="margin-bottom: 0;">Integrating along closed complex loops eliminates numerical instabilities in Fourier pricing.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>2. The Canonical Computation</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2. The Canonical Computation</h3>
         <p>$\displaystyle\int_{-\infty}^{\infty}\frac{\cos ax}{1 + x^2}dx$ ($a > 0$): write $\cos ax = \mathrm{Re}\,e^{iax}$, close upward, pole at $z = i$ with residue $\frac{e^{ia\cdot i}}{2i} = \frac{e^{-a}}{2i}$:</p>
         $$\int_{-\infty}^{\infty}\frac{e^{iax}}{1 + x^2}dx = 2\pi i\cdot\frac{e^{-a}}{2i} = \pi e^{-a} \;\Rightarrow\; \int_{-\infty}^{\infty}\frac{\cos ax}{1+x^2}dx = \pi e^{-a}.$$
         <p>Read probabilistically: this is the statement that the <strong>Cauchy distribution's characteristic function is $e^{-|a|}$</strong> — transform pair computed both directions now (Part 16 inverted it). Companion result via an indented contour at the origin: $\int_{-\infty}^\infty \frac{\sin x}{x}dx = \pi$ (half-residue of $e^{iz}/z$) — the sinc integral underlying truncation windows in FFT pricing grids.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Integrating along paths in the complex plane simplifies options calculations by replacing infinite integrals with simple algebraic sums of residues.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">The Residue Theorem simplifies complex integration to simple algebra by summing values at poles.</li>
+            <li style="margin-bottom: 0;">A contour is the path in the complex plane along which we integrate to find options probabilities.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>3. The General Fourier-Inversion Pattern</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. The General Fourier-Inversion Pattern</h3>
         <p>Distribution functions from characteristic functions (Gil-Pelaez):</p>
         $$\mathbb{P}(X > x) = \frac{1}{2} + \frac{1}{\pi}\int_0^\infty \mathrm{Re}\!\left[\frac{e^{-iux}\varphi(u)}{iu}\right]du,$$
         <p>an oscillatory infinite integral of exactly this part's type: the $1/u$ singularity is the indented origin pole (contributing the $\frac{1}{2}$), the oscillation $e^{-iux}$ picks its closing half-plane by the sign of $x$, and decay of $\varphi$ plays $f \to 0$ in Jordan's lemma. Heston semi-closed pricing ($P_1, P_2$ probabilities), Merton jump-diffusion CDFs, and CDS-bootstrap survival probabilities in affine intensity models are all this one integral with different $\varphi$.</p>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Complex analysis allows quants to solve option prices analytically instead of running slow simulations, by integrating functions in the complex plane.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">A singularity is a point where a pricing formula breaks down or goes to infinity.</li>
+            <li style="margin-bottom: 0;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>4. From Contours to Production Code</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>4. From Contours to Production Code</h3>
         <ul style="line-height: 1.8;">
             <li><strong>Damping = line shifting:</strong> Carr-Madan's $e^{\alpha k}$ factor moves the integration line off the $u = 0$ singularity — a deformation (Part 10) chosen inside the analyticity strip (Part 05); residues crossed during shifts account for the alternative formulas (covered call, delta variants).</li>
             <li><strong>Truncation &amp; oscillation control:</strong> the integrand decays like $|\varphi(u)|/u$; choose $u_{max}$ from the model's known decay (Gaussian-type: fast; VG/CGMY: power-law — integrate further). ML-style bounds (Part 09) give rigorous truncation errors.</li>
             <li><strong>Quadrature:</strong> oscillatory integrals favor FFT on uniform grids (Simpson weights) or adaptive Gauss on $[0, u_{max}]$; for extreme strikes, saddlepoint/steepest-descent deformations (Part 10) tame the oscillation entirely.</li>
             <li><strong>Sanity tests:</strong> $\varphi \equiv e^{-u^2/2}$ must reproduce Black-Scholes; $\pi e^{-a}$ and $\mathrm{sinc}$ integrals make exact unit tests for your inversion code.</li>
         </ul>
+        </div>
+        
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Integrating along paths in the complex plane simplifies options calculations by replacing infinite integrals with simple algebraic sums of residues.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;">A singularity is a point where a pricing formula breaks down or goes to infinity.</li>
+            <li style="margin-bottom: 0;">Analytic continuation lets us extend pricing formulas beyond standard boundaries.</li>
+            </ul>
+        </div>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
@@ -46,13 +98,5 @@
         </ul>
     </div>
 
-    <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
-        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Integrating infinite trigonometric integrals (like sine and cosine waves) in the complex plane allows us to price options under non-normal return distributions.</p>
-        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 1rem;"><strong>Wave Integration:</strong> Solves integrals of the form $\int_{-\infty}^\infty f(x)\cos(x) dx$, which represent probability wave components.</li>
-            <li style="margin-bottom: 1rem;"><strong>Pole Trapping:</strong> The integration contour is designed to trap only the relevant poles in the upper half-plane.</li>
-            <li style="margin-bottom: 0;"><strong>Fourier Inversion:</strong> The final mathematical step required to convert the Heston characteristic function into a real call option price.</li>
-        </ul>
-    </div>
+    
 </div>
