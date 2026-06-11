@@ -61,35 +61,35 @@ se     = np.exp(-r*T) * payoff.std(ddof=1) / np.sqrt(n_paths)</pre>
         <div class="card" style="margin-bottom: 2rem; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
         <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700; border-bottom: 1px solid #fed7aa; padding-bottom: 0.5rem; margin-bottom: 1.25rem;">Plain English Notes</h3>
         <div style="margin-bottom: 1.5rem;">
-            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">1. The Pipeline: Uniforms → Normals → Paths</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Mathematical methods provide the foundational framework to convert random market variables into clean, actionable pricing models.</p>
+            <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">1. The Pipeline: Uniforms &rarr; Normals &rarr; Paths</h4>
+            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Generating asset paths requires a three-step pipeline: generating flat uniform numbers, transforming them into normal curves, and stepping the asset price forward.</p>
             <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;">Brownian motion represents pure, continuous random noise used to model unpredictable asset paths.</li>
-            <li style="margin-bottom: 0;">Value-at-Risk (VaR) is the maximum loss expected under normal market conditions at a given confidence level.</li>
+            <li style="margin-bottom: 0.5rem;"><strong>NORMSINV:</strong> Transforms flat, uniform random numbers into standard normal bell curves.</li>
+            <li style="margin-bottom: 0;"><strong>Path Stepping:</strong> Normal numbers are scaled by volatility and added step-by-step to build the path.</li>
             </ul>
         </div>
         <div style="margin-bottom: 1.5rem;">
             <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">2. Simulating GBM: Exact vs. Euler</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Mathematical methods provide the foundational framework to convert random market variables into clean, actionable pricing models.</p>
+            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> We can simulate Geometric Brownian Motion exactly using logarithms, or approximately using Euler steps.</p>
             <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;">The CIR model scales volatility with the rate, preventing interest rates from ever falling below zero.</li>
-            <li style="margin-bottom: 0;">Using analytical approximations saves computation time compared to running massive computer simulations.</li>
+            <li style="margin-bottom: 0.5rem;"><strong>Exact Scheme:</strong> Simulating ln(S) is exact and does not suffer from discretization errors regardless of step size.</li>
+            <li style="margin-bottom: 0;"><strong>Euler Scheme:</strong> Approximates the path step-by-step. Easy to write, but introduces errors if the time steps are too large.</li>
             </ul>
         </div>
         <div style="margin-bottom: 1.5rem;">
             <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">3. How Many Paths? Error Budgeting</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Mathematical methods provide the foundational framework to convert random market variables into clean, actionable pricing models.</p>
+            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> The accuracy of a Monte Carlo simulation depends on the number of paths, with the error decreasing at 1/&radic;N.</p>
             <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;">Brownian motion represents pure, continuous random noise used to model unpredictable asset paths.</li>
-            <li style="margin-bottom: 0;">Sobol sequences generate highly uniform paths that make Monte Carlo simulations converge up to 10x faster.</li>
+            <li style="margin-bottom: 0.5rem;"><strong>Square-Root Convergence:</strong> To double your accuracy, you must run four times as many paths, creating a trade-off between speed and precision.</li>
+            <li style="margin-bottom: 0;"><strong>Variance Reduction:</strong> Techniques like Antithetic Variables reduce simulation noise without adding extra paths.</li>
             </ul>
         </div>
         <div style="margin-bottom: 0;">
             <h4 style="margin: 0 0 0.5rem 0; color: #c2410c; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;">4. Minimal Correct NumPy Reference</h4>
-            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Random variables model the uncertainty of future market paths, while moments describe the shape, width, and severity of risks.</p>
+            <p style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.6; color: #451a03; margin: 0 0 0.5rem 0;"><strong>The Big Picture:</strong> Efficient simulations use vectorized NumPy functions instead of slow Python loops, running thousands of paths instantly.</p>
             <ul style="font-family: 'Inter', sans-serif; font-size: 0.9rem; line-height: 1.6; color: #451a03; padding-left: 1.2rem; margin: 0;">
-            <li style="margin-bottom: 0.5rem;">Value-at-Risk (VaR) is the maximum loss expected under normal market conditions at a given confidence level.</li>
-            <li style="margin-bottom: 0;">Mean represents expected return, while variance and skewness capture asset risk and crash likelihood.</li>
+            <li style="margin-bottom: 0.5rem;"><strong>Vectorization:</strong> Drawing all random numbers in a single array allows the CPU to process the paths in parallel.</li>
+            <li style="margin-bottom: 0;"><strong>Cumsum:</strong> Using np.cumsum to accumulate random returns into asset paths in a single operation.</li>
             </ul>
         </div>
     </div>
