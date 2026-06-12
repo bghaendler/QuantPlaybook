@@ -1,34 +1,104 @@
 <div id="view-cqf-fp-fx-basics" style="display: none; font-family: var(--font-family-sans);">
     <header style="margin-bottom: 2rem;">
-        
+
         <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">FX Basics</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Currency pairs, quoting conventions, cross-rates and dealing spreads — the vocabulary of the world's largest market.</p>
     </header>
+
+    <!-- Plain English Notes (main) -->
+    <div class="card" style="background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> every FX price is a fraction — the value of one currency <em>measured in another</em>. There is no absolute price of a euro, only EUR/USD, EUR/GBP, EUR/JPY… Currencies trade in pairs because you're always simultaneously buying one and selling the other.</p>
+        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Read EUR/USD = 1.0950 as a price tag:</strong> one euro (the <em>base</em>) costs 1.0950 dollars (the <em>quote</em>). Base first, quote second, always.</li>
+            <li style="margin-bottom: 0.5rem;"><strong>The dollar is the hub:</strong> ~90% of all FX trades have USD on one side. Exotic pairs are usually two dollar trades chained together — which is exactly how cross-rates are computed below.</li>
+            <li style="margin-bottom: 0.5rem;"><strong>A pip is the market's tick:</strong> the 4th decimal place for most pairs (the 2nd for JPY pairs). EUR/USD moving 1.0950 → 1.0951 is "one pip" — on a standard €1m trade, about $100.</li>
+            <li style="margin-bottom: 0;"><strong>The spread is the dealer's fee in disguise:</strong> you buy at the higher ask and sell at the lower bid — there's no commission line, but every round trip pays the gap. The demo below prices it.</li>
+        </ul>
+    </div>
+
     <div class="card">
-        <h3>14.1 Foreign Exchange Structure</h3>
+        <h3>Foreign Exchange Structure</h3>
         <p>Currencies are traded strictly in pairs (e.g. EUR/USD). The US Dollar acts as the global primary reserve currency, participating in the vast majority of trades.</p>
         <p>Terminology: <strong>Base Currency</strong> / <strong>Quote Currency</strong>.</p>
         <p>For a quote pair $C_1 / C_2 = X$, $1$ unit of base currency $C_1$ buys $X$ units of quote currency $C_2$.</p>
+        <ul style="line-height: 1.8; font-size: 0.92rem;">
+            <li><strong>Majors:</strong> EUR/USD, USD/JPY, GBP/USD, USD/CHF — the deepest, tightest-spread pairs.</li>
+            <li><strong>Crosses:</strong> pairs without USD (EUR/GBP, EUR/JPY) — historically priced <em>through</em> the dollar legs.</li>
+            <li><strong>Market convention decides who is base:</strong> EUR, GBP, AUD, NZD quote against the dollar as base (EUR/USD); most others quote the dollar as base (USD/JPY, USD/CHF). It's convention, not mathematics.</li>
+        </ul>
     </div>
 
     <div class="card" style="border-left: 4px solid var(--accent);">
         <h3>Interactive Cross-Rate Converter Matrix</h3>
-        <p>Convert EUR and GBP to USD simultaneously based on current live rates:</p>
-        
+        <p>Two dollar rates imply the cross. Change either leg and watch EUR/GBP follow — arbitrageurs enforce this identity continuously:</p>
+
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
             <div>
                 <label style="font-weight: 600; font-size: 0.85rem; display: block; margin-bottom: 0.5rem;">EUR/USD Spot Rate:</label>
-                <input id="fxBasEur" type="number" value="1.0950" step="0.0005" style="padding: 0.3rem; border-radius: 6px; border: 1px solid var(--input-border); width: 100%;" oninput="calcFXBas()">
+                <input id="fxBasEur" type="number" value="1.0950" step="0.0005" style="padding: 0.3rem; border-radius: 6px; border: 1px solid var(--input-border); width: 100%; background: var(--input-bg); color: var(--text-color);" oninput="calcFXBas()">
             </div>
             <div>
                 <label style="font-weight: 600; font-size: 0.85rem; display: block; margin-bottom: 0.5rem;">GBP/USD Spot Rate:</label>
-                <input id="fxBasGbp" type="number" value="1.2750" step="0.0005" style="padding: 0.3rem; border-radius: 6px; border: 1px solid var(--input-border); width: 100%;" oninput="calcFXBas()">
+                <input id="fxBasGbp" type="number" value="1.2750" step="0.0005" style="padding: 0.3rem; border-radius: 6px; border: 1px solid var(--input-border); width: 100%; background: var(--input-bg); color: var(--text-color);" oninput="calcFXBas()">
             </div>
         </div>
 
-        <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
-            <h4 style="margin-top:0; color:var(--accent);">Derived EUR/GBP Cross-Rate:</h4>
-            <div id="fxBasCross" style="font-size: 1.6rem; font-weight: 800; color: #4f46e5;">0.8588</div>
-            <p style="font-size:0.85rem; margin-top:0.5rem;">Calculated via: (EUR/USD) / (GBP/USD)</p>
+        <div style="background: var(--metric-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div>
+                <h4 style="margin-top:0; color:var(--accent);">Derived EUR/GBP Cross-Rate:</h4>
+                <div id="fxBasCross" style="font-size: 1.6rem; font-weight: 800; color: #4f46e5;">0.8588</div>
+                <p style="font-size:0.85rem; margin-top:0.5rem; color: #64748b;">Calculated via: (EUR/USD) ÷ (GBP/USD)</p>
+            </div>
+            <div style="border-left: 1px solid var(--card-border); padding-left: 1rem;">
+                <h4 style="margin-top:0; color:var(--accent);">Inverted GBP/EUR:</h4>
+                <div id="fxBasCrossInv" style="font-size: 1.6rem; font-weight: 800; color: #10b981;">1.1644</div>
+                <p style="font-size:0.85rem; margin-top:0.5rem; color: #64748b;">Reciprocal: 1 ÷ (EUR/GBP)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Demo: Bid/Ask Spread & the Cost of a Round Trip -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+            Demo: The Bid/Ask Spread — What a Round Trip Really Costs
+        </h3>
+        <p style="font-size: 0.88rem; color: #64748b;">A dealer quotes two prices: the <strong>bid</strong> (where they buy the base from you) and the <strong>ask</strong> (where they sell it to you). Buy then immediately sell, and the spread is your loss:</p>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem; max-width: 640px;">
+            <div>
+                <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Mid Rate (EUR/USD)</label>
+                <input type="number" id="fxBasMid" value="1.0950" step="0.0005" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="fxBasSpread()">
+            </div>
+            <div>
+                <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Spread (pips)</label>
+                <input type="number" id="fxBasPips" value="2" step="0.5" min="0" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="fxBasSpread()">
+            </div>
+            <div>
+                <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Trade Size (€)</label>
+                <input type="number" id="fxBasSize" value="1000000" step="100000" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="fxBasSpread()">
+            </div>
+        </div>
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 1rem; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; text-align: center;">
+            <div>
+                <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Dealer Bid</span>
+                <div id="fxBasBid" style="font-size: 1.2rem; font-weight: 900; color: #ef4444; margin-top: 0.25rem;">1.09490</div>
+            </div>
+            <div>
+                <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Dealer Ask</span>
+                <div id="fxBasAsk" style="font-size: 1.2rem; font-weight: 900; color: #10b981; margin-top: 0.25rem;">1.09510</div>
+            </div>
+            <div>
+                <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Round-Trip Cost</span>
+                <div id="fxBasCost" style="font-size: 1.2rem; font-weight: 900; color: var(--accent); margin-top: 0.25rem;">$200</div>
+            </div>
+            <div>
+                <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">As % of Notional</span>
+                <div id="fxBasCostPct" style="font-size: 1.2rem; font-weight: 900; color: #f59e0b; margin-top: 0.25rem;">0.018%</div>
+            </div>
+        </div>
+        <div style="background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 0.9rem 1.2rem; margin-top: 1rem;">
+            <p style="font-family: 'Inter', sans-serif; font-size: 0.88rem; line-height: 1.6; color: #451a03; margin: 0;"><strong style="color: #b45309;">In plain English:</strong> 2 pips sounds like nothing — and per trade it is (~0.02%). But spreads are how the entire $7-trillion-a-day FX market pays for itself: high-frequency strategies live or die on them (the microstructure course), and retail platforms quoting 50-pip spreads on "commission-free" trades are charging 25× the institutional rate, silently.</p>
         </div>
     </div>
 </div>
@@ -37,9 +107,31 @@
 function calcFXBas() {
     const eur = parseFloat(document.getElementById('fxBasEur').value) || 0.0001;
     const gbp = parseFloat(document.getElementById('fxBasGbp').value) || 0.0001;
-    
+
     const cross = eur / gbp;
     document.getElementById('fxBasCross').innerText = cross.toFixed(4);
+    document.getElementById('fxBasCrossInv').innerText = (1 / cross).toFixed(4);
 }
-setTimeout(calcFXBas, 500);
+
+function fxBasSpread() {
+    const mid = parseFloat(document.getElementById('fxBasMid').value) || 1;
+    const pips = parseFloat(document.getElementById('fxBasPips').value) || 0;
+    const size = parseFloat(document.getElementById('fxBasSize').value) || 0;
+
+    const half = pips * 0.0001 / 2;
+    const bid = mid - half, ask = mid + half;
+    // Buy EUR at ask, sell at bid: loss in USD = size * (ask - bid)
+    const cost = size * (ask - bid);
+    const pct = mid > 0 ? (ask - bid) / mid * 100 : 0;
+
+    document.getElementById('fxBasBid').innerText = bid.toFixed(5);
+    document.getElementById('fxBasAsk').innerText = ask.toFixed(5);
+    document.getElementById('fxBasCost').innerText = '$' + cost.toLocaleString('en-US', {maximumFractionDigits: 0});
+    document.getElementById('fxBasCostPct').innerText = pct.toFixed(3) + '%';
+}
+
+setTimeout(() => {
+    calcFXBas();
+    fxBasSpread();
+}, 300);
 </script>

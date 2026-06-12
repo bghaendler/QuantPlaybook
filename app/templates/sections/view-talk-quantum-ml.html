@@ -1,0 +1,51 @@
+<div id="view-talk-quantum-ml" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Guest Lecture</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">How Current Quantum Hardware Helps ML Tasks</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">A grounded look at near-term (NISQ) quantum machine learning: variational circuits, quantum kernels, what today's noisy devices can and can't do, and the realistic finance applications.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The NISQ Reality</h3>
+        <p>Today's hardware is Noisy Intermediate-Scale Quantum: tens-to-hundreds of qubits, no error correction, limited circuit depth before noise dominates. This rules out the deep, fault-tolerant algorithms (like the QAE pricing of the quantum-pricing talk) and forces a focus on <em>shallow, noise-tolerant, hybrid</em> approaches where a classical optimizer drives a small quantum circuit.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Two Workhorse Approaches</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Variational Quantum Circuits (VQC) as models:</strong> a parameterized quantum circuit is the "neural net"; a classical optimizer (gradient descent via parameter-shift rules — a cousin of AD, the AAD masterclass) tunes its parameters to fit data. Used for classification/regression on small feature sets.</li>
+            <li><strong>Quantum kernels:</strong> map data into a high-dimensional quantum Hilbert space and compute kernel similarities a classical SVM then uses — the quantum part only estimates inner products. The bet is that quantum feature maps capture structure classical kernels can't (unproven in general).</li>
+            <li>Both are <strong>hybrid</strong>: classical computer in the loop, quantum device as a sub-routine — the only viable NISQ pattern.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Where It Might Help Finance (Cautiously)</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Combinatorial optimization:</strong> portfolio selection with cardinality/integer constraints maps to QUBO problems for quantum annealers / QAOA — the most-cited near-term finance use, though classical solvers remain competitive.</li>
+            <li><strong>Sampling &amp; generative models:</strong> quantum circuits as samplers for scenario generation / synthetic data — a natural fit if a quantum advantage in sampling materializes.</li>
+            <li><strong>Small-data classification:</strong> credit scoring or fraud on engineered low-dimensional features where quantum kernels might find structure.</li>
+            <li>Honest caveat: <em>no demonstrated quantum advantage on a real finance ML task yet</em> — current results are proofs-of-concept on tiny problems, often matched by classical methods.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Barriers and Stance</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Barren plateaus:</strong> VQC gradients vanish exponentially with qubits/depth — training large circuits is fundamentally hard; a core open problem.</li>
+            <li><strong>Data loading</strong> (the quantum-pricing bottleneck again): getting classical data into quantum states can erase any advantage.</li>
+            <li><strong>Noise</strong> limits depth and corrupts results — error mitigation helps but isn't error correction.</li>
+            <li><strong>Stance:</strong> worth understanding and prototyping (the field moves fast), but production finance ML runs on classical GPUs (the GPU workshop / ML masterclass); treat QML as a research option, not a deployment, and demand classical baselines for any claimed advantage.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>NISQ hardware forces shallow, hybrid (classical-in-the-loop) algorithms — no fault-tolerant deep circuits yet.</li>
+            <li>Variational quantum circuits (trained by parameter-shift gradients) and quantum kernels are the two near-term ML approaches.</li>
+            <li>Plausible finance fits: combinatorial portfolio optimization, sampling/generation, small-data classification — but no proven advantage yet.</li>
+            <li>Barren plateaus, data loading and noise are the barriers; prototype if curious, deploy on classical hardware, demand baselines.</li>
+        </ul>
+    </div>
+</div>

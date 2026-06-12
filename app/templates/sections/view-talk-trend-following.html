@@ -1,0 +1,54 @@
+<div id="view-talk-trend-following" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Guest Lecture</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">De-constructing a Trend-Following Trading System</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Anatomy of the CTA workhorse: signal generation, position sizing, risk management, and the convexity that explains why trend-following pays — and when it bleeds.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Signal</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Core idea:</strong> buy what's going up, sell what's going down — momentum persists over weeks-to-months across nearly every liquid market (the most robust anomaly outside the equity premium).</li>
+            <li><strong>Constructions:</strong> moving-average crossovers, breakout (Donchian channels), time-series momentum (sign of past 12-month return), all roughly equivalent — the signal is robust to its exact form, which is itself telling.</li>
+            <li><strong>Speed:</strong> fast (days) captures more turns but pays more cost (HFT Part 07); slow (months) is cost-efficient but laggier — most CTAs blend horizons.</li>
+            <li><strong>Breadth is the edge:</strong> run the same simple rule across 50–200 markets (equities, bonds, FX, commodities) — diversification across uncorrelated trends, not signal cleverness, drives the Sharpe.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Position Sizing &amp; Risk</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Volatility targeting:</strong> size each position inversely to its volatility ($w_i \propto 1/\sigma_i$) so each contributes equal risk — the single most important implementation choice; turns ragged raw signals into a controlled return stream.</li>
+            <li><strong>Portfolio vol target:</strong> scale the whole book to a target annualized vol (e.g. 10–15%) — dynamic deleveraging in turmoil (the risk-control discipline of ARM).</li>
+            <li><strong>Risk allocation echoes Kelly</strong> (RSI Part 03): equal-risk-contribution sizing is fractional-Kelly-like; full-throttle sizing on a noisy edge invites the same overbetting damage.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Why It Pays: The Convexity</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Trend-following is long convexity</strong> — its return profile resembles a <em>long straddle / long options</em> position: small losses in choppy, mean-reverting markets (paying "theta"), large gains in sustained trends (the "gamma" payoff). This is why it's prized as a <strong>crisis-alpha</strong> diversifier: it tends to profit in prolonged sell-offs (2008, 2022) when most strategies suffer.</li>
+            <li><strong>The cost of convexity:</strong> like any long-options position, it bleeds in range-bound, whipsaw regimes — multi-year drawdowns are normal and the behavioral test of the strategy.</li>
+            <li><strong>The premium's source:</strong> debated — behavioral under-reaction then herding, risk transfer from hedgers, or compensation for the whipsaw pain. The convexity framing (Fung-Hsieh: trend ≈ lookback straddles) is the cleanest model.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Building &amp; Evaluating One</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Honest backtest:</strong> realistic costs and slippage (HFT stack), point-in-time data, no parameter mining across the lookback — trend systems are notoriously easy to overfit on the speed parameter (portfolio-workshop's warning).</li>
+            <li><strong>Capacity &amp; costs:</strong> the edge is real but thin per-trade; futures liquidity sets capacity, and turnover-times-cost is the make-or-break.</li>
+            <li><strong>Evaluation:</strong> judge on diversified, vol-targeted, post-cost equity curve and its <em>drawdown profile</em> and crisis behavior — not in-sample Sharpe; the value is the convexity and correlation to the rest of a portfolio.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Simple momentum signals run with breadth across many markets — diversification, not signal cleverness, is the edge.</li>
+            <li>Inverse-vol sizing + portfolio vol targeting is the implementation core, echoing fractional-Kelly risk control.</li>
+            <li>Trend-following is long convexity (≈ long straddles): crisis alpha that bleeds in whipsaws — multi-year drawdowns are normal.</li>
+            <li>Evaluate on diversified, vol-targeted, post-cost drawdown/crisis behavior, not in-sample Sharpe; beware speed-parameter overfitting.</li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,55 @@
+<div id="view-rsi-p05" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Risk-Sensitive Investing — Part 05</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Asset-Liability Management under Jump Diffusion</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Investing against obligations, not in a vacuum: the surplus framework, why liabilities change the optimal portfolio, and what jumps do to funding risk.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Surplus, Not Wealth, Is the Objective</h3>
+        <p>Pensions, insurers and endowments optimize <strong>surplus</strong> $S_t = A_t - L_t$ (assets minus liabilities) or the funding ratio $A_t/L_t$. Liabilities are themselves stochastic — discounted future payouts, sensitive to rates and (for insurers) longevity/claims. The objective becomes utility of <em>terminal surplus</em> or a shortfall/ruin probability, which reshapes everything:</p>
+        $$d(A/L) = \frac{A}{L}\Big[(\text{asset return} - \text{liability growth})dt + \sigma_A dW_A - \sigma_L dW_L + \text{jumps}\Big].$$
+        <p>The relevant risk is the <em>mismatch</em>, not asset volatility alone — a "riskless" cash position is risky for a long-duration liability, and long bonds that hedge the liability are the true low-risk holding.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Optimal ALM Allocation</h3>
+        <p>The Merton solution (Part 01) in surplus space splits into two pieces:</p>
+        $$\pi^*_{ALM} = \underbrace{\frac{1}{\gamma}\Sigma^{-1}(\mu - r)}_{\text{speculative (Kelly-like)}} \;+\; \underbrace{\big(1 - \tfrac{1}{\gamma}\big)\,\beta_{A,L}}_{\text{liability-hedging}}.$$
+        <ul style="line-height: 1.8;">
+            <li><strong>Liability-hedging demand:</strong> hold the asset combination most correlated with liabilities (duration-matched bonds, inflation linkers) — independent of the equity premium; this is the LDI (liability-driven investing) core.</li>
+            <li><strong>Speculative demand:</strong> the Part 01–03 growth tilt, scaled by risk aversion, funded by surplus capacity above the hedge.</li>
+            <li>As γ → ∞ (or funding ratio → 1, no buffer): pure liability hedging — the pension that can't afford risk holds the matching portfolio. As surplus grows, room for the speculative sleeve grows — state-dependent, like drawdown-constrained Kelly (Part 03).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Jumps and Funding Risk</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Asset jumps</strong> (equity crashes) hit the funding ratio discretely — a continuous hedge can't catch them; ALM under jump-diffusion holds <em>less</em> in the speculative sleeve than the diffusion model and may buy explicit tail protection (cheap convexity, ARM Part 06).</li>
+            <li><strong>Liability jumps:</strong> rate gaps reprice long liabilities suddenly; longevity shocks (mortality improvements) and catastrophe claims are pure jumps on the liability side — co-jumps between assets and liabilities (a crash that also cuts discount rates) are the dangerous case the jump-diffusion ALM is built to see.</li>
+            <li><strong>Ruin/shortfall focus:</strong> jumps fatten the surplus tail, so the relevant metric shifts from variance to shortfall probability / expected shortfall of surplus — connecting directly to ARM's tail measures; risk-sensitive control (Part 02) naturally penalizes these tails.</li>
+            <li><strong>Regulatory overlay:</strong> Solvency II / pension funding rules impose capital against exactly this tail — the optimization is constrained by solvency buffers, a reflecting-boundary problem (HFT Part 09 machinery).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Practice</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Two-portfolio implementation:</strong> a hedging portfolio (LDI: duration/inflation-matched) plus a growth portfolio (return-seeking), with the split governed by the funding ratio and surplus risk budget — the institutional standard this theory underpins.</li>
+            <li><strong>Glide paths:</strong> de-risk (shift toward the hedge) as funding improves or the horizon shortens — the dynamic-programming output, not a heuristic.</li>
+            <li><strong>Stress co-jumps:</strong> the 2008/2022 scenarios (assets down, liabilities up or down sharply) are the binding tests; calibrate jump correlation conservatively (Part 04's warning).</li>
+            <li><strong>Stochastic-factor extension</strong> (Part 06) adds rate/inflation factors driving both legs — the full model for long-horizon institutional ALM.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Optimize surplus/funding ratio, not wealth — risk is asset-liability <em>mismatch</em>, making matching bonds the true safe asset.</li>
+            <li>Allocation = liability-hedging demand (LDI) + risk-aversion-scaled speculative demand; the split tracks the funding ratio.</li>
+            <li>Jumps and co-jumps (crash + rate move, longevity, catastrophe) drive funding tails — shift the metric to surplus shortfall.</li>
+            <li>Implement as hedging + growth portfolios with a funding-driven glide path; stress co-jumps and respect solvency buffers.</li>
+        </ul>
+    </div>
+</div>

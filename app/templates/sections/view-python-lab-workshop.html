@@ -1,0 +1,64 @@
+<div id="view-python-lab-workshop" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Workshop</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Python Lab Workshop (Code Submissions)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The applied programming track: the scientific Python stack for quants, the lab assignments that recur, and the engineering standards a code submission must meet.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Quant Python Stack</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>NumPy</strong> — vectorized arrays; the non-negotiable foundation (no Python loops over paths/strikes). Broadcasting, <code>einsum</code>, and views over copies are the core skills.</li>
+            <li><strong>SciPy</strong> — <code>optimize</code> (calibration: least_squares, brentq, minimize), <code>stats</code> (distributions, fitting), <code>integrate</code>, <code>interpolate</code>, <code>linalg</code> (Cholesky, eig).</li>
+            <li><strong>pandas</strong> — time series, the <code>merge_asof</code> alignment of HFT Part 11, resampling, rolling windows.</li>
+            <li><strong>matplotlib</strong> — smiles, surfaces, P&amp;L distributions, convergence diagnostics.</li>
+            <li><strong>Specialized:</strong> QuantLib-Python (curves, instruments — the dev-quantlib-export tool), <code>numba</code>/Cython for hot loops, JAX/PyTorch for AD (the AAD masterclass).</li>
+        </ul>
+        <p>Run any of this live in the Live Python Sandbox section (Pyodide) — it has NumPy loaded.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Recurring Lab Assignments</h3>
+        <ol style="line-height: 1.9;">
+            <li><strong>Black-Scholes + Greeks</strong>, then implied vol by Newton/Brent (the inverse problem of MM Part 02) — vectorized over a strike grid.</li>
+            <li><strong>Monte Carlo pricer</strong> with antithetics + control variates (MM Part 09), reporting the standard error — extended to barriers (Brownian-bridge correction) and Asians.</li>
+            <li><strong>Binomial/PDE pricer</strong> for American options (Crank-Nicolson with the free-boundary projection).</li>
+            <li><strong>Curve bootstrap</strong> and risk (the term-structure course) — solve for zero rates, compute bucketed DV01.</li>
+            <li><strong>Calibration:</strong> fit SABR/Heston to a smile via <code>least_squares</code> (ASV masterclass) — Jacobian by AD or vector-bump (AD Part 05).</li>
+            <li><strong>VaR engine:</strong> historical + Monte Carlo (ARM Parts 05, 08), with backtesting (Kupiec).</li>
+        </ol>
+    </div>
+
+    <div class="card">
+        <h3>3. Submission Standards (What Graders Check)</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Correctness with a benchmark:</strong> every numerical result validated against a closed form or independent method (MC vs. analytic, PDE vs. tree) within stated tolerance — never an unchecked number.</li>
+            <li><strong>Vectorization:</strong> no per-element Python loops where NumPy applies; a loop over 10⁶ paths is an automatic fail.</li>
+            <li><strong>Reproducibility:</strong> seeded RNG (<code>default_rng(seed)</code>), pinned dependencies, deterministic output — the ARM Part 09 / governance habit.</li>
+            <li><strong>Reported error bars:</strong> Monte Carlo results quote the standard error; fits report residuals — a point estimate without uncertainty is incomplete.</li>
+            <li><strong>Readability:</strong> functions with docstrings stating units and conventions (carry, day-count), type hints, no magic numbers — code reviewed like production.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Common Failure Modes (Pre-Submission Checklist)</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>The $-\tfrac12\sigma^2$ drift omission</strong> in GBM (MM Part 09) — silently biases everything log-related.</li>
+            <li><strong>Float comparison &amp; kinks:</strong> <code>ST &gt; K</code> exactly at the strike; payoff discontinuities breaking pathwise Greeks (AD Part 07).</li>
+            <li><strong>Look-ahead / in-sample leakage</strong> in backtests — the cardinal research sin.</li>
+            <li><strong>Non-PSD covariance</strong> fed to Cholesky (ARM Part 10) — clip eigenvalues or use Higham first; the correlation-matrix tool shows the failure.</li>
+            <li><strong>Silent broadcasting bugs:</strong> a $(n,)$ vs. $(n,1)$ shape mismatch producing an $(n,n)$ accidental outer product — assert shapes.</li>
+            <li><strong>Unseeded randomness</strong> making results irreproducible between runs.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Master NumPy/SciPy/pandas vectorization — it's the foundation every lab is graded against.</li>
+            <li>The assignment arc spans the whole curriculum: BS/Greeks, MC, PDE, curves, calibration, VaR.</li>
+            <li>Submissions need benchmark validation, vectorization, seeded reproducibility, and reported error bars.</li>
+            <li>Avoid the classic traps: missing drift term, kink/float comparisons, look-ahead, non-PSD matrices, unseeded RNG.</li>
+        </ul>
+    </div>
+</div>

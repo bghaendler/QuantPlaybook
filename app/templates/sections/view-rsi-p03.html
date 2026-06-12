@@ -1,0 +1,54 @@
+<div id="view-rsi-p03" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Risk-Sensitive Investing — Part 03</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Fractional Kelly Capital Growth Strategies in Practice</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Kelly's growth-optimal bet sized for the real world: why full Kelly is too aggressive, how fractional Kelly trades growth for drawdown control, and the estimation-error correction that makes it usable.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Kelly Criterion</h3>
+        <p>Maximize the expected log growth rate $g = \mathbb{E}[\ln(1 + f\cdot R)]$. For a continuous asset (μ−r excess, σ vol), the optimal fraction is the γ = 1 Merton weight:</p>
+        $$f^* = \frac{\mu - r}{\sigma^2}, \qquad g(f^*) = r + \frac{(\mu - r)^2}{2\sigma^2} = r + \frac{\text{SR}^2}{2}.$$
+        <p>Growth-optimality: over a long horizon, full-Kelly wealth beats any other strategy's wealth with probability → 1, and it minimizes expected time to reach wealth targets. The classic discrete form for a bet with edge: $f^* = \frac{p\cdot b - q}{b}$ (win prob $p$, payoff odds $b$). Notice $f^*$ is the squared Sharpe over 2 — the same object the risk-sensitive criterion (Part 02) optimizes at θ → 0.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Why Full Kelly Hurts</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Brutal drawdowns:</strong> full Kelly has a ~1/2 chance of a 50% drawdown at some point; the long-run-optimal path is a roller coaster few can hold through.</li>
+            <li><strong>Estimation error is fatal:</strong> $f^*$ depends on μ — the least estimable quantity (ARM/equities theme). Overestimating the edge <em>overbets</em>, and the growth curve $g(f)$ is asymmetric: betting above $f^*$ destroys growth far faster than betting below (past $2f^*$, growth goes negative — you lose money with a positive-edge strategy).</li>
+            <li><strong>Higher moments:</strong> the log-optimal derivation assumes the model; fat tails and jumps (Part 06) make realized Kelly riskier than Gaussian Kelly suggests.</li>
+        </ul>
+        <p>The growth curve is a downward parabola in $f$ peaking at $f^*$: $g(f) = r + f(\mu-r) - \frac{1}{2}f^2\sigma^2$. Half-Kelly captures <strong>3/4 of the growth</strong> ($g$ at $f^*/2$) with <strong>half the volatility</strong> — the asymmetry that makes fractional Kelly the practitioners' default.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Fractional Kelly</h3>
+        <p>Bet $f = c\cdot f^*$ for $c \in (0, 1)$. Connections:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>= CRRA with γ = 1/c:</strong> half-Kelly is exactly relative-risk-aversion 2 (Part 01's Merton with γ = 2); fractional Kelly <em>is</em> the utility-maximizing solution for a more risk-averse investor — not an ad hoc haircut.</li>
+            <li><strong>= risk-sensitive θ = 2(1/c − 1)</strong> (Part 02's bridge) — three vocabularies, one knob.</li>
+            <li><strong>Bayesian Kelly:</strong> integrating over parameter uncertainty (a posterior on μ) <em>endogenously</em> shrinks $f$ below the plug-in $f^*$ — fractional Kelly approximates the optimal response to estimation error. Rule of thumb: with realistic μ-uncertainty, the certainty-equivalent fraction lands near $c \approx 0.3$–$0.5$.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Practice</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Multi-asset Kelly</strong> = $\Sigma^{-1}(\mu - r)$ (the unlevered tangency direction, then scaled) — same $\Sigma^{-1}\mu$ fragility as Markowitz; shrink/BL the inputs (Part 04) before sizing.</li>
+            <li><strong>Drawdown-constrained Kelly</strong> (Grossman-Zhou, Cvitanić-Karatzas): impose a floor (never below αW_max) ⇒ a state-dependent fraction that de-risks as you approach the floor — the formal version of "cut size in a drawdown."</li>
+            <li><strong>Practitioners who use it:</strong> Thorp, PIMCO-style growth accounts, and many systematic CTAs size at quarter-to-half Kelly; the discipline is to size on <em>conservatively estimated</em> edge, not the in-sample one.</li>
+            <li><strong>Diagnostic:</strong> plot realized growth vs. fraction on backtests — the peak is almost always left of the plug-in $f^*$, quantifying the estimation-error haircut directly (talk-kelly-ziemba covers the empirical record).</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Kelly: $f^* = (\mu - r)/\sigma^2 = $ SR²/2 growth — long-run wealth-dominant but drawdown-brutal.</li>
+            <li>The growth parabola is asymmetric: overbetting punishes far more than underbetting; half-Kelly keeps 3/4 growth at half vol.</li>
+            <li>Fractional Kelly = CRRA(1/c) = risk-sensitive θ — and approximates the Bayesian response to μ-uncertainty.</li>
+            <li>Size on conservative edge estimates with drawdown constraints; the realized-growth peak sits left of the plug-in optimum.</li>
+        </ul>
+    </div>
+</div>

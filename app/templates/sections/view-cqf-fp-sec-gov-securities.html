@@ -5,6 +5,18 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Deconstruct sovereign debt markets: from zero-coupon short-term T-bills traded at a discount, to coupon-bearing medium-term Treasury notes and long-term bonds.</p>
     </header>
 
+    <!-- Plain English Notes (main) -->
+    <div class="card" style="background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> government securities are IOUs from the state — the closest thing finance has to a "risk-free" promise, which is why their yields are the reference point every other asset is priced against.</p>
+        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Bills don't pay interest — they're sold cheap:</strong> a T-bill pays exactly 100 at maturity; you earn the gap between the discounted purchase price and 100. The simulator below walks one through auction and resale.</li>
+            <li style="margin-bottom: 0.5rem;"><strong>Notes and bonds pay coupons:</strong> fixed cash every six months plus 100 at the end. Price is just all those cash flows discounted (the Discounting section's machinery, applied).</li>
+            <li style="margin-bottom: 0.5rem;"><strong>Price and yield are a seesaw:</strong> when market yields rise, existing bonds' fixed coupons look stingy, so their prices fall — and vice versa. The chart below shows the curve, and its <em>bend</em> (convexity) matters too.</li>
+            <li style="margin-bottom: 0;"><strong>Premium / par / discount decoded:</strong> coupon &gt; yield → price above 100 (premium); coupon = yield → exactly 100 (par); coupon &lt; yield → below 100 (discount). Try it in the pricer.</li>
+        </ul>
+    </div>
+
     <!-- Row 1: T-Bill Primary Auction & Secondary Market Transfer Lifecycle -->
     <div class="card" style="margin-bottom: 1.5rem; border-left: 4px solid var(--accent);">
         <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
@@ -118,6 +130,19 @@
             </div>
         </div>
     </div>
+
+    <!-- Visualization: Price vs Yield Seesaw -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="21 17 15 11 11 15 3 7"/><polyline points="10 7 3 7 3 14"/></svg>
+            Visualization: The Price-Yield Seesaw
+        </h3>
+        <p style="font-size: 0.88rem; color: #64748b;">The price of the bond configured above, plotted across yields from 0% to 12%. The dot marks your current YTM; the dashed crosshair marks par. The curve bows — that bend is <strong>convexity</strong>, and longer maturities bow harder.</p>
+        <canvas id="fpGovCanvas" width="860" height="280" style="width: 100%; border: 1px solid var(--card-border); border-radius: 8px; background: var(--metric-bg);"></canvas>
+        <div style="background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 0.9rem 1.2rem; margin-top: 1rem;">
+            <p style="font-family: 'Inter', sans-serif; font-size: 0.88rem; line-height: 1.6; color: #451a03; margin: 0;"><strong style="color: #b45309;">In plain English:</strong> switch the maturity selector above from 1 year to 10 years and watch the curve steepen — the same 1% yield move barely dents a 1-year note but repriced a 10-year bond by ~8%. That sensitivity is <em>duration</em>; the curve's bow working in your favor (gaining more on yield drops than losing on rises) is <em>convexity</em>. 2022's bond rout was this chart, lived.</p>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -212,6 +237,69 @@ function calcTNote() {
         statusEl.innerText = 'Trading at a Discount';
         statusEl.style.color = '#ef4444';
     }
+    fpGovDraw();
+}
+
+// ---- Price vs yield curve for the configured bond ----
+function fpGovBondPrice(couponRate, years, freq, y) {
+    const n = years * freq, c = 100 * couponRate / freq, py = y / freq;
+    let p = 0;
+    for (let i = 1; i <= n; i++) p += c / Math.pow(1 + py, i);
+    return p + 100 / Math.pow(1 + py, n);
+}
+
+function fpGovDraw() {
+    const canvas = document.getElementById('fpGovCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const couponRate = (parseFloat(document.getElementById('tbCoupon').value) || 0) / 100;
+    const years = parseInt(document.getElementById('tbMaturity').value) || 3;
+    const freq = parseInt(document.getElementById('tbFreq').value) || 2;
+    const ytm = (parseFloat(document.getElementById('tbYtm').value) || 0) / 100;
+
+    const W = canvas.width, H = canvas.height;
+    const padL = 50, padR = 14, padT = 14, padB = 30;
+    ctx.clearRect(0, 0, W, H);
+
+    const yMaxAxis = 0.12;
+    const pMax = fpGovBondPrice(couponRate, years, freq, 0.0001) * 1.04;
+    const pMin = fpGovBondPrice(couponRate, years, freq, yMaxAxis) * 0.96;
+
+    const px = y => padL + (W - padL - padR) * y / yMaxAxis;
+    const py_ = p => padT + (H - padT - padB) * (1 - (p - pMin) / (pMax - pMin));
+
+    // grid
+    ctx.strokeStyle = 'rgba(120,120,140,0.3)'; ctx.fillStyle = '#94a3b8'; ctx.font = '11px sans-serif'; ctx.lineWidth = 1;
+    for (let g = 0; g <= 4; g++) {
+        const gv = pMin + (pMax - pMin) * g / 4;
+        ctx.beginPath(); ctx.moveTo(padL, py_(gv)); ctx.lineTo(W - padR, py_(gv)); ctx.stroke();
+        ctx.fillText(gv.toFixed(0), 12, py_(gv) + 4);
+    }
+    for (let yv = 0; yv <= 12; yv += 2) ctx.fillText(yv + '%', px(yv / 100) - 8, H - 10);
+
+    // par crosshair
+    ctx.strokeStyle = 'rgba(120,120,140,0.5)'; ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(padL, py_(100)); ctx.lineTo(W - padR, py_(100)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(px(couponRate), padT); ctx.lineTo(px(couponRate), H - padB); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#94a3b8'; ctx.font = 'bold 10px sans-serif';
+    ctx.fillText('par 100', W - padR - 46, py_(100) - 5);
+
+    // curve
+    ctx.strokeStyle = '#4f46e5'; ctx.lineWidth = 2.4; ctx.beginPath();
+    for (let i = 0; i <= 240; i++) {
+        const y = 0.0001 + (yMaxAxis - 0.0001) * i / 240;
+        const p = fpGovBondPrice(couponRate, years, freq, y);
+        if (i === 0) ctx.moveTo(px(y), py_(p)); else ctx.lineTo(px(y), py_(p));
+    }
+    ctx.stroke();
+
+    // current YTM dot
+    const pNow = fpGovBondPrice(couponRate, years, freq, ytm);
+    ctx.fillStyle = '#f59e0b';
+    ctx.beginPath(); ctx.arc(px(ytm), py_(pNow), 6, 0, 2 * Math.PI); ctx.fill();
+    ctx.font = 'bold 12px sans-serif';
+    ctx.fillText('YTM ' + (ytm * 100).toFixed(2) + '% → ' + pNow.toFixed(2), Math.min(px(ytm) + 10, W - 190), py_(pNow) - 8);
 }
 
 // Initialize on page load

@@ -1,0 +1,52 @@
+<div id="view-rsi-p04" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Risk-Sensitive Investing — Part 04</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Black-Litterman Benchmarking with Jumps</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Taming the input-sensitivity of optimal allocation: equilibrium priors, view blending, and the jump-aware extension for tail-conscious benchmarking.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Problem Black-Litterman Solves</h3>
+        <p>Mean-variance and Kelly both invert $\Sigma$ and multiply by $\mu$ — a notorious error amplifier: tiny changes in expected-return estimates produce wild, often un-investable corner portfolios (the equities course's "Markowitz curse"). Black-Litterman (1992) fixes the <em>inputs</em>, not the optimizer.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Two-Step Construction</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Reverse-optimize for the equilibrium prior:</strong> assume the market-cap portfolio $w_{mkt}$ is optimal ⇒ implied returns $\Pi = \delta\Sigma w_{mkt}$ ($\delta$ = market risk aversion). This is the "neutral" anchor — hold the market if you have no views.</li>
+            <li><strong>Blend in views</strong> ($P\mu = Q + \epsilon$, view uncertainty $\Omega$) via Bayesian updating:</li>
+        </ul>
+        $$\mu_{BL} = \left[(\tau\Sigma)^{-1} + P^\top\Omega^{-1}P\right]^{-1}\left[(\tau\Sigma)^{-1}\Pi + P^\top\Omega^{-1}Q\right].$$
+        <p>The posterior shrinks toward equilibrium where views are weak (large Ω) and toward views where confident. Feeding $\mu_{BL}$ into Merton/Kelly (Parts 01–03) gives stable, intuitive tilts that collapse to the market when views vanish — the property plain mean-variance lacks.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Adding Jumps: Tail-Aware Benchmarking</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Why:</strong> Gaussian BL prices only the covariance; benchmarks (and the liabilities of Part 05) are exposed to <em>co-jumps</em> — assets crashing together (ARM Part 06's tail-dependence). A jump-diffusion return model $dS/S = \mu\,dt + \sigma\,dW + (e^J - 1)dN$ makes the equilibrium and the views tail-conscious.</li>
+            <li><strong>Equilibrium with jumps:</strong> reverse-optimization under a risk-sensitive/CRRA investor who fears jumps yields an implied $\Pi$ that already embeds a <em>jump-risk premium</em> — assets with systematic crash exposure carry higher implied returns, matching the empirical equity/credit premia (ASV's jump-premium theme).</li>
+            <li><strong>Views on tails:</strong> express opinions not just on means but on jump intensity/correlation (e.g. "crash co-movement will rise") — the posterior tilts allocations away from crowded co-jump exposures even when Gaussian correlations look benign.</li>
+            <li><strong>Objective:</strong> optimize the risk-sensitive criterion (Part 02) on the jump-aware posterior — the higher-cumulant penalties and the jump model together discipline tail concentration that mean-variance + Gaussian BL would happily build.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Practice Notes</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Calibrating δ, τ, Ω:</strong> δ from the market Sharpe (~2–3); τ small (0.025–0.05) — it scales prior confidence; Ω from view conviction (often $\Omega = \mathrm{diag}(P\tau\Sigma P^\top)$ for "as confident as the prior").</li>
+            <li><strong>Jump parameters</strong> from option-implied tails (the ASV machinery) or historical jump filters — and stress them: jump correlation is the least stable input exactly when it matters.</li>
+            <li><strong>Benchmark-relative framing:</strong> run BL in active-return space (views relative to benchmark) so the output is a tracking-error-budgeted tilt — the institutional mandate form (cf. talk-max-diversification, talk-hrp for alternative robustifications).</li>
+            <li><strong>Sanity:</strong> with no views, output must equal the (jump-adjusted) market portfolio; any drift signals a prior/optimizer inconsistency.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Black-Litterman fixes optimizer input-sensitivity: equilibrium prior $\Pi = \delta\Sigma w_{mkt}$ blended with Bayesian views.</li>
+            <li>Posterior collapses to the market absent views, tilts confidently where views are strong — investable, stable allocations.</li>
+            <li>Jump-aware BL embeds a crash-risk premium in equilibrium and allows views on tail co-movement — tail-conscious benchmarking.</li>
+            <li>Pair with the risk-sensitive objective; stress jump correlations; frame relative to benchmark for mandate use.</li>
+        </ul>
+    </div>
+</div>

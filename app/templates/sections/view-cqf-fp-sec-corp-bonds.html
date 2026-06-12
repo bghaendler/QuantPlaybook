@@ -5,6 +5,18 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Explore how corporations issue bonds through investment banks, manage credit ratings, and pay credit spreads to compensate investors for default risk.</p>
     </header>
 
+    <!-- Plain English Notes (main) -->
+    <div class="card" style="background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> a corporate bond is a government bond plus a worry. The company might not pay you back — so it must offer extra yield over Treasuries. That extra, the <em>credit spread</em>, is the market's price tag on default risk.</p>
+        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Spreads are quoted in basis points:</strong> 100 bps = 1%. "Treasuries + 90 bps" means: whatever the government pays, plus 0.90% for the risk and illiquidity of lending to this company instead.</li>
+            <li style="margin-bottom: 0.5rem;"><strong>Ratings are shorthand, not gospel:</strong> AAA→BBB is "investment grade" (pension funds may buy); BB and below is "high yield"/junk (many mandates forbid it). The cliff between BBB and BB drives real selling — a downgrade across it is a "fallen angel".</li>
+            <li style="margin-bottom: 0.5rem;"><strong>The spread hides a default forecast:</strong> roughly, spread ≈ default probability × loss-if-default. A 200 bps spread with 40% expected recovery implies the market sees ~3.3% annual default odds — decode any bond in the demo below.</li>
+            <li style="margin-bottom: 0;"><strong>Issuing is a negotiated sale:</strong> unlike government auctions, companies hire investment banks (the DCM desk) to structure, rate and place the bond — the simulator shows how maturity, features and rating add up to the spread.</li>
+        </ul>
+    </div>
+
     <!-- Row 1: Conceptual Split (DCM Advising vs Ratings) -->
     <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem; margin-bottom: 1.5rem;">
         
@@ -146,6 +158,42 @@
             <strong style="color: #00ff00; margin-left: auto;">Higher</strong> (compensated by the +70 bp Credit Spread)
         </div>
     </div>
+
+    <!-- Demo: What the Spread Implies About Default -->
+    <div class="card" style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Demo: Decoding the Default Probability Hidden in a Spread
+        </h3>
+        <p style="font-size: 0.88rem; color: #64748b;">To a first approximation, the spread compensates expected loss: $s \approx PD \times (1 - R)$, so the market-implied annual default probability is $PD \approx s / (1 - R)$, with $R$ the recovery rate (typically ~40% for senior unsecured).</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem; max-width: 520px;">
+            <div>
+                <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Credit Spread (bps)</label>
+                <input type="number" id="fpCbSpread" value="200" step="25" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="fpCbImplied()">
+            </div>
+            <div>
+                <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Expected Recovery (%)</label>
+                <input type="number" id="fpCbRecovery" value="40" step="5" min="0" max="95" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="fpCbImplied()">
+            </div>
+        </div>
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 1rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center;">
+            <div>
+                <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Implied Annual Default Prob.</span>
+                <div id="fpCbPD" style="font-size: 1.3rem; font-weight: 900; color: var(--accent); margin-top: 0.25rem;">3.33%</div>
+            </div>
+            <div>
+                <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">5-Year Survival Odds</span>
+                <div id="fpCbSurv" style="font-size: 1.3rem; font-weight: 900; color: #10b981; margin-top: 0.25rem;">84.4%</div>
+            </div>
+            <div>
+                <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Rating Neighborhood</span>
+                <div id="fpCbRating" style="font-size: 1.3rem; font-weight: 900; color: #f59e0b; margin-top: 0.25rem;">≈ BB</div>
+            </div>
+        </div>
+        <div style="background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 0.9rem 1.2rem; margin-top: 1rem;">
+            <p style="font-family: 'Inter', sans-serif; font-size: 0.88rem; line-height: 1.6; color: #451a03; margin: 0;"><strong style="color: #b45309;">In plain English:</strong> the spread is a forecast you can invert. Real spreads also contain compensation for illiquidity and risk aversion, so market-implied default probabilities run higher than historical default rates — the gap is the "credit risk premium" investors earn for bearing the uncertainty. The full machinery (hazard rates, CDS curves) lives in the credit-risk course.</p>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -186,13 +234,35 @@ function updateBBGPrice() {
     
     const spreadPct = spreadBps / 100;
     const corpYield = treasuryYield + spreadPct;
-    
-    // Simple valuation formula: Price = 100 / (1 + Yield/100)^3
-    const price = 100 / Math.pow(1 + (corpYield / 100), 3);
-    
+
+    // Coupon-aware price: 1.20% semi-annual coupons over 3y + principal, discounted at the corporate yield
+    const ySemi = (corpYield / 100) / 2;
+    let price = 0;
+    for (let i = 1; i <= 6; i++) price += 0.6 / Math.pow(1 + ySemi, i);
+    price += 100 / Math.pow(1 + ySemi, 6);
+
     document.getElementById('bbgSpreadVal').innerText = spreadBps + ' bps';
     document.getElementById('bbgTotalYield').innerText = corpYield.toFixed(2) + '%';
     document.getElementById('bbgPrice').innerText = price.toFixed(2);
+}
+
+// Implied default probability demo
+function fpCbImplied() {
+    const s = (parseFloat(document.getElementById('fpCbSpread').value) || 0) / 10000;
+    const rec = Math.min(0.95, Math.max(0, (parseFloat(document.getElementById('fpCbRecovery').value) || 0) / 100));
+    const pd = s / (1 - rec);
+    const surv5 = Math.pow(1 - pd, 5) * 100;
+
+    let rating = '≈ AAA/AA';
+    if (pd > 0.0005) rating = '≈ A';
+    if (pd > 0.002) rating = '≈ BBB';
+    if (pd > 0.01) rating = '≈ BB';
+    if (pd > 0.04) rating = '≈ B';
+    if (pd > 0.10) rating = '≈ CCC';
+
+    document.getElementById('fpCbPD').innerText = (pd * 100).toFixed(2) + '%';
+    document.getElementById('fpCbSurv').innerText = surv5.toFixed(1) + '%';
+    document.getElementById('fpCbRating').innerText = rating;
 }
 
 // Initialize on page load
@@ -200,5 +270,6 @@ setTimeout(() => {
     adviseDCM();
     updatePensionLimits();
     updateBBGPrice();
+    fpCbImplied();
 }, 200);
 </script>

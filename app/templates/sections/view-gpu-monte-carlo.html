@@ -1,0 +1,54 @@
+<div id="view-gpu-monte-carlo" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Code Porting Workshop</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">GPU Acceleration of Monte Carlo (CVA &amp; CCR)</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Porting counterparty-risk simulation to the GPU: the SIMT execution model, what maps well, and the memory/RNG/reduction patterns that turn overnight batches into minutes.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Why CVA/CCR Is a GPU Problem</h3>
+        <p>Counterparty credit risk needs the exposure profile of a whole netting set across time:</p>
+        $$\mathrm{CVA} = (1 - R)\int_0^T \mathrm{EE}(t)\,dPD(t), \qquad \mathrm{EE}(t) = \mathbb{E}\big[(\textstyle\sum_i V_i(t))^+\big],$$
+        <p>computed by simulating thousands of market paths, revaluing the entire portfolio at dozens of future dates per path. The work is <strong>embarrassingly parallel</strong> across paths (RSI/ARM independence) and arithmetically dense — exactly the SIMT sweet spot. Banks run these as overnight batches on CPU farms; GPU porting compresses them to intraday, enabling live CVA risk (the AAD masterclass's gradients on top).</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The SIMT Execution Model</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Threads → paths:</strong> one thread (or warp) per Monte Carlo path; thousands run concurrently. The natural decomposition needs almost no rethinking — the path loop becomes the grid.</li>
+            <li><strong>Warps of 32 lockstep threads:</strong> all execute the same instruction — <strong>branch divergence</strong> (paths taking different <code>if</code> branches) serializes and kills throughput. Restructure payoff logic to be branch-light (arithmetic masks instead of conditionals).</li>
+            <li><strong>Occupancy:</strong> enough resident warps to hide memory latency — bounded by registers/shared-memory per thread; pricing kernels with large state need careful budgeting.</li>
+            <li><strong>Memory hierarchy:</strong> coalesced global-memory access (adjacent threads → adjacent addresses) is mandatory; market data in constant/shared memory; the per-path state in registers.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. The Three Porting Patterns That Matter</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Counter-based RNG (the enabling trick):</strong> Philox/Threefry (ARM Part 09) generate $\text{rand}(\text{path}, \text{step})$ statelessly from indices — no per-thread RNG state, perfect reproducibility, and independent substreams for free. This is why GPU MC is trustworthy: bit-identical to CPU given the same indices.</li>
+            <li><strong>Layout = correlated draws + revaluation:</strong> store paths as (steps × paths) column-major so step-vectors are coalesced; Cholesky-correlate (ARM Part 08) and apply pricing kernels with adjacent threads on adjacent paths.</li>
+            <li><strong>Parallel reduction for EE(t):</strong> averaging $(\sum_i V_i)^+$ across paths is a tree reduction in shared memory — and must be <em>deterministic</em> (fixed pairwise order) if governance requires bit-reproducibility (ARM/AAD theme); naive atomicAdd is fast but non-reproducible.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Practical Workshop Notes</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Profile before porting:</strong> revaluation usually dominates — port the pricing inner loop first; leave I/O and aggregation on the host initially.</li>
+            <li><strong>Precision:</strong> FP32 is ~2× FP64 throughput on many GPUs but CVA sums can lose accuracy — use FP64 for accumulation, FP32 for path generation where validated, or Kahan summation.</li>
+            <li><strong>Validate relentlessly:</strong> GPU result must match the CPU reference within Monte Carlo error (same counter-RNG indices ⇒ near bit-identical); divergence flags a race or reduction-order bug.</li>
+            <li><strong>AAD on GPU:</strong> pathwise adjoints (AD masterclass) port directly — per-path tapes fit in registers/shared memory (AD Part 06's budget), giving CVA <em>and</em> its full sensitivity vector in one pass; Enzyme/Philox compose cleanly.</li>
+            <li><strong>Realistic speedups:</strong> 20–100× vs. single CPU core on the revaluation-heavy kernels; the win is wall-clock (overnight → minutes), enabling intraday/real-time CCR.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>CVA/CCR is path-parallel and revaluation-dense — the canonical GPU Monte Carlo workload.</li>
+            <li>SIMT: threads = paths; avoid branch divergence, ensure coalesced memory, manage occupancy.</li>
+            <li>Counter-based RNGs (Philox) give stateless, reproducible, independent streams — the key to trustworthy GPU MC.</li>
+            <li>Deterministic reductions, FP64 accumulation, and pathwise AAD-on-GPU deliver CVA + Greeks at 20–100× with validated accuracy.</li>
+        </ul>
+    </div>
+</div>

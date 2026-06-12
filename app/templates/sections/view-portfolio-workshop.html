@@ -1,0 +1,60 @@
+<div id="view-portfolio-workshop" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Workshop</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Final Project Portfolio Workshop I &amp; II</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The capstone: scoping, building and presenting an original quant project — what makes a strong submission, the common pitfalls, and how to demonstrate end-to-end competence.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Choosing a Project That Works</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Scope to completable depth:</strong> one well-executed question beats five half-built modules. "Calibrate and stress-test SABR on SPX options" finishes; "build a full XVA system" does not.</li>
+            <li><strong>Pick where you can validate:</strong> projects with a benchmark (closed form, published result, market data) let you <em>prove</em> correctness — the single biggest differentiator.</li>
+            <li><strong>Project archetypes that succeed:</strong> a pricing/calibration study (a model on real smiles), a strategy backtest with honest costs (HFT/RSI), a risk engine with backtesting (ARM), a numerical-methods comparison (PDE vs. MC vs. tree convergence), or an AAD/GPU acceleration with speed+accuracy benchmarks.</li>
+            <li><strong>Data realism:</strong> use real (or realistically simulated) data; toy data hides the problems that demonstrate real skill.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. The Build (Workshop I)</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Reproducible pipeline:</strong> data → model → results → figures, runnable end-to-end with a seed (the Python-lab standards). A grader who can't re-run it can't trust it.</li>
+            <li><strong>Validation layer first:</strong> establish the benchmark <em>before</em> the novel part — MC against analytic, calibration against a known surface — so every later number has a reference.</li>
+            <li><strong>Error budgeting:</strong> separate model error, numerical error and estimation error (the ARM Part 01 lens); report standard errors and convergence.</li>
+            <li><strong>Version control &amp; structure:</strong> modular code, tests on the core functions (the dot-product/benchmark tests of the AD/lab work), a README that states assumptions and conventions.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. The Presentation (Workshop II)</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Lead with the question and the answer:</strong> what did you ask, what did you find, why does it matter — before the methodology.</li>
+            <li><strong>Show validation explicitly:</strong> the "my MC matches Black-Scholes to 4 digits" slide buys credibility for everything after it.</li>
+            <li><strong>Visualize the result:</strong> a fitted smile over market points, a convergence plot, a P&amp;L distribution, a VaR backtest exception chart — one clear figure per claim.</li>
+            <li><strong>State limitations honestly:</strong> what the model can't do, where estimation error bites, what you'd build next — examiners reward awareness over false completeness (the governance maturity of ARM Part 02).</li>
+            <li><strong>Connect to the curriculum:</strong> name the techniques (Itô, Fourier pricing, Cholesky, AAD) — demonstrate you know <em>why</em> each tool, not just that it ran.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Pitfalls That Sink Projects</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>No benchmark:</strong> impressive-looking numbers with nothing to check them against — the most common weakness.</li>
+            <li><strong>Backtest overfitting / look-ahead:</strong> a 4-Sharpe strategy that used future information; in-sample tuning presented as out-of-sample skill (the deadly research sin).</li>
+            <li><strong>Ignoring transaction costs &amp; capacity</strong> on trading projects — the HFT cost stack turns paper-alpha into real losses.</li>
+            <li><strong>Scope creep</strong> producing a broad, shallow, half-working system instead of a narrow, deep, validated one.</li>
+            <li><strong>Unexamined model risk:</strong> presenting one model's output as truth without the "what if the model is wrong" stress (ASV's identical-calibration-divergent-extrapolation lesson).</li>
+            <li><strong>Polished slides, broken code:</strong> the pipeline must actually run; a non-reproducible result is a non-result.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Narrow, deep, validated beats broad and shallow — scope to something you can finish and prove.</li>
+            <li>Build the benchmark/validation layer first; every result needs a reference and an error bar.</li>
+            <li>Present question→answer→evidence→limitations; one clear figure per claim, validation shown explicitly.</li>
+            <li>Avoid the killers: no benchmark, look-ahead bias, ignored costs, scope creep, unexamined model risk, non-reproducible code.</li>
+        </ul>
+    </div>
+</div>

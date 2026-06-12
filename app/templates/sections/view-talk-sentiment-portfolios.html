@@ -1,0 +1,54 @@
+<div id="view-talk-sentiment-portfolios" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Guest Lecture</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Beating Markowitz with Sentiment &amp; Downside Control</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Augmenting mean-variance with alternative-data sentiment signals and asymmetric (downside) risk measures — and the honest evidence on whether it works out of sample.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Two Upgrades to Markowitz</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Better expected returns (sentiment):</strong> Markowitz is hostage to its μ estimates (the equities/RSI Part 04 curse). Sentiment from news/social/options flow offers a forward-looking μ input distinct from noisy historical means.</li>
+            <li><strong>Better risk measure (downside):</strong> variance penalizes upside and downside equally — investors don't. Replace it with semivariance, CVaR, or drawdown, optimizing asymmetric risk (the ARM Part 07 coherent-measure theme applied to allocation).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Sentiment as a Return Signal</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Sources:</strong> news tone (NLP, the NLP-SDG/LLM talks), social-media volume/polarity, analyst revisions, options-implied skew (fear gauge), search trends.</li>
+            <li><strong>Construction:</strong> cross-sectional sentiment scores → ranks → tilts; or feed as Black-Litterman views (RSI Part 04) so they blend with equilibrium rather than dominate.</li>
+            <li><strong>Decay &amp; capacity:</strong> sentiment alpha is fast-decaying and capacity-limited — it interacts with the execution cost stack (HFT Part 07); a signal that needs daily turnover may not survive costs.</li>
+            <li><strong>The honesty test:</strong> most published "sentiment beats market" results are in-sample or pre-cost. Out-of-sample, point-in-time, post-cost (portfolio-workshop standards) is where claims live or die.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Downside-Risk Optimization</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Mean-CVaR:</strong> minimize Conditional VaR at confidence α subject to a return target — a convex (linear-programming) problem (Rockafellar-Uryasev), tractable and coherent.</li>
+            <li><strong>Mean-semivariance:</strong> penalize only below-target deviations — matches loss-averse preferences (the behavioral link).</li>
+            <li><strong>Why it can beat MV out of sample:</strong> downside measures are less sensitive to the symmetric-tail mis-estimation that wrecks variance-based weights, and they avoid loading on negatively-skewed "picking up nickels" exposures that variance rewards (ARM Part 06).</li>
+            <li><strong>Caveat:</strong> downside measures need <em>more</em> data (they use fewer observations — only the tail), so estimation error can offset the benefit; pair with shrinkage and robust covariance (the HRP/max-diversification talks).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. The Verdict</h3>
+        <ul style="line-height: 1.8;">
+            <li>"Beating Markowitz" is usually about <em>robustness</em>, not a magic signal: better μ inputs (sentiment, BL priors) and risk measures aligned with real preferences improve realized outcomes more reliably than chasing in-sample Sharpe.</li>
+            <li>Combine cautiously: sentiment views + CVaR optimization + cost-aware implementation, validated out of sample — each piece earns its place or is cut.</li>
+            <li>Benchmark against simple baselines (equal-weight, risk-parity): if a complex sentiment-CVaR model barely beats 1/N after costs, prefer the simpler one (the recurring portfolio-workshop lesson).</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Two upgrades to mean-variance: forward-looking sentiment for μ, and asymmetric downside measures (CVaR/semivariance) for risk.</li>
+            <li>Sentiment alpha is fast-decaying and cost-sensitive — only point-in-time, post-cost validation counts.</li>
+            <li>Mean-CVaR is convex and coherent; downside measures resist symmetric-tail mis-estimation but need more data.</li>
+            <li>The real win is robustness; always benchmark against 1/N and risk-parity before accepting complexity.</li>
+        </ul>
+    </div>
+</div>

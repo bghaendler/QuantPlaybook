@@ -1,0 +1,56 @@
+<div id="view-talk-hrp" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Guest Lecture</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Beating Markowitz with Hierarchical Risk Parity</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">López de Prado's HRP: why mean-variance optimization is unstable, how machine-learning clustering builds robust portfolios without inverting the covariance matrix, and the out-of-sample evidence.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. Why Markowitz Fails Out of Sample</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Matrix inversion instability:</strong> $\Sigma^{-1}$ amplifies estimation error — the smallest eigenvalues (least reliably estimated) get the largest weights; near-singular $\Sigma$ (correlated assets, $n$ near $T$) makes weights explode (ARM Part 10).</li>
+            <li><strong>Condition number:</strong> the more diversified the opportunity set, the more correlated and ill-conditioned $\Sigma$ becomes — Markowitz is <em>worst</em> exactly where you most want diversification ("Markowitz's curse").</li>
+            <li><strong>Result:</strong> concentrated, unstable, frequently-rebalanced weights that underperform even naive 1/N out of sample (DeMiguel et al.'s uncomfortable finding).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. The HRP Algorithm</h3>
+        <p>Three steps, no matrix inversion:</p>
+        <ol style="line-height: 1.9;">
+            <li><strong>Tree clustering:</strong> convert the correlation matrix to a distance $d_{ij} = \sqrt{\tfrac{1}{2}(1 - \rho_{ij})}$, then hierarchically cluster assets — grouping similar assets into a dendrogram (the ML step).</li>
+            <li><strong>Quasi-diagonalization:</strong> reorder $\Sigma$ so similar assets sit together — clusters become near-block-diagonal, exposing structure.</li>
+            <li><strong>Recursive bisection:</strong> split the tree top-down, allocating risk between each pair of clusters inversely to their variance (inverse-variance within, recursively) — weight flows down the hierarchy.</li>
+        </ol>
+        <p>No $\Sigma^{-1}$ is ever computed — the instability source is removed by construction; the hierarchy replaces the unstable global optimization with stable local allocations.</p>
+    </div>
+
+    <div class="card">
+        <h3>3. Why It Works Better</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Robustness:</strong> avoiding inversion means estimation error doesn't get amplified — weights are stable and don't lurch on small input changes.</li>
+            <li><strong>Respects structure:</strong> the hierarchy mirrors how markets actually cluster (asset classes, sectors); risk is diversified <em>across</em> clusters then <em>within</em> — economically sensible and statistically gentle.</li>
+            <li><strong>Out-of-sample evidence:</strong> López de Prado's Monte Carlo and empirical studies show HRP achieves lower out-of-sample variance than mean-variance and equal-weight, with far lower turnover — robustness, not in-sample optimality, is the win (the recurring theme of the sentiment/max-diversification talks).</li>
+            <li><strong>Cost benefit:</strong> stable weights ⇒ low turnover ⇒ low transaction costs (HFT Part 07) — a real-money advantage MV's churn destroys.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Caveats &amp; Practice</h3>
+        <ul style="line-height: 1.8;">
+            <li>HRP is a <em>risk</em> allocator — it ignores expected returns; pair with conservative return views (Black-Litterman, RSI Part 04) if you have an edge, or use as-is for risk-parity mandates.</li>
+            <li>Clustering choices (linkage method, distance) matter — validate stability across choices; it's less parameter-free than advertised.</li>
+            <li>Benchmark honestly against 1/N and risk parity (the portfolio-workshop discipline) — HRP's edge is real but modest, and lies in stability/turnover, not headline return.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Mean-variance fails out of sample because $\Sigma^{-1}$ amplifies estimation error — worst when diversification is greatest.</li>
+            <li>HRP clusters assets, quasi-diagonalizes, and allocates risk by recursive bisection — never inverting the covariance matrix.</li>
+            <li>The payoff is robustness and low turnover: lower out-of-sample variance than MV and 1/N with far less churn.</li>
+            <li>It's a return-agnostic risk allocator; combine with return views if available, and benchmark against simple baselines.</li>
+        </ul>
+    </div>
+</div>

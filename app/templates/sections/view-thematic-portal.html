@@ -1,0 +1,67 @@
+<div id="view-thematic-portal" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Search &amp; Filter Portal</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Browse every masterclass part across all series. Search by keyword or filter by theme; click any card to jump straight to the section.</p>
+    </header>
+
+    <div class="card">
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem;">
+            <input id="tpSearch" type="text" placeholder="Search titles &amp; series (e.g. 'Itô', 'VaR', 'SABR', 'adjoint')..." oninput="tpRender()" style="flex: 1; min-width: 240px; padding: 0.6rem 0.9rem; border-radius: 8px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color); font-size: 0.9rem;">
+            <select id="tpSeries" onchange="tpRender()" style="padding: 0.6rem; border-radius: 8px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);">
+                <option value="">All series</option>
+            </select>
+        </div>
+        <div id="tpCount" style="font-size: 0.8rem; color: #64748b; margin-bottom: 0.75rem;"></div>
+        <div id="tpResults" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.75rem;"></div>
+    </div>
+</div>
+
+<script>
+var tpData = [
+    { s: 'Mathematical Methods', items: [
+        ['mm-p01','Number Sets, Mappings, Functions'],['mm-p02','Polynomials, Implied Vol & Complex Numbers'],['mm-p03','Taylor Series Approximations'],['mm-p04','Functional Integration Techniques'],['mm-p05','Random Variables & Probability Moments'],['mm-p06','ODEs, PDEs & SDEs'],['mm-p07','First-Order ODEs with Boundary Values'],['mm-p08','Cauchy-Euler (Perpetual Options)'],['mm-p09','Simulating Brownian Paths'],['mm-p10','Itô’s Lemma & Corrective Terms'],['mm-p11','Lognormal Stock Price Evolution'],['mm-p12','Short Rate Mechanics (Vasicek vs CIR)'],['mm-p13','Black-Scholes PDE Parabolic Framework'],['mm-p14','Stochastic Paths in Excel'] ] },
+    { s: 'Complex Analysis', items: [
+        ['ca-p01','Complex Variable Integration'],['ca-p02','De Moivre & Euler Integrals'],['ca-p03','Geometric Moduli'],['ca-p04','Mapping z-Plane to w-Plane'],['ca-p05','Holomorphic Functions & Power Series'],['ca-p06','Cauchy-Riemann Tests'],['ca-p07','Harmonic Conjugates & Laplace'],['ca-p08','Cauchy-Riemann in Polar Coordinates'],['ca-p09','Contour Parameterization'],['ca-p10','Cauchy’s Integral Theorem'],['ca-p11','Cauchy’s Integral Formula'],['ca-p12','Trigonometric Contour Evaluation'],['ca-p13','Taylor vs Laurent Expansions'],['ca-p14','Classifying Singularities'],['ca-p15','Residue Theorem'],['ca-p16','Infinite Real Domain Integrals'],['ca-p17','Trigonometric Integrals & Jordan’s Lemma'] ] },
+    { s: 'HFT & Microstructure', items: [
+        ['hft-p01','Limit Order Books & Spreads'],['hft-p02','Market Impact Functions'],['hft-p03','Estimating Impact via Volatility'],['hft-p04','Volume Distribution & Heavy Tails'],['hft-p05','Intraday Seasonality'],['hft-p06','Dark Pools vs Lit Markets'],['hft-p07','Transaction Cost Minimization'],['hft-p08','Volatility-Based Execution'],['hft-p09','Stock Diffusion with Boundaries'],['hft-p10','Stochastic Control & Execution'],['hft-p11','HF Data Manipulation Labs'],['hft-p12','Microstructure Price Relationships'] ] },
+    { s: 'Advanced Risk Management', items: [
+        ['arm-p01','Calibration & Modeling Risk'],['arm-p02','Risk Assessment Frameworks'],['arm-p03','Non-Normal Distributions'],['arm-p04','Market, Credit, Liquidity, OpRisk'],['arm-p05','VaR via Historical Simulation'],['arm-p06','Fat-Tail Realities'],['arm-p07','Limitations of Classical VaR'],['arm-p08','Monte Carlo VaR (Two Assets)'],['arm-p09','Excel RNG vs Industry Standards'],['arm-p10','Multi-Asset VaR Mechanics'] ] },
+    { s: 'Adjoint Differentiation', items: [
+        ['ad-p01','Source Code Transformation'],['ad-p02','Overloading vs Source-to-Source'],['ad-p03','Computation Graphs'],['ad-p04','Manual Tangent-Linear Code'],['ad-p05','Vector Mode & Sparsity'],['ad-p06','Adjoint Memory Constraints'],['ad-p07','Reverse-Mode & Stacks'],['ad-p08','Overloading for Backward Interpretation'],['ad-p09','Automatic Code Generation'],['ad-p10','Second-Order Adjoints & Hessians'],['ad-p11','Iterative Code Optimization'] ] },
+    { s: 'Stochastic Vol Asymptotics', items: [
+        ['asv-p01','Hyperbolic Metrics & Heat Kernels'],['asv-p02','SABR Smile Corrections'],['asv-p03','Small-Time vs Large-Time Limits'],['asv-p04','SABR vs CEV vs Heston'],['asv-p05','Exponential Lévy Asymptotics'],['asv-p06','Share Measures'],['asv-p07','CEV-Heston & Kou/CGMY Hybrids'],['asv-p08','Large Deviation Principles'] ] },
+    { s: 'Risk-Sensitive Investing', items: [
+        ['rsi-p01','Stochastic Control in Allocation'],['rsi-p02','Risk-Sensitive vs Mean-Variance'],['rsi-p03','Fractional Kelly Strategies'],['rsi-p04','Black-Litterman with Jumps'],['rsi-p05','ALM under Jump Diffusion'],['rsi-p06','Stochastic-Factor ALM Derivation'],['rsi-p07','Finite vs Infinite Horizon'] ] }
+];
+
+(function initTp() {
+    var sel = document.getElementById('tpSeries');
+    if (sel && sel.options.length === 1) {
+        tpData.forEach(function(g) {
+            var o = document.createElement('option'); o.value = g.s; o.textContent = g.s; sel.appendChild(o);
+        });
+    }
+})();
+
+function tpRender() {
+    var q = (document.getElementById('tpSearch').value || '').toLowerCase().trim();
+    var series = document.getElementById('tpSeries').value;
+    var out = document.getElementById('tpResults');
+    var html = '', n = 0;
+    tpData.forEach(function(g) {
+        if (series && g.s !== series) return;
+        g.items.forEach(function(it) {
+            var key = it[0], title = it[1];
+            var hay = (title + ' ' + g.s + ' ' + key).toLowerCase();
+            if (q && hay.indexOf(q) === -1) return;
+            n++;
+            html += '<div onclick="showSection(\'' + key + '\')" style="cursor:pointer; border:1px solid var(--card-border); border-radius:8px; padding:0.7rem 0.9rem; background:var(--metric-bg); transition:border-color 0.15s;" onmouseover="this.style.borderColor=\'var(--accent)\'" onmouseout="this.style.borderColor=\'var(--card-border)\'">' +
+                '<div style="font-size:0.68rem; color:var(--accent); font-weight:700; text-transform:uppercase; letter-spacing:0.03em;">' + g.s + '</div>' +
+                '<div style="font-weight:600; font-size:0.9rem; margin-top:0.2rem;">' + title + '</div></div>';
+        });
+    });
+    out.innerHTML = html || '<div style="color:#64748b; padding:1rem;">No parts match your search.</div>';
+    document.getElementById('tpCount').textContent = n + ' part' + (n === 1 ? '' : 's') + ' shown' + (q ? ' for “' + q + '”' : '');
+}
+setTimeout(tpRender, 300);
+</script>

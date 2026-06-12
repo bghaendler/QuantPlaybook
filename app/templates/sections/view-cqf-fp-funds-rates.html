@@ -5,6 +5,18 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Understand the mechanics of monetary policy, interbank reserve accounts, secured repo transactions, and modern risk-free reference rates.</p>
     </header>
 
+    <!-- Plain English Notes (main) -->
+    <div class="card" style="background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> when the news says "the Fed raised rates," what actually changed is the interest the central bank pays commercial banks on their overnight deposits. Every other rate in the economy — mortgages, bonds, swap curves — is priced off that anchor.</p>
+        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Reserves are banks' checking accounts at the central bank:</strong> when your payment crosses banks, reserves shift between those accounts — try it in the simulator below and notice the total never changes, only its distribution.</li>
+            <li style="margin-bottom: 0.5rem;"><strong>A repo is a pawnshop loan for bonds:</strong> hand over Treasuries as collateral, get cash overnight, buy them back tomorrow at a slightly higher price. The "haircut" is the lender's safety margin.</li>
+            <li style="margin-bottom: 0.5rem;"><strong>SOFR, €STR, SONIA replaced LIBOR:</strong> the old benchmark was based on banks' <em>estimates</em> (and got manipulated); the new ones are computed from billions of <em>actual transactions</em> — repos for SOFR, deposits for €STR/SONIA.</li>
+            <li style="margin-bottom: 0;"><strong>Overnight rates become 3-month rates by compounding:</strong> there is no "term SOFR market" per se — term rates are built by daisy-chaining each day's overnight fixings, as the demo below shows.</li>
+        </ul>
+    </div>
+
     <!-- Row 1: Conceptual Summary & Interactive Reserve Transfer Model -->
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
         
@@ -117,6 +129,46 @@
                 €1,050,000 × (1 - 0.0476) = €1,000,000
             </div>
             <p style="font-size: 0.82rem; color: #64748b; margin: 0; line-height: 1.4;">Haircuts protect lenders against fluctuations in the collateral asset price during the term of the repo.</p>
+        </div>
+    </div>
+
+    <!-- Demo: Overnight → Term Rate Compounding -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            Demo: Building a Term Rate from Overnight Fixings
+        </h3>
+        <p style="font-size: 0.88rem; color: #64748b;">Post-LIBOR, a "3-month rate" is manufactured by compounding each day's overnight fixing: $\big[\prod_{i}(1 + r_i\cdot\tfrac{1}{360}) - 1\big]\times\tfrac{360}{N}$. Compare the compounded rate against the naive simple average:</p>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem; max-width: 640px;">
+            <div>
+                <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Overnight Rate (% p.a.)</label>
+                <input type="number" id="fpTermRate" value="5.25" step="0.25" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="fpTermCalc()">
+            </div>
+            <div>
+                <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Term (Days)</label>
+                <input type="number" id="fpTermDays" value="90" step="30" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="fpTermCalc()">
+            </div>
+            <div>
+                <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Notional (€)</label>
+                <input type="number" id="fpTermNotional" value="10000000" step="1000000" style="width: 100%; padding: 0.4rem; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);" oninput="fpTermCalc()">
+            </div>
+        </div>
+        <div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 1rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center;">
+            <div>
+                <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Compounded Term Rate</span>
+                <div id="fpTermCompounded" style="font-size: 1.25rem; font-weight: 900; color: var(--accent); margin-top: 0.25rem;">5.2845%</div>
+            </div>
+            <div>
+                <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Simple Average Rate</span>
+                <div id="fpTermSimple" style="font-size: 1.25rem; font-weight: 900; color: #64748b; margin-top: 0.25rem;">5.2500%</div>
+            </div>
+            <div>
+                <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Interest Difference</span>
+                <div id="fpTermDiff" style="font-size: 1.25rem; font-weight: 900; color: #10b981; margin-top: 0.25rem;">€862</div>
+            </div>
+        </div>
+        <div style="background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 0.9rem 1.2rem; margin-top: 1rem;">
+            <p style="font-family: 'Inter', sans-serif; font-size: 0.88rem; line-height: 1.6; color: #451a03; margin: 0;"><strong style="color: #b45309;">In plain English:</strong> daily compounding earns slightly more than the flat average because each day's interest itself starts earning the next day — the same snowball as the Compounding section, now applied to how every post-LIBOR floating leg in the swap market actually accrues. Small per trade, enormous across the ~€500 trillion of contracts that reference these rates.</p>
         </div>
     </div>
 
@@ -247,9 +299,26 @@ function calcRepo() {
     document.getElementById('repoInterest').innerText = '€' + interest.toFixed(2);
 }
 
+// Overnight → term rate compounding demo
+function fpTermCalc() {
+    const r = (parseFloat(document.getElementById('fpTermRate').value) || 0) / 100;
+    const n = parseInt(document.getElementById('fpTermDays').value) || 90;
+    const notional = parseFloat(document.getElementById('fpTermNotional').value) || 0;
+
+    const compoundedFactor = Math.pow(1 + r / 360, n);
+    const compRate = (compoundedFactor - 1) * 360 / n * 100;
+    const simpleRate = r * 100;
+    const diff = notional * ((compoundedFactor - 1) - r * n / 360);
+
+    document.getElementById('fpTermCompounded').innerText = compRate.toFixed(4) + '%';
+    document.getElementById('fpTermSimple').innerText = simpleRate.toFixed(4) + '%';
+    document.getElementById('fpTermDiff').innerText = '€' + diff.toLocaleString('en-US', {maximumFractionDigits: 0});
+}
+
 // Initialize on load
 setTimeout(() => {
     updateReservesSim();
     calcRepo();
+    fpTermCalc();
 }, 200);
 </script>

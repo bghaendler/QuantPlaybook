@@ -1,0 +1,47 @@
+<div id="view-talk-llm-quant" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Guest Lecture</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Customizing LLMs for Quant Finance Applications</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Adapting large language models to finance: the customization ladder from prompting to fine-tuning, retrieval-augmented generation, and where LLMs help versus where they must not be trusted.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Customization Ladder</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Prompt engineering:</strong> few-shot examples, structured output, chain-of-thought — cheapest, surprisingly effective for extraction/classification; the right first try.</li>
+            <li><strong>Retrieval-Augmented Generation (RAG):</strong> embed your documents (filings, research, term sheets), retrieve relevant chunks at query time, ground the LLM's answer in them — reduces hallucination, keeps knowledge current without retraining; the dominant enterprise pattern.</li>
+            <li><strong>Fine-tuning:</strong> adapt weights on domain data (financial language, house style) — better format adherence and jargon; parameter-efficient methods (LoRA) make it affordable. Needed less often than assumed once RAG is in place.</li>
+            <li><strong>Tool use / agents:</strong> the LLM calls pricers, databases, calculators — offloading exactly the quantitative reasoning it's bad at to code that's reliable (the crucial architectural insight).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>2. Strong Use Cases</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Document intelligence:</strong> extracting terms from prospectuses/ISDA confirms, summarizing research, parsing earnings calls — the NLP-SDG pipeline supercharged.</li>
+            <li><strong>Research acceleration:</strong> code generation for backtests/pricers (validated, never trusted blind), literature synthesis, hypothesis brainstorming.</li>
+            <li><strong>Sentiment &amp; event extraction</strong> feeding signals (the sentiment-portfolio talk) — LLMs read context better than bag-of-words sentiment.</li>
+            <li><strong>Interfaces:</strong> natural-language query over risk/position systems — "what's my CVA sensitivity to EUR rates?" routed to the real engine via tool use.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. Where LLMs Must Not Be Trusted</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Numerical computation:</strong> LLMs are unreliable at arithmetic and exact calculation — <em>always</em> route pricing/risk math to deterministic code (tool use), never the model's "mental math."</li>
+            <li><strong>Hallucination:</strong> confident fabrication of facts, citations, numbers — unacceptable for anything booked or reported; RAG with source attribution and human review is mandatory.</li>
+            <li><strong>Look-ahead/data leakage:</strong> a model trained on data through last year "predicting" returns is leaking — backtests with LLM signals need strict point-in-time discipline (portfolio-workshop's sin).</li>
+            <li><strong>Governance:</strong> non-determinism, prompt injection, and explainability gaps make LLMs a model-risk category of their own (the AI-risk talk) — validate, log, and constrain.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Climb the cheapest rung that works: prompting → RAG → fine-tuning → tool-using agents.</li>
+            <li>RAG grounds answers in your documents; tool use offloads quantitative reasoning to reliable code — the two architectural keys.</li>
+            <li>Best at language tasks (extraction, summarization, code drafting); never trusted for exact computation or unverified facts.</li>
+            <li>LLMs are their own model-risk category: hallucination, leakage, non-determinism — deploy with validation, attribution and human review.</li>
+        </ul>
+    </div>
+</div>

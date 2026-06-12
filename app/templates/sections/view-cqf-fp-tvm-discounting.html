@@ -5,6 +5,35 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Understand the mathematics of present valuation: from single-sum discount factors to mortgage amortization schedules, perpetuities, and NPV/IRR project analysis.</p>
     </header>
 
+    <!-- Plain English Notes (main) -->
+    <div class="card" style="background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Discounting is compounding run backwards. If money grows over time, then money promised in the future must be worth <em>less</em> today — and the discount factor tells you exactly how much less.</p>
+        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>One number rules them all:</strong> the discount factor $DF = 1/(1+r)^T$ converts any future euro into today's euros. Every bond, loan, project and pension valuation is just cash flows × discount factors, summed.</li>
+            <li style="margin-bottom: 0.5rem;"><strong>Your mortgage is an annuity:</strong> the bank computes one fixed payment whose discounted total exactly equals what you borrowed. Early payments are mostly interest; late ones mostly principal — the simulator below shows the split month by month.</li>
+            <li style="margin-bottom: 0.5rem;"><strong>A perpetuity is shockingly simple:</strong> infinite annual payments of PMT are worth just PMT ÷ r today. €50k/year forever at 6% = €833k — distant payments are discounted into irrelevance.</li>
+            <li style="margin-bottom: 0;"><strong>NPV &gt; 0 means "do the project":</strong> the IRR is the break-even discount rate — drag the slider below across 7% and watch the project flip from profitable to value-destroying.</li>
+        </ul>
+    </div>
+
+    <!-- Discount Curve Visualization -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="21 17 15 11 11 15 3 7"/><polyline points="10 7 3 7 3 14"/></svg>
+            Visualization: What a Future €100 Is Worth Today
+        </h3>
+        <p style="font-size: 0.88rem; color: #64748b;">The present value of €100 received in $T$ years decays exponentially with maturity — and the decay speed is set by the rate. Drag the slider; the dashed curve keeps 2% as a reference.</p>
+        <label style="font-size: 0.85rem; display: block; margin: 0.5rem 0 0.75rem 0; max-width: 380px;">Discount rate: <strong id="fpDiscRateLabel">6%</strong>
+            <input type="range" id="fpDiscRate" min="1" max="15" step="0.5" value="6" oninput="fpDiscDraw()" style="width: 100%;">
+        </label>
+        <canvas id="fpDiscCanvas" width="860" height="280" style="width: 100%; border: 1px solid var(--card-border); border-radius: 8px; background: var(--metric-bg);"></canvas>
+        <div id="fpDiscChips" style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.6rem;"></div>
+        <div style="background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 0.9rem 1.2rem; margin-top: 1rem;">
+            <p style="font-family: 'Inter', sans-serif; font-size: 0.88rem; line-height: 1.6; color: #451a03; margin: 0;"><strong style="color: #b45309;">In plain English:</strong> this curve is why pensions and long-dated bonds are so sensitive to rates. At 2%, €100 due in 30 years is still worth €55 today; at 6% it's worth only €17. Small rate moves barely touch near-term cash but violently reprice distant promises — that asymmetry is "duration", and it's the beating heart of fixed-income risk.</p>
+        </div>
+    </div>
+
     <!-- Row 1: Mortgage Amortization Schedule & Perpetuity Panel -->
     <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 1.5rem; margin-bottom: 1.5rem;">
         
@@ -237,10 +266,61 @@ function updateNPVProfile() {
     resultEl.style.color = totalNPV >= 0 ? '#10b981' : '#ef4444';
 }
 
+// ---- Discount curve visualization: PV of €100 vs maturity ----
+function fpDiscDraw() {
+    const canvas = document.getElementById('fpDiscCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const r = (parseFloat(document.getElementById('fpDiscRate').value) || 6) / 100;
+    document.getElementById('fpDiscRateLabel').textContent = (r * 100).toFixed(1).replace(/\.0$/, '') + '%';
+
+    const W = canvas.width, H = canvas.height;
+    const padL = 46, padR = 14, padT = 14, padB = 30, T = 30;
+    ctx.clearRect(0, 0, W, H);
+
+    const pv = (rate, t) => 100 / Math.pow(1 + rate, t);
+    const px = t => padL + (W - padL - padR) * t / T;
+    const py = v => padT + (H - padT - padB) * (1 - v / 105);
+
+    // grid
+    ctx.strokeStyle = 'rgba(120,120,140,0.3)'; ctx.fillStyle = '#94a3b8'; ctx.font = '11px sans-serif'; ctx.lineWidth = 1;
+    for (let g = 0; g <= 100; g += 25) {
+        ctx.beginPath(); ctx.moveTo(padL, py(g)); ctx.lineTo(W - padR, py(g)); ctx.stroke();
+        ctx.fillText('€' + g, 8, py(g) + 4);
+    }
+    for (let yr = 0; yr <= T; yr += 5) ctx.fillText(yr + 'y', px(yr) - 8, H - 10);
+
+    function plot(rate, color, dash) {
+        ctx.strokeStyle = color; ctx.lineWidth = 2.4; ctx.setLineDash(dash || []);
+        ctx.beginPath();
+        for (let i = 0; i <= 200; i++) {
+            const t = T * i / 200;
+            if (i === 0) ctx.moveTo(px(t), py(pv(rate, t))); else ctx.lineTo(px(t), py(pv(rate, t)));
+        }
+        ctx.stroke(); ctx.setLineDash([]);
+    }
+    plot(0.02, '#94a3b8', [5, 4]);   // 2% reference
+    plot(r, '#4f46e5');
+
+    ctx.font = 'bold 12px sans-serif';
+    ctx.fillStyle = '#94a3b8'; ctx.fillText('2% ref', W - padR - 46, py(pv(0.02, T)) - 6);
+    ctx.fillStyle = '#4f46e5'; ctx.fillText((r * 100).toFixed(1) + '%', W - padR - 44, py(pv(r, T)) + 16);
+
+    const chip = (label, val, color) =>
+        '<div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-left: 4px solid ' + color + '; border-radius: 6px; padding: 0.35rem 0.7rem; font-size: 0.8rem;">' +
+        '<span style="color:#94a3b8; font-weight:700;">' + label + ':</span> <strong>€' + val.toFixed(2) + '</strong></div>';
+    document.getElementById('fpDiscChips').innerHTML =
+        chip('€100 in 5y is worth', pv(r, 5), '#4f46e5') +
+        chip('in 10y', pv(r, 10), '#4f46e5') +
+        chip('in 30y', pv(r, 30), '#4f46e5') +
+        chip('in 30y @ 2%', pv(0.02, 30), '#94a3b8');
+}
+
 // Initialize on page load
 setTimeout(() => {
     calcMortgage();
     calcAnnuityPerp();
     updateNPVProfile();
+    fpDiscDraw();
 }, 200);
 </script>

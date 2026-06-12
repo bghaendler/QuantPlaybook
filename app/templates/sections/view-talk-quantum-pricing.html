@@ -1,0 +1,50 @@
+<div id="view-talk-quantum-pricing" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Guest Lecture</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">A Quantum Finance Approach to Option Pricing</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">How quantum algorithms could accelerate Monte Carlo pricing — the quadratic speedup of quantum amplitude estimation, what it would take to be useful, and an honest assessment of the timeline.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Target: Monte Carlo's √N Wall</h3>
+        <p>Classical Monte Carlo (MM Part 09, ARM Part 08) converges as $O(N^{-1/2})$ — halving the error needs 4× the paths. For high-dimensional pricing (baskets, XVA), this is the dominant cost. The quantum promise is to break that wall.</p>
+    </div>
+
+    <div class="card">
+        <h3>2. Quantum Amplitude Estimation</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>The core result:</strong> Quantum Amplitude Estimation (QAE, built on Grover/amplitude amplification) estimates an expectation to error ε with $O(1/\varepsilon)$ quantum operations — a <strong>quadratic speedup</strong> over the classical $O(1/\varepsilon^2)$.</li>
+            <li><strong>The pricing recipe (Rebentrost, Stamatopoulos et al.):</strong> (1) load the risk-neutral distribution into a quantum state (amplitude encoding), (2) apply a quantum circuit computing the discounted payoff, (3) run QAE to read out $\mathbb{E}[\text{payoff}]$ with quadratically fewer samples.</li>
+            <li>For a price needing 10⁶ classical paths, QAE would need ~10³ quantum oracle calls — if each were cheap, a transformative speedup.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. The Hard Parts (Why It's Not Here Yet)</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>State preparation:</strong> loading an arbitrary distribution into amplitudes can itself cost exponentially many gates — efficient loaders (quantum GANs, special structure) are an active research problem and can erode the speedup.</li>
+            <li><strong>Circuit depth:</strong> QAE needs deep, coherent circuits — far beyond today's noisy intermediate-scale (NISQ) hardware; it requires fault-tolerant quantum computers with error correction.</li>
+            <li><strong>Payoff arithmetic on qubits</strong> (comparisons, max, exp) is expensive in quantum gates — the per-oracle cost can dwarf the sample-count savings.</li>
+            <li><strong>Only quadratic:</strong> unlike Shor's exponential factoring speedup, this is a 2× exponent improvement — meaningful only when N is enormous and the constants/overheads are controlled.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. Honest Assessment</h3>
+        <ul style="line-height: 1.8;">
+            <li>The theory is sound and the speedup real <em>in principle</em>; the bottleneck is hardware (fault-tolerance) and state-loading efficiency — years to decades out for practical advantage over GPU Monte Carlo (the GPU workshop).</li>
+            <li>Near-term value is more likely in adjacent problems (optimization, sampling) than vanilla pricing; classical methods (AAD, GPU, QMC/Sobol) keep improving the baseline that quantum must beat.</li>
+            <li>The right quant stance: understand QAE's structure (it's elegant and may matter), track hardware progress, but build today's systems on classical acceleration — and be skeptical of "quantum advantage" claims that omit state-preparation and error-correction costs.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Quantum Amplitude Estimation offers a quadratic ($1/\varepsilon$ vs $1/\varepsilon^2$) speedup over classical Monte Carlo.</li>
+            <li>Pricing recipe: amplitude-encode the distribution, compute the payoff on qubits, read the expectation via QAE.</li>
+            <li>Blockers: efficient state preparation, deep fault-tolerant circuits, costly on-qubit arithmetic — only quadratic, so constants matter.</li>
+            <li>Sound theory, hardware-limited practice — years out; build on classical AAD/GPU/QMC today and scrutinize quantum-advantage claims.</li>
+        </ul>
+    </div>
+</div>

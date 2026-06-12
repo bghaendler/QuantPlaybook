@@ -1,0 +1,51 @@
+<div id="view-rsi-p06" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Risk-Sensitive Investing — Part 06</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Stochastic-Factor Asset/Liability Strategy Derivation</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">The full machinery: predictable factors driving returns and liabilities, the risk-sensitive HJB, and its reduction to a system of Riccati ODEs — a complete derivation sketch.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The State Model</h3>
+        <p>Augment wealth/surplus with an observable factor vector $x_t$ (rates, inflation, dividend yield, credit spread) that drives both expected returns and liability growth:</p>
+        $$dx = (b + Bx)\,dt + \Lambda\,dW \quad (\text{affine factors}),$$
+        $$\frac{dS_i}{S_i} = \big(r + a_i + A_i^\top x\big)dt + \sigma_i^\top dW, \qquad \frac{dL}{L} = \big(\ell + c^\top x\big)dt + \sigma_L^\top dW.$$
+        <p>Expected excess returns are <em>linear in the factors</em> (the predictability that creates intertemporal hedging demands, Part 01) — the workhorse affine setup shared with Vasicek/CIR term structure (MM Part 12) and risk-sensitive control (Part 02).</p>
+    </div>
+
+    <div class="card">
+        <h3>2. The Risk-Sensitive HJB</h3>
+        <p>Maximize the risk-sensitive criterion on terminal surplus. The value function ansatz exploits the structure — for the funding-ratio/CRRA problem:</p>
+        $$V(t, w, x) = \frac{w^{1-\gamma}}{1-\gamma}\,\exp\!\Big(\tfrac{1}{2}x^\top Q(t)x + q(t)^\top x + q_0(t)\Big).$$
+        <p>Substituting into the HJB and matching powers of $x$ (the exponential-quadratic guess linearizes the PDE) yields ODEs for $Q, q, q_0$. The optimal control reads off directly:</p>
+        $$\pi^*(t, x) = \frac{1}{\gamma}\,\Sigma^{-1}\Big[\underbrace{(a + Ax)}_{\text{myopic}} + \underbrace{(1-\gamma)\,\sigma_x^\top\big(Q(t)x + q(t)\big)}_{\text{intertemporal hedging}} + \underbrace{\gamma\,\beta_{A,L}}_{\text{liability hedge}}\Big].$$
+        <p>Three demands, cleanly separated: myopic (Part 01), factor-hedging (the dynamic content, via $Q$), and liability-hedging (Part 05).</p>
+    </div>
+
+    <div class="card">
+        <h3>3. The Riccati Reduction</h3>
+        <p>Matching the quadratic-in-$x$ terms gives a <strong>matrix Riccati ODE</strong> for $Q(t)$:</p>
+        $$-\dot{Q} = Q\,M_2\,Q + M_1^\top Q + Q M_1 + M_0, \qquad Q(T) = 0,$$
+        <p>with coefficient matrices built from $B, \Lambda, A, \Sigma, \gamma$; then a <em>linear</em> ODE for $q(t)$ (given $Q$) and a quadrature for $q_0$. Same equation family as the Kalman filter covariance and the LQ regulator — solvable by standard ODE integration backward from maturity. Existence over $[0, T]$ requires the Riccati not to blow up (the risk-sensitive analogue of moment explosions, ASV Part 04): for θ/γ too aggressive relative to factor volatility, $Q$ escapes to infinity in finite time — the math flagging an ill-posed risk appetite.</p>
+    </div>
+
+    <div class="card">
+        <h3>4. From Derivation to Desk</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Implementation:</strong> estimate the affine factor model (VAR on predictors + return regressions); integrate the Riccati ODEs offline; evaluate $\pi^*(t, x_t)$ each rebalance from current factor readings — cheap online, all cost in calibration.</li>
+            <li><strong>Hedging-demand magnitude:</strong> the $Q$-term is large when factors are persistent and strongly predict returns; near-zero when predictability is weak — so the dynamic tilts are exactly as trustworthy as the predictability evidence (estimation risk, Part 04).</li>
+            <li><strong>Robustness:</strong> because the policy amplifies $\Sigma^{-1}(a + Ax)$, shrink the factor loadings and use BL-style priors (Part 04); validate by simulating the policy and checking the realized risk-sensitive value sits on the θ-frontier (Part 02).</li>
+            <li><strong>Numerical fallback:</strong> when the affine/CRRA structure breaks (constraints, transaction costs, non-affine liabilities), drop to finite-difference HJB or regression-Monte-Carlo / deep BSDE solvers — the ML-control bridge (and the Riccati solution makes an excellent warm start / benchmark).</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Affine factors + CRRA/risk-sensitive utility ⇒ exponential-quadratic value function ⇒ closed-form three-demand policy.</li>
+            <li>The dynamic factor-hedging demand is carried by the Riccati matrix $Q(t)$; liability hedging adds the Part 05 term.</li>
+            <li>Riccati blow-up in finite time is the model telling you the risk appetite is incompatible with factor volatility.</li>
+            <li>Calibrate offline, evaluate online; shrink factor loadings; use HJB/deep-BSDE numerics where the affine structure fails.</li>
+        </ul>
+    </div>
+</div>

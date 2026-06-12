@@ -5,6 +5,38 @@
         <p style="color: #64748b; margin-top: 0.5rem;">Study the complete equity lifecycle: from founder capitalization and venture dilution, to corporate actions (rights and stock splits), and market index calculations.</p>
     </header>
 
+    <!-- Plain English Notes (main) -->
+    <div class="card" style="background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> a share is a slice of ownership in a business — a claim on its future profits. Everything on this page is bookkeeping about those slices: how new slices get created (dilution), how slices get re-cut (splits, rights), and how baskets of slices are measured (indexes).</p>
+        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Dilution isn't theft:</strong> when a startup raises money, your <em>percentage</em> shrinks but the pie grows — the simulator below shows early investors' euro value rising even as their ownership falls.</li>
+            <li style="margin-bottom: 0.5rem;"><strong>Splits and rights change the wrapper, not the gift:</strong> a 2-for-1 split halves the price and doubles the count; a rights issue lets you buy in cheap to avoid dilution. Neither creates or destroys value by itself.</li>
+            <li style="margin-bottom: 0.5rem;"><strong>Index arithmetic matters:</strong> cap-weighted indexes (S&amp;P 500) tilt to giants; price-weighted ones (Dow) tilt to whatever has a high <em>price tag</em> — a historical quirk, not a measure of size.</li>
+            <li style="margin-bottom: 0;"><strong>Dividends are half the story:</strong> price charts ignore them; reinvested dividends have historically supplied roughly half of equity total returns — the chart below makes the gap visible.</li>
+        </ul>
+    </div>
+
+    <!-- Visualization: Price Return vs Total Return -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
+            Visualization: Price Return vs. Total Return (Dividends Reinvested)
+        </h3>
+        <p style="font-size: 0.88rem; color: #64748b;">€100 in an equity market growing at the chosen price appreciation, with and without reinvesting the dividend yield. The gap is the compounding of dividends — the most under-appreciated number in equity investing.</p>
+        <div style="display: flex; gap: 2rem; flex-wrap: wrap; margin: 0.5rem 0 0.75rem 0; font-size: 0.85rem;">
+            <label style="flex: 1; min-width: 200px;">Price appreciation: <strong id="fpEqPxLabel">5%</strong> p.a.
+                <input type="range" id="fpEqPx" min="0" max="10" step="0.5" value="5" oninput="fpEqDraw()" style="width: 100%;"></label>
+            <label style="flex: 1; min-width: 200px;">Dividend yield: <strong id="fpEqDivLabel">2.5%</strong> p.a.
+                <input type="range" id="fpEqDiv" min="0" max="6" step="0.25" value="2.5" oninput="fpEqDraw()" style="width: 100%;"></label>
+        </div>
+        <canvas id="fpEqCanvas" width="860" height="280" style="width: 100%; border: 1px solid var(--card-border); border-radius: 8px; background: var(--metric-bg);"></canvas>
+        <div id="fpEqChips" style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.6rem;"></div>
+        <div style="background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 0.9rem 1.2rem; margin-top: 1rem;">
+            <p style="font-family: 'Inter', sans-serif; font-size: 0.88rem; line-height: 1.6; color: #451a03; margin: 0;"><strong style="color: #b45309;">In plain English:</strong> at 5% price growth + 2.5% dividends over 30 years, €100 becomes ~€432 on the price chart but ~€876 with dividends reinvested — more than double. This is also why comparing a price index (most headlines) against your total-return portfolio flatters the portfolio: always compare like with like.</p>
+        </div>
+    </div>
+
     <!-- Row 1: Cap Table funding Stages Simulator -->
     <div class="card" style="margin-bottom: 1.5rem;">
         <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
@@ -297,11 +329,64 @@ function updateMarketIndex() {
     document.getElementById('indexVal').innerText = currentIndexValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
+// ---- Price return vs total return visualization ----
+function fpEqDraw() {
+    const canvas = document.getElementById('fpEqCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const g = (parseFloat(document.getElementById('fpEqPx').value) || 0) / 100;
+    const d = (parseFloat(document.getElementById('fpEqDiv').value) || 0) / 100;
+    document.getElementById('fpEqPxLabel').textContent = (g * 100).toFixed(1).replace(/\.0$/, '') + '%';
+    document.getElementById('fpEqDivLabel').textContent = (d * 100).toFixed(2).replace(/\.?0+$/, '') + '%';
+
+    const W = canvas.width, H = canvas.height;
+    const padL = 56, padR = 14, padT = 14, padB = 30, T = 30;
+    ctx.clearRect(0, 0, W, H);
+
+    const price = t => 100 * Math.pow(1 + g, t);
+    const total = t => 100 * Math.pow((1 + g) * (1 + d), t);
+    const yMax = total(T) * 1.06;
+
+    const px = t => padL + (W - padL - padR) * t / T;
+    const py = v => padT + (H - padT - padB) * (1 - v / yMax);
+
+    ctx.strokeStyle = 'rgba(120,120,140,0.3)'; ctx.fillStyle = '#94a3b8'; ctx.font = '11px sans-serif'; ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+        const gv = yMax * i / 4, gy = py(gv);
+        ctx.beginPath(); ctx.moveTo(padL, gy); ctx.lineTo(W - padR, gy); ctx.stroke();
+        ctx.fillText('€' + Math.round(gv).toLocaleString(), 6, gy + 4);
+    }
+    for (let yr = 0; yr <= T; yr += 5) ctx.fillText(yr + 'y', px(yr) - 8, H - 10);
+
+    function plot(fn, color) {
+        ctx.strokeStyle = color; ctx.lineWidth = 2.4; ctx.beginPath();
+        for (let i = 0; i <= 200; i++) {
+            const t = T * i / 200;
+            if (i === 0) ctx.moveTo(px(t), py(fn(t))); else ctx.lineTo(px(t), py(fn(t)));
+        }
+        ctx.stroke();
+    }
+    plot(price, '#94a3b8');
+    plot(total, '#4f46e5');
+    ctx.font = 'bold 12px sans-serif';
+    ctx.fillStyle = '#94a3b8'; ctx.fillText('Price only', W - padR - 70, py(price(T)) + 14);
+    ctx.fillStyle = '#4f46e5'; ctx.fillText('Total return', W - padR - 80, py(total(T)) - 6);
+
+    const chip = (label, val, color) =>
+        '<div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-left: 4px solid ' + color + '; border-radius: 6px; padding: 0.35rem 0.7rem; font-size: 0.8rem;">' +
+        '<span style="color:#94a3b8; font-weight:700;">' + label + ':</span> <strong>€' + val.toLocaleString('en-US', {maximumFractionDigits: 0}) + '</strong></div>';
+    document.getElementById('fpEqChips').innerHTML =
+        chip('Price only after ' + T + 'y', price(T), '#94a3b8') +
+        chip('Total return', total(T), '#4f46e5') +
+        chip('Dividend compounding added', total(T) - price(T), '#10b981');
+}
+
 // Initialize on page load
 setTimeout(() => {
     setCapStage('startup');
     calcRights();
     calcSplit();
     updateMarketIndex();
+    fpEqDraw();
 }, 200);
 </script>

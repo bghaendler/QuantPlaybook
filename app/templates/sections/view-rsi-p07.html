@@ -1,0 +1,60 @@
+<div id="view-rsi-p07" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Risk-Sensitive Investing — Part 07</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Finite vs. Infinite Horizon Optimization Practicality</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">When the elegant infinite-horizon policy is the right tool and when the horizon genuinely matters: turnpike theorems, terminal effects, and the implementation verdict.</p>
+    </header>
+
+    <div class="card">
+        <h3>1. The Two Formulations</h3>
+        <table style="width:100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead><tr style="border-bottom: 2px solid var(--card-border); text-align: left;"><th style="padding: 0.45rem;"></th><th style="padding: 0.45rem;">Finite horizon</th><th style="padding: 0.45rem;">Infinite horizon</th></tr></thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Objective</td><td style="padding: 0.45rem;">$\mathbb{E}[U(W_T)]$ at fixed $T$</td><td style="padding: 0.45rem;">Long-run growth rate / discounted consumption</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Solution</td><td style="padding: 0.45rem;">Time-dependent $\pi^*(t, x)$ (Riccati ODE, Part 06)</td><td style="padding: 0.45rem;">Stationary policy $\pi^*(x)$ (algebraic Riccati)</td></tr>
+                <tr style="border-bottom: 1px solid var(--card-border);"><td style="padding: 0.45rem;">Riccati</td><td style="padding: 0.45rem;">ODE, $Q(T)=0$, integrate backward</td><td style="padding: 0.45rem;">$\dot Q = 0$: solve the algebraic Riccati equation</td></tr>
+                <tr><td style="padding: 0.45rem;">Character</td><td style="padding: 0.45rem;">Glide paths, terminal de-risking</td><td style="padding: 0.45rem;">Constant policy, ergodic growth (Part 02)</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h3>2. The Turnpike Phenomenon</h3>
+        <p>The key practical fact: <strong>for most of a long horizon, the finite-horizon policy sits very close to the infinite-horizon stationary policy</strong> — $Q(t) \to Q_\infty$ (the algebraic-Riccati solution) rapidly as $T - t$ grows. The time-dependence concentrates in the final stretch:</p>
+        <ul style="line-height: 1.8;">
+            <li>Far from maturity: $\pi^*(t,x) \approx \pi^*_\infty(x)$ — the "turnpike." A 30-year investor behaves like an infinite-horizon one for the first ~25 years.</li>
+            <li>Near maturity: terminal effects kick in — de-risking toward the payout, liability-matching tightening (Part 05's glide path), consumption draw-down adjustments.</li>
+            <li>Convergence speed ≈ the mean-reversion/discount rate: faster-reverting factors ⇒ shorter terminal zone. This is why the elegant stationary policy is so widely used — it's <em>correct</em> for the bulk of any long mandate.</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>3. When the Horizon Genuinely Matters</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Hard terminal dates:</strong> target-date funds, a pension's de-risking deadline, an option-like liability with a fixed maturity — the glide path <em>is</em> the product; infinite-horizon is wrong here.</li>
+            <li><strong>Short horizons:</strong> the whole problem is "terminal zone" — no turnpike to ride; tactical/event-driven mandates need the finite formulation.</li>
+            <li><strong>Path-dependent objectives:</strong> drawdown constraints, high-water-mark fees, ratchet floors — these break stationarity regardless of horizon length (state-dependent policies, Part 03).</li>
+            <li><strong>Non-stationary opportunity sets:</strong> structural regime change means "long-run" averages don't exist — neither formulation's parameters are stable; re-estimation cadence dominates (the honest limit of all these models).</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h3>4. The Implementation Verdict</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Default to the stationary policy</strong> for long open-ended mandates (endowments, sovereign funds, perpetual strategies) — simpler, robust, and turnpike-justified; recompute the algebraic Riccati as parameters update.</li>
+            <li><strong>Overlay a terminal glide path</strong> when a real date exists — solve the finite Riccati ODE but recognize most of the action is the last 10–20% of the horizon.</li>
+            <li><strong>Estimation error dwarfs horizon subtlety:</strong> the difference between finite and infinite policies far from maturity is usually smaller than the uncertainty in μ and factor loadings — spend modeling effort on robust inputs (Part 04), not horizon precision.</li>
+            <li><strong>Series synthesis:</strong> Parts 01–02 gave the control core, 03–04 the practical sizing and input discipline, 05–06 the liability and factor machinery — this part says: use the stationary solution by default, add horizon structure only where a genuine deadline or path-dependence demands it, and never let either dominate the estimation-risk budget.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Finite horizon ⇒ time-varying glide-path policy (Riccati ODE); infinite ⇒ stationary policy (algebraic Riccati).</li>
+            <li>Turnpike: the finite policy hugs the stationary one except near maturity — the stationary solution is right for the bulk of any long mandate.</li>
+            <li>Horizon matters for hard target dates, short/tactical mandates, and path-dependent objectives.</li>
+            <li>Default stationary + terminal glide path where dated; estimation error outweighs horizon nuance — invest effort in robust inputs.</li>
+        </ul>
+    </div>
+</div>

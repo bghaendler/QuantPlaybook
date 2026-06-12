@@ -1,13 +1,25 @@
 <div id="view-cqf-fp-tvm-compounding" style="display: none; font-family: var(--font-family-sans);">
     <header style="margin-bottom: 2rem;">
-        
+
         <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Compounding &amp; Future Values</h1>
         <p style="color: #64748b; margin-top: 0.5rem;">Explore the mathematical foundations of cash growth over time, from multi-frequency compounding to short-term money market conventions.</p>
     </header>
 
+    <!-- Plain English Notes (main) -->
+    <div class="card" style="background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+        <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Compounding means earning interest on your interest. Money parked at a fixed rate doesn't grow in a straight line — it snowballs, because each period's interest joins the principal and starts earning too.</p>
+        <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+            <li style="margin-bottom: 0.5rem;"><strong>Frequency matters, but less than you'd think:</strong> compounding monthly instead of annually at the same quoted rate earns you a bit more — but the jump from monthly to <em>continuous</em> (infinitely often) is pennies. The values converge to a hard ceiling.</li>
+            <li style="margin-bottom: 0.5rem;"><strong>That ceiling is Euler's number:</strong> compound €1 at 100% "infinitely often" for a year and you get exactly €2.71828… — Euler's number $e$, not infinity. This is why $e^{rT}$ is finance's universal growth factor.</li>
+            <li style="margin-bottom: 0.5rem;"><strong>Time is the real superpower:</strong> over one year, simple vs. compound interest barely differ. Over 30 years they diverge enormously — the charts below make this visible.</li>
+            <li style="margin-bottom: 0;"><strong>Rule of 72:</strong> money doubles in roughly <em>72 ÷ rate%</em> years (at 8%: ~9 years). A back-of-envelope trick bankers have used for centuries — test its accuracy in the demo below.</li>
+        </ul>
+    </div>
+
     <!-- Row 1: Multi-Frequency Compounding Laboratory -->
     <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; margin-bottom: 1.5rem;">
-        
+
         <!-- Controls Card -->
         <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
             <div>
@@ -16,7 +28,7 @@
                     Discrete &amp; Continuous Compounding
                 </h3>
                 <p style="font-size: 0.88rem; color: #64748b; line-height: 1.5;">Interest can be compounded at different frequencies. The more frequent the compounding interval, the higher the <strong>Effective Annual Rate (EAR)</strong> actually achieved by the investor.</p>
-                
+
                 <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
                     <div>
                         <label style="font-size: 0.75rem; font-weight: 700; display: block; margin-bottom: 0.25rem;">Present Value ($PV$)</label>
@@ -48,7 +60,7 @@
         <!-- Frequency Grid Output -->
         <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
             <h4 style="margin: 0 0 0.75rem 0; font-size: 1rem; color: var(--text-color);">Growth of Sum at Compounding Frequencies:</h4>
-            
+
             <div style="display: flex; flex-direction: column; gap: 0.5rem; flex: 1;">
                 <div style="display: flex; justify-content: space-between; align-items: center; background: var(--metric-bg); padding: 0.5rem 0.75rem; border-radius: 6px; border: 1px solid var(--card-border);">
                     <span style="font-weight: 700; font-size: 0.85rem;">Annual <span style="font-weight:400; color:#64748b; font-size:0.75rem;">(m = 1)</span></span>
@@ -89,7 +101,78 @@
         </div>
     </div>
 
-    <!-- Row 2: Money Market Periods Compounding (up to 12 Months) -->
+    <!-- Row 2: Growth Visualization Laboratory -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
+            Visualization: The Power of Compounding Over Time
+        </h3>
+        <p style="font-size: 0.88rem; color: #64748b;">Three ways €100 can grow at the same quoted rate: <strong style="color:#94a3b8;">simple interest</strong> (linear — interest never earns interest), <strong style="color:#4f46e5;">annual compounding</strong>, and <strong style="color:#f59e0b;">continuous compounding</strong>. Drag the sliders and watch the curves diverge.</p>
+
+        <div style="display: flex; gap: 2rem; flex-wrap: wrap; margin: 0.75rem 0 1rem 0; font-size: 0.85rem;">
+            <label style="flex: 1; min-width: 220px;">Rate: <strong id="fvVizRateLabel">8%</strong> p.a.
+                <input type="range" id="fvVizRate" min="1" max="15" step="0.5" value="8" oninput="fvDrawGrowth(); fvDrawConvergence();" style="width: 100%;">
+            </label>
+            <label style="flex: 1; min-width: 220px;">Horizon: <strong id="fvVizYearsLabel">30</strong> years
+                <input type="range" id="fvVizYears" min="5" max="50" step="1" value="30" oninput="fvDrawGrowth()" style="width: 100%;">
+            </label>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.5rem; align-items: start;">
+            <div>
+                <canvas id="fvGrowthCanvas" width="860" height="330" style="width: 100%; border: 1px solid var(--card-border); border-radius: 8px; background: var(--metric-bg);"></canvas>
+                <div id="fvGrowthSummary" style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.6rem;"></div>
+            </div>
+            <div>
+                <h4 style="margin: 0 0 0.4rem 0; font-size: 0.92rem;">Convergence to the Continuous Limit</h4>
+                <p style="font-size: 0.78rem; color: #64748b; margin: 0 0 0.5rem 0;">EAR achieved at each compounding frequency $m$ — the curve flattens fast onto the $e^r - 1$ ceiling (dashed).</p>
+                <canvas id="fvConvCanvas" width="420" height="252" style="width: 100%; border: 1px solid var(--card-border); border-radius: 8px; background: var(--metric-bg);"></canvas>
+            </div>
+        </div>
+
+        <!-- Plain English note for the charts -->
+        <div style="background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 0.9rem 1.2rem; margin-top: 1rem;">
+            <p style="font-family: 'Inter', sans-serif; font-size: 0.88rem; line-height: 1.6; color: #451a03; margin: 0;"><strong style="color: #b45309;">In plain English:</strong> the left chart shows why "interest on interest" wins over decades — the straight grey line is what you'd get if interest never compounded; the curved lines bend upward because growth feeds on itself. The right chart shows the opposite lesson: chasing ever-more-frequent compounding hits a ceiling almost immediately — daily compounding is already indistinguishable from the theoretical maximum.</p>
+        </div>
+    </div>
+
+    <!-- Row 3: Rule of 72 Doubling Demo -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 8V4l8 8-8 8v-4H4V8z"/></svg>
+            Demo: Doubling Time &amp; the Rule of 72
+        </h3>
+        <p style="font-size: 0.88rem; color: #64748b;">How long until your money doubles? The exact answer is $T_2 = \ln 2 / \ln(1 + r)$; the trader's shortcut is $T_2 \approx 72 / r\%$. Move the slider to compare them — and see each doubling stack up on the timeline.</p>
+
+        <label style="font-size: 0.85rem; display: block; margin: 0.75rem 0;">Annual rate: <strong id="fvDblRateLabel">8%</strong>
+            <input type="range" id="fvDblRate" min="1" max="20" step="0.5" value="8" oninput="fvDoublingCalc()" style="width: 100%;">
+        </label>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1rem;">
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.6rem 0.9rem; text-align: center;">
+                <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Exact Doubling Time</div>
+                <div id="fvDblExact" style="font-size: 1.35rem; font-weight: 900; color: var(--accent);">9.01 yrs</div>
+            </div>
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.6rem 0.9rem; text-align: center;">
+                <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Rule of 72 Estimate</div>
+                <div id="fvDblRule" style="font-size: 1.35rem; font-weight: 900; color: #f59e0b;">9.00 yrs</div>
+            </div>
+            <div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.6rem 0.9rem; text-align: center;">
+                <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Rule Error</div>
+                <div id="fvDblErr" style="font-size: 1.35rem; font-weight: 900; color: #10b981;">0.1%</div>
+            </div>
+        </div>
+
+        <!-- Doubling timeline -->
+        <div style="font-size: 0.75rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; margin-bottom: 0.35rem;">Doubling timeline (40-year window)</div>
+        <div id="fvDblTimeline" style="position: relative; height: 58px; background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; overflow: hidden;"></div>
+
+        <div style="background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 0.9rem 1.2rem; margin-top: 1rem;">
+            <p style="font-family: 'Inter', sans-serif; font-size: 0.88rem; line-height: 1.6; color: #451a03; margin: 0;"><strong style="color: #b45309;">In plain English:</strong> doublings are the honest way to feel exponential growth. At 8%, money doubles every ~9 years — so 36 working years means four doublings: €1 becomes €16, not €4. Each doubling takes the <em>same time</em> but adds <em>more euros</em> than all previous ones combined. The Rule of 72 stays within a few percent of the exact answer for any realistic rate, which is why it has survived since Luca Pacioli (1494).</p>
+        </div>
+    </div>
+
+    <!-- Row 4: Money Market Periods Compounding (up to 12 Months) -->
     <div class="card" style="border-left: 4px solid var(--accent); margin-bottom: 1.5rem;">
         <h3 style="margin-top: 0; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
@@ -139,6 +222,10 @@
                 <span style="font-size: 0.72rem; color: #64748b;">Due to Day-Count fraction convention vs. 365 Days</span>
             </div>
         </div>
+
+        <div style="background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 0.9rem 1.2rem; margin-top: 1rem;">
+            <p style="font-family: 'Inter', sans-serif; font-size: 0.88rem; line-height: 1.6; color: #451a03; margin: 0;"><strong style="color: #b45309;">In plain English:</strong> for deposits shorter than a year, banks don't bother with exponents — interest is just <em>rate × days ÷ basis</em>. The catch is the basis: USD markets pretend the year has 360 days, GBP uses 365. Lending dollars at "3%" for a real 365-day year actually pays 3% × 365/360 ≈ 3.04% — the convention quietly works in the lender's favor. Always ask <em>which</em> day count a quoted rate uses.</p>
+        </div>
     </div>
 </div>
 
@@ -173,6 +260,161 @@ function runFVMappings() {
     document.getElementById('earQuarterOut').innerText = 'Effective EAR: ' + earQuarter.toFixed(4) + '%';
     document.getElementById('earMonthOut').innerText = 'Effective EAR: ' + earMonth.toFixed(4) + '%';
     document.getElementById('earContOut').innerText = 'Effective EAR: ' + earCont.toFixed(4) + '%';
+}
+
+// ---- Growth curves visualization (simple vs annual vs continuous) ----
+function fvDrawGrowth() {
+    const canvas = document.getElementById('fvGrowthCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const r = (parseFloat(document.getElementById('fvVizRate').value) || 8) / 100;
+    const T = parseInt(document.getElementById('fvVizYears').value) || 30;
+    document.getElementById('fvVizRateLabel').textContent = (r * 100).toFixed(1).replace(/\.0$/, '') + '%';
+    document.getElementById('fvVizYearsLabel').textContent = T;
+
+    const W = canvas.width, H = canvas.height;
+    const padL = 56, padR = 14, padT = 14, padB = 30;
+    ctx.clearRect(0, 0, W, H);
+
+    const PV = 100;
+    const simple = t => PV * (1 + r * t);
+    const annual = t => PV * Math.pow(1 + r, t);
+    const cont = t => PV * Math.exp(r * t);
+    const yMax = cont(T) * 1.06, yMin = 0;
+
+    const px = t => padL + (W - padL - padR) * t / T;
+    const py = v => padT + (H - padT - padB) * (1 - (v - yMin) / (yMax - yMin));
+
+    // gridlines + labels
+    ctx.strokeStyle = 'rgba(120,120,140,0.3)'; ctx.fillStyle = '#94a3b8'; ctx.font = '11px sans-serif'; ctx.lineWidth = 1;
+    for (let g = 0; g <= 5; g++) {
+        const gv = yMin + (yMax - yMin) * g / 5, gy = py(gv);
+        ctx.beginPath(); ctx.moveTo(padL, gy); ctx.lineTo(W - padR, gy); ctx.stroke();
+        ctx.fillText('€' + Math.round(gv).toLocaleString(), 6, gy + 4);
+    }
+    const xStep = T <= 12 ? 2 : (T <= 30 ? 5 : 10);
+    for (let yr = 0; yr <= T; yr += xStep) {
+        ctx.fillText(yr + 'y', px(yr) - 8, H - 10);
+    }
+
+    function plot(fn, color, dash) {
+        ctx.strokeStyle = color; ctx.lineWidth = 2.4;
+        ctx.setLineDash(dash || []);
+        ctx.beginPath();
+        for (let i = 0; i <= 200; i++) {
+            const t = T * i / 200;
+            if (i === 0) ctx.moveTo(px(t), py(fn(t))); else ctx.lineTo(px(t), py(fn(t)));
+        }
+        ctx.stroke(); ctx.setLineDash([]);
+    }
+    plot(simple, '#94a3b8');
+    plot(annual, '#4f46e5');
+    plot(cont, '#f59e0b');
+
+    // end labels
+    ctx.font = 'bold 12px sans-serif';
+    ctx.fillStyle = '#94a3b8'; ctx.fillText('Simple', W - padR - 50, py(simple(T)) + 14);
+    ctx.fillStyle = '#4f46e5'; ctx.fillText('Annual', W - padR - 52, py(annual(T)) + 14);
+    ctx.fillStyle = '#f59e0b'; ctx.fillText('Continuous', W - padR - 80, py(cont(T)) - 6);
+
+    // summary chips
+    const chip = (label, val, color) =>
+        '<div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-left: 4px solid ' + color + '; border-radius: 6px; padding: 0.35rem 0.7rem; font-size: 0.8rem;">' +
+        '<span style="color:#94a3b8; font-weight:700;">' + label + ':</span> <strong>€' + val.toLocaleString('en-US', {maximumFractionDigits: 0}) + '</strong></div>';
+    document.getElementById('fvGrowthSummary').innerHTML =
+        chip('€100 simple after ' + T + 'y', simple(T), '#94a3b8') +
+        chip('annual compounding', annual(T), '#4f46e5') +
+        chip('continuous', cont(T), '#f59e0b') +
+        '<div style="background: var(--accent-glow); border: 1px solid var(--accent); border-radius: 6px; padding: 0.35rem 0.7rem; font-size: 0.8rem;"><span style="color: var(--accent); font-weight:700;">Compounding bonus vs simple:</span> <strong>€' + (cont(T) - simple(T)).toLocaleString('en-US', {maximumFractionDigits: 0}) + '</strong></div>';
+}
+
+// ---- Convergence to e: EAR vs compounding frequency ----
+function fvDrawConvergence() {
+    const canvas = document.getElementById('fvConvCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const r = (parseFloat(document.getElementById('fvVizRate').value) || 8) / 100;
+    const W = canvas.width, H = canvas.height;
+    const padL = 46, padR = 12, padT = 16, padB = 34;
+    ctx.clearRect(0, 0, W, H);
+
+    const freqs = [{m:1,l:'1/yr'},{m:2,l:'2'},{m:4,l:'4'},{m:12,l:'12'},{m:52,l:'52'},{m:365,l:'365'}];
+    const ear = m => (Math.pow(1 + r/m, m) - 1) * 100;
+    const earCont = (Math.exp(r) - 1) * 100;
+    const yLo = ear(1) - (earCont - ear(1)) * 0.25;
+    const yHi = earCont + (earCont - ear(1)) * 0.35;
+
+    const px = i => padL + (W - padL - padR) * i / (freqs.length - 1 + 0.8); // leave room for ∞
+    const py = v => padT + (H - padT - padB) * (1 - (v - yLo) / (yHi - yLo));
+
+    // gridlines
+    ctx.strokeStyle = 'rgba(120,120,140,0.3)'; ctx.fillStyle = '#94a3b8'; ctx.font = '10px sans-serif'; ctx.lineWidth = 1;
+    for (let g = 0; g <= 3; g++) {
+        const gv = yLo + (yHi - yLo) * g / 3, gy = py(gv);
+        ctx.beginPath(); ctx.moveTo(padL, gy); ctx.lineTo(W - padR, gy); ctx.stroke();
+        ctx.fillText(gv.toFixed(2) + '%', 4, gy + 3);
+    }
+
+    // asymptote e^r - 1
+    ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 1.6; ctx.setLineDash([5, 4]);
+    ctx.beginPath(); ctx.moveTo(padL, py(earCont)); ctx.lineTo(W - padR, py(earCont)); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#f59e0b'; ctx.font = 'bold 10px sans-serif';
+    ctx.fillText('e^r − 1 ceiling', padL + 4, py(earCont) - 5);
+
+    // points + connecting line
+    ctx.strokeStyle = '#4f46e5'; ctx.lineWidth = 2; ctx.beginPath();
+    freqs.forEach((f, i) => { const x = px(i), y = py(ear(f.m)); if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); });
+    ctx.stroke();
+    ctx.fillStyle = '#4f46e5';
+    ctx.font = '10px sans-serif';
+    freqs.forEach((f, i) => {
+        const x = px(i), y = py(ear(f.m));
+        ctx.beginPath(); ctx.arc(x, y, 4, 0, 2 * Math.PI); ctx.fill();
+        ctx.fillStyle = '#94a3b8'; ctx.fillText(f.l, x - 8, H - 14); ctx.fillStyle = '#4f46e5';
+    });
+    // infinity point on the asymptote
+    const xInf = W - padR - 14;
+    ctx.fillStyle = '#f59e0b';
+    ctx.beginPath(); ctx.arc(xInf, py(earCont), 4.5, 0, 2 * Math.PI); ctx.fill();
+    ctx.font = 'bold 13px sans-serif'; ctx.fillText('∞', xInf - 4, H - 12);
+}
+
+// ---- Rule of 72 doubling demo ----
+function fvDoublingCalc() {
+    const rPct = parseFloat(document.getElementById('fvDblRate').value) || 8;
+    const r = rPct / 100;
+    document.getElementById('fvDblRateLabel').textContent = rPct.toFixed(1).replace(/\.0$/, '') + '%';
+
+    const exact = Math.LN2 / Math.log(1 + r);
+    const rule = 72 / rPct;
+    const err = Math.abs(rule - exact) / exact * 100;
+
+    document.getElementById('fvDblExact').textContent = exact.toFixed(2) + ' yrs';
+    document.getElementById('fvDblRule').textContent = rule.toFixed(2) + ' yrs';
+    document.getElementById('fvDblErr').textContent = err.toFixed(1) + '%';
+
+    // timeline: 40-year window, markers at each doubling
+    const windowYears = 40;
+    const tl = document.getElementById('fvDblTimeline');
+    let html = '';
+    // year ticks every 10y
+    for (let y = 10; y < windowYears; y += 10) {
+        const pct = y / windowYears * 100;
+        html += '<div style="position:absolute; left:' + pct + '%; top:0; bottom:0; width:1px; background: rgba(120,120,140,0.25);"></div>' +
+                '<div style="position:absolute; left:' + pct + '%; bottom:2px; transform:translateX(-50%); font-size:0.62rem; color:#94a3b8;">' + y + 'y</div>';
+    }
+    let n = 1;
+    for (let t = exact; t <= windowYears; t += exact) {
+        const pct = t / windowYears * 100;
+        const mult = Math.pow(2, n);
+        html += '<div style="position:absolute; left:' + pct + '%; top:6px; transform:translateX(-50%); text-align:center;">' +
+                '<div style="width:10px; height:10px; border-radius:50%; background:#4f46e5; margin:0 auto;"></div>' +
+                '<div style="font-size:0.68rem; font-weight:800; color:#4f46e5; margin-top:2px;">×' + mult + '</div></div>';
+        n++;
+        if (n > 12) break;
+    }
+    tl.innerHTML = html;
 }
 
 // Money Market Compounding Presets
@@ -228,5 +470,8 @@ function calcMMPayments() {
 setTimeout(() => {
     runFVMappings();
     calcMMPayments();
+    fvDrawGrowth();
+    fvDrawConvergence();
+    fvDoublingCalc();
 }, 200);
 </script>
