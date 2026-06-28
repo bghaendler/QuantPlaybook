@@ -1,35 +1,215 @@
 <div id="view-cmm-advanced-calculus" style="display: none; font-family: var(--font-family-sans);">
     <header style="margin-bottom: 2rem;">
         <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Mathematical Methods &bull; Advanced Calculus</p>
-        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Advanced Calculus</h1>
-        <p style="color: #64748b; margin-top: 0.5rem;">Multivariable differential and integral calculus &mdash; the engine room behind Greeks, gradients and the change-of-variables formulas that pricing relies on.</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Vectors, Complex Numbers &amp; Differential Equations</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Lecture 1. The geometric and algebraic toolkit behind quant finance: vectors and their products, the complex plane and De&nbsp;Moivre / Euler machinery, and the first- and second-order ODE solution methods that pricing and rate models rely on.</p>
     </header>
 
+    <!-- ============ PART 1: VECTORS ============ -->
+    <h2 style="border-bottom: 2px solid var(--accent); padding-bottom: 0.4rem; margin-top: 1rem;">1 &nbsp;Vectors</h2>
+
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
-        <!-- Left Side: Core Topics -->
         <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
-            <h3>Core Topics</h3>
-            <ul style="line-height: 1.8;">
-                <li>Limits, continuity and differentiability in $\mathbb{R}^n$</li>
-                <li>Partial derivatives, the gradient $\nabla f$, Jacobians and Hessians</li>
-                <li>Chain rule, implicit &amp; inverse function theorems</li>
-                <li>Taylor's theorem in several variables; optimization with Lagrange multipliers</li>
-                <li>Multiple integrals, change of variables and the Jacobian determinant</li>
-            </ul>
+            <h3>1.1 &ndash; 1.4 &nbsp;Vectors, Length &amp; Unit Vectors</h3>
+            <p><strong>Vectors</strong> have magnitude <em>and</em> direction (displacement, velocity, acceleration, force); <strong>scalars</strong> have magnitude only (distance, speed, density, temperature). A vector in $n$ dimensions is</p>
+            $$\mathbf{v} = (v_1, v_2, \dots, v_n) \in \mathbb{R}^n,$$
+            <p>with components $v_i$. Two vectors are equal iff they have the same dimension and equal corresponding components.</p>
+            <p><strong>Arithmetic.</strong> For $\mathbf{u},\mathbf{v}\in\mathbb{R}^n$ and scalar $k$:</p>
+            $$\mathbf{u}+\mathbf{v}=(u_1+v_1,\dots,u_n+v_n), \qquad k\mathbf{u}=(ku_1,\dots,ku_n).$$
+            <p><strong>Length / norm.</strong> By Pythagoras, the magnitude is</p>
+            $$\|\mathbf{v}\| = \sqrt{v_1^2 + v_2^2 + \cdots + v_n^2},$$
+            <p>and any non-zero vector can be written $\mathbf{v} = \|\mathbf{v}\|\,\hat{\mathbf{v}}$ where $\hat{\mathbf{v}} = \mathbf{v}/\|\mathbf{v}\|$ is the <strong>unit vector</strong> ($\|\hat{\mathbf{v}}\|=1$). The axes $\mathbf{i}=(1,0,0)$, $\mathbf{j}=(0,1,0)$, $\mathbf{k}=(0,0,1)$ are the standard unit vectors, so a point $P(x,y,z)$ has position vector $\mathbf{r}=x\mathbf{i}+y\mathbf{j}+z\mathbf{k}$.</p>
         </div>
-        <!-- Right Side: Plain English Notes -->
         <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
             <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Advanced calculus generalizes the single-variable derivative and integral to functions of many variables &mdash; exactly what you need when a portfolio value depends on many risk factors at once.</p>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> A vector is just an ordered list of numbers with a geometric meaning. In finance a portfolio of $n$ holdings, or a vector of $n$ asset returns, lives in $\mathbb{R}^n$ exactly like a physical displacement.</p>
             <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-                <li style="margin-bottom: 0.5rem;"><strong>Gradients &amp; Greeks:</strong> First-order sensitivities (delta, rho, vega) are partial derivatives; the Hessian holds the second-order Greeks like gamma.</li>
-                <li style="margin-bottom: 0.5rem;"><strong>Taylor expansions:</strong> P&amp;L attribution and risk approximations are just multivariable Taylor series truncated to a couple of terms.</li>
+                <li style="margin-bottom: 0.5rem;"><strong>The norm</strong> generalizes "length" to any dimension &mdash; it is the same formula used for the size of a return vector or a risk-factor shock.</li>
+                <li style="margin-bottom: 0;"><strong>Unit vectors</strong> strip out size and keep only direction &mdash; useful whenever you care about a <em>mix</em> (weights) rather than a notional.</li>
             </ul>
         </div>
     </div>
 
-    <div class="card" style="border-left: 4px solid var(--accent); background: var(--bg-subtle, #f8fafc);">
-        <h3 style="margin-top:0;">Detailed Notes Coming Soon</h3>
-        <p style="margin-bottom:0; color:#475569;">This module's full side-by-side derivations and worked examples are being prepared. The outline above maps the territory; lecture material will be added here as it is released.</p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>Scalar (Dot) Product</h3>
+            <p>The dot product combines two vectors into a scalar and encodes the angle between them:</p>
+            $$\mathbf{u}\cdot\mathbf{v} = \sum_{i=1}^{n} u_i v_i = \|\mathbf{u}\|\,\|\mathbf{v}\|\cos\theta.$$
+            <p>Rearranging gives the angle $\cos\theta = \dfrac{\mathbf{u}\cdot\mathbf{v}}{\|\mathbf{u}\|\,\|\mathbf{v}\|}$. When $\theta=\tfrac{\pi}{2}$ the vectors are <strong>orthogonal</strong> and $\mathbf{u}\cdot\mathbf{v}=0$.</p>
+        </div>
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1.5 &nbsp;Vector (Cross) Product $\mathbf{a}\wedge\mathbf{b}$</h3>
+            <p>Unlike the dot product, the cross product returns another <em>vector</em>, computed via the determinant mnemonic</p>
+            $$\mathbf{a}\wedge\mathbf{b} = \begin{vmatrix} \mathbf{i} & \mathbf{j} & \mathbf{k} \\ a_1 & a_2 & a_3 \\ b_1 & b_2 & b_3 \end{vmatrix}.$$
+            <p>Geometrically $\mathbf{a}\wedge\mathbf{b} = \|\mathbf{a}\|\,\|\mathbf{b}\|\sin\theta\,\hat{\mathbf{u}}$, orthogonal to both $\mathbf{a}$ and $\mathbf{b}$, so $(\mathbf{a}\wedge\mathbf{b})\cdot\mathbf{a}=(\mathbf{a}\wedge\mathbf{b})\cdot\mathbf{b}=0$ and $\mathbf{b}\wedge\mathbf{a}=-\mathbf{a}\wedge\mathbf{b}$. For the basis vectors $\mathbf{i}\wedge\mathbf{j}=\mathbf{k}$, $\mathbf{j}\wedge\mathbf{k}=\mathbf{i}$, $\mathbf{k}\wedge\mathbf{i}=\mathbf{j}$.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>1.5.2 &nbsp;Triple Products, Determinants &amp; Area</h3>
+        <p>The <strong>scalar triple product</strong> is the determinant</p>
+        $$\mathbf{a}\cdot(\mathbf{b}\wedge\mathbf{c}) = \begin{vmatrix} a_1 & a_2 & a_3 \\ b_1 & b_2 & b_3 \\ c_1 & c_2 & c_3 \end{vmatrix},$$
+        <p>whose absolute value is the volume of the parallelepiped spanned by the three vectors. Useful determinant rules: swapping two rows changes the sign; two equal rows give $0$; a common factor in a row/column factors out; adding a multiple of one row to another leaves the determinant unchanged (the basis of row reduction).</p>
+        <p style="margin-bottom:0;">Because $\|\mathbf{a}\wedge\mathbf{b}\| = \|\mathbf{a}\|\,\|\mathbf{b}\|\sin\theta = 2\,(\text{area of }\triangle OAB)$, the <strong>area of a triangle</strong> with edge vectors $\mathbf{a},\mathbf{b}$ is</p>
+        $$\text{Area} = \tfrac{1}{2}\,\|\mathbf{a}\wedge\mathbf{b}\|.$$
+    </div>
+
+    <!-- ============ PART 2: COMPLEX NUMBERS ============ -->
+    <h2 style="border-bottom: 2px solid var(--accent); padding-bottom: 0.4rem; margin-top: 2.5rem;">2 &nbsp;Complex Numbers</h2>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2.1 &ndash; 2.5 &nbsp;Background, Arithmetic &amp; Polar Form</h3>
+            <p>Not every polynomial has a real root: $x^2+1=0$ forces us to define $i=\sqrt{-1}$. The quadratic $ax^2+bx+c=0$ then always solves over $\mathbb{C}$. For $z_1=a+ib,\ z_2=c+id$:</p>
+            $$z_1\pm z_2 = (a\pm c)+i(b\pm d), \qquad z_1 z_2 = (ac-bd)+i(ad+bc),$$
+            <p>and a handy result is $\dfrac{1}{i} = -i$. With $z=x+iy$, the <strong>modulus</strong> and <strong>argument</strong> are</p>
+            $$|z| = r = \sqrt{x^2+y^2}, \qquad \theta = \arg z = \arctan\tfrac{y}{x},$$
+            <p>(principal range $-\pi<\theta\le\pi$). The <strong>polar form</strong> is $z = r(\cos\theta + i\sin\theta)$, and the <strong>conjugate</strong> $\bar z = x-iy$ gives $\operatorname{Re}z=\tfrac{z+\bar z}{2}$, $\operatorname{Im}z=\tfrac{z-\bar z}{2i}$, $|z|^2 = z\bar z$.</p>
+        </div>
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> A complex number is a point in a 2-D plane that you can also multiply. The modulus is its distance from the origin (Pythagoras again); the argument is its angle.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+                <li style="margin-bottom: 0.5rem;"><strong>Why quants care:</strong> Fourier and characteristic-function option pricing (Heston, Carr&ndash;Madan) live entirely in the complex plane.</li>
+                <li style="margin-bottom: 0;"><strong>Polar form</strong> turns multiplication into "multiply the lengths, add the angles" &mdash; the key simplification behind everything below.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>2.6 &nbsp;Euler's Formula</h3>
+        <p>For any angle $\theta$, $\;\exp(i\theta) = \cos\theta + i\sin\theta.$ Substituting $x=i\theta$ into the Taylor series $e^x = \sum x^n/n!$ and separating real and imaginary parts recovers the series for $\cos\theta$ and $\sin\theta$:</p>
+        $$e^{i\theta} = \underbrace{\left(1 - \tfrac{\theta^2}{2!} + \tfrac{\theta^4}{4!} - \cdots\right)}_{\cos\theta} + i\underbrace{\left(\theta - \tfrac{\theta^3}{3!} + \tfrac{\theta^5}{5!} - \cdots\right)}_{\sin\theta}.$$
+        <p>Hence in mod&ndash;arg form $z = re^{i\theta}$, and for $z_1=r_1e^{i\theta_1},\ z_2=r_2e^{i\theta_2}$:</p>
+        $$z_1 z_2 = r_1 r_2\, e^{i(\theta_1+\theta_2)}, \qquad \frac{z_1}{z_2} = \frac{r_1}{r_2}\, e^{i(\theta_1-\theta_2)} \quad (z_2\neq 0),$$
+        <p style="margin-bottom:0;">so $|z_1 z_2| = |z_1||z_2|$ and $\arg(z_1 z_2) = \arg z_1 + \arg z_2$. Periodicity gives $\exp(i\theta) = \exp\!\big(i(\theta+2k\pi)\big)$ for $k\in\mathbb{Z}$ &mdash; the source of multiple roots below.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2.7 &nbsp;Circular &amp; Hyperbolic Functions</h3>
+            <p>For any $z\in\mathbb{C}$, Euler's formula defines the generalised circular and hyperbolic functions</p>
+            $$\sin z = \frac{e^{iz}-e^{-iz}}{2i}, \quad \cos z = \frac{e^{iz}+e^{-iz}}{2}, \quad \sinh z = \frac{e^{z}-e^{-z}}{2}, \quad \cosh z = \frac{e^{z}+e^{-z}}{2}.$$
+            <p>These give the bridges between the two families:</p>
+            $$\sinh(iz)=i\sin z, \quad \cosh(iz)=\cos z, \quad \sin(iz)=i\sinh z, \quad \cos(iz)=\cosh z.$$
+        </div>
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2.8 &nbsp;De Moivre's Theorem</h3>
+            <p>For integer $n$,</p>
+            $$(\cos\theta + i\sin\theta)^n = \cos n\theta + i\sin n\theta,$$
+            <p>proved by induction on $n$ (and extended to negatives and rationals). Two standard uses: expanding $\cos n\theta,\ \sin n\theta$ as powers of $\cos\theta,\sin\theta$, and &mdash; via $z+\tfrac{1}{z}=2\cos\theta$, $z^n+\tfrac{1}{z^n}=2\cos n\theta$ &mdash; the reverse, writing powers like $\cos^4\theta$ as sums of $\cos n\theta$ for easy integration.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>2.8.2 &nbsp;Roots of Complex Numbers</h3>
+        <p>An $n$th root of $z = r(\cos\theta+i\sin\theta)$ satisfies $w^n=z$, i.e. $w=z^{1/n}$. Using periodicity and De&nbsp;Moivre,</p>
+        $$z^{1/n} = r^{1/n}\left[\cos\!\left(\frac{\theta+2k\pi}{n}\right) + i\sin\!\left(\frac{\theta+2k\pi}{n}\right)\right], \qquad k=0,1,\dots,n-1,$$
+        <p>giving exactly $n$ roots equally spaced by $2\pi/n$ on a circle of radius $r^{1/n}$. The $n$th roots of unity ($z=1$) are $\exp(2k\pi i/n)$. <em>Example:</em> the cube roots of $1+i=\sqrt{2}\,e^{i\pi/4}$ are $(1+i)^{1/3} = 2^{1/6}\exp\!\big(i(8k+1)\pi/12\big)$, $k=0,1,2$.</p>
+    </div>
+
+    <div class="card" style="background: var(--bg-subtle, #f8fafc); border-left: 4px solid #6366f1;">
+        <h3 style="margin-top:0;">Triangle Inequality</h3>
+        <p>For any $z_1,z_2\in\mathbb{C}$, $\;|z_1+z_2|\le|z_1|+|z_2|.$ The proof rests on the lemma $\operatorname{Re}z\le|z|$ (since $|x|\le\sqrt{x^2+y^2}$), then</p>
+        $$|z_1+z_2|^2 = |z_1|^2+|z_2|^2+2\operatorname{Re}(z_1\bar z_2) \le |z_1|^2+|z_2|^2+2|z_1||z_2| = (|z_1|+|z_2|)^2.$$
+    </div>
+
+    <!-- ============ PART 3: FIRST ORDER ODEs ============ -->
+    <h2 style="border-bottom: 2px solid var(--accent); padding-bottom: 0.4rem; margin-top: 2.5rem;">3 &nbsp;First-Order Differential Equations</h2>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3.1 &nbsp;Homogeneous Equations</h3>
+            <p>$f(x,y)$ is <strong>homogeneous of degree $k$</strong> if $f(tx,ty)=t^k f(x,y)$. The ODE $\tfrac{dy}{dx}=f(x,y)$ is homogeneous when $f$ is homogeneous of degree $0$. Substituting $y=vx$, so $\tfrac{dy}{dx}=v + x\tfrac{dv}{dx}$, reduces it to the <strong>separable</strong> equation</p>
+            $$x\frac{dv}{dx} = f(1,v) - v \;\Longrightarrow\; \int\frac{dv}{f(1,v)-v} = \int\frac{dx}{x}.$$
+            <p><strong>Reducible form.</strong> $\dfrac{dy}{dx}=\dfrac{ax+by+c}{Ax+By+C}$ is made homogeneous by shifting $x=X+h,\ y=Y+k$ where $(h,k)$ is the intersection of the two lines (provided they are not parallel), then setting $Y=VX$.</p>
+        </div>
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3.2 &nbsp;Bernoulli Equation</h3>
+            <p>The non-linear ODE</p>
+            $$y' + P(x)\,y = Q(x)\,y^n$$
+            <p>is linear for $n=0,1$. For $n\ge 2$, divide by $y^n$ and substitute $z = y^{1-n}$, so $z' = (1-n)y^{-n}y'$, which linearizes it to</p>
+            $$z' + (1-n)P(x)\,z = (1-n)Q(x),$$
+            <p>solvable with the integrating factor $R(x)=\exp\!\int (1-n)P\,dx$.</p>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3.3 &nbsp;Exact Equations</h3>
+            <p>$M(x,y)\,dx + N(x,y)\,dy = 0$ is <strong>exact</strong> if there exists $G(x,y)$ with $dG = M\,dx + N\,dy$; the solution is then simply $G(x,y)=\text{const}$. The test for exactness is</p>
+            $$\frac{\partial M}{\partial y} = \frac{\partial N}{\partial x}.$$
+            <p>One recovers $G$ by integrating $M$ in $x$ (holding $y$ fixed) and $N$ in $y$ (holding $x$ fixed), then matching the two expressions.</p>
+        </div>
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Each method is a trick to turn a hard ODE into one you can integrate directly &mdash; substitution (homogeneous, Bernoulli) or recognising a total derivative (exact).</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+                <li style="margin-bottom: 0.5rem;"><strong>Integrating factor:</strong> when $\partial_y M \neq \partial_x N$, multiply through by a cleverly chosen $\mu$ to <em>force</em> exactness &mdash; the same idea used to solve linear first-order ODEs.</li>
+                <li style="margin-bottom: 0;"><strong>Finance link:</strong> short-rate and bond-price models are first-order ODEs/PDEs; these are the hand tools before the numerical ones.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>3.3.1 &nbsp;Reducible to Exact &mdash; Integrating Factors</h3>
+        <p>If $M\,dx+N\,dy=0$ is not exact, an integrating factor restores exactness. When $\dfrac{M_y - N_x}{N}$ is a function of $x$ alone, $\mu(x)=\exp\!\int\dfrac{M_y-N_x}{N}\,dx$; when $\dfrac{N_x - M_y}{M}$ is a function of $y$ alone, $\mu(y)=\exp\!\int\dfrac{N_x-M_y}{M}\,dy$. Multiplying through by $\mu$ yields an exact equation solved as above.</p>
+    </div>
+
+    <!-- ============ PART 4: SECOND ORDER ODEs ============ -->
+    <h2 style="border-bottom: 2px solid var(--accent); padding-bottom: 0.4rem; margin-top: 2.5rem;">4 &nbsp;Second-Order Linear ODEs &mdash; The D-Operator Method</h2>
+
+    <div class="card">
+        <h3>4.1 &nbsp;Complementary Function + Particular Integral</h3>
+        <p>For the constant-coefficient problem</p>
+        $$a\frac{d^2y}{dx^2} + b\frac{dy}{dx} + cy = g(x),$$
+        <p>the general solution is $y = y_c + y_p$: the <strong>complementary function</strong> $y_c$ (from the auxiliary equation $a\lambda^2+b\lambda+c=0$) plus a <strong>particular integral</strong> $y_p$. Writing $D\equiv\tfrac{d}{dx}$ and $L\equiv aD^2+bD+c$, the equation is $Ly=g(x)$ and</p>
+        $$y_p = \frac{1}{aD^2+bD+c}\,g(x),$$
+        <p>treating the inverse operator algebraically. Key techniques:</p>
+        <ul style="line-height: 1.8;">
+            <li><strong>Constant / polynomial RHS:</strong> for $g=K$ use $\tfrac{1}{L(0)}K$; for polynomials expand $\tfrac{1}{L(D)}$ by the binomial theorem.</li>
+            <li><strong>Exponential RHS &mdash; shift theorem:</strong> $f(D)\big(e^{ax}v\big) = e^{ax}f(D+a)\,v$, so $\tfrac{1}{L(D)}e^{ax} = \tfrac{1}{L(a)}e^{ax}$ when $L(a)\neq 0$. <em>E.g.</em> $\tfrac{1}{D^2+2D+4}e^{3x} = \tfrac{1}{19}e^{3x}$.</li>
+            <li><strong>Trigonometric RHS:</strong> use Euler's identity, $\tfrac{1}{F(D)}v\cos px = \operatorname{Re}\,e^{ipx}\tfrac{1}{F(D+ip)}v$, and likewise $\sin px$ with $\operatorname{Im}$.</li>
+        </ul>
+    </div>
+
+    <!-- ============ WORKED PROBLEMS ============ -->
+    <h2 style="border-bottom: 2px solid var(--accent); padding-bottom: 0.4rem; margin-top: 2.5rem;">Problem Sheet 1 &mdash; Selected Solutions</h2>
+
+    <div class="card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+        <h3 style="margin-top:0;">Q5 &nbsp;Lagrange's Identity</h3>
+        <p>Show, using components, that $\;|\mathbf{a}\wedge\mathbf{b}|^2 = |\mathbf{a}|^2|\mathbf{b}|^2 - (\mathbf{a}\cdot\mathbf{b})^2.$</p>
+        <p style="margin-bottom:0;">Since $|\mathbf{a}\wedge\mathbf{b}| = |\mathbf{a}||\mathbf{b}|\sin\theta$ and $\mathbf{a}\cdot\mathbf{b}=|\mathbf{a}||\mathbf{b}|\cos\theta$, the identity is just $\sin^2\theta = 1-\cos^2\theta$ written in components &mdash; a clean cross-check linking the two products.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+        <h3 style="margin-top:0;">De Moivre &mdash; Powers as Multiple Angles</h3>
+        <p><strong>(ii)</strong> $\sin 5\theta = \operatorname{Im}(\cos\theta+i\sin\theta)^5$; expanding with $c=\cos\theta,\ s=\sin\theta$ gives $\sin5\theta = 5c^4 s - 10c^2 s^3 + s^5$.</p>
+        <p style="margin-bottom:0;"><strong>(iii)</strong> Using $z+\tfrac1z=2\cos\theta$ and $z^n+\tfrac1{z^n}=2\cos n\theta$:</p>
+        $$2^5\cos^5\theta = 10\!\left(z+\tfrac1z\right) + 5\!\left(z^3+\tfrac1{z^3}\right) + \left(z^5+\tfrac1{z^5}\right) \;\Longrightarrow\; \cos^5\theta = \tfrac{1}{16}\big(10\cos\theta + 5\cos3\theta + \cos5\theta\big).$$
+    </div>
+
+    <div class="card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+        <h3 style="margin-top:0;">Q9 &nbsp;Solving Complex Equations</h3>
+        <p>For $z=x+iy$, split into real/imaginary parts using $\cos z = \cos x\cosh y - i\sin x\sinh y$ etc.</p>
+        <p style="margin-bottom:0;"><strong>(i) $\cos z = 4$:</strong> equating parts gives $\sin x\sinh y=0$ and $\cos x\cosh y=4$. Since $\cosh y\ge 1$ we need $\cos x = \pm1$, i.e. $x=n\pi$, and then $\cosh y = 4$ so $y = \pm\operatorname{arccosh}4$ &mdash; a real cosine of $4$ is impossible, but a <em>complex</em> one is not. The same real/imaginary splitting solves $\sin z = 2$, $\cosh 2z = 2i$ and $\cot z = 1$.</p>
+    </div>
+
+    <!-- ============ SUMMARY ============ -->
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Summary &amp; Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Vectors carry magnitude <em>and</em> direction; the <strong>dot product</strong> gives angles/projections ($\mathbf{u}\cdot\mathbf{v}=\|\mathbf{u}\|\|\mathbf{v}\|\cos\theta$), the <strong>cross product</strong> gives an orthogonal vector and areas ($\tfrac12\|\mathbf{a}\wedge\mathbf{b}\|$).</li>
+            <li>The scalar triple product is a determinant measuring volume; row operations are its computational engine.</li>
+            <li>Complex numbers complete the algebra of polynomials; <strong>polar / Euler form</strong> $z=re^{i\theta}$ turns multiplication into add-the-angles and powers/roots into <strong>De&nbsp;Moivre</strong>.</li>
+            <li>$n$th roots are $n$ equally spaced points on a circle; circular and hyperbolic functions are two faces of the same exponential.</li>
+            <li>First-order ODEs are tamed by <strong>substitution</strong> (homogeneous, Bernoulli) or by recognising/forcing an <strong>exact</strong> form (integrating factors).</li>
+            <li>Constant-coefficient second-order ODEs split as $y=y_c+y_p$; the <strong>D-operator</strong> with the shift theorem and Euler's identity delivers the particular integral mechanically.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="background: var(--bg-subtle, #f8fafc);">
+        <h3>Source</h3>
+        <p style="margin-bottom:0; color:#475569;">CQF Certificate in Mathematical Methods &mdash; <em>Advanced Calculus, Lecture 1: Vectors, Complex Numbers and Differential Equations</em>, with worked items from Problem Sheet 1 (Vectors and Complex Numbers) and its solutions.</p>
     </div>
 </div>

@@ -1,35 +1,246 @@
 <div id="view-cmm-linear-algebra" style="display: none; font-family: var(--font-family-sans);">
     <header style="margin-bottom: 2rem;">
         <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Mathematical Methods &bull; Linear Algebra</p>
-        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Linear Algebra</h1>
-        <p style="color: #64748b; margin-top: 0.5rem;">Vectors, matrices and the spectral theory behind covariance, PCA, factor models and the numerical core of almost every quant library.</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Vector Spaces, Matrices &amp; Eigenvalues</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">From linear systems and abstract vector spaces, through the full machinery of matrices, determinants and inverses, to the eigenvalue problem and diagonalization &mdash; the structures behind covariance, PCA, factor models and the numerical core of every quant library.</p>
     </header>
 
+    <!-- ====================================================== -->
+    <!-- PART 1 -->
+    <!-- ====================================================== -->
+    <h2 style="border-bottom: 2px solid var(--accent); padding-bottom: 0.4rem; margin-top: 1rem;">1 &nbsp;Linear Systems &amp; Vector Spaces</h2>
+
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
-        <!-- Left Side: Core Topics -->
         <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
-            <h3>Core Topics</h3>
-            <ul style="line-height: 1.8;">
-                <li>Vector spaces, bases, rank and linear independence</li>
-                <li>Matrix algebra, determinants and inverses; solving $A\mathbf{x}=\mathbf{b}$</li>
-                <li>Eigenvalues, eigenvectors and diagonalization</li>
-                <li>Symmetric / positive-definite matrices and the spectral theorem</li>
-                <li>Orthogonality, projections and the Gram&ndash;Schmidt process</li>
-            </ul>
+            <h3>1.1 &nbsp;Review of Linear Equations</h3>
+            <p>A system of $m$ equations in $n$ unknowns is written compactly as $A\mathbf{x}=\mathbf{b}$, where $A$ is the coefficient matrix. We solve by forming the <strong>augmented matrix</strong> $[A\,|\,\mathbf{b}]$ and applying <strong>Gaussian elimination</strong> (elementary row operations) to reach row-echelon form:</p>
+            $$\left[\begin{array}{ccc|c} 2 & 1 & -1 & 8 \\ -3 & -1 & 2 & -11 \\ -2 & 1 & 2 & -3 \end{array}\right] \longrightarrow \left[\begin{array}{ccc|c} 1 & 0 & 0 & 2 \\ 0 & 1 & 0 & 3 \\ 0 & 0 & 1 & -1 \end{array}\right].$$
+            <p>The solution is <strong>unique</strong> when the coefficient matrix reduces to the identity (full rank); otherwise the system has no solution or infinitely many.</p>
         </div>
-        <!-- Right Side: Plain English Notes -->
         <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
             <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Linear algebra is the language of data with many dimensions. Returns of many assets, yield-curve movements and correlation structures all live as vectors and matrices.</p>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Almost every quantitative task &mdash; calibrating a curve, fitting a regression, solving a PDE on a grid &mdash; ends up as "solve $A\mathbf{x}=\mathbf{b}$." Row reduction is the universal hand-method behind the numerical solvers.</p>
             <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-                <li style="margin-bottom: 0.5rem;"><strong>Covariance &amp; PCA:</strong> A covariance matrix is symmetric positive semi-definite; its eigenvectors are the principal components driving the yield curve or equity returns.</li>
-                <li style="margin-bottom: 0.5rem;"><strong>Linear systems:</strong> Calibration and least-squares fitting reduce to solving or inverting matrix equations &mdash; numerically and stably.</li>
+                <li style="margin-bottom: 0.5rem;"><strong>Unique vs. not:</strong> whether a solution exists and is unique is a <em>rank</em> question &mdash; the same idea that flags a singular (un-invertible) covariance matrix.</li>
+                <li style="margin-bottom: 0;"><strong>Bond bootstrapping</strong> and least-squares curve fits are linear systems at heart.</li>
             </ul>
         </div>
     </div>
 
-    <div class="card" style="border-left: 4px solid var(--accent); background: var(--bg-subtle, #f8fafc);">
-        <h3 style="margin-top:0;">Detailed Notes Coming Soon</h3>
-        <p style="margin-bottom:0; color:#475569;">This module's full side-by-side derivations and worked examples are being prepared. The outline above maps the territory; lecture material will be added here as it is released.</p>
+    <div class="card">
+        <h3>1.2 &nbsp;Vector Spaces</h3>
+        <p>A <strong>vector space</strong> $V$ over a field (here $\mathbb{R}$) is a set with two operations &mdash; vector addition and scalar multiplication &mdash; satisfying eight axioms. Addition makes $V$ an <strong>abelian group</strong>:</p>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:0.5rem 1.5rem; margin:0.5rem 0;">
+            <ul style="line-height:1.7; margin:0;">
+                <li>$u+v = v+u$ (commutative)</li>
+                <li>$(u+v)+w = u+(v+w)$ (associative)</li>
+                <li>$\exists\,\mathbf{0}$ with $v+\mathbf{0}=v$</li>
+                <li>$\exists\,(-v)$ with $v+(-v)=\mathbf{0}$</li>
+            </ul>
+            <ul style="line-height:1.7; margin:0;">
+                <li>$k(u+v) = ku+kv$</li>
+                <li>$(k+l)v = kv+lv$</li>
+                <li>$(kl)v = k(lv)$</li>
+                <li>$1\cdot v = v$</li>
+            </ul>
+        </div>
+        <p style="margin-bottom:0;"><strong>Examples:</strong> $\mathbb{R}^n$; the polynomials $P_n$ of degree $\le n$; the set of all $m\times n$ matrices; real-valued functions on an interval. All obey the same axioms, which is what lets one theory serve them all.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2.1 &nbsp;Subspaces</h3>
+            <p>$U\subseteq V$ is a <strong>subspace</strong> if it is itself a vector space under the inherited operations. The practical test: $U$ is non-empty and <strong>closed</strong> under addition and scalar multiplication,</p>
+            $$u_1,u_2\in U \Rightarrow u_1+u_2\in U, \qquad k\in\mathbb{R},\,u\in U \Rightarrow ku\in U.$$
+            <p>Equivalently, $u_1,u_2\in U \Rightarrow \alpha u_1+\beta u_2\in U$ for all scalars. <strong>Examples:</strong> upper-triangular matrices; symmetric matrices; functions with $f(-1)=f(1)$; the solution set of a homogeneous linear ODE.</p>
+        </div>
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2.1.1 &nbsp;Linear Dependence &amp; Independence</h3>
+            <p>A <strong>linear combination</strong> of $v_1,\dots,v_n$ is $a_1v_1+\cdots+a_nv_n$. The set is <strong>linearly independent</strong> if</p>
+            $$a_1v_1 + a_2v_2 + \cdots + a_nv_n = \mathbf{0} \;\Longrightarrow\; a_1=a_2=\cdots=a_n=0,$$
+            <p>i.e. the only way to make zero is the trivial way. If some non-trivial combination vanishes, the set is <strong>dependent</strong> &mdash; one vector is redundant (expressible via the others).</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>3.2 &nbsp;Span, Basis &amp; Dimension</h3>
+        <p>The <strong>span</strong> (generated subspace) of $\{v_1,\dots,v_n\}$ is the set of <em>all</em> their linear combinations, $U=\operatorname{span}\{v_1,\dots,v_n\}=\{a_1v_1+\cdots+a_nv_n\}$ &mdash; always a subspace. A <strong>basis</strong> is a spanning set that is also linearly independent:</p>
+        <ul style="line-height: 1.8;">
+            <li>every $v\in V$ is a <em>unique</em> combination of the basis vectors;</li>
+            <li>removing any basis vector breaks spanning; adding any vector breaks independence.</li>
+        </ul>
+        <p style="margin-bottom:0;">The number of basis vectors is the <strong>dimension</strong> $\dim V$ &mdash; an invariant: every basis of $V$ has the same size. (E.g. $\dim\mathbb{R}^n=n$, $\dim P_n=n+1$.)</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3 &nbsp;Application: Solution Spaces of Linear ODEs</h3>
+            <p>A linear ODE of order $\ge 2$, $\;\mathcal{D}y = 0$ with linear differential operator $\mathcal{D}$, has a solution set that is a <strong>vector space</strong>: any linear combination of solutions is again a solution. For a constant-coefficient $n$th-order equation, the auxiliary equation supplies $n$ independent solutions (real / repeated / complex-root cases), which form a <strong>basis</strong> for the $n$-dimensional solution space.</p>
+        </div>
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> "Basis" and "dimension" make precise the idea of <em>independent drivers</em>. A yield curve moving in 100 maturities is really driven by ~3 independent factors &mdash; a low-dimensional basis (level, slope, curvature).</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+                <li style="margin-bottom: 0.5rem;"><strong>Independence = no redundancy:</strong> a dependent set of risk factors means one is a combination of the others (multicollinearity).</li>
+                <li style="margin-bottom: 0;"><strong>Solution spaces:</strong> the same abstraction means "all solutions of this model" is itself a space you can pick a convenient basis for.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- PART 2 -->
+    <!-- ====================================================== -->
+    <h2 style="border-bottom: 2px solid var(--accent); padding-bottom: 0.4rem; margin-top: 2.5rem;">2 &nbsp;Matrices, Determinants &amp; Inverses</h2>
+
+    <div class="card">
+        <h3>1 &nbsp;Sum &amp; Intersection of Subspaces</h3>
+        <p>For subspaces $S,T\subseteq V$, both $S\cap T$ (vectors in both) and $S+T=\{s+t: s\in S,\,t\in T\}$ are subspaces. Their dimensions obey the <strong>dimension formula</strong></p>
+        $$\dim(S+T) = \dim S + \dim T - \dim(S\cap T).$$
+        <p style="margin-bottom:0;">When $S\cap T=\{\mathbf{0}\}$ the sum is <em>direct</em>, $S\oplus T$, and dimensions simply add.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2 &nbsp;Matrices as Linear Transformations</h3>
+            <p>An $m\times n$ matrix is a rectangular array $A=(a_{ij})$. Its deeper meaning: a <strong>linear transformation</strong> $T:V\to W$ obeying $T(\alpha u+\beta v)=\alpha T(u)+\beta T(v)$ is represented, once bases are fixed, by a matrix acting as $\mathbf{x}\mapsto A\mathbf{x}$. Composition of transformations corresponds to <strong>matrix multiplication</strong>.</p>
+            <p><strong>Algebra.</strong> Addition and scalar multiplication act entry-wise; the product $AB$ has entries</p>
+            $$(AB)_{ij} = \sum_{k} a_{ik}b_{kj}$$
+            <p style="margin-bottom:0;">(row $i$ of $A$ dotted with column $j$ of $B$) &mdash; defined only when the inner dimensions match, and <em>not</em> commutative in general.</p>
+        </div>
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>Special Matrices</h3>
+            <ul style="line-height: 1.8;">
+                <li><strong>Identity</strong> $I$: $a_{ij}=\delta_{ij}$ (the Kronecker delta), $AI=IA=A$.</li>
+                <li><strong>Triangular</strong>: zeros below (upper) or above (lower) the diagonal.</li>
+                <li><strong>Diagonal</strong>: non-zero only on the diagonal.</li>
+                <li><strong>Symmetric</strong>: $A^{T}=A$; &nbsp;<strong>skew-symmetric</strong>: $A^{T}=-A$.</li>
+                <li><strong>Orthogonal</strong>: $A^{T}A=I$, so $A^{-1}=A^{T}$.</li>
+            </ul>
+            <p style="margin-bottom:0;">Any square matrix splits into symmetric + skew parts: $A=\tfrac12(A+A^{T})+\tfrac12(A-A^{T})$.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Rank, Row Echelon Form &amp; the Solvability of $A\mathbf{x}=\mathbf{b}$</h3>
+        <p>Elementary row operations &mdash; (i) swap two rows, (ii) multiply a row by a non-zero scalar, (iii) add a multiple of one row to another &mdash; bring $A$ to <strong>row-echelon form</strong> (leading 1's stepping right and down) and then <strong>reduced row-echelon form</strong>. The number of non-zero rows is the <strong>rank</strong>, equal to both the row-space and column-space dimension.</p>
+        <p style="margin-bottom:0;"><strong>Consistency.</strong> $A\mathbf{x}=\mathbf{b}$ has a solution iff $\operatorname{rank}A=\operatorname{rank}[A\,|\,\mathbf{b}]$. The associated <strong>homogeneous</strong> system $A\mathbf{x}=\mathbf{0}$ always has the trivial solution, and a non-trivial one exactly when $\operatorname{rank}A<n$ (i.e. $\det A=0$ for square $A$).</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>Determinants, Minors &amp; Cofactors</h3>
+            <p>The determinant of a square matrix is computed by <strong>cofactor (Laplace) expansion</strong> along any row or column:</p>
+            $$\det A = \sum_{j} a_{ij}\,C_{ij}, \qquad C_{ij}=(-1)^{i+j}M_{ij},$$
+            <p>where the <strong>minor</strong> $M_{ij}$ is the determinant of $A$ with row $i$ and column $j$ deleted. Key properties:</p>
+            <ul style="line-height: 1.7;">
+                <li>$\det(A^{T})=\det A$; &nbsp;$\det(AB)=\det A\,\det B$;</li>
+                <li>a triangular matrix's determinant is the product of its diagonal;</li>
+                <li>swapping two rows flips the sign; equal rows $\Rightarrow \det=0$.</li>
+            </ul>
+        </div>
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>Inverses &amp; the Adjoint</h3>
+            <p>$A^{-1}$ satisfies $AA^{-1}=A^{-1}A=I$ and exists iff $\det A\neq 0$. It is unique, and $(AB)^{-1}=B^{-1}A^{-1}$. Via the <strong>adjoint</strong> (transpose of the cofactor matrix),</p>
+            $$A^{-1} = \frac{1}{\det A}\,\operatorname{adj}(A), \qquad \operatorname{adj}(A)=(C_{ij})^{T}.$$
+            <p>For the $2\times 2$ case this is the familiar</p>
+            $$\begin{pmatrix} a & b \\ c & d \end{pmatrix}^{-1} = \frac{1}{ad-bc}\begin{pmatrix} d & -b \\ -c & a \end{pmatrix}.$$
+        </div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+        <h3 style="margin-top:0;">Cramer's Rule</h3>
+        <p>For a square system $A\mathbf{x}=\mathbf{b}$ with $\det A\neq 0$, each unknown is a ratio of determinants:</p>
+        $$x_i = \frac{\det A_i}{\det A},$$
+        <p style="margin-bottom:0;">where $A_i$ is $A$ with its $i$th column replaced by $\mathbf{b}$. Elegant for small systems and theory; row reduction is preferred numerically for large ones.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>Transpose &amp; Orthogonal / Rotation Matrices</h3>
+            <p>The transpose obeys $(A^{T})^{T}=A$, $(A+B)^{T}=A^{T}+B^{T}$, and the order-reversing $(AB)^{T}=B^{T}A^{T}$. An <strong>orthogonal</strong> matrix ($A^{T}A=I$) preserves lengths and angles; the planar <strong>rotation</strong> matrix is</p>
+            $$R(\theta)=\begin{pmatrix} \cos\theta & \sin\theta \\ -\sin\theta & \cos\theta \end{pmatrix}.$$
+            <p style="margin-bottom:0;">Rotations compose by adding angles, which matrix multiplication reproduces exactly:</p>
+            $$R(\phi)\,R(\theta) = R(\theta+\phi).$$
+        </div>
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> A matrix is a verb &mdash; it <em>does</em> something to vectors (rotate, stretch, project). The determinant measures how it scales volume; a zero determinant means it collapses space and cannot be undone.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+                <li style="margin-bottom: 0.5rem;"><strong>Symmetric matrices</strong> are the covariance matrices of finance &mdash; and their special structure (real eigenvalues, orthogonal eigenvectors) is what makes PCA work.</li>
+                <li style="margin-bottom: 0;"><strong>$\det A=0$</strong> is the warning light: a non-invertible covariance matrix means perfectly redundant assets.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- PART 3 -->
+    <!-- ====================================================== -->
+    <h2 style="border-bottom: 2px solid var(--accent); padding-bottom: 0.4rem; margin-top: 2.5rem;">3 &nbsp;Eigenvalues &amp; Eigenvectors</h2>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>The Eigenvalue Problem</h3>
+            <p>A non-zero vector $\mathbf{x}$ is an <strong>eigenvector</strong> of $A$ with <strong>eigenvalue</strong> $\lambda$ if</p>
+            $$A\mathbf{x} = \lambda\mathbf{x} \;\Longleftrightarrow\; (A-\lambda I)\mathbf{x}=\mathbf{0}.$$
+            <p>A non-trivial solution exists only when the matrix is singular, giving the <strong>characteristic equation</strong></p>
+            $$\det(A-\lambda I)=0,$$
+            <p>a degree-$n$ polynomial in $\lambda$ whose roots are the eigenvalues. For each $\lambda$, the solutions of $(A-\lambda I)\mathbf{x}=\mathbf{0}$ form the <strong>eigenspace</strong>. <strong>Similar</strong> matrices ($B=P^{-1}AP$) share the same characteristic polynomial and eigenvalues.</p>
+        </div>
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> An eigenvector is a direction the matrix leaves <em>pointing the same way</em>, only stretched by its eigenvalue. These special directions reveal a matrix's intrinsic structure.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+                <li style="margin-bottom: 0.5rem;"><strong>PCA:</strong> the eigenvectors of a covariance matrix are the principal components; the eigenvalues are the variance each explains.</li>
+                <li style="margin-bottom: 0;"><strong>Yield-curve factors:</strong> the top eigenvectors are level, slope and curvature &mdash; a handful explain almost all movement.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Diagonalization</h3>
+        <p>If an $n\times n$ matrix has $n$ linearly independent eigenvectors, stacking them as the columns of $P$ and the eigenvalues on the diagonal of $D$ gives</p>
+        $$P^{-1}AP = D = \operatorname{diag}(\lambda_1,\dots,\lambda_n), \qquad A = PDP^{-1}.$$
+        <p>This is guaranteed when the eigenvalues are <strong>distinct</strong>. Diagonalization makes powers trivial &mdash; $A^{k}=PD^{k}P^{-1}$ &mdash; which is the engine behind matrix exponentials, Markov-chain limits and covariance factorization.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>Cayley&ndash;Hamilton Theorem</h3>
+            <p>Every square matrix satisfies its own characteristic equation: if $p(\lambda)=\det(A-\lambda I)$, then</p>
+            $$p(A) = \mathbf{0}.$$
+            <p style="margin-bottom:0;">A practical consequence: every power $A^{k}$ (and $A^{-1}$, when it exists) can be written as a polynomial in $A$ of degree $<n$ &mdash; useful for evaluating matrix functions efficiently.</p>
+        </div>
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1.1 &nbsp;The Minimum Polynomial</h3>
+            <p>The <strong>minimal polynomial</strong> $m_A(\lambda)$ is the monic polynomial of least degree with $m_A(A)=\mathbf{0}$. It divides the characteristic polynomial and shares its roots (the eigenvalues), but may have lower multiplicities.</p>
+            <p style="margin-bottom:0;"><em>Example:</em> for a matrix with characteristic polynomial $(\lambda-3)(\lambda-2)^{2}$ that is nonetheless diagonalizable, the minimal polynomial is $(\lambda-3)(\lambda-2)$ &mdash; the repeated factor appears only once.</p>
+        </div>
+    </div>
+
+    <div class="card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+        <h3 style="margin-top:0;">Worked Example &mdash; Eigen-decomposition of a $2\times2$ Matrix</h3>
+        <p>For $A=\begin{pmatrix} 4 & 1 \\ 2 & 3 \end{pmatrix}$, the characteristic equation is</p>
+        $$\det(A-\lambda I) = (4-\lambda)(3-\lambda)-2 = \lambda^{2}-7\lambda+10 = (\lambda-5)(\lambda-2)=0,$$
+        <p>so $\lambda_1=5,\ \lambda_2=2$. Solving $(A-\lambda I)\mathbf{x}=\mathbf{0}$ gives eigenvectors $\mathbf{x}_1=\begin{pmatrix}1\\1\end{pmatrix}$ and $\mathbf{x}_2=\begin{pmatrix}1\\-2\end{pmatrix}$. With distinct eigenvalues $A$ is diagonalizable as $A=PDP^{-1}$, $P=\begin{pmatrix}1&1\\1&-2\end{pmatrix}$, $D=\operatorname{diag}(5,2)$.</p>
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- SUMMARY -->
+    <!-- ====================================================== -->
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Summary &amp; Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Linear systems $A\mathbf{x}=\mathbf{b}$ are solved by row reduction; solvability and uniqueness are governed by <strong>rank</strong>.</li>
+            <li>A <strong>vector space</strong> abstracts addition + scaling; <strong>subspaces</strong> are closed subsets, and span / independence / <strong>basis</strong> / <strong>dimension</strong> pin down "independent directions" exactly.</li>
+            <li>Matrices <em>are</em> linear transformations; multiplication is composition. Special structure (symmetric, orthogonal, triangular) carries special properties.</li>
+            <li><strong>Determinants</strong> (cofactor expansion) detect invertibility; $A^{-1}=\tfrac{1}{\det A}\operatorname{adj}A$, and <strong>Cramer's rule</strong> solves square systems via determinant ratios.</li>
+            <li>The <strong>eigenvalue problem</strong> $A\mathbf{x}=\lambda\mathbf{x}$ &mdash; via $\det(A-\lambda I)=0$ &mdash; reveals invariant directions; <strong>diagonalization</strong> $A=PDP^{-1}$ powers PCA, factor models and matrix functions.</li>
+            <li><strong>Cayley&ndash;Hamilton</strong> and the <strong>minimal polynomial</strong> express matrix functions as low-degree polynomials in $A$.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="background: var(--bg-subtle, #f8fafc);">
+        <h3>Source</h3>
+        <p style="margin-bottom:0; color:#475569;">CQF Certificate in Mathematical Methods &mdash; <em>Linear Algebra</em>, Lectures 1 (linear systems, vector spaces, subspaces, independence, basis &amp; ODE solution spaces), 4 / "Linear Algebra II" (matrices, rank, determinants, inverses, adjoint, transpose, orthogonal &amp; rotation matrices) and 5 (eigenvalues, eigenvectors, diagonalization, Cayley&ndash;Hamilton &amp; the minimal polynomial).</p>
     </div>
 </div>

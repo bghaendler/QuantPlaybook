@@ -1,35 +1,267 @@
 <div id="view-cmm-probability" style="display: none; font-family: var(--font-family-sans);">
     <header style="margin-bottom: 2rem;">
         <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Mathematical Methods &bull; Probability</p>
-        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Probability</h1>
-        <p style="color: #64748b; margin-top: 0.5rem;">Sample spaces, random variables, distributions and limit theorems &mdash; the foundation under risk-neutral pricing, Monte Carlo and risk measurement.</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Probability Theory</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">From sample spaces and Kolmogorov's axioms, through random variables, expectation and the moment / characteristic-function machinery, to the key distributions and the limit theorems (Chebyshev, LLN, CLT) that underpin risk-neutral pricing, Monte Carlo and risk measurement.</p>
     </header>
 
+    <!-- ====================================================== -->
+    <!-- PART 1 — FOUNDATIONS -->
+    <!-- ====================================================== -->
+    <h2 style="border-bottom: 2px solid var(--accent); padding-bottom: 0.4rem; margin-top: 1rem;">1 &nbsp;Foundations of Probability</h2>
+
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
-        <!-- Left Side: Core Topics -->
         <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
-            <h3>Core Topics</h3>
+            <h3>1.1 &nbsp;Experiments, Sample Spaces &amp; Events</h3>
+            <p>An <strong>experiment</strong> is any process with an uncertain outcome. The <strong>sample space</strong> $\Omega$ is the set of all possible outcomes; an <strong>event</strong> $A\subseteq\Omega$ is a subset of outcomes. Two early definitions of probability:</p>
             <ul style="line-height: 1.8;">
-                <li>Probability spaces, conditional probability and Bayes' theorem</li>
-                <li>Random variables, expectation, variance and higher moments</li>
-                <li>Key distributions: normal, lognormal, Poisson, exponential</li>
-                <li>Joint distributions, covariance, correlation and copulas</li>
-                <li>Law of Large Numbers &amp; the Central Limit Theorem</li>
+                <li><strong>Classical:</strong> for equally likely outcomes,
+                $$P(A) = \frac{\text{number of favourable outcomes}}{\text{total number of outcomes}}.$$</li>
+                <li><strong>Frequentist:</strong> $P(A)=\lim_{n\to\infty}\dfrac{n_A}{n}$, the long-run relative frequency.</li>
             </ul>
         </div>
-        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1.2 &nbsp;The Three Axioms (Kolmogorov)</h3>
+            <p>Modern probability is built axiomatically. A probability measure $P$ assigns to events numbers satisfying:</p>
+            <ul style="line-height: 1.8;">
+                <li><strong>Axiom 1:</strong> $P(A)\ge 0$ for every event $A$.</li>
+                <li><strong>Axiom 2:</strong> $P(\Omega)=1$ (certainty).</li>
+                <li><strong>Axiom 3:</strong> for mutually exclusive $A_1,A_2,\dots$,
+                $$P\!\left(\bigcup_i A_i\right) = \sum_i P(A_i).$$</li>
+            </ul>
+            <p style="margin-bottom:0;">From these follow $P(A^c)=1-P(A)$, $P(\varnothing)=0$, and $P(A\cup B)=P(A)+P(B)-P(A\cap B)$.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>1.3 &nbsp;Counting: Permutations &amp; Combinations</h3>
+        <p>When outcomes are equally likely, computing probabilities becomes counting. Order-sensitive arrangements are <strong>permutations</strong>; order-blind selections are <strong>combinations</strong>:</p>
+        $$^nP_r = \frac{n!}{(n-r)!}, \qquad \binom{n}{r} = {}^nC_r = \frac{n!}{r!\,(n-r)!}.$$
+        <div style="display:grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap:1rem; margin-top:1rem;">
+            <div style="background: var(--bg-subtle, #f8fafc); border-radius:8px; padding:1rem;">
+                <p style="margin:0 0 .3rem; font-weight:700;">Assignment (Q1)</p>
+                <p style="margin:0;">Four-digit numbers from $0$&ndash;$9$: with repetition $9\times10^3=9000$; without repetition $9\times9\times8\times7=4536$; last digit $0$, no repetition $1\times9\times8\times7=504$.</p>
+            </div>
+            <div style="background: var(--bg-subtle, #f8fafc); border-radius:8px; padding:1rem;">
+                <p style="margin:0 0 .3rem; font-weight:700;">Combinations (Q2)</p>
+                <p style="margin:0;">"Words" of 5 consonants (from 9) and 3 vowels (from 6): $8!\,\binom{9}{5}\binom{6}{3} = 40320\times126\times20$.</p>
+            </div>
+            <div style="background: var(--bg-subtle, #f8fafc); border-radius:8px; padding:1rem;">
+                <p style="margin:0 0 .3rem; font-weight:700;">Cards (Q3)</p>
+                <p style="margin:0;">From 5 of 52 cards, $P(\text{4 kings}) = \dfrac{\binom{4}{4}\binom{48}{1}}{\binom{52}{5}} = \dfrac{1}{54{,}145}$.</p>
+            </div>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1.4 &nbsp;Conditional Probability, Independence &amp; Bayes</h3>
+            <p>The probability of $A$ given $B$ has occurred is</p>
+            $$P(A\mid B) = \frac{P(A\cap B)}{P(B)}, \qquad P(B)>0.$$
+            <p>$A$ and $B$ are <strong>independent</strong> iff $P(A\cap B)=P(A)\,P(B)$, equivalently $P(A\mid B)=P(A)$. Combining the definition with the law of total probability gives <strong>Bayes' theorem</strong>:</p>
+            $$P(A\mid B) = \frac{P(B\mid A)\,P(A)}{P(B)}, \qquad P(B)=\sum_i P(B\mid A_i)P(A_i).$$
+        </div>
         <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
             <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
-            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Probability quantifies uncertainty. Every price in a complete market is an expectation under a risk-neutral measure, and every risk number is a statement about a distribution's tail.</p>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Probability is a consistent way to put numbers on uncertainty. Bayes' theorem is how you <em>update</em> those numbers when new evidence arrives &mdash; the backbone of calibration and signal-filtering.</p>
             <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
-                <li style="margin-bottom: 0.5rem;"><strong>Expectations price options:</strong> Risk-neutral valuation expresses an option price as a discounted expected payoff &mdash; an integral against a probability density.</li>
-                <li style="margin-bottom: 0.5rem;"><strong>CLT underpins Monte Carlo:</strong> Simulation error shrinks like $1/\sqrt{N}$ precisely because of the Central Limit Theorem.</li>
+                <li style="margin-bottom: 0.5rem;"><strong>Independence</strong> is a strong assumption: correlated defaults in a CDO are exactly what happens when it fails.</li>
+                <li style="margin-bottom: 0;"><strong>Bayes in practice:</strong> updating a regime probability or a default probability as fresh data lands.</li>
             </ul>
         </div>
     </div>
 
-    <div class="card" style="border-left: 4px solid var(--accent); background: var(--bg-subtle, #f8fafc);">
-        <h3 style="margin-top:0;">Detailed Notes Coming Soon</h3>
-        <p style="margin-bottom:0; color:#475569;">This module's full side-by-side derivations and worked examples are being prepared. The outline above maps the territory; lecture material will be added here as it is released.</p>
+    <div class="card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+        <h3 style="margin-top:0;">Worked Example &mdash; The Double-Headed Coin (Bayes, Q5)</h3>
+        <p>Three coins, one double-headed ($T$ = "picked the two-headed coin"). The first toss is a head with</p>
+        $$P(F_1) = P(T)\cdot 1 + P(T^c)\cdot\tfrac12 = \tfrac13\cdot1 + \tfrac23\cdot\tfrac12 = \tfrac23.$$
+        <p style="margin-bottom:0;">After $n$ heads, Bayes gives the posterior $p_n = P(T\mid F_n) = \dfrac{\tfrac13\cdot 1}{\tfrac13\cdot 1 + \tfrac23\left(\tfrac12\right)^n} \to 1$ as $n\to\infty$ &mdash; a long run of heads makes the loaded coin near-certain, exactly as intuition expects.</p>
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- PART 2 — RANDOM VARIABLES & DISTRIBUTIONS -->
+    <!-- ====================================================== -->
+    <h2 style="border-bottom: 2px solid var(--accent); padding-bottom: 0.4rem; margin-top: 2.5rem;">2 &nbsp;Random Variables &amp; Distributions</h2>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2.1 &nbsp;Random Variables, PMF, PDF &amp; CDF</h3>
+            <p>A <strong>random variable</strong> $X$ maps outcomes to numbers, $X:\Omega\to\mathbb{R}$. For a <strong>discrete</strong> $X$, the probability mass function $p(x)=P(X=x)$ satisfies $\sum_x p(x)=1$. For a <strong>continuous</strong> $X$, the probability density $f(x)\ge0$ satisfies $\int_{-\infty}^{\infty} f(x)\,dx=1$ and</p>
+            $$P(a<X<b) = \int_a^b f(x)\,dx.$$
+            <p>Both share the <strong>cumulative distribution function</strong></p>
+            $$F(x) = P(X\le x), \qquad f(x)=\frac{dF}{dx}.$$
+        </div>
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>2.2 &nbsp;Joint, Marginal &amp; Conditional</h3>
+            <p>For two variables, the <strong>joint</strong> law is $p(x,y)$ or $f(x,y)$. <strong>Marginals</strong> recover a single variable by summing/integrating out the other:</p>
+            $$f_X(x) = \int_{-\infty}^{\infty} f(x,y)\,dy.$$
+            <p>The <strong>conditional</strong> density is $f(x\mid y)=\dfrac{f(x,y)}{f_Y(y)}$, and $X,Y$ are <strong>independent</strong> iff the joint factorizes:</p>
+            $$f(x,y) = f_X(x)\,f_Y(y).$$
+        </div>
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- PART 3 — EXPECTATION & MOMENTS -->
+    <!-- ====================================================== -->
+    <h2 style="border-bottom: 2px solid var(--accent); padding-bottom: 0.4rem; margin-top: 2.5rem;">3 &nbsp;Expectation, Moments &amp; Generating Functions</h2>
+
+    <div class="card">
+        <h3>3.1 &nbsp;Mean, Variance &amp; Higher Moments</h3>
+        <p>The <strong>expectation</strong> (mean) is the probability-weighted average</p>
+        $$\mathbb{E}[X] = \sum_x x\,p(x) \quad\text{(discrete)}, \qquad \mathbb{E}[X] = \int_{-\infty}^{\infty} x\,f(x)\,dx \quad\text{(continuous)}.$$
+        <p>Expectation is <strong>linear</strong>: $\mathbb{E}[aX+bY]=a\mathbb{E}[X]+b\mathbb{E}[Y]$. The <strong>variance</strong> and its companions are</p>
+        $$\operatorname{Var}(X) = \mathbb{E}[(X-\mu)^2] = \mathbb{E}[X^2]-\big(\mathbb{E}[X]\big)^2,$$
+        <p>with <strong>skewness</strong> and <strong>kurtosis</strong> the standardized third and fourth moments. For two variables,</p>
+        $$\operatorname{Cov}(X,Y) = \mathbb{E}[XY]-\mathbb{E}[X]\mathbb{E}[Y], \qquad \rho_{XY} = \frac{\operatorname{Cov}(X,Y)}{\sigma_X\,\sigma_Y}.$$
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3.2 &nbsp;Moment &amp; Characteristic Functions</h3>
+            <p>The <strong>moment generating function</strong> packages all moments:</p>
+            $$M_X(t) = \mathbb{E}\big[e^{tX}\big], \qquad \mathbb{E}[X^n] = M_X^{(n)}(0).$$
+            <p>In particular $\mathbb{E}[X]=M_X'(0)$ and $\operatorname{Var}(X)=M_X''(0)-M_X'(0)^2$. The <strong>characteristic function</strong> $\varphi_X(t)=\mathbb{E}[e^{itX}]$ always exists (it is the Fourier transform of the density) and uniquely determines the distribution &mdash; the engine of transform-based option pricing.</p>
+        </div>
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The mean is the expected return, the variance is risk, skew and kurtosis are the asymmetry and fat tails that simple models miss.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+                <li style="margin-bottom: 0.5rem;"><strong>Risk-neutral pricing</strong> is "price = discounted expectation" &mdash; an integral against a probability density.</li>
+                <li style="margin-bottom: 0;"><strong>Characteristic functions</strong> are why Heston and Carr&ndash;Madan can price options the density has no closed form for.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>3.3 &nbsp;Conditional Expectation &amp; the Tower Property</h3>
+        <p>The conditional expectation $\mathbb{E}[X\mid Y]$ is the best forecast of $X$ given $Y$. Averaging it back recovers the unconditional mean &mdash; the <strong>law of iterated expectations</strong> (tower property):</p>
+        $$\mathbb{E}\big[\mathbb{E}[X\mid Y]\big] = \mathbb{E}[X],$$
+        <p>and variance decomposes via the <strong>law of total variance</strong></p>
+        $$\operatorname{Var}(X) = \mathbb{E}\big[\operatorname{Var}(X\mid Y)\big] + \operatorname{Var}\big(\mathbb{E}[X\mid Y]\big).$$
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- PART 4 — KEY DISTRIBUTIONS -->
+    <!-- ====================================================== -->
+    <h2 style="border-bottom: 2px solid var(--accent); padding-bottom: 0.4rem; margin-top: 2.5rem;">4 &nbsp;Key Distributions</h2>
+
+    <div class="card">
+        <h3>4.1 &nbsp;Discrete Distributions</h3>
+        <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; line-height:1.6;">
+            <thead>
+                <tr style="border-bottom:2px solid var(--accent); text-align:left;">
+                    <th style="padding:0.5rem;">Distribution</th><th style="padding:0.5rem;">PMF</th><th style="padding:0.5rem;">Mean</th><th style="padding:0.5rem;">Variance</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:0.5rem;"><strong>Bernoulli</strong>$(p)$</td><td style="padding:0.5rem;">$P(X{=}1){=}p,\ P(X{=}0){=}1{-}p$</td><td style="padding:0.5rem;">$p$</td><td style="padding:0.5rem;">$p(1-p)$</td></tr>
+                <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:0.5rem;"><strong>Binomial</strong>$(n,p)$</td><td style="padding:0.5rem;">$\binom{n}{k}p^k(1-p)^{n-k}$</td><td style="padding:0.5rem;">$np$</td><td style="padding:0.5rem;">$np(1-p)$</td></tr>
+                <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:0.5rem;"><strong>Poisson</strong>$(\lambda)$</td><td style="padding:0.5rem;">$e^{-\lambda}\lambda^k/k!$</td><td style="padding:0.5rem;">$\lambda$</td><td style="padding:0.5rem;">$\lambda$</td></tr>
+                <tr><td style="padding:0.5rem;"><strong>Uniform</strong> (discrete)</td><td style="padding:0.5rem;">$1/n$</td><td style="padding:0.5rem;">$\tfrac{n+1}{2}$</td><td style="padding:0.5rem;">$\tfrac{n^2-1}{12}$</td></tr>
+            </tbody>
+        </table>
+        </div>
+        <p style="margin:1rem 0 0;"><strong>Binomial &rarr; Poisson.</strong> As $n\to\infty$, $p\to0$ with $np=\lambda$ fixed, the Binomial converges to the Poisson &mdash; the model for rare events (defaults, jumps, arrivals).</p>
+    </div>
+
+    <div class="card">
+        <h3>4.2 &nbsp;Continuous Distributions</h3>
+        <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; line-height:1.6;">
+            <thead>
+                <tr style="border-bottom:2px solid var(--accent); text-align:left;">
+                    <th style="padding:0.5rem;">Distribution</th><th style="padding:0.5rem;">PDF</th><th style="padding:0.5rem;">Mean</th><th style="padding:0.5rem;">Variance</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:0.5rem;"><strong>Uniform</strong>$(a,b)$</td><td style="padding:0.5rem;">$\tfrac{1}{b-a}$</td><td style="padding:0.5rem;">$\tfrac{a+b}{2}$</td><td style="padding:0.5rem;">$\tfrac{(b-a)^2}{12}$</td></tr>
+                <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:0.5rem;"><strong>Normal</strong>$(\mu,\sigma^2)$</td><td style="padding:0.5rem;">$\tfrac{1}{\sigma\sqrt{2\pi}}e^{-(x-\mu)^2/2\sigma^2}$</td><td style="padding:0.5rem;">$\mu$</td><td style="padding:0.5rem;">$\sigma^2$</td></tr>
+                <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:0.5rem;"><strong>Exponential</strong>$(\lambda)$</td><td style="padding:0.5rem;">$\lambda e^{-\lambda x}$</td><td style="padding:0.5rem;">$1/\lambda$</td><td style="padding:0.5rem;">$1/\lambda^2$</td></tr>
+                <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:0.5rem;"><strong>Gamma</strong>$(\alpha,\lambda)$</td><td style="padding:0.5rem;">$\tfrac{\lambda^\alpha x^{\alpha-1}e^{-\lambda x}}{\Gamma(\alpha)}$</td><td style="padding:0.5rem;">$\alpha/\lambda$</td><td style="padding:0.5rem;">$\alpha/\lambda^2$</td></tr>
+                <tr><td style="padding:0.5rem;"><strong>Chi-squared</strong> $\chi^2_k$</td><td style="padding:0.5rem;">$\tfrac{1}{2^{k/2}\Gamma(k/2)}x^{k/2-1}e^{-x/2}$</td><td style="padding:0.5rem;">$k$</td><td style="padding:0.5rem;">$2k$</td></tr>
+            </tbody>
+        </table>
+        </div>
+        <p style="margin:1rem 0 0;"><strong>Standardization &amp; relationships.</strong> Any normal becomes the <em>standard</em> normal via $Z=\tfrac{X-\mu}{\sigma}$. The normal is the large-$n$ limit of both the Binomial (de Moivre&ndash;Laplace) and the Poisson; the exponential is <strong>memoryless</strong> ($P(X>s+t\mid X>s)=P(X>t)$), modelling waiting times between Poisson events; sums of squared standard normals are $\chi^2$.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; border-left: 4px solid #10b981; background: #f0fdf4;">
+            <h3 style="margin-top:0;">Poisson &amp; Exponential Means (Q7, Q8)</h3>
+            <p><strong>Poisson:</strong> using $e^\lambda=\sum_{k\ge0}\lambda^k/k!$,</p>
+            $$\mathbb{E}[X] = \sum_{k=0}^{\infty} k\,\frac{e^{-\lambda}\lambda^k}{k!} = \lambda e^{-\lambda}\sum_{k=1}^{\infty}\frac{\lambda^{k-1}}{(k-1)!} = \lambda e^{-\lambda}e^{\lambda} = \lambda.$$
+            <p style="margin-bottom:0;"><strong>Exponential:</strong> integrating by parts, $\;\mathbb{E}[X]=\int_0^\infty x\lambda e^{-\lambda x}\,dx = \dfrac{1}{\lambda}.$</p>
+        </div>
+        <div class="card" style="margin-bottom: 0; border-left: 4px solid #10b981; background: #f0fdf4;">
+            <h3 style="margin-top:0;">Binomial MGF &rarr; Mean &amp; Variance (Q9)</h3>
+            <p>By the binomial theorem,</p>
+            $$M_X(t) = \sum_{k=0}^{n}\binom{n}{k}\big(pe^t\big)^k(1-p)^{n-k} = \big(pe^t + 1-p\big)^n.$$
+            <p style="margin-bottom:0;">Then $\mathbb{E}[X]=M_X'(0)=np$ and $\operatorname{Var}(X)=M_X''(0)-M_X'(0)^2=np(1-p)$.</p>
+        </div>
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- PART 5 — LIMIT THEOREMS -->
+    <!-- ====================================================== -->
+    <h2 style="border-bottom: 2px solid var(--accent); padding-bottom: 0.4rem; margin-top: 2.5rem;">5 &nbsp;Limit Theorems</h2>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>Chebyshev's Inequality</h3>
+            <p>For any distribution with finite mean $\mu$ and variance $\sigma^2$,</p>
+            $$P\big(|X-\mu|\ge a\big) \le \frac{\sigma^2}{a^2}.$$
+            <p style="margin-bottom:0;">A distribution-free bound on how much probability can sit in the tails.</p>
+        </div>
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>Law of Large Numbers</h3>
+            <p>For i.i.d. $X_1,\dots,X_n$ with mean $\mu$, the sample mean converges to $\mu$:</p>
+            $$\bar X_n = \frac{1}{n}\sum_{i=1}^n X_i \;\xrightarrow{\;n\to\infty\;}\; \mu.$$
+            <p style="margin-bottom:0;">Why averages of many draws stabilize &mdash; the basis of Monte Carlo.</p>
+        </div>
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>Central Limit Theorem</h3>
+            <p>For i.i.d. draws with mean $\mu$, variance $\sigma^2$, the standardized sum is asymptotically normal:</p>
+            $$\frac{\bar X_n - \mu}{\sigma/\sqrt{n}} \;\xrightarrow{\;d\;}\; \mathcal{N}(0,1).$$
+            <p style="margin-bottom:0;">Why the normal is everywhere &mdash; and why MC error shrinks like $1/\sqrt{n}$.</p>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; border-left: 4px solid #10b981; background: #f0fdf4;">
+            <h3 style="margin-top:0;">Geometric Probability &mdash; Meeting on the Bridge (Q4)</h3>
+            <p>Two friends arrive at independent uniform times in a 3-hour ($T=180$ min) window and each waits $w$ minutes. Plot the two arrival times as a point in a $180\times180$ square; they meet when $|X-Y|\le w$. The favourable area is the square minus two corner triangles:</p>
+            $$P = \frac{T^2-(T-w)^2}{T^2}.$$
+            <p style="margin-bottom:0;">With $w=15$ this is $\dfrac{180^2-165^2}{180^2}\approx 16\%$ &mdash; the geometric route turns a probability into an area ratio.</p>
+        </div>
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The limit theorems are the licence for the whole edifice of statistical finance &mdash; they say that aggregates of many small random effects behave predictably even when individual draws do not.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+                <li style="margin-bottom: 0.5rem;"><strong>CLT &amp; Monte Carlo:</strong> to halve simulation error you need four times the paths ($1/\sqrt{n}$).</li>
+                <li style="margin-bottom: 0;"><strong>Caveat:</strong> the CLT assumes finite variance &mdash; fat-tailed returns are precisely where naive normality breaks.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- SUMMARY -->
+    <!-- ====================================================== -->
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Summary &amp; Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Probability rests on three <strong>axioms</strong>; equally-likely problems reduce to <strong>counting</strong> (permutations &amp; combinations).</li>
+            <li><strong>Conditional probability</strong> and <strong>Bayes' theorem</strong> are how beliefs update with evidence; independence means the joint law factorizes.</li>
+            <li><strong>Random variables</strong> are described by PMF/PDF and CDF; joint laws give marginals and conditionals.</li>
+            <li><strong>Expectation</strong> (linear) and <strong>variance</strong> summarize a distribution; <strong>MGFs</strong> and <strong>characteristic functions</strong> generate moments and uniquely identify the law.</li>
+            <li>The <strong>conditional expectation</strong> obeys the tower property and the law of total variance.</li>
+            <li>Know the workhorse <strong>distributions</strong> &mdash; Bernoulli, Binomial, Poisson, Uniform, Normal, Exponential, Gamma, $\chi^2$ &mdash; and how they relate.</li>
+            <li><strong>Chebyshev</strong>, the <strong>LLN</strong> and the <strong>CLT</strong> govern the behaviour of large samples and justify Monte Carlo.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="background: var(--bg-subtle, #f8fafc);">
+        <h3>Source</h3>
+        <p style="margin-bottom:0; color:#475569;">CQF Certificate in Mathematical Methods &mdash; <em>Probability Theory</em> lecture (introductory probability &amp; axioms, counting, conditional probability &amp; Bayes, random variables &amp; distributions, moments and generating functions, special discrete &amp; continuous distributions, and further results: Chebyshev, LLN &amp; CLT), with worked items from Problem Sheet 1 and its solutions.</p>
     </div>
 </div>
