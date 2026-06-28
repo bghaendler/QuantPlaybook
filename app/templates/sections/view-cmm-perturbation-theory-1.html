@@ -1,0 +1,219 @@
+<div id="view-cmm-perturbation-theory-1" style="display: none; font-family: var(--font-family-sans);">
+    <header style="margin-bottom: 2rem;">
+        <p style="color: var(--accent); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin: 0;">Mathematical Methods &bull; Perturbation Theory I</p>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Regular &amp; Singular Perturbation Theory</h1>
+        <p style="color: #64748b; margin-top: 0.5rem;">Approximate solutions to problems carrying a small parameter $\epsilon$ &mdash; with motivating examples from Physics (damped oscillators), Fluid Mechanics (Navier&ndash;Stokes) and Finance (Black&ndash;Scholes near expiry &amp; stochastic volatility). After Adnan Khan, Fitch Learning &amp; LUMS.</p>
+    </header>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <!-- Left Side: Mathematical Content -->
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>1. The Basic Problem</h3>
+            <p>Perturbation theory provides <strong>approximate</strong> solutions to problems that contain a small parameter $\epsilon$. It is especially effective for <em>non-linear</em> problems, where the small parameter is usually attached to the non-linearity.</p>
+            <p>The central requirement:</p>
+            <ul style="line-height: 1.8;">
+                <li>The <strong>limiting problem</strong> &mdash; the equation obtained by setting $\epsilon = 0$ &mdash; must be solvable.</li>
+                <li>We then build corrections in powers of $\epsilon$ on top of that solvable base case.</li>
+            </ul>
+            <p><strong>Background assumed:</strong> Calculus, Linear Algebra and Differential Equations &mdash; it is sufficient to be comfortable with the CQF primer material.</p>
+        </div>
+        <!-- Right Side: Plain English Notes -->
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Many real-world equations are too hard to solve exactly, but they are "almost" an easy problem plus a tiny nudge. Perturbation theory solves the easy problem first, then adds small corrections.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+                <li style="margin-bottom: 0.5rem;"><strong>The small parameter $\epsilon$:</strong> Think of it as a dial that, when turned to zero, leaves a problem you already know how to solve.</li>
+                <li style="margin-bottom: 0;"><strong>Why finance cares:</strong> Short time-to-expiry options and slowly-varying volatility both produce a small $\epsilon$ you can expand around.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>2. Where Small Parameters Naturally Arise</h3>
+        <p>The same structure &mdash; a small $\epsilon \ll 1$ multiplying part of the equation &mdash; shows up across disciplines:</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+            <div style="background: var(--bg-subtle, #f8fafc); border-radius: 8px; padding: 1rem;">
+                <p style="font-weight: 700; margin: 0 0 0.5rem;">Physics &mdash; weakly damped oscillator</p>
+                $$\frac{d^2x}{dt^2} + \epsilon\,\frac{dx}{dt} + x = 0, \qquad \epsilon \ll 1$$
+            </div>
+            <div style="background: var(--bg-subtle, #f8fafc); border-radius: 8px; padding: 1rem;">
+                <p style="font-weight: 700; margin: 0 0 0.5rem;">Fluid Mechanics &mdash; Navier&ndash;Stokes</p>
+                $$\frac{\partial u}{\partial t} + u\cdot\nabla u = -\nabla p + \epsilon\,\nabla^2 u, \qquad \epsilon \ll 1$$
+            </div>
+            <div style="background: var(--bg-subtle, #f8fafc); border-radius: 8px; padding: 1rem;">
+                <p style="font-weight: 700; margin: 0 0 0.5rem;">Finance &mdash; Black&ndash;Scholes near expiry</p>
+                $$\frac{1}{\epsilon^2}\frac{\partial V}{\partial t} = \tfrac{1}{2}S^2\frac{\partial^2 V}{\partial S^2} + \alpha S\frac{\partial V}{\partial S} - \alpha V, \qquad \epsilon \ll 1$$
+            </div>
+        </div>
+        <p style="margin-top: 1rem;">Note the small parameter $\epsilon$ common to all three. The art is in <em>finding</em> it &mdash; which is what non-dimensionalization does.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>3. The Weakly Damped Oscillator &amp; Non-Dimensionalization</h3>
+            <p>From Newton's second law with a restoring spring force $-kx$ and a damping force $-\gamma v$:</p>
+            $$m\frac{d^2x}{dt^2} + \gamma\frac{dx}{dt} + kx = 0, \quad x(0)=x_0,\; \dot x(0)=v_0.$$
+            <p>This "seems" to involve three parameters $m,\gamma,k$ &mdash; it is not <em>a priori</em> clear what is small. We use <strong>non-dimensionalization</strong>, since every physical equation must be dimensionally consistent (you can't add apples to oranges). Scaling $\tilde x = x/x_0,\; \tilde t = t/t_0$ gives</p>
+            $$\frac{d^2x}{dt^2} + \frac{\gamma t_0}{m}\frac{dx}{dt} + \frac{k t_0^2}{m}\,x = 0.$$
+            <p>The characteristic time $t_0$ is still free. Two natural choices:</p>
+            <ul style="line-height: 1.8;">
+                <li>(a) $t_0 = \tfrac{m}{\gamma} \Rightarrow \ddot x + \dot x + \tfrac{mk}{\gamma^2}x = 0$</li>
+                <li>(b) $t_0 = \sqrt{\tfrac{m}{k}} \Rightarrow \ddot x + \sqrt{\tfrac{\gamma^2}{mk}}\,\dot x + x = 0$</li>
+            </ul>
+        </div>
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Raw equations hide which quantity is "small." Rescaling into dimensionless variables collapses several physical constants into one or two dimensionless groups &mdash; and one of those groups turns out to be your $\epsilon$.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+                <li style="margin-bottom: 0.5rem;"><strong>Choice of clock matters:</strong> Different characteristic times $t_0$ put $\epsilon$ in different places &mdash; which is why the <em>same</em> system can become a regular or a singular problem.</li>
+                <li style="margin-bottom: 0;"><strong>Dimensional consistency:</strong> A free sanity check &mdash; every term in a correct equation carries identical units.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>4. Regular vs. Singular Perturbation</h3>
+        <p>Which non-dimensionalization is "better" depends on which physics dominates:</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+            <div style="background: #ecfdf5; border-left: 4px solid #10b981; border-radius: 8px; padding: 1rem;">
+                <p style="font-weight: 700; margin: 0 0 0.5rem; color: #065f46;">Regular Perturbation</p>
+                <p style="margin:0 0 0.5rem;">Damping dominates ($\gamma^2 \gg mk$, choice a) or inertia dominates ($\gamma^2 \ll mk$, choice b):</p>
+                $$\ddot x + \dot x + \epsilon x = 0 \qquad\text{or}\qquad \ddot x + \epsilon\dot x + x = 0$$
+                <p style="margin:0.5rem 0 0;">Setting $\epsilon=0$ leaves a well-posed second-order ODE. The order of the equation is <strong>preserved</strong>.</p>
+            </div>
+            <div style="background: #fef2f2; border-left: 4px solid #ef4444; border-radius: 8px; padding: 1rem;">
+                <p style="font-weight: 700; margin: 0 0 0.5rem; color: #991b1b;">Singular Perturbation</p>
+                <p style="margin:0 0 0.5rem;">A different scaling ($\tilde x = \tfrac{\gamma}{mv_0}x,\ \tilde t = \tfrac{k}{\gamma}t$) in the over-damped limit gives:</p>
+                $$\epsilon\,\ddot x + \dot x + x = 0, \quad x(0)=1,\ \dot x(0)=\tfrac{1}{\epsilon}$$
+                <p style="margin:0.5rem 0 0;">Setting $\epsilon=0$ <strong>kills the highest derivative</strong> &mdash; the limiting problem is first order and cannot satisfy both initial conditions. This is the hallmark of a singular problem.</p>
+            </div>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>5. Navier&ndash;Stokes &amp; the Reynolds Number</h3>
+            <p>For a Newtonian fluid, Newton's second law gives</p>
+            $$\rho\left(\frac{\partial u}{\partial t} + u\cdot\nabla u\right) = -\nabla p + \mu\nabla^2 u.$$
+            <p>Scaling lengths by $L$, velocity by $U$, and pressure by $\rho U^2$ produces the dimensionless form with the <strong>Reynolds number</strong> $Re = \tfrac{UL}{\nu}$ (here $\nu = \mu/\rho$):</p>
+            $$\frac{\partial u}{\partial t} + u\cdot\nabla u = -\nabla p + \frac{1}{Re}\nabla^2 u.$$
+            <ul style="line-height: 1.8;">
+                <li><strong>High $Re \gg 1$:</strong> $\tfrac{1}{Re}=\epsilon\ll 1$. Leading order gives the inviscid <em>Euler equations</em> $\;\partial_t u + u\cdot\nabla u = -\nabla p$.</li>
+                <li><strong>Low $Re \ll 1$:</strong> the alternative scaling $\tilde p = pL/\mu U$ gives $\,Re(\partial_t u + u\cdot\nabla u) = -\nabla p + \nabla^2 u\,$; leading order is creeping (Stokes) flow $\,-\nabla p + \nabla^2 u = 0$.</li>
+            </ul>
+        </div>
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> One equation, two regimes. The Reynolds number measures inertia vs. viscosity; whichever loses becomes the small term you expand around.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+                <li style="margin-bottom: 0.5rem;"><strong>Fast flow (high $Re$):</strong> viscosity is the small correction &mdash; drop it and you get frictionless flow.</li>
+                <li style="margin-bottom: 0;"><strong>Slow / thick flow (low $Re$):</strong> inertia is the small correction &mdash; honey, glaciers, microswimmers.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>6. Black&ndash;Scholes Near Expiry (a Singular Problem in Finance)</h3>
+        <p>Hedging one option with $\Delta$ units of stock, $\Pi = V - \Delta S$, and applying It&ocirc;'s lemma to $dS = rS\,dt + \sigma S\,dX$:</p>
+        $$d\Pi = \left(\frac{\partial V}{\partial t} + \tfrac{1}{2}\sigma^2 S^2\frac{\partial^2 V}{\partial S^2}\right)dt - \left(\frac{\partial V}{\partial S} - \Delta\right)dS.$$
+        <p>Choosing $\Delta = \partial V/\partial S$ hedges away all risk; no-arbitrage ($d\Pi = r\Pi\,dt$) then yields the <strong>Black&ndash;Scholes equation</strong>:</p>
+        $$\frac{\partial V}{\partial t} + \tfrac{1}{2}\sigma^2 S^2\frac{\partial^2 V}{\partial S^2} + rS\frac{\partial V}{\partial S} - rV = 0,$$
+        <p>with final conditions $V(S,T)=\max(S-K,0)$ (call) or $\max(K-S,0)$ (put). Rescaling time near expiry by $\tilde t = \sigma^2(T-t)$ and zooming in with $\tilde t = \epsilon\tau$ gives</p>
+        $$\frac{1}{\epsilon}\frac{\partial V}{\partial \tau} = \tfrac{1}{2}S^2\frac{\partial^2 V}{\partial S^2} + \alpha\frac{\partial V}{\partial S} - \alpha V.$$
+        <p style="margin-bottom:0;">Because the small parameter multiplies the highest (time) derivative, this is a <strong>singular perturbation problem</strong> &mdash; the source of boundary-layer behaviour in short-dated options.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>7. Order Notation &amp; Asymptotic Expansions</h3>
+            <p>To make "same size as $\epsilon$" precise (recall $\lim_{\epsilon\to 0}\tfrac{\sin\epsilon}{\epsilon}=1$ by L'H&ocirc;pital), we use order notation as $\epsilon\to\epsilon_0$:</p>
+            <ul style="line-height: 1.8;">
+                <li>$f = O(g)$ ("big-oh") if $\displaystyle\lim_{\epsilon\to\epsilon_0}\frac{f(\epsilon)}{g(\epsilon)} = K$ &mdash; $f$ and $g$ grow at the same rate.</li>
+                <li>$f = o(g)$ ("little-oh") if $\displaystyle\lim_{\epsilon\to\epsilon_0}\frac{f(\epsilon)}{g(\epsilon)} = 0$ &mdash; $f$ vanishes faster than $g$.</li>
+            </ul>
+            <p>E.g. $f(\epsilon)=3\epsilon^2+2\epsilon$ is $O(\epsilon)$ and $o(\sqrt\epsilon)$ as $\epsilon\to 0$. We call $g$ an <em>asymptotic approximation</em> to $f$ if $f = g + o(g)$.</p>
+            <p>Functions $\varphi_1,\varphi_2,\dots$ form an <strong>asymptotic sequence</strong> if $\varphi_n = o(\varphi_m)$ for $m<n$. Then</p>
+            $$f \sim a_1\varphi_1 + a_2\varphi_2 + \cdots + a_n\varphi_n,$$
+            <p style="margin-bottom:0;">where the $\varphi_i$ are the <strong>gauge functions</strong> (often simply $\epsilon^i$).</p>
+        </div>
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> Big-O and little-o are a bookkeeping language for "how big is each term." They let us write a solution as a leading piece plus ranked corrections, and know exactly what we're throwing away.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+                <li style="margin-bottom: 0.5rem;"><strong>Asymptotic &ne; convergent:</strong> An asymptotic series can be enormously accurate with a few terms even if it diverges when summed to infinity.</li>
+                <li style="margin-bottom: 0;"><strong>Gauge functions:</strong> The "rulers" $\epsilon, \epsilon^2, \sqrt\epsilon,\dots$ against which each correction is measured.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>8. Regular Perturbation Expansions &mdash; Algebraic Equations</h3>
+        <p>For $f(x) + \epsilon g(x) = 0$ where $f(x)=0$ is solvable, substitute the <em>ansatz</em> $x = x_0 + \epsilon x_1 + \epsilon^2 x_2 + \cdots$ and collect powers of $\epsilon$.</p>
+        <p><strong>Example:</strong> $x^2 + \epsilon x - 1 = 0$. Substituting and matching orders:</p>
+        $$O(1):\; x_0^2 - 1 = 0 \Rightarrow x_0 = \pm 1, \qquad O(\epsilon):\; 2x_0 x_1 + x_0 = 0 \Rightarrow x_1 = -\tfrac{1}{2}.$$
+        <p>So $x \sim \pm 1 - \tfrac{1}{2}\epsilon + \cdots$, which matches the Taylor expansion of the exact roots $x = \tfrac{-\epsilon \pm \sqrt{\epsilon^2+4}}{2}$. The same machinery handles transcendental coefficients such as $x^2 + e^{\epsilon x} = 5$.</p>
+    </div>
+
+    <div class="card">
+        <h3>9. Regular Perturbation for an IVP &amp; Secular Terms</h3>
+        <p>Consider the damped harmonic oscillator $\ddot x + \epsilon\dot x + x = 0$ with $x(0)=1,\ \dot x(0)=0$. The ansatz $x=x_0+\epsilon x_1+\cdots$ produces the <strong>asymptotic hierarchy</strong></p>
+        $$O(1):\ \ddot x_0 + x_0 = 0, \qquad O(\epsilon):\ \ddot x_1 + x_1 = -\dot x_0, \qquad O(\epsilon^2):\ \ddot x_2 + x_2 = -\dot x_1,$$
+        <p>with $x_0(0)=1$, all other ICs zero. Each level has the form $\mathcal{L}x_i = f(x_{i-1},\dots)$ where $\mathcal{L} \equiv \tfrac{d^2}{dt^2} + 1$ and the right-hand side is already known. Solving order by order:</p>
+        $$x_0 = \cos t, \qquad x_1 = \tfrac{1}{2}\big(\cos t - t\sin t\big),$$
+        $$\boxed{\; x \sim \cos t + \tfrac{1}{2}\epsilon\big(\cos t - t\sin t\big). \;}$$
+        <div style="background:#fef2f2; border-left:4px solid #ef4444; border-radius:8px; padding:1rem; margin-top:1rem;">
+            <p style="margin:0; color:#991b1b;"><strong>The catch &mdash; secular growth:</strong> the $t\sin t$ term grows without bound, so the expansion is only valid up to $t = O(1/\epsilon)$. The exact solution $x(t)=e^{-\epsilon t/2}\big[\cos(\omega t) + \tfrac{\epsilon}{2\omega}\sin(\omega t)\big]$, $\omega=\sqrt{1-\tfrac{\epsilon^2}{4}}$, decays slowly &mdash; capturing this for all $0\le t<\infty$ requires the <em>two-timing</em> / multiple-scales method (Perturbation Theory II).</p>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
+        <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
+            <h3>10. Worked Example &mdash; Projectile with Height-Dependent Gravity</h3>
+            <p>A projectile feels $F = -\tfrac{mR^2 g}{(R+x)^2}$. Non-dimensionalizing gives</p>
+            $$\ddot x = -\frac{1}{(1+\epsilon x)^2}, \quad \epsilon = \frac{v_0^2}{Rg}, \quad x(0)=0,\ \dot x(0)=1.$$
+            <p>With $x=x_0+\epsilon x_1+\cdots$:</p>
+            $$O(1):\ \ddot x_0 = -1 \Rightarrow x_0 = -\tfrac{t^2}{2}+t,$$
+            $$O(\epsilon):\ \ddot x_1 = 2x_0 \Rightarrow x_1 = -\tfrac{t^4}{12}+\tfrac{t^3}{3}.$$
+            <p>The time to maximum height ($\dot x=0$) expands as $t_m \sim 1 + \tfrac{2}{3}\epsilon$ &mdash; the weakening of gravity with altitude keeps the projectile aloft slightly longer.</p>
+        </div>
+        <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 1.5rem;">
+            <h3 style="margin-top: 0; color: #b45309; font-family: 'Inter', sans-serif; font-weight: 700;">Plain English Notes</h3>
+            <p style="font-family: 'Inter', sans-serif; line-height: 1.6; color: #451a03; margin-bottom: 1rem;"><strong>The Big Picture:</strong> The $\epsilon=0$ problem is high-school constant-gravity projectile motion. The correction quantifies how much the inverse-square law changes the answer for a fast launch.</p>
+            <ul style="font-family: 'Inter', sans-serif; font-size: 0.95rem; line-height: 1.8; color: #451a03; padding-left: 1.2rem; margin: 0;">
+                <li style="margin-bottom: 0;"><strong>Practical payoff:</strong> a closed-form correction that agrees with the numerical (exact) solution even up to $\epsilon \approx 0.25$&ndash;$0.4$.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>11. Finance Application &mdash; Stochastic Volatility &amp; the Garman Equation</h3>
+        <p>Let the stock follow $dS = rS\,dt + \sigma S\,dX$ with a fast mean-reverting volatility $d\sigma = \tfrac{\alpha(\sigma)}{\epsilon}\,dt + \tfrac{\beta(\sigma)}{\sqrt\epsilon}\,dY$, $dX\cdot dY = \rho\,dt$. A European option value $V$ satisfies <strong>Garman's equation</strong>, which in operator form reads</p>
+        $$\epsilon\,\mathcal{D}_0^\sigma V + \sqrt{\epsilon}\,\rho\beta\,\mathcal{D}_1\mathcal{D}_2 V + \mathcal{D}_3 V = 0,$$
+        <p>with $\mathcal{D}_0^\sigma = \partial_t + \tfrac{1}{2}\sigma^2 S^2\partial_{SS} + rS\partial_S - r$, &nbsp;$\mathcal{D}_1 = S\partial_S$, &nbsp;$\mathcal{D}_2 = \sigma\partial_\sigma$, &nbsp;$\mathcal{D}_3 = \tfrac{1}{2}\beta^2\partial_{\sigma\sigma} + \alpha\partial_\sigma$, &nbsp;$\mathcal{D}_4 = S^2\partial_{SS}$. Expanding $V \sim V_0 + \epsilon^{1/2}V_1 + \epsilon V_2 + \cdots$ yields the hierarchy $\mathcal{D}_3 V_0 = 0,\ \mathcal{D}_3 V_1 = -\rho\beta\,\mathcal{D}_1\mathcal{D}_2 V_0,\dots$ The first equation forces $V_0$ (and then $V_1$) to be independent of $\sigma$, and solvability conditions ("integrate against the invariant density $p(\sigma)$") collapse the leading order to Black&ndash;Scholes at an effective volatility $\hat\sigma$.</p>
+        <p style="margin-bottom:0;">Carrying the expansion to $O(\epsilon)$ gives the asymptotic price</p>
+        $$V(S,\sigma,t) = V_{BS}(S,\hat\sigma,t) + \epsilon^{1/2}\,\rho\gamma(T-t)\,\mathcal{D}_1\mathcal{D}_4 V_{BS} + \epsilon\,F_1(\sigma)\,\mathcal{D}_4 V_{BS} + O(\epsilon^{3/2}),$$
+        <p style="margin-bottom:0;">where $\gamma$ and $F_1(\sigma)$ are integrals of the volatility coefficients. The correction terms $\mathcal{D}_1\mathcal{D}_4 V_{BS}$ and $\mathcal{D}_4 V_{BS}$ are exactly the smile / skew adjustments to a flat Black&ndash;Scholes surface.</p>
+    </div>
+
+    <div class="card" style="border-left: 4px solid var(--accent);">
+        <h3>Summary &amp; Key Takeaways</h3>
+        <ul style="line-height: 1.8;">
+            <li>Perturbation theory finds explicit approximate solutions when a small parameter $\epsilon$ is present and the $\epsilon=0$ limit is solvable.</li>
+            <li><strong>Regular</strong> problems preserve the order/structure at $\epsilon=0$; <strong>singular</strong> problems lose the highest derivative (boundary layers, near-expiry options, high/low Reynolds limits).</li>
+            <li>Non-dimensionalization reveals the small parameter and decides whether a problem is regular or singular.</li>
+            <li>Order notation ($O,\,o$) and gauge functions formalize asymptotic expansions; the ansatz $x=\sum \epsilon^i x_i$ produces a solvable hierarchy $\mathcal{L}x_i = f(x_{i-1},\dots)$.</li>
+            <li>Naive regular expansions can develop <strong>secular terms</strong> ($t\sin t$), valid only to $t=O(1/\epsilon)$ &mdash; the motivation for Singular Perturbation Theory / multiple scales in Perturbation Theory II.</li>
+            <li>In finance, the same toolkit delivers near-expiry Black&ndash;Scholes asymptotics and stochastic-volatility smile corrections via the Garman equation.</li>
+        </ul>
+    </div>
+
+    <div class="card" style="background: var(--bg-subtle, #f8fafc);">
+        <h3>References</h3>
+        <ul style="line-height: 1.8; margin-bottom:0;">
+            <li>M. H. Holmes, <em>Introduction to Perturbation Methods</em>, Springer, 1995.</li>
+            <li>P. Wilmott &amp; H. Rasmussen, <em>New Directions in Mathematical Finance</em>, Wiley, 1996.</li>
+            <li>C. C. Lin &amp; L. A. Segel, <em>Mathematics Applied to Deterministic Problems in the Natural Sciences</em>, Macmillan, 1974.</li>
+            <li>P. Wilmott, S. Howison &amp; J. Dewynne, <em>The Mathematics of Financial Derivatives</em>, Cambridge, 1995.</li>
+        </ul>
+    </div>
+</div>
