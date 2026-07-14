@@ -1,7 +1,7 @@
 <div id="view-pca" style="display: none;">
     <header style="margin-bottom: 2rem;">
-        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">2.4 Principal Component Analysis</h1>
-        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Decomposing yield curve fluctuations into three primary risk factors: Level, Slope, and Curvature.</div>
+        <h1 style="font-size: 2rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">2.4 Principal Component Analysis</h1>
+        <div class="subtitle" style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500;">Decomposing yield curve fluctuations into three primary risk factors: Level, Slope, and Curvature.</div>
     </header>
 
     <div style="display: flex; flex-direction: column; gap: 2.5rem; max-width: 1400px; margin-bottom: 4rem;">
@@ -17,9 +17,9 @@
                 <p>where $L$ is the diagonal matrix of eigenvalues $\lambda_i$ (representing the variance explained by each factor) and $A$ contains the eigenvectors (called <strong>loadings</strong> or <strong>factors</strong>). Empirically, the first three components explain over $98.5\%$ of all yield curve movements, allowing us to capture almost all risk using just 3 variables.</p>
             </div>
 
-            <div class="card" style="margin-bottom: 0; background: #f8fafc; border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="card" style="margin-bottom: 0; background: var(--bg-subtle); border: 1px solid var(--card-border); display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
-                    <h3 style="margin-top: 0; color: #334155; font-family: 'Inter', sans-serif;">The Physical Factors</h3>
+                    <h3 style="margin-top: 0; color: var(--text-secondary); font-family: 'Inter', sans-serif;">The Physical Factors</h3>
                     <p>The three primary eigenvectors exhibit stable, intuitive physical shapes across historical markets:</p>
                     <ul>
                         <li><strong>PC1 (Level / Parallel Shift):</strong> Flat across all maturities. Adjusting this component shifts all yields up or down by a similar amount (explains $\approx 79.68\%$ of variance).</li>
@@ -89,21 +89,21 @@
             </p>
 
             <div style="display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 2.5rem; align-items: center;">
-                <div style="display: flex; flex-direction: column; gap: 1.5rem; background: #f8fafc; padding: 1.75rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <div style="display: flex; flex-direction: column; gap: 1.5rem; background: var(--bg-subtle); padding: 1.75rem; border-radius: 8px; border: 1px solid var(--card-border);">
                     <div style="display: flex; flex-direction: column; gap: 0.25rem;">
-                        <label for="pcaPC1" style="font-weight: 700; font-size: 0.85rem; color: #334155;">PC1: Level (Shift): <span id="pcaPC1Val" style="color: #3b82f6; font-weight: bold;">0.00</span></label>
+                        <label for="pcaPC1" style="font-weight: 700; font-size: 0.85rem; color: var(--text-secondary);">PC1: Level (Shift): <span id="pcaPC1Val" style="color: #3b82f6; font-weight: bold;">0.00</span></label>
                         <input id="pcaPC1" max="1.5" min="-1.5" step="0.05" style="cursor: pointer; width: 100%;" type="range" value="0.0" oninput="runPcaSimulation()"/>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 0.25rem;">
-                        <label for="pcaPC2" style="font-weight: 700; font-size: 0.85rem; color: #334155;">PC2: Slope (Rotation): <span id="pcaPC2Val" style="color: #ef4444; font-weight: bold;">0.00</span></label>
+                        <label for="pcaPC2" style="font-weight: 700; font-size: 0.85rem; color: var(--text-secondary);">PC2: Slope (Rotation): <span id="pcaPC2Val" style="color: #ef4444; font-weight: bold;">0.00</span></label>
                         <input id="pcaPC2" max="1.5" min="-1.5" step="0.05" style="cursor: pointer; width: 100%;" type="range" value="0.0" oninput="runPcaSimulation()"/>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 0.25rem;">
-                        <label for="pcaPC3" style="font-weight: 700; font-size: 0.85rem; color: #334155;">PC3: Curvature (Hump): <span id="pcaPC3Val" style="color: #7c3aed; font-weight: bold;">0.00</span></label>
+                        <label for="pcaPC3" style="font-weight: 700; font-size: 0.85rem; color: var(--text-secondary);">PC3: Curvature (Hump): <span id="pcaPC3Val" style="color: #7c3aed; font-weight: bold;">0.00</span></label>
                         <input id="pcaPC3" max="1.5" min="-1.5" step="0.05" style="cursor: pointer; width: 100%;" type="range" value="0.0" oninput="runPcaSimulation()"/>
                     </div>
-                    <div style="margin-top: 1rem; border-top: 1px solid #e2e8f0; padding-top: 1rem; text-align: center;">
-                        <button onclick="resetPcaSliders()" style="background: white; color: #334155; border: 1px solid #cbd5e1; padding: 0.5rem 1.25rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Reset PCA Factors</button>
+                    <div style="margin-top: 1rem; border-top: 1px solid var(--card-border); padding-top: 1rem; text-align: center;">
+                        <button onclick="resetPcaSliders()" style="background: white; color: var(--text-secondary); border: 1px solid var(--input-border); padding: 0.5rem 1.25rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: all 0.2s;">Reset PCA Factors</button>
                     </div>
                 </div>
 

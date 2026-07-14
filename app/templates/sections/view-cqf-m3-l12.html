@@ -1,18 +1,18 @@
 <div id="view-cqf-m3-l12" style="display: none;">
     <header style="margin-bottom: 2rem;">
         
-        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Further Monte Carlo Methods</h1>
-        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">The Connection to Statistics, Low-Discrepancy (Sobol'), Wiener/Poisson Bridges, and Numerical SDE Integration Schemes</div>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Further Monte Carlo Methods</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: var(--text-muted); font-size: 1rem; font-family: var(--font-family-sans);">The Connection to Statistics, Low-Discrepancy (Sobol'), Wiener/Poisson Bridges, and Numerical SDE Integration Schemes</div>
     </header>
 
     <!-- Navigation Tabs -->
     <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
         <button id="tabM3L12Stats" onclick="switchM3L12Tab('stats')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. Statistics &amp; Feynman-Kac</button>
-        <button id="tabM3L12Discrepancy" onclick="switchM3L12Tab('discrepancy')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Low-Discrepancy (Sobol')</button>
-        <button id="tabM3L12Bridges" onclick="switchM3L12Tab('bridges')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Wiener &amp; Poisson Bridges</button>
-        <button id="tabM3L12Sde" onclick="switchM3L12Tab('sde')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. SDE Integration Schemes</button>
-        <button id="tabM3L12Exercises" onclick="switchM3L12Tab('exercises')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Solved Case Studies</button>
-        <button id="tabM3L12Sandbox" onclick="switchM3L12Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Interactive MC Labs</button>
+        <button id="tabM3L12Discrepancy" onclick="switchM3L12Tab('discrepancy')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Low-Discrepancy (Sobol')</button>
+        <button id="tabM3L12Bridges" onclick="switchM3L12Tab('bridges')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Wiener &amp; Poisson Bridges</button>
+        <button id="tabM3L12Sde" onclick="switchM3L12Tab('sde')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. SDE Integration Schemes</button>
+        <button id="tabM3L12Exercises" onclick="switchM3L12Tab('exercises')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Solved Case Studies</button>
+        <button id="tabM3L12Sandbox" onclick="switchM3L12Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Interactive MC Labs</button>
     </div>
 
     <!-- TAB 1: Statistics & Feynman-Kac -->
@@ -21,11 +21,11 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Monte Carlo as a Numerical Integrator</h3>
-                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0.75rem;">
                         Dr. Peter Jäckel challenges a common quantitative finance misconception: <strong>Monte Carlo simulation is not inherently about stochastic processes.</strong> It is simply a general numerical integration toolkit designed to evaluate expectations of a payoff function $f(\mathbf{x})$ over a probability density function $\psi(\mathbf{x})$:
                         $$\int_{\mathcal{D}} f(\mathbf{x}) \psi(\mathbf{x}) \, \mathrm{d}\mathbf{x} = \mathrm{E}_{\psi}[f(\mathbf{x})]$$
                     </p>
-                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0.75rem;">
                         Calling a mathematical value an expectation does not demand Monte Carlo. For example, the standard European option value is an expectation computed entirely analytically using the <strong>Black-Scholes-Merton</strong> formula.
                     </p>
                 </div>
@@ -34,7 +34,7 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Feynman-Kac Connection</h3>
-                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: var(--text-secondary); margin-bottom: 0.75rem;">
                         The <strong>Feynman-Kac Theorem</strong> establishes a literal equivalence between the solutions of partial differential equations and expectations under a corresponding stochastic process. 
                         Given a PDE with terminal condition $V(T, \mathbf{X}) = f(\mathbf{X})$:
                         $$\frac{\partial V}{\partial t} + \sum_{i=1}^n b_i \frac{\partial V}{\partial X_i} + \frac{1}{2} \sum_{i,j=1}^n c_{ij} \frac{\partial^2 V}{\partial X_i \partial X_j} - rV = 0$$
@@ -52,7 +52,7 @@
         <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
             <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
                 <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Paradigm Shift: Quasi-Random vs. Low-Discrepancy Sequences</h3>
-                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 1rem;">
                     For production pricing in global financial institutions, pseudo-random numbers are obsolete. Instead, serious practitioners utilize <strong>Low-Discrepancy Sequences (LDS)</strong>. 
                     - <strong>Pseudo-Random Sequences:</strong> Focus on emulating true randomness where each draw is statistically independent. This independence naturally causes clusters (overlapping points) and large empty gaps.
                     - <strong>Low-Discrepancy Sequences:</strong> Are fully deterministic, taking into account all previously generated coordinates to actively fill "holes" and cover the sample space with maximum uniformity.
@@ -60,7 +60,7 @@
 
                 <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); margin-bottom:1.25rem; font-size:0.85rem; line-height:1.6;">
                     <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Quantum Leap in Convergence Speed</h4>
-                    <p style="margin:0; color:#4b5563;">
+                    <p style="margin:0; color: var(--text-secondary);">
                         The rate of convergence of standard pseudo-random Monte Carlo is governed by the Central Limit Theorem at $O(1/\sqrt{N})$. In contrast, Low-Discrepancy Monte Carlo achieves a convergence rate close to $O(1/N)$.
                         $$\text{Required Iterations } (N) \text{ for same accuracy:} \quad N_{\text{PR}} = N_{\text{LDS}}^2$$
                         If a Sobol' simulation achieves acceptable accuracy in 1,000 steps ($1$ second), a pseudo-random generator requires <strong>1,000,000 steps ($16$ minutes)</strong>. This offers massive operational and hardware cost savings on high-performance grids.
@@ -76,7 +76,7 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Wiener Path Construction: Incremental vs. Brownian Bridge</h3>
-                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0.75rem;">
                         To construct a discretized path of a standard Wiener process $W(t_i)$:
                         - <strong>Incremental Method:</strong> Evolve sequentially step-by-step: $W(t_{i+1}) = W(t_i) + \sqrt{\Delta t} Z_i$. This is highly sequential and places all the variance allocation onto the final step.
                         - <strong>Brownian Bridge Method:</strong> Shapes the path hierarchically. The first draw sets the path endpoint $W(T) = \sqrt{T} Z_1$. Subsequent draws bisect the path at midpoints, computing the conditional Gaussian mean and variance:
@@ -89,7 +89,7 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Poisson Path Construction</h3>
-                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: var(--text-secondary); margin-bottom: 0.75rem;">
                         A standard Poisson process has discrete jumps. 
                         - Evolving it via fine Bernoulli time-steps is highly inefficient and statistically flawed.
                         - Instead, we draw independent exponential times between events: $\tau_i \sim -\frac{\ln(1-u_i)}{\lambda}$.
@@ -105,7 +105,7 @@
         <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
             <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
                 <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Numerical SDE Solvers Comparison</h3>
-                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 1rem;">
                     When pricing exotic derivatives under general diffusion processes, we must numerically integrate the SDE:
                     $$\mathrm{d}X_t = a(t, X_t)\mathrm{d}t + b(t, X_t)\mathrm{d}W_t$$
                 </p>
@@ -146,10 +146,10 @@
     <div id="secM3L12Exercises" style="display: none; max-height: 600px; overflow-y: auto; padding-right: 0.5rem;">
         <div class="card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
             <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Case Study 1: The Trap of Moment-Matching for Dirac Mixtures</h3>
-            <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563;">
+            <p style="font-size: 0.85rem; line-height: 1.5; color: var(--text-secondary);">
                 <strong>Problem:</strong> Explain how moment-matching (e.g. log-normal approximation) on mixed payoff distributions (containing Dirac delta spikes) can fail catastrophically. Use a Call payoff applied to a normal variable as an example.
             </p>
-            <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color:#374151;">
+            <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color: var(--text-secondary);">
                 <strong>Analysis:</strong><br>
                 For a standard Normal variable $x \sim \mathcal{N}(0, 1)$, a call payoff $\max(x, 0)$ creates a distribution that is a <strong>mixture of a Dirac delta spike at zero (with probability 0.5) and the positive half of the Gaussian PDF</strong>:
                 $$\psi(y) = \frac{1}{2}\delta(y) + \frac{1}{\sqrt{2\pi}} e^{-y^2/2} h(y)$$
@@ -159,10 +159,10 @@
 
         <div class="card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
             <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Case Study 2: The Fallacy of Seed Validation</h3>
-            <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563;">
+            <p style="font-size: 0.85rem; line-height: 1.5; color: var(--text-secondary);">
                 <strong>Problem:</strong> Why is Jäckel strongly opposed to rerunning a Monte Carlo simulation with a different seed to validate its correctness or assess its convergence error?
             </p>
-            <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color:#374151;">
+            <div style="background:var(--metric-bg); padding:1rem; border-radius:6px; font-size:0.82rem; line-height:1.5; color: var(--text-secondary);">
                 <strong>Analysis:</strong><br>
                 1. <strong>TAMPERING AND SEQUENTIAL OVERLAP:</strong> In pseudo-random generators, sequential runs using different seeds from the same linear congruential pipeline often overlap in high dimensions. This makes them statistically dependent, invalidating standard error convergence bounds.<br>
                 2. <strong>MASKING COMPROMISED GENERATORS:</strong> If the generator is flawed, changing the seed will not reveal the issue; it merely generates another biased sample, risking a false positive validation. The correct path is to change the <strong>generator class</strong> (e.g. from LCG to Mersenne Twister or Sobol').
@@ -193,7 +193,7 @@
                 <div style="height: 180px; position: relative; margin-bottom: 0.5rem; display:flex; align-items:center; justify-content:center; background:#0f172a; border-radius:6px;">
                     <canvas id="m3l12SpaceCanvas" width="300" height="180" style="width:100%; height:100%; max-height:180px;"></canvas>
                 </div>
-                <div id="outM3L12Discrepancy" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                <div id="outM3L12Discrepancy" style="font-size:0.78rem; line-height:1.4; color: var(--text-secondary); background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
                     Simulating coordinates...
                 </div>
             </div>
@@ -216,7 +216,7 @@
                 <div style="height: 180px; position: relative; margin-bottom: 0.5rem;">
                     <canvas id="m3l12PathChart"></canvas>
                 </div>
-                <div id="outM3L12Path" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                <div id="outM3L12Path" style="font-size:0.78rem; line-height:1.4; color: var(--text-secondary); background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
                     Simulating Brownian motion paths...
                 </div>
             </div>
@@ -245,7 +245,7 @@
                 <div style="height: 200px; position: relative; margin-bottom: 0.5rem;">
                     <canvas id="m3l12SdeChart"></canvas>
                 </div>
-                <div id="outM3L12Sde" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                <div id="outM3L12Sde" style="font-size:0.78rem; line-height:1.4; color: var(--text-secondary); background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
                     Running SDE schemes...
                 </div>
             </div>

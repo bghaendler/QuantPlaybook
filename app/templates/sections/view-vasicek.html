@@ -1,7 +1,7 @@
 <div id="view-vasicek" style="display: none;">
 <header>
 <h1>Short Rate Models</h1>
-<div class="subtitle" style="color: #6b7280;">2. The Vasicek Model</div>
+<div class="subtitle" style="color: var(--text-muted);">2. The Vasicek Model</div>
 </header>
 <div class="container" style="grid-template-columns: 1fr; gap: 3rem; max-width: 1400px;">
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
@@ -32,37 +32,37 @@
 <div class="card" style="margin-bottom: 2rem;">
 <h2>Interactive Visualization: The "Rubber Band" Effect</h2>
 <p style="margin-bottom: 1.5rem;">Observe how simulated paths are pulled towards the Long-Term Mean ($\theta$). A higher $\kappa$ tightens the rubber band, while higher $\sigma$ increases the erratic zig-zagging, leading to a wider limiting variance $\frac{\sigma^2}{2\kappa}$.</p>
-<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: var(--bg-subtle); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border);">
 <!-- Sliders -->
 <div style="display: flex; flex-direction: column; gap: 1rem; grid-column: span 2;">
 <div style="display: flex; gap: 1rem;">
 <div style="flex: 1;">
-<label for="vasInitialSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Initial Rate $r(0)$: <span id="vasInitialValue">2.0%</span></label>
+<label for="vasInitialSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Initial Rate $r(0)$: <span id="vasInitialValue">2.0%</span></label>
 <input id="vasInitialSlider" max="0.10" min="-0.02" step="0.01" style="width: 100%;" type="range" value="0.02"/>
 </div>
 <div style="flex: 1;">
-<label for="vasThetaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Long-Term Mean ($\theta$): <span id="vasThetaValue">6.0%</span></label>
+<label for="vasThetaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Long-Term Mean ($\theta$): <span id="vasThetaValue">6.0%</span></label>
 <input id="vasThetaSlider" max="0.10" min="0" step="0.01" style="width: 100%;" type="range" value="0.06"/>
 </div>
 </div>
 <div style="display: flex; gap: 1rem;">
 <div style="flex: 1;">
-<label for="vasKappaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Mean Reversion ($\kappa$): <span id="vasKappaValue">0.80</span></label>
+<label for="vasKappaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Mean Reversion ($\kappa$): <span id="vasKappaValue">0.80</span></label>
 <input id="vasKappaSlider" max="3" min="0" step="0.1" style="width: 100%;" type="range" value="0.8"/>
 </div>
 <div style="flex: 1;">
-<label for="vasSigmaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Volatility ($\sigma$): <span id="vasSigmaValue">0.03</span></label>
+<label for="vasSigmaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Volatility ($\sigma$): <span id="vasSigmaValue">0.03</span></label>
 <input id="vasSigmaSlider" max="0.15" min="0" step="0.01" style="width: 100%;" type="range" value="0.03"/>
 </div>
 </div>
 </div>
 <!-- Math Details -->
-<div style="border-left: 2px solid #cbd5e1; padding-left: 1.5rem; display: flex; flex-direction: column; justify-content: center;">
-<div style="font-size: 0.85rem; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem;">Limiting Variance</div>
-<div style="font-size: 1.5rem; font-weight: 800; color: #475569; font-family: 'Courier New', monospace; margin-bottom: 0.5rem;">
+<div style="border-left: 2px solid var(--input-border); padding-left: 1.5rem; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem;">Limiting Variance</div>
+<div style="font-size: 1.5rem; font-weight: 800; color: var(--text-secondary); font-family: 'Courier New', monospace; margin-bottom: 0.5rem;">
                                 $\frac{\sigma^2}{2\kappa}$ = <span id="vasLimitVar" style="color: var(--primary-color);">0.00056</span>
 </div>
-<div style="font-size: 0.85rem; color: #475569; font-weight: 500;">
+<div style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 500;">
                                 Std Dev: <span id="vasLimitStd">2.37%</span>
 </div>
 </div>
@@ -83,7 +83,7 @@
 <summary style="cursor: pointer; font-weight: 600; color: #15803d; list-style: none; display: flex; align-items: center;">
 <span style="margin-right: 0.5rem;">👉</span> Show Step-by-Step Solution
                         </summary>
-<div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; color: #334155;">
+<div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--card-border); color: var(--text-secondary);">
 <ol style="line-height: 1.8;">
 <li>The limiting distribution of $r(t)$ in the Vasicek model is Normal: $r(\infty) \sim \mathcal{N}(\theta, \frac{\sigma^2}{2\kappa})$.</li>
 <li>Calculate the variance: $\frac{0.03^2}{2 \times 0.5} = \frac{0.0009}{1} = 0.0009$.</li>

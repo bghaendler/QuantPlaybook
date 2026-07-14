@@ -1,12 +1,12 @@
 <div id="view-tool-hist-vol" style="display: none; font-family: var(--font-family-sans);">
     <header style="margin-bottom: 2rem;">
         <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Historical Volatility Tracker</h1>
-        <p style="color: #64748b; margin-top: 0.5rem;">Paste a price series (or simulate one) and compare realized-volatility estimators: close-to-close, EWMA (RiskMetrics) and rolling-window dynamics.</p>
+        <p style="color: var(--text-muted); margin-top: 0.5rem;">Paste a price series (or simulate one) and compare realized-volatility estimators: close-to-close, EWMA (RiskMetrics) and rolling-window dynamics.</p>
     </header>
 
     <div class="card">
         <h3>Input Prices</h3>
-        <p style="font-size: 0.85rem; color: #64748b;">One closing price per line (or comma-separated). Daily data assumed; annualization uses 252 days.</p>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">One closing price per line (or comma-separated). Daily data assumed; annualization uses 252 days.</p>
         <textarea id="hvPrices" spellcheck="false" style="width: 100%; height: 110px; font-family: monospace; font-size: 0.82rem; padding: 0.6rem; border-radius: 8px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-color);"></textarea>
         <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.6rem; align-items: center;">
             <button onclick="hvSimulate()" style="padding: 0.4rem 1rem; border-radius: 8px; border: 1px solid var(--input-border); background: transparent; color: var(--text-color); cursor: pointer; font-size: 0.82rem;">Simulate GBM + vol regime shift</button>
@@ -20,7 +20,7 @@
         <h3>Results</h3>
         <div id="hvMetrics" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;"></div>
         <canvas id="hvCanvas" width="900" height="280" style="width: 100%; border: 1px solid var(--card-border); border-radius: 8px; background: var(--metric-bg);"></canvas>
-        <p style="font-size: 0.8rem; color: #64748b; margin-top: 0.5rem;">Blue: rolling close-to-close annualized vol. Orange: EWMA vol. The EWMA reacts faster to regime changes but never fully forgets — exactly the trade-off GARCH formalizes.</p>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Blue: rolling close-to-close annualized vol. Orange: EWMA vol. The EWMA reacts faster to regime changes but never fully forgets — exactly the trade-off GARCH formalizes.</p>
     </div>
 
     <div class="card">
@@ -60,7 +60,7 @@ function hvCompute() {
     var ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (prices.length < 10) {
-        metricsEl.innerHTML = '<div style="color:#64748b; font-size:0.85rem;">Need at least 10 prices — paste data or click Simulate.</div>';
+        metricsEl.innerHTML = '<div style="color: var(--text-muted); font-size:0.85rem;">Need at least 10 prices — paste data or click Simulate.</div>';
         return;
     }
     var rets = [];
@@ -89,7 +89,7 @@ function hvCompute() {
     var last = function(arr) { for (var i = arr.length - 1; i >= 0; i--) if (arr[i] !== null) return arr[i]; return NaN; };
     function metric(label, val) {
         return '<div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.6rem 0.8rem;">' +
-            '<div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">' + label + '</div>' +
+            '<div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">' + label + '</div>' +
             '<div style="font-size: 1.25rem; font-weight: 800;">' + (100 * val).toFixed(2) + '%</div></div>';
     }
     metricsEl.innerHTML =
@@ -97,7 +97,7 @@ function hvCompute() {
         metric(w + 'd rolling vol (latest)', last(roll)) +
         metric('EWMA vol (latest, λ=' + lam + ')', last(ewma)) +
         '<div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.6rem 0.8rem;">' +
-        '<div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Observations</div>' +
+        '<div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Observations</div>' +
         '<div style="font-size: 1.25rem; font-weight: 800;">' + n + ' returns</div></div>';
 
     // Plot

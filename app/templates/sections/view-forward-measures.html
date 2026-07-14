@@ -1,7 +1,7 @@
 <div id="view-forward-measures" style="display: none;">
     <header>
         <h1>Advanced Models</h1>
-        <div class="subtitle" style="color: #6b7280;">2. Forward Measures & Option Pricing</div>
+        <div class="subtitle" style="color: var(--text-muted);">2. Forward Measures & Option Pricing</div>
     </header>
 
     <div class="container" style="grid-template-columns: 1fr; gap: 3rem; max-width: 1400px;">
@@ -36,42 +36,42 @@
                 Adjust the parameters below to dynamically recalculate zero-coupon bond prices and option premiums (in basis points, $10^{-4}$) for options expiring at $T_{i-1}$ on $T_i$-maturity bonds at the At-The-Money (ATM) strike $K_i = \frac{P(0, T_i)}{P(0, T_{i-1})}$.
             </p>
 
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: var(--bg-subtle); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border);">
                 <!-- Sliders block -->
                 <div style="display: flex; flex-direction: column; gap: 1rem; grid-column: span 2;">
                     <div style="display: flex; gap: 1rem;">
                         <div style="flex: 1;">
-                            <label for="fwdR0Slider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Initial Rate $r(0)$: <span id="fwdR0Value">6.0%</span></label>
+                            <label for="fwdR0Slider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Initial Rate $r(0)$: <span id="fwdR0Value">6.0%</span></label>
                             <input id="fwdR0Slider" max="0.15" min="0.01" step="0.005" style="width: 100%;" type="range" value="0.06"/>
                         </div>
                         <div style="flex: 1;">
-                            <label for="fwdThetaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Long-Term Mean ($\theta$): <span id="fwdThetaValue">8.0%</span></label>
+                            <label for="fwdThetaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Long-Term Mean ($\theta$): <span id="fwdThetaValue">8.0%</span></label>
                             <input id="fwdThetaSlider" max="0.15" min="0.01" step="0.005" style="width: 100%;" type="range" value="0.08"/>
                         </div>
                     </div>
                     <div style="display: flex; gap: 1rem;">
                         <div style="flex: 1;">
-                            <label for="fwdKappaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Mean Reversion Speed ($\kappa$): <span id="fwdKappaValue">0.86</span></label>
+                            <label for="fwdKappaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Mean Reversion Speed ($\kappa$): <span id="fwdKappaValue">0.86</span></label>
                             <input id="fwdKappaSlider" max="3.0" min="0.1" step="0.05" style="width: 100%;" type="range" value="0.86"/>
                         </div>
                         <div style="flex: 1;">
-                            <label for="fwdSigmaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Volatility ($\sigma$): <span id="fwdSigmaValue">1.0%</span></label>
+                            <label for="fwdSigmaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Volatility ($\sigma$): <span id="fwdSigmaValue">1.0%</span></label>
                             <input id="fwdSigmaSlider" max="0.05" min="0.001" step="0.001" style="width: 100%;" type="range" value="0.01"/>
                         </div>
                     </div>
                 </div>
 
                 <!-- Toggle buttons and parameters readout -->
-                <div style="border-left: 2px solid #cbd5e1; padding-left: 1.5rem; display: flex; flex-direction: column; justify-content: center; gap: 1rem; grid-column: span 2;">
+                <div style="border-left: 2px solid var(--input-border); padding-left: 1.5rem; display: flex; flex-direction: column; justify-content: center; gap: 1rem; grid-column: span 2;">
                     <div style="display: flex; gap: 1rem; align-items: center;">
-                        <span style="font-weight: 600; font-size: 0.85rem; color: #334155; width: 100px;">Option Type:</span>
+                        <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-secondary); width: 100px;">Option Type:</span>
                         <div class="btn-group" style="display: flex; gap: 0.5rem;">
                             <button id="btnTogglePut" class="btn" style="background: var(--primary-color); color: white; border: none; padding: 0.4rem 1rem; border-radius: 4px; font-weight: 600; cursor: pointer;">Put Options</button>
-                            <button id="btnToggleCall" class="btn" style="background: #e2e8f0; color: #334155; border: none; padding: 0.4rem 1rem; border-radius: 4px; font-weight: 600; cursor: pointer;">Call Options</button>
+                            <button id="btnToggleCall" class="btn" style="background: #e2e8f0; color: var(--text-secondary); border: none; padding: 0.4rem 1rem; border-radius: 4px; font-weight: 600; cursor: pointer;">Call Options</button>
                         </div>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-family: 'Courier New', monospace; font-size: 0.85rem; color: #475569;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--text-secondary);">
                         <div>
                             <strong>Peak Price:</strong> <span id="fwdPeakVal" style="color: var(--primary-color); font-weight: 700;">5.78 bps</span>
                         </div>
@@ -93,11 +93,11 @@
             <h2>Closed-Form Bond Option Pricing Derivation</h2>
             <p>Here is the full step-by-step mathematical decomposition that enables options pricing under the HJM framework with deterministic volatilities.</p>
             
-            <details style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 1rem;">
+            <details style="background: var(--bg-subtle); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1rem;">
                 <summary style="cursor: pointer; font-weight: 700; color: #1e293b; list-style: none; display: flex; align-items: center; font-size: 1.05rem;">
                     <span style="margin-right: 0.5rem; transition: transform 0.2s;">👉</span> 1. Payoff Decomposition & Bayes' Rule Application
                 </summary>
-                <div style="margin-top: 1rem; border-top: 1px solid #e2e8f0; padding-top: 1rem; line-height: 1.8; color: #334155;">
+                <div style="margin-top: 1rem; border-top: 1px solid var(--card-border); padding-top: 1rem; line-height: 1.8; color: var(--text-secondary);">
                     <p>The time-0 price of a European call option on a $T_1$-bond with expiry $T_0$ and strike $K$ is:</p>
                     <p style="text-align: center;">$$p_{\text{call}} = \mathbb{E}^{\mathbb{Q}}\left[ e^{-\int_0^{T_0} r(s)ds} (P(T_0, T_1) - K)^+ \right]$$</p>
                     <p>Let $A_E = \{P(T_0, T_1) > K\}$ denote the exercise event. We can decompose the payoff $(P(T_0, T_1) - K)\mathbb{1}_{A_E}$ and write the price as the difference of two expectations:</p>
@@ -111,11 +111,11 @@
                 </div>
             </details>
 
-            <details style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 1rem;">
+            <details style="background: var(--bg-subtle); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1rem;">
                 <summary style="cursor: pointer; font-weight: 700; color: #1e293b; list-style: none; display: flex; align-items: center; font-size: 1.05rem;">
                     <span style="margin-right: 0.5rem; transition: transform 0.2s;">👉</span> 2. Gaussian Log-Normal Volatilities (Vasicek Model Example)
                 </summary>
-                <div style="margin-top: 1rem; border-top: 1px solid #e2e8f0; padding-top: 1rem; line-height: 1.8; color: #334155;">
+                <div style="margin-top: 1rem; border-top: 1px solid var(--card-border); padding-top: 1rem; line-height: 1.8; color: var(--text-secondary);">
                     <p>In a Gaussian HJM model where the forward rate volatility $\sigma(t, T)$ is deterministic, the ratio of bond prices is log-normally distributed. Under the $T_1$-forward measure, we have:</p>
                     <p style="text-align: center;">$$\log \left( \frac{P(T_0, T_1)}{P(T_0, T_0)} \right) = \log P(T_0, T_1) \sim \mathcal{N}\left( \log \frac{P(0, T_1)}{P(0, T_0)} - \frac{1}{2}\Sigma_{T_0, T_1}^2, \; \Sigma_{T_0, T_1}^2 \right)$$</p>
                     <p>Where the integrated variance of the bond returns ratio $\Sigma_{T_0, T_1}^2$ is:</p>
@@ -127,11 +127,11 @@
                 </div>
             </details>
 
-            <details style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <details style="background: var(--bg-subtle); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border);">
                 <summary style="cursor: pointer; font-weight: 700; color: #1e293b; list-style: none; display: flex; align-items: center; font-size: 1.05rem;">
                     <span style="margin-right: 0.5rem; transition: transform 0.2s;">👉</span> 3. Put-Call Parity & Put Option Formula
                 </summary>
-                <div style="margin-top: 1rem; border-top: 1px solid #e2e8f0; padding-top: 1rem; line-height: 1.8; color: #334155;">
+                <div style="margin-top: 1rem; border-top: 1px solid var(--card-border); padding-top: 1rem; line-height: 1.8; color: var(--text-secondary);">
                     <p>The put-call parity for bond option prices relates call and put options with strike $K$ and expiry $T_0$ by:</p>
                     <p style="text-align: center;">$$p_{\text{call}} - p_{\text{put}} = P(0, T_1) - K P(0, T_0)$$</p>
                     <p>Solving for $p_{\text{put}}$ and substituting the Gaussian HJM call option formula:</p>

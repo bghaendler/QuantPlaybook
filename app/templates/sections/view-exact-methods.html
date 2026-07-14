@@ -1,7 +1,7 @@
 <div id="view-exact-methods" style="display: none;">
     <header style="margin-bottom: 2rem;">
-        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">2.2 Exact Methods &amp; Underdetermined Systems</h1>
-        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Solving for the smoothest exact-matching discount curve in underdetermined systems using the Pseudoinverse of Weighted Increments.</div>
+        <h1 style="font-size: 2rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">2.2 Exact Methods &amp; Underdetermined Systems</h1>
+        <div class="subtitle" style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500;">Solving for the smoothest exact-matching discount curve in underdetermined systems using the Pseudoinverse of Weighted Increments.</div>
     </header>
 
     <div style="display: flex; flex-direction: column; gap: 2.5rem; max-width: 1400px; margin-bottom: 4rem;">
@@ -17,9 +17,9 @@
                 <p>Since there are infinite curves that satisfy this matching equation, we need a mathematical regularization criteria to pick the "best" or "smoothest" curve. This is achieved by minimizing the Euclidean norm of weighted increments.</p>
             </div>
 
-            <div class="card" style="margin-bottom: 0; background: #f8fafc; border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="card" style="margin-bottom: 0; background: var(--bg-subtle); border: 1px solid var(--card-border); display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
-                    <h3 style="margin-top: 0; color: #334155; font-family: 'Inter', sans-serif;">Weighted Increments Minimization</h3>
+                    <h3 style="margin-top: 0; color: var(--text-secondary); font-family: 'Inter', sans-serif;">Weighted Increments Minimization</h3>
                     <p>We transform the system by looking at the first differences of the discount factors scaled by the time intervals $\delta_j = T_j - T_{j-1}$:</p>
                     <div style="background: rgba(124, 58, 237, 0.04); padding: 1rem; border-radius: 6px; border-left: 4px solid #7c3aed; margin: 0.75rem 0;">
                         $$ \Delta_j = \frac{P(0, T_j) - P(0, T_{j-1})}{\sqrt{\delta_j}} $$
@@ -36,10 +36,10 @@
                 Explore the underdetermined solver on the official EPFL UK Gilt portfolio quotes (Spot Date: 4 September 1996, 104 unique cash flow dates). Adjust the regularization weight matrix to see how it resolves the forward curve's sawtooth pattern.
             </p>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2.5rem; background: var(--bg-subtle); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border);">
                 <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                    <label for="exactWeightSelect" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Weighting Regularization Matrix ($W$)</label>
-                    <select id="exactWeightSelect" style="padding: 0.5rem; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-weight: 600; color: #334155; outline: none; cursor: pointer;">
+                    <label for="exactWeightSelect" style="font-weight: 700; font-size: 0.85rem; color: var(--text-secondary);">Weighting Regularization Matrix ($W$)</label>
+                    <select id="exactWeightSelect" style="padding: 0.5rem; border-radius: 6px; border: 1px solid var(--input-border); background: white; font-weight: 600; color: var(--text-secondary); outline: none; cursor: pointer;">
                         <option value="sqrt_delta" selected>Weighted Increments: W_jj = 1 / sqrt(Δt_j) (Standard Smoothness)</option>
                         <option value="delta">Time-Weighted: W_jj = 1 / Δt_j</option>
                         <option value="identity">Identity: W_jj = 1 (Unweighted Euclidean Norm)</option>

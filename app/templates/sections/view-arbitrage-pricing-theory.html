@@ -1,7 +1,7 @@
 <div id="view-arbitrage-pricing-theory" style="display: none;">
     <header>
         <h1>Stochastic Calculus</h1>
-        <div class="subtitle" style="color: #6b7280;">5. Arbitrage Pricing Theory &amp; Option Valuation</div>
+        <div class="subtitle" style="color: var(--text-muted);">5. Arbitrage Pricing Theory &amp; Option Valuation</div>
     </header>
     <div class="container" style="grid-template-columns: 1fr; gap: 3rem; max-width: 1400px;">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
@@ -37,50 +37,50 @@
             <h2>Interactive Simulation: Replicating Portfolio &amp; Option Pricing</h2>
             <p style="margin-bottom: 1.5rem;">Adjust the parameters below to simulate stock price paths under the risk-neutral measure $\mathbb{Q}$. Compare the <strong>Black-Scholes Analytical Option Price</strong> with the empirical <strong>Monte Carlo Simulation Average</strong> from 100 paths. Note how they align, and examine the replicating delta ratio $\Delta$ and the hedging parameters.</p>
             
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: var(--bg-subtle); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border);">
                 <!-- Sliders Column 1 -->
                 <div style="display: flex; flex-direction: column; gap: 1rem; grid-column: span 2;">
                     <div style="display: flex; gap: 1rem;">
                         <div style="flex: 1;">
-                            <label for="aptS0Slider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Stock Price $S_0$: <span id="aptS0Value">100.0</span></label>
+                            <label for="aptS0Slider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Stock Price $S_0$: <span id="aptS0Value">100.0</span></label>
                             <input id="aptS0Slider" max="130" min="70" step="1.0" style="width: 100%;" type="range" value="100.0"/>
                         </div>
                         <div style="flex: 1;">
-                            <label for="aptStrikeSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Strike Price $K$: <span id="aptStrikeValue">100.0</span></label>
+                            <label for="aptStrikeSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Strike Price $K$: <span id="aptStrikeValue">100.0</span></label>
                             <input id="aptStrikeSlider" max="130" min="70" step="1.0" style="width: 100%;" type="range" value="100.0"/>
                         </div>
                     </div>
                     <div style="display: flex; gap: 1rem;">
                         <div style="flex: 1;">
-                            <label for="aptRSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Interest Rate $r$: <span id="aptRValue">5.0%</span></label>
+                            <label for="aptRSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Interest Rate $r$: <span id="aptRValue">5.0%</span></label>
                             <input id="aptRSlider" max="0.15" min="0.01" step="0.005" style="width: 100%;" type="range" value="0.05"/>
                         </div>
                         <div style="flex: 1;">
-                            <label for="aptSigmaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Stock Volatility $\sigma$: <span id="aptSigmaValue">20.0%</span></label>
+                            <label for="aptSigmaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Stock Volatility $\sigma$: <span id="aptSigmaValue">20.0%</span></label>
                             <input id="aptSigmaSlider" max="0.50" min="0.05" step="0.01" style="width: 100%;" type="range" value="0.20"/>
                         </div>
                     </div>
                 </div>
 
                 <!-- Option Type Selection & Metrics -->
-                <div style="border-left: 2px solid #cbd5e1; padding-left: 1.5rem; display: flex; flex-direction: column; justify-content: center; gap: 0.5rem;">
-                    <label style="font-weight: 600; font-size: 0.85rem; color: #334155;">Option Type:</label>
+                <div style="border-left: 2px solid var(--input-border); padding-left: 1.5rem; display: flex; flex-direction: column; justify-content: center; gap: 0.5rem;">
+                    <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-secondary);">Option Type:</label>
                     <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
                         <button id="btnAptCall" style="flex: 1; background: var(--primary-color); color: white; border: none; padding: 0.4rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">Call Option</button>
-                        <button id="btnAptPut" style="flex: 1; background: #e2e8f0; color: #334155; border: none; padding: 0.4rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">Put Option</button>
+                        <button id="btnAptPut" style="flex: 1; background: #e2e8f0; color: var(--text-secondary); border: none; padding: 0.4rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">Put Option</button>
                     </div>
-                    <div style="font-size: 0.8rem; font-weight: 600; color: #64748b;">HEDGE RATIO (DELTA):</div>
+                    <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">HEDGE RATIO (DELTA):</div>
                     <div id="aptDeltaBox" style="font-size: 1.25rem; font-weight: 800; color: #1e3a8a; font-family: monospace;">$\Delta$ = 0.5982</div>
                 </div>
 
                 <!-- Live Results -->
-                <div style="border-left: 2px solid #cbd5e1; padding-left: 1.5rem; display: flex; flex-direction: column; justify-content: center; gap: 0.75rem;">
+                <div style="border-left: 2px solid var(--input-border); padding-left: 1.5rem; display: flex; flex-direction: column; justify-content: center; gap: 0.75rem;">
                     <div>
-                        <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase;">Black-Scholes Price</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Black-Scholes Price</div>
                         <div id="aptBsPrice" style="font-size: 1.2rem; font-weight: 800; color: #1e293b; font-family: monospace;">$10.45</div>
                     </div>
                     <div>
-                        <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase;">Monte Carlo Price</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Monte Carlo Price</div>
                         <div id="aptMcPrice" style="font-size: 1.2rem; font-weight: 800; color: var(--accent); font-family: monospace;">$10.38</div>
                     </div>
                 </div>
@@ -88,15 +88,15 @@
 
             <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
                 <div>
-                    <h3 style="margin-top:0; font-family: 'Inter', sans-serif; font-size: 1.1rem; color: #475569; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem;">Risk-Neutral Stock Paths (Under $\mathbb{Q}$)</h3>
+                    <h3 style="margin-top:0; font-family: 'Inter', sans-serif; font-size: 1.1rem; color: var(--text-secondary); border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">Risk-Neutral Stock Paths (Under $\mathbb{Q}$)</h3>
                     <div class="chart-container" style="height: 350px;">
                         <canvas id="aptChart"></canvas>
                     </div>
                 </div>
                 <div style="display: flex; flex-direction: column; justify-content: center;">
-                    <div class="card" style="margin-bottom: 0; background: #f8fafc; border: 1px solid #e2e8f0;">
-                        <h4 style="margin-top: 0; font-family: 'Inter', sans-serif; color: #334155; font-size: 0.95rem; border-bottom: 1px solid #cbd5e1; padding-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Replicating Portfolio Stats</h4>
-                        <ul style="padding-left: 1.2rem; font-size: 0.85rem; line-height: 1.8; color: #475569; margin-bottom: 0;">
+                    <div class="card" style="margin-bottom: 0; background: var(--bg-subtle); border: 1px solid var(--card-border);">
+                        <h4 style="margin-top: 0; font-family: 'Inter', sans-serif; color: var(--text-secondary); font-size: 0.95rem; border-bottom: 1px solid var(--input-border); padding-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Replicating Portfolio Stats</h4>
+                        <ul style="padding-left: 1.2rem; font-size: 0.85rem; line-height: 1.8; color: var(--text-secondary); margin-bottom: 0;">
                             <li style="margin-bottom: 0.5rem;"><strong>Shares to Hold ($\Delta$):</strong> Buy <span id="statAptDelta" style="font-weight: 600; color: #1e3a8a;">0.5982</span> shares of stock.</li>
                             <li style="margin-bottom: 0.5rem;"><strong>Cash in Bank ($B$):</strong> Borrow <span id="statAptCash" style="font-weight: 600; color: #dc2626;">-$49.37</span> at interest rate $r$.</li>
                             <li style="margin-bottom: 0.5rem;"><strong>Option Beta:</strong> Leverage is <span id="statAptBeta" style="font-weight: 600;">5.72</span> (highly geared!).</li>
@@ -115,7 +115,7 @@
                 <summary style="cursor: pointer; font-weight: 600; color: #15803d; list-style: none; display: flex; align-items: center;">
                     <span style="margin-right: 0.5rem;">👉</span> Show Step-by-Step Solution
                 </summary>
-                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; color: #334155;">
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--card-border); color: var(--text-secondary);">
                     <ol style="line-height: 1.8;">
                         <li>Under the risk-neutral pricing framework, the value of the digital option is the discounted expected payoff under measure $\mathbb{Q}$:
                             <div style="text-align: center; margin: 0.5rem 0;">

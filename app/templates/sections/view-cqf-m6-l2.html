@@ -1,18 +1,18 @@
 <div id="view-cqf-m6-l2" style="display: none;">
     <header style="margin-bottom: 2rem;">
         
-        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Stochastic Interest Rate Modeling</h1>
-        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Spot Rate SDEs, One-Factor Bond Pricing Equation, Affine Pricing Theorems, and Two-Factor Systems</div>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Stochastic Interest Rate Modeling</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: var(--text-muted); font-size: 1rem; font-family: var(--font-family-sans);">Spot Rate SDEs, One-Factor Bond Pricing Equation, Affine Pricing Theorems, and Two-Factor Systems</div>
     </header>
 
     <!-- Navigation Tabs -->
     <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
         <button id="tabM6L2Spot" onclick="switchM6L2Tab('spot')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. Spot Rate &amp; BPE</button>
-        <button id="tabM6L2Risk" onclick="switchM6L2Tab('risk')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Market Price of Risk</button>
-        <button id="tabM6L2Affine" onclick="switchM6L2Tab('affine')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Affine Pricing</button>
-        <button id="tabM6L2Models" onclick="switchM6L2Tab('models')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. Spot Rate Models</button>
-        <button id="tabM6L2Multi" onclick="switchM6L2Tab('multi')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Multi-Factor Systems</button>
-        <button id="tabM6L2Sandbox" onclick="switchM6L2Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Interactive Stochastic Labs</button>
+        <button id="tabM6L2Risk" onclick="switchM6L2Tab('risk')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Market Price of Risk</button>
+        <button id="tabM6L2Affine" onclick="switchM6L2Tab('affine')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Affine Pricing</button>
+        <button id="tabM6L2Models" onclick="switchM6L2Tab('models')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. Spot Rate Models</button>
+        <button id="tabM6L2Multi" onclick="switchM6L2Tab('multi')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Multi-Factor Systems</button>
+        <button id="tabM6L2Sandbox" onclick="switchM6L2Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Interactive Stochastic Labs</button>
     </div>
 
     <!-- TAB 1: Spot Rate & BPE -->
@@ -21,7 +21,7 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Stochastic Spot Rate ($r$)</h3>
-                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0.75rem;">
                         The instantaneous <strong>spot rate</strong> $r$ is a mathematical construct representing the yield on a bond of infinitesimal maturity [PDF1: 2]. Real-world proxies are short-maturity instruments, such as a one-month bond yield [PDF1: 2]. We govern the spot rate's random walk via a Stochastic Differential Equation (SDE) [PDF1: 2]:
                         $$\mathrm{d}r = u(r, t)\mathrm{d}t + w(r, t)\mathrm{d}W_t$$
                         Where $u(r, t)$ is the real-world drift rate, and $w(r, t)$ represents the local interest rate volatility.
@@ -32,7 +32,7 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">One-Factor Bond Pricing Equation</h3>
-                    <p style="font-size: 0.82rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.75rem;">
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: var(--text-secondary); margin-bottom: 0.75rem;">
                         Because the spot rate $r$ is not a traded asset, we cannot hedge a bond with the underlying rate itself [PDF1: 2]. Instead, we construct a risk-free portfolio $\Pi = V_1 - \Delta V_2$ hedging a bond of maturity $T_1$ against another of maturity $T_2$ [PDF1: 2].
                         Applying Itô's Lemma, choosing $\Delta = \frac{\partial V_1}{\partial r} / \frac{\partial V_2}{\partial r}$ to eliminate $\mathrm{d}W_t$, and invoking no-arbitrage ($\mathrm{d}\Pi = r \Pi \mathrm{d}t$) separates maturities [PDF1: 3]:
                         $$\frac{\frac{\partial V_1}{\partial t} + \frac{1}{2}w^2 \frac{\partial^2 V_1}{\partial r^2} - r V_1}{\frac{\partial V_1}{\partial r}} = \frac{\frac{\partial V_2}{\partial t} + \frac{1}{2}w^2 \frac{\partial^2 V_2}{\partial r^2} - r V_2}{\frac{\partial V_2}{\partial r}} = a(r, t)$$
@@ -49,7 +49,7 @@
         <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
             <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
                 <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Market Price of Interest Rate Risk ($\lambda$)</h3>
-                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 1rem;">
                     The separation variable $a(r, t)$ is written without loss of generality in terms of the <strong>market price of interest rate risk</strong> $\lambda(r, t)$ [PDF1: 4]:
                     $$a(r, t) = \lambda(r, t)w(r, t) - u(r, t)$$
                     Applying Itô's Lemma to an unhedged bond, its price return decomposes into the risk-free rate plus excess compensation per unit of stochastic risk [PDF1: 5]:
@@ -59,7 +59,7 @@
 
                 <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6;">
                     <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Equities vs. Fixed Income Risk Neutrality</h4>
-                    <p style="margin:0; color:#4b5563;">
+                    <p style="margin:0; color: var(--text-secondary);">
                         - <strong>For Traded Assets (Equities $S$):</strong> The real-world drift is replaced by the risk-free rate $r$ in the pricing PDE. The market price of risk is the Sharpe ratio:
                         $$\lambda_S = \frac{\mu - r}{\sigma}$$
                         - <strong>For Non-Traded Quantities (Interest Rates $r$):</strong> All pricing is done under the risk-neutral measure $\mathbb{Q}$, where the real-world drift $u(r, t)$ is replaced by the <strong>risk-neutral drift</strong>:
@@ -76,7 +76,7 @@
         <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
             <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
                 <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Tractable Affine Pricing Term Structures</h3>
-                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 1rem;">
                     An interest rate model belongs to the <strong>affine class</strong> if the price of a zero-coupon bond (ZCB) can be expressed as an exponential linear function of the short rate [PDF1: 11]:
                     $$V(r, t; T) = \exp\left( A(t; T) - r B(t; T) \right)$$
                     Where $A(t; T)$ and $B(t; T)$ are maturity-dependent functions.
@@ -84,7 +84,7 @@
 
                 <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6;">
                     <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">The Affine Pricing Theorem</h4>
-                    <p style="margin:0; color:#4b5563;">
+                    <p style="margin:0; color: var(--text-secondary);">
                         Substituting $V = \exp(A - r B)$ into the Bond Pricing Equation and differentiating twice with respect to $r$ yields the necessary and sufficient structural condition:
                         * <strong>A spot rate model is affine if and only if both its risk-adjusted drift $(u - \lambda w)$ and local variance $w^2$ are linear in $r$ [PDF1: 12]:</strong>
                         $$w^2 = \alpha(t)r + \beta(t)$$
@@ -103,7 +103,7 @@
     <div id="secM6L2Models" style="display: none; max-height: 600px; overflow-y: auto; padding-right: 0.5rem;">
         <div class="card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
             <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">A. The Vasicek Model (1977)</h3>
-            <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563;">
+            <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary);">
                 The Vasicek spot rate is mean-reverting and governed by [PDF1: 9]:
                 $$\mathrm{d}r = (\eta - \gamma r)\mathrm{d}t + \beta^{1/2} \mathrm{d}W_t$$
                 Its analytical functions are solved directly from the affine ODEs [PDF1: 10]:
@@ -115,7 +115,7 @@
 
         <div class="card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
             <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">B. The Cox-Ingersoll-Ross (CIR) Model (1985)</h3>
-            <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563;">
+            <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary);">
                 To resolve the negative rate problem, the CIR model scales local variance by the spot rate itself [PDF1: 47]:
                 $$\mathrm{d}r = (\eta - \gamma r)\mathrm{d}t + \sqrt{\alpha r} \mathrm{d}W_t$$
                 The spot rate remains strictly positive and bounded if the <strong>Feller Condition</strong> is satisfied [PDF1: 47]:
@@ -127,7 +127,7 @@
 
         <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
             <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">C. The Ho &amp; Lee Model (1986)</h3>
-            <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563;">
+            <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary);">
                 The first no-arbitrage model, designed to perfectly fit the initial market yield curve $Z_M(t^*; T)$ by using a time-dependent drift $\eta(t)$ [PDF1: 18]:
                 $$\mathrm{d}r = \eta(t)\mathrm{d}t + \beta^{1/2}\mathrm{d}W_t$$
                 Applying Leibniz's integration rule twice on the market curve logs solves the inverse problem, yielding the calibrated parameter [PDF1: 20]:
@@ -141,7 +141,7 @@
         <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; display: grid;">
             <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
                 <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">Multi-Factor Systems &amp; Two-Factor PDEs</h3>
-                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1rem;">
+                <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 1rem;">
                     <strong>One-Factor Limitations:</strong> A single spot rate model assumes all yields are perfectly correlated to a single random source $r$, which fails to capture non-parallel shifts, tilts, or independent long/short-rate dynamics [PDF1: 21].
                     <strong>Two-Factor SDEs:</strong> We model two correlated stochastic variables (short-rate $r$ and consol long-rate or variance $l$) [PDF1: 21]:
                     $$\mathrm{d}r = u \mathrm{d}t + w \mathrm{d}W_1, \quad \mathrm{d}l = p \mathrm{d}t + q \mathrm{d}W_2 \quad (\text{with } \mathbb{E}[\mathrm{d}W_1\mathrm{d}W_2] = \rho\mathrm{d}t)$$
@@ -149,7 +149,7 @@
 
                 <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-size:0.85rem; line-height:1.6;">
                     <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Two-Factor Bond Pricing PDE</h4>
-                    <p style="margin:0; color:#4b5563;">
+                    <p style="margin:0; color: var(--text-secondary);">
                         To eliminate both sources of randomness ($\mathrm{d}W_1, \mathrm{d}W_2$), we construct a portfolio using three bonds of different maturities [PDF1: 21]. Under no-arbitrage, the consistency determinant of the 3x2 matrix must equal zero, yielding two market prices of risk ($\lambda_r, \lambda_l$) and the <strong>Two-Factor Bond Pricing PDE</strong> [PDF1: 23, 24]:
                         $$\frac{\partial V}{\partial t} + \frac{1}{2}w^2 \frac{\partial^2 V}{\partial r^2} + \rho w q \frac{\partial^2 V}{\partial r \partial l} + \frac{1}{2}q^2 \frac{\partial^2 V}{\partial l^2} + (u - \lambda_r w)\frac{\partial V}{\partial r} + (p - \lambda_l q)\frac{\partial V}{\partial l} - r V = 0$$
                         * <strong>Brennan &amp; Schwartz Model (1982):</strong> Mean-reverts short rate $r$ to consolidations long-rate $l$ [PDF1: 25]. Due to lognormal form, no analytical pricing solutions exist, and simulations can blow up.
@@ -184,7 +184,7 @@
                 <div style="height: 140px; position: relative; margin-bottom: 0.5rem;">
                     <canvas id="m6l2McChart"></canvas>
                 </div>
-                <div id="outM6L2Mc" style="font-size:0.75rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                <div id="outM6L2Mc" style="font-size:0.75rem; line-height:1.4; color: var(--text-secondary); background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
                     Running stochastic spot path simulations...
                 </div>
             </div>
@@ -212,7 +212,7 @@
                 <div style="height: 140px; position: relative; margin-bottom: 0.5rem;">
                     <canvas id="m6l2AffineChart"></canvas>
                 </div>
-                <div id="outM6L2Affine" style="font-size:0.75rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                <div id="outM6L2Affine" style="font-size:0.75rem; line-height:1.4; color: var(--text-secondary); background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
                     Generating analytical affine term structures...
                 </div>
             </div>
@@ -237,7 +237,7 @@
                 <div style="height: 160px; position: relative; margin-bottom: 0.5rem;">
                     <canvas id="m6l2TwoFactorChart"></canvas>
                 </div>
-                <div id="outM6L2TwoFactor" style="font-size:0.78rem; line-height:1.4; color:#374151; background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
+                <div id="outM6L2TwoFactor" style="font-size:0.78rem; line-height:1.4; color: var(--text-secondary); background:var(--metric-bg); padding:0.5rem; border-radius:4px;">
                     Modeling correlated two-factor curves...
                 </div>
             </div>

@@ -1,7 +1,7 @@
 <div id="view-cir-model" style="display: none;">
 <header>
 <h1>Short Rate Models</h1>
-<div class="subtitle" style="color: #6b7280;">4. Cox-Ingersoll-Ross (CIR) Model</div>
+<div class="subtitle" style="color: var(--text-muted);">4. Cox-Ingersoll-Ross (CIR) Model</div>
 </header>
 <div class="container" style="grid-template-columns: 1fr; gap: 3rem; max-width: 1400px;">
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
@@ -26,37 +26,37 @@
 <div class="card" style="margin-bottom: 2rem;">
 <h2>Interactive Visualization: The Feller Condition &amp; Boundary Effects</h2>
 <p style="margin-bottom: 1.5rem;">Adjust the parameters to test the Feller condition. If $2\kappa\theta \ge \sigma^2$, the upward drift is strong enough relative to the volatility that the rate will never hit 0. Notice how the simulated paths visually squeeze and "bounce" when they get close to zero!</p>
-<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: var(--bg-subtle); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border);">
 <!-- Sliders -->
 <div style="display: flex; flex-direction: column; gap: 1rem; grid-column: span 2;">
 <div style="display: flex; gap: 1rem;">
 <div style="flex: 1;">
-<label for="cirInitialSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Initial Rate $r(0)$: <span id="cirInitialValue">1.0%</span></label>
+<label for="cirInitialSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Initial Rate $r(0)$: <span id="cirInitialValue">1.0%</span></label>
 <input id="cirInitialSlider" max="0.10" min="0.001" step="0.005" style="width: 100%;" type="range" value="0.01"/>
 </div>
 <div style="flex: 1;">
-<label for="cirThetaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Long-Term Mean ($\theta$): <span id="cirThetaValue">4.0%</span></label>
+<label for="cirThetaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Long-Term Mean ($\theta$): <span id="cirThetaValue">4.0%</span></label>
 <input id="cirThetaSlider" max="0.10" min="0.01" step="0.01" style="width: 100%;" type="range" value="0.04"/>
 </div>
 </div>
 <div style="display: flex; gap: 1rem;">
 <div style="flex: 1;">
-<label for="cirKappaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Mean Reversion ($\kappa$): <span id="cirKappaValue">0.50</span></label>
+<label for="cirKappaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Mean Reversion ($\kappa$): <span id="cirKappaValue">0.50</span></label>
 <input id="cirKappaSlider" max="2" min="0.1" step="0.1" style="width: 100%;" type="range" value="0.5"/>
 </div>
 <div style="flex: 1;">
-<label for="cirSigmaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Volatility ($\sigma$): <span id="cirSigmaValue">0.15</span></label>
+<label for="cirSigmaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Volatility ($\sigma$): <span id="cirSigmaValue">0.15</span></label>
 <input id="cirSigmaSlider" max="0.4" min="0.01" step="0.01" style="width: 100%;" type="range" value="0.15"/>
 </div>
 </div>
 </div>
 <!-- Math Details -->
-<div style="border-left: 2px solid #cbd5e1; padding-left: 1.5rem; display: flex; flex-direction: column; justify-content: center;">
-<div style="font-size: 0.85rem; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem;">Feller Condition Check</div>
-<div style="font-size: 0.95rem; color: #334155; font-family: 'Courier New', monospace; margin-bottom: 0.25rem;">
+<div style="border-left: 2px solid var(--input-border); padding-left: 1.5rem; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem;">Feller Condition Check</div>
+<div style="font-size: 0.95rem; color: var(--text-secondary); font-family: 'Courier New', monospace; margin-bottom: 0.25rem;">
                                 $2\kappa\theta$ = <span id="cirDrift" style="font-weight: 600;">0.0400</span>
 </div>
-<div style="font-size: 0.95rem; color: #334155; font-family: 'Courier New', monospace; margin-bottom: 0.5rem;">
+<div style="font-size: 0.95rem; color: var(--text-secondary); font-family: 'Courier New', monospace; margin-bottom: 0.5rem;">
                                 $\sigma^2$ = <span id="cirVol2" style="font-weight: 600;">0.0225</span>
 </div>
 </div>
@@ -80,7 +80,7 @@
 <summary style="cursor: pointer; font-weight: 600; color: #15803d; list-style: none; display: flex; align-items: center;">
 <span style="margin-right: 0.5rem;">👉</span> Show Step-by-Step Solution
                         </summary>
-<div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; color: #334155;">
+<div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--card-border); color: var(--text-secondary);">
 <ol style="line-height: 1.8;">
 <li><strong>Vasicek Variance Formula:</strong> $Var(r(\infty)) = \frac{\sigma^2}{2\kappa}$</li>
 <li>Vasicek Variance = $\frac{0.15^2}{2 \times 0.5} = \frac{0.0225}{1} = 0.0225$</li>

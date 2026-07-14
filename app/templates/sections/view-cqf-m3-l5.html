@@ -1,18 +1,18 @@
 <div id="view-cqf-m3-l5" style="display: none;">
     <header style="margin-bottom: 2rem;">
         
-        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Further Numerical Methods — Master Study Guide</h1>
-        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Advanced Finite Difference Systems, Crank-Nicolson, Thomas LU Factorization, and Successive Over-Relaxation</div>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Further Numerical Methods — Master Study Guide</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: var(--text-muted); font-size: 1rem; font-family: var(--font-family-sans);">Advanced Finite Difference Systems, Crank-Nicolson, Thomas LU Factorization, and Successive Over-Relaxation</div>
     </header>
 
     <!-- Navigation Tabs -->
     <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem; font-family: var(--font-family-sans); overflow-x: auto; white-space: nowrap;">
         <button id="tabM3L5Implicit" onclick="switchM3L5Tab('implicit')" style="background: none; border: none; font-size: 0.88rem; font-weight: 700; color: var(--accent); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--accent); transition: all 0.2s;">1. Fully Implicit Method</button>
-        <button id="tabM3L5CrankNic" onclick="switchM3L5Tab('crankNic')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Crank-Nicolson Scheme</button>
-        <button id="tabM3L5Algebra" onclick="switchM3L5Tab('algebra')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Direct &amp; Iterative Solvers</button>
-        <button id="tabM3L5Advanced" onclick="switchM3L5Tab('advanced')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. Advanced &amp; Two-Factor</button>
-        <button id="tabM3L5Guide" onclick="switchM3L5Tab('guide')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Master Study Guide</button>
-        <button id="tabM3L5Sandbox" onclick="switchM3L5Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: #6b7280; cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Advanced FDM Sandbox</button>
+        <button id="tabM3L5CrankNic" onclick="switchM3L5Tab('crankNic')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">2. Crank-Nicolson Scheme</button>
+        <button id="tabM3L5Algebra" onclick="switchM3L5Tab('algebra')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">3. Direct &amp; Iterative Solvers</button>
+        <button id="tabM3L5Advanced" onclick="switchM3L5Tab('advanced')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">4. Advanced &amp; Two-Factor</button>
+        <button id="tabM3L5Guide" onclick="switchM3L5Tab('guide')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">5. Master Study Guide</button>
+        <button id="tabM3L5Sandbox" onclick="switchM3L5Tab('sandbox')" style="background: none; border: none; font-size: 0.88rem; font-weight: 600; color: var(--text-muted); cursor: pointer; padding: 0.5rem 0.75rem; border-bottom: 2px solid transparent; transition: all 0.2s;">6. Advanced FDM Sandbox</button>
     </div>
 
     <!-- TAB 1: Fully Implicit Method -->
@@ -21,16 +21,16 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">The Fully Implicit Finite Difference Method</h3>
-                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0.75rem;">
                         Unlike the explicit scheme (where three known option prices at time step $k$ resolve to one price at step $k+1$), the <strong>Fully Implicit Method</strong> reverses the relationship: a single known option price at step $k$ relates to three unknown option prices at the next backward step $k+1$.
                     </p>
-                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0.75rem;">
                         This is achieved by evaluating all spatial derivative approximations (Delta and Gamma) at the advanced, unknown time step $k+1$ rather than the current time step $k$. This produces a linear system of simultaneous equations.
                     </p>
 
                     <div style="background: var(--metric-bg); padding: 1.15rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 0.5rem;">
                         <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Unconditional Stability</h4>
-                        <p style="font-size: 0.8rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                        <p style="font-size: 0.8rem; line-height: 1.5; color: var(--text-secondary); margin: 0;">
                             The fully implicit scheme is accurate to first order in time and second order in space: $\mathcal{O}(\delta t, \delta S^2)$. Crucially, the scheme is <strong>unconditionally stable</strong>, meaning that error perturbations decay exponentially regardless of the grid spacing step sizes $\delta t$ and $\delta S$. No Von Neumann stability constraints exist!
                         </p>
                     </div>
@@ -40,14 +40,14 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Implicit Matrix Formulation</h3>
-                    <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563; margin-bottom: 1rem;">
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: var(--text-secondary); margin-bottom: 1rem;">
                         Collecting the coefficients of the unknown option prices at step $k+1$ results in a linear system of equations:
                         $$a_i^{k+1} V_{i-1}^{k+1} + (1 + B_i^{k+1}) V_i^{k+1} + C_i^{k+1} V_{i+1}^{k+1} = V_i^k$$
                     </p>
 
                     <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 0;">
                         <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.9rem; text-align:center;">Tridiagonal Coefficient Matrix</h4>
-                        <p style="font-size: 0.78rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                        <p style="font-size: 0.78rem; line-height: 1.5; color: var(--text-secondary); margin: 0;">
                             The simultaneous system forms a <strong>tridiagonal matrix</strong> $\mathbf{A} \mathbf{v}^{k+1} = \mathbf{v}^k$:
                             $$A = \begin{pmatrix} 
                             b_0 & c_0 & 0 & \dots & 0 \\ 
@@ -69,19 +69,19 @@
         <div class="container" style="grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2rem; align-items: stretch; display: grid;">
             <div class="card" style="margin-bottom: 0; padding: 1.5rem;">
                 <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem;">The Crank-Nicolson Method</h3>
-                <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 1.25rem;">
+                <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 1.25rem;">
                     Developed by John Crank and Phyllis Nicolson, this method takes an <strong>equally weighted average</strong> of the explicit and fully implicit schemes, effectively evaluating spatial derivatives at the half time step $k + 1/2$. It uses three known option prices at step $k$ and three unknown prices at step $k+1$ simultaneously:
                 </p>
 
                 <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border); font-family:var(--font-family-sans); margin-bottom:1.5rem;">
                     <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Crank-Nicolson Discrete Formulation</h4>
-                    <p style="font-size: 0.82rem; line-height: 1.5; color:#4b5563; text-align:center;">
+                    <p style="font-size: 0.82rem; line-height: 1.5; color: var(--text-secondary); text-align:center;">
                         $$\frac{V_i^k - V_i^{k+1}}{\delta t} + \frac{a_i^{k+1}}{2} \Delta^2 V_i^{k+1} + \frac{a_i^k}{2} \Delta^2 V_i^k + \frac{b_i^{k+1}}{2} \Delta V_i^{k+1} + \frac{b_i^k}{2} \Delta V_i^k + \frac{c_i^{k+1}}{2} V_i^{k+1} + \frac{c_i^k}{2} V_i^k = 0$$
                         where $\Delta^2 V_i$ is the second-order central difference and $\Delta V_i$ is the first-order spatial difference.
                     </p>
                 </div>
 
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; font-size:0.85rem; line-height:1.6; color:#4b5563;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; font-size:0.85rem; line-height:1.6; color: var(--text-secondary);">
                     <div style="background:var(--metric-bg); padding:1.25rem; border-radius:8px; border:1px solid var(--card-border);">
                         <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.95rem; text-align:center;">Second-Order Accuracy</h4>
                         <p style="font-size: 0.8rem; margin: 0; line-height: 1.5;">
@@ -105,7 +105,7 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">1. LU Factorization: Direct Thomas Algorithm</h3>
-                    <p style="font-size: 0.88rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.5rem;">
+                    <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0.5rem;">
                         To solve the tridiagonal matrix equation $\mathbf{M}\mathbf{v} = \mathbf{q}$, computing the inverse $\mathbf{M}^{-1}$ is highly inefficient and should never be done in practice. Instead, we use <strong>LU Decomposition</strong> (Thomas Algorithm), factoring $\mathbf{M} = \mathbf{L}\mathbf{U}$ into lower bidiagonal $\mathbf{L}$ (unit diagonal) and upper bidiagonal $\mathbf{U}$:
                     </p>
 
@@ -129,7 +129,7 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">2. Successive Over-Relaxation (SOR)</h3>
-                    <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563; margin-bottom: 0.5rem;">
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: var(--text-secondary); margin-bottom: 0.5rem;">
                         SOR is an indirect iterative technique that accelerates convergence. It builds upon two foundational iterative methods:
                         <br><br>
                         - <strong>Jacobi Method</strong>: Each new iteration uses exclusively the values from the previous iteration step $n$.
@@ -143,7 +143,7 @@
                         Gauss-Seidel is guaranteed to converge to the exact solution if the matrix is strictly diagonally dominant: $|M_{ii}| > \sum_{j \neq i} |M_{ij}|$ for all rows.
                     </div>
 
-                    <p style="font-size: 0.8rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                    <p style="font-size: 0.8rem; line-height: 1.5; color: var(--text-secondary); margin: 0;">
                         <strong>SOR Parameter $\omega$</strong>:
                         SOR accelerates Gauss-Seidel using a relaxation parameter $\omega$:
                         $$v_i^{n+1} = (1-\omega)v_i^n + \frac{\omega}{M_{ii}} \left( q_i - \sum_{j < i} M_{ij} v_j^{n+1} - \sum_{j > i} M_{ij} v_j^n \right)$$
@@ -161,7 +161,7 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Advanced Time-Stepping Schemes</h3>
-                    <p style="font-size: 0.85rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                    <p style="font-size: 0.85rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0.75rem;">
                         The general <strong>$\theta$-method</strong> represents time-stepping as a weighted average between the explicit and fully implicit schemes using parameter $\theta \in [0, 1]$:
                     </p>
                     
@@ -169,13 +169,13 @@
                         $$\frac{V_i^{k+1} - V_i^k}{\delta t} = \theta \Delta^2 V_i^{k+1} + (1-\theta) \Delta^2 V_i^k$$
                     </div>
 
-                    <ul style="padding-left: 1.2rem; line-height: 1.6; font-size: 0.82rem; color: #4b5563; margin-bottom: 1rem;">
+                    <ul style="padding-left: 1.2rem; line-height: 1.6; font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 1rem;">
                         <li><strong>$\theta = 0$</strong>: Recovers the Explicit Scheme (conditionally stable).</li>
                         <li><strong>$\theta = 1/2$</strong>: Recovers the Crank-Nicolson Scheme (unconditionally stable, $\mathcal{O}(\delta t^2)$).</li>
                         <li><strong>$\theta = 1$</strong>: Recovers the Fully Implicit Scheme (unconditionally stable, $\mathcal{O}(\delta t)$).</li>
                     </ul>
 
-                    <p style="font-size: 0.85rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: var(--text-secondary); margin: 0;">
                         <strong>Douglas Schemes</strong>: By choosing a specific $\theta$ weight, Douglas schemes achieve fourth-order accuracy in space and second-order in time ($\mathcal{O}(\delta S^4, \delta t^2)$) for the exact same computational effort as Crank-Nicolson.
                     </p>
                 </div>
@@ -184,20 +184,20 @@
             <div class="card" style="margin-bottom: 0; padding: 1.5rem; display:flex; flex-direction:column; justify-content:space-between;">
                 <div>
                     <h3 style="margin-top: 0; font-family: var(--font-family-sans); font-size: 1.25rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;">Two-Factor Pricing Models</h3>
-                    <p style="font-size: 0.85rem; line-height: 1.6; color: #4b5563; margin-bottom: 0.75rem;">
+                    <p style="font-size: 0.85rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 0.75rem;">
                         When options are exposed to both a stochastic stock price $S$ and a stochastic interest rate $r$ (e.g. convertible bonds), the pricing equation expands to a 3D grid surface ($S, r, t$):
                     </p>
 
                     <div style="background: var(--metric-bg); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1rem;">
                         <h4 style="margin: 0 0 0.5rem 0; font-weight: 700; color: var(--accent); font-size: 0.9rem; text-align:center;">Mixed Derivatives 9-Point Stencil</h4>
-                        <p style="font-size: 0.78rem; line-height: 1.4; color: #4b5563; margin: 0;">
+                        <p style="font-size: 0.78rem; line-height: 1.4; color: var(--text-secondary); margin: 0;">
                             The mixed partial derivative term is approximated using central differences in both directions:
                             $$\frac{\partial^2 V}{\partial S \partial r} \approx \frac{V_{i+1, j+1}^k - V_{i+1, j-1}^k - V_{i-1, j+1}^k + V_{i-1, j-1}^k}{4 \delta S \delta r}$$
                             This requires a <strong>9-point grid stencil</strong> rather than the standard 3-point or 5-point stencils. If correlation is zero, this mixed term vanishes, reducing the grid stencil requirements back to 5 points.
                         </p>
                     </div>
 
-                    <p style="font-size: 0.8rem; line-height: 1.5; color: #4b5563; margin: 0;">
+                    <p style="font-size: 0.8rem; line-height: 1.5; color: var(--text-secondary); margin: 0;">
                         Stochastic interest rates in this multi-factor framework are typically modeled using the <strong>Vasicek</strong> or <strong>Cox-Ingersoll-Ross (CIR)</strong> models.
                     </p>
                 </div>
@@ -217,7 +217,7 @@
                         <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
                             Problem 1.1 Q1: Crout and Doolittle LU Decompositions
                         </summary>
-                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary);">
                             <strong>Question:</strong><br>
                             Solve the system $A\mathbf{x} = \mathbf{b}$ using Crout and Doolittle LU decompositions:
                             $$A = \begin{pmatrix} 2 & 3 & 4 \\ 4 & -5 & -10 \\ 1 & 2 & 3 \end{pmatrix}; \quad \mathbf{b} = \begin{pmatrix} 2 \\ 4 \\ 1 \end{pmatrix}$$
@@ -243,7 +243,7 @@
                         <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
                             Problem 1.1 Q3: Jacobi vs. Gauss-Seidel Iterative Convergence
                         </summary>
-                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary);">
                             <strong>Question:</strong><br>
                             Solve using the Gauss-Seidel method correct to 3 decimal places with initial guess $\mathbf{x}^{(0)} = (0, 0, 0)^T$:
                             $$\begin{pmatrix} 8 & -1 & 1 \\ 2 & 10 & -1 \\ -1 & -1 & 5 \end{pmatrix} \begin{pmatrix} x \\ y \\ z \end{pmatrix} = \begin{pmatrix} 1 \\ 4 \\ -3 \end{pmatrix}$$
@@ -274,7 +274,7 @@
                         <summary style="padding: 1rem; font-family: var(--font-family-sans); font-weight: 700; cursor: pointer; color: var(--accent); user-select: none;">
                             Problem 1.2 Q1: Fully Implicit Difference Scheme &amp; Doolittle Solver
                         </summary>
-                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color:#4b5563;">
+                        <div style="padding: 1.25rem; border-top: 1px solid var(--card-border); background: var(--card-bg); font-family: var(--font-family-sans); font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary);">
                             <strong>Question:</strong><br>
                             1. Derive the fully implicit difference scheme $a_n V_{n-1}^{m+1} + b_n V_n^{m+1} + c_n V_{n+1}^{m+1} = V_n^m$ for the Black-Scholes PDE.
                             2. Solve $A\mathbf{x} = \mathbf{b}$ using Doolittle's method:
@@ -379,19 +379,19 @@
                 <!-- Pricing Results Grid -->
                 <div style="background: var(--metric-bg); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); display:grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; text-align:center; font-size:0.8rem;">
                     <div>
-                        <div style="font-size: 0.6rem; color:#6b7280; font-weight:700; text-transform:uppercase;">BS Analytical:</div>
+                        <div style="font-size: 0.6rem; color: var(--text-muted); font-weight:700; text-transform:uppercase;">BS Analytical:</div>
                         <div id="outM3L5BsPrice" style="font-size:1rem; font-weight:800; color:#10b981;">0.00</div>
                     </div>
                     <div>
-                        <div style="font-size: 0.6rem; color:#6b7280; font-weight:700; text-transform:uppercase;">Explicit FDM:</div>
+                        <div style="font-size: 0.6rem; color: var(--text-muted); font-weight:700; text-transform:uppercase;">Explicit FDM:</div>
                         <div id="outM3L5Explicit" style="font-size:1rem; font-weight:800; color:var(--text-color);">0.00</div>
                     </div>
                     <div>
-                        <div style="font-size: 0.6rem; color:#6b7280; font-weight:700; text-transform:uppercase;">Fully Implicit:</div>
+                        <div style="font-size: 0.6rem; color: var(--text-muted); font-weight:700; text-transform:uppercase;">Fully Implicit:</div>
                         <div id="outM3L5Implicit" style="font-size:1rem; font-weight:800; color:var(--accent);">0.00</div>
                     </div>
                     <div>
-                        <div style="font-size: 0.6rem; color:#6b7280; font-weight:700; text-transform:uppercase;">Crank-Nicolson:</div>
+                        <div style="font-size: 0.6rem; color: var(--text-muted); font-weight:700; text-transform:uppercase;">Crank-Nicolson:</div>
                         <div id="outM3L5CrankNic" style="font-size:1rem; font-weight:800; color:#8b5cf6;">0.00</div>
                     </div>
                 </div>

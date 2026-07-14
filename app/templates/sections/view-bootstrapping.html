@@ -1,7 +1,7 @@
 <div id="view-bootstrapping" style="display: none;">
     <header style="margin-bottom: 2rem;">
-        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">2.1 Bootstrapping Example</h1>
-        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Building up the term structure of interest rates from liquid market instruments (LIBOR, Futures, and Swaps) step-by-step.</div>
+        <h1 style="font-size: 2rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">2.1 Bootstrapping Example</h1>
+        <div class="subtitle" style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500;">Building up the term structure of interest rates from liquid market instruments (LIBOR, Futures, and Swaps) step-by-step.</div>
     </header>
 
     <div style="display: flex; flex-direction: column; gap: 2.5rem; max-width: 1400px; margin-bottom: 4rem;">
@@ -19,9 +19,9 @@
                 </ul>
             </div>
 
-            <div class="card" style="margin-bottom: 0; background: #f8fafc; border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: space-between;">
+            <div class="card" style="margin-bottom: 0; background: var(--bg-subtle); border: 1px solid var(--card-border); display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
-                    <h3 style="margin-top: 0; color: #334155; font-family: 'Inter', sans-serif;">Linear Interpolation of Simple Rates</h3>
+                    <h3 style="margin-top: 0; color: var(--text-secondary); font-family: 'Inter', sans-serif;">Linear Interpolation of Simple Rates</h3>
                     <p>When maturities overlap (e.g., the first futures reset $T_1$ falls between the 1-month and 3-month LIBOR dates $S_2$ and $S_3$), we linearly interpolate simple deposit rates to find the boundary discount factor:</p>
                     <div style="background: rgba(37, 99, 235, 0.04); padding: 1rem; border-radius: 6px; border-left: 4px solid var(--accent); margin: 0.75rem 0;">
                         $$L(t_0, T_1) = q L(t_0, S_2) + (1-q) L(t_0, S_3)$$
@@ -67,7 +67,7 @@
                     <div>
                         <h4 style="margin: 0 0 1rem 0; font-size: 1.1rem; font-weight: 800; color: #6b21a8; font-family: 'Inter', sans-serif;">Step-by-Step Solver &amp; Accrual Inspector</h4>
                         
-                        <div id="accrual-details-card" style="background: white; border-radius: 8px; border: 1px solid #f3e8ff; padding: 1.25rem; font-size: 0.9rem; line-height: 1.65; color: #4b5563;">
+                        <div id="accrual-details-card" style="background: white; border-radius: 8px; border: 1px solid #f3e8ff; padding: 1.25rem; font-size: 0.9rem; line-height: 1.65; color: var(--text-secondary);">
                             <strong style="color: #6b21a8; display: block; margin-bottom: 0.5rem; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">Interactive Mode</strong>
                             Click on any row in the market data table to inspect its exact date difference, simple yield formula, and linear interpolation coefficient $q$.
                         </div>
@@ -75,7 +75,7 @@
 
                     <div style="background: white; border-radius: 8px; border: 1px solid #f3e8ff; padding: 1.25rem; margin-top: 1.5rem;">
                         <strong style="color: #6b21a8; display: block; margin-bottom: 0.5rem; font-size: 0.85rem; text-transform: uppercase;">Bootstrapping Insights:</strong>
-                        <p style="font-size: 0.85rem; color: #4b5563; margin: 0; line-height: 1.6;">Linear interpolation of simple rates is critical for maturities that overlap. For instance, the Eurodollar futures contract resetting on 19 December 2012 must be matched against the interpolated simple deposit rate between the 1-month (5 Nov) and 3-month (3 Jan) LIBOR points.</p>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0; line-height: 1.6;">Linear interpolation of simple rates is critical for maturities that overlap. For instance, the Eurodollar futures contract resetting on 19 December 2012 must be matched against the interpolated simple deposit rate between the 1-month (5 Nov) and 3-month (3 Jan) LIBOR points.</p>
                     </div>
                 </div>
             </div>
@@ -265,7 +265,7 @@
                     <div style="background: #faf5ff; border: 1px solid #e9d5ff; padding: 0.5rem; border-radius: 4px; font-weight: bold; color: #6b21a8; font-size: 0.8rem; line-height: 1.4;">
                         P(t₀, Uₙ) = (1 - R · Σ_{i=1}^{n-1} δ_i P(t₀, U_i)) / (1 + R · δₙ)
                     </div>
-                    <span style="font-size: 0.8rem; color: #4b5563; font-style: italic;">We linearly interpolate swap rates for missing maturities before applying the formula.</span>
+                    <span style="font-size: 0.8rem; color: var(--text-secondary); font-style: italic;">We linearly interpolate swap rates for missing maturities before applying the formula.</span>
                 </div>
             `;
         }

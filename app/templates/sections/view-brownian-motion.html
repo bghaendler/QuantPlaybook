@@ -1,7 +1,7 @@
 <div id="view-brownian-motion" style="display: none;">
     <header>
         <h1>Stochastic Calculus</h1>
-        <div class="subtitle" style="color: #6b7280;">2. Brownian Motion &amp; Stochastic Integral</div>
+        <div class="subtitle" style="color: var(--text-muted);">2. Brownian Motion &amp; Stochastic Integral</div>
     </header>
     <div class="container" style="grid-template-columns: 1fr; gap: 3rem; max-width: 1400px;">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
@@ -41,19 +41,19 @@
             <h2>Interactive Simulation: Stochastic Volatility Integral &amp; Itô Isometry</h2>
             <p style="margin-bottom: 1.5rem;">Select a volatility profile $\sigma(t)$ and adjust the base parameter. Observe that as you simulate paths of $I(t) = \int_0^t \sigma(s) dW(s)$, exactly 95% of the simulated paths fall inside the theoretical $\pm 1.96 \sqrt{\int_0^t \sigma(s)^2 ds}$ standard deviation bounds, verifying the Itô Isometry variance prediction.</p>
             
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: var(--bg-subtle); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border);">
                 <!-- Volatility Type Selection -->
                 <div style="display: flex; flex-direction: column; gap: 0.5rem; grid-column: span 2;">
-                    <label style="font-weight: 600; font-size: 0.85rem; color: #334155;">Volatility Function $\sigma(t)$ Profile:</label>
+                    <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-secondary);">Volatility Function $\sigma(t)$ Profile:</label>
                     <div style="display: flex; gap: 0.5rem;">
                         <button id="btnVolConstant" class="vol-btn" style="flex: 1; background: var(--primary-color); color: white; border: none; padding: 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">Constant: $\sigma$</button>
-                        <button id="btnVolLinear" class="vol-btn" style="flex: 1; background: #e2e8f0; color: #334155; border: none; padding: 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">Linear: $\sigma \cdot t$</button>
-                        <button id="btnVolSinusoidal" class="vol-btn" style="flex: 1; background: #e2e8f0; color: #334155; border: none; padding: 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">Sinusoidal</button>
+                        <button id="btnVolLinear" class="vol-btn" style="flex: 1; background: #e2e8f0; color: var(--text-secondary); border: none; padding: 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">Linear: $\sigma \cdot t$</button>
+                        <button id="btnVolSinusoidal" class="vol-btn" style="flex: 1; background: #e2e8f0; color: var(--text-secondary); border: none; padding: 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">Sinusoidal</button>
                     </div>
                 </div>
                 <!-- Base Parameter Slider -->
                 <div style="display: flex; flex-direction: column; justify-content: center;">
-                    <label for="volBaseSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Vol Coefficient $\sigma_0$: <span id="volBaseValue">0.10</span></label>
+                    <label for="volBaseSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Vol Coefficient $\sigma_0$: <span id="volBaseValue">0.10</span></label>
                     <input id="volBaseSlider" max="0.25" min="0.02" step="0.01" style="width: 100%;" type="range" value="0.10"/>
                 </div>
                 <!-- Re-simulate Button -->
@@ -64,13 +64,13 @@
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
                 <div>
-                    <h3 style="margin-top:0; font-family: 'Inter', sans-serif; font-size: 1.1rem; color: #475569; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem;">1. Brownian Motion &amp; Quadratic Variation $[W]_t$</h3>
+                    <h3 style="margin-top:0; font-family: 'Inter', sans-serif; font-size: 1.1rem; color: var(--text-secondary); border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">1. Brownian Motion &amp; Quadratic Variation $[W]_t$</h3>
                     <div class="chart-container" style="height: 350px;">
                         <canvas id="bmChart"></canvas>
                     </div>
                 </div>
                 <div>
-                    <h3 style="margin-top:0; font-family: 'Inter', sans-serif; font-size: 1.1rem; color: #475569; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem;">2. Stochastic Integral $I(t) = \int_0^t \sigma(s) dW(s)$</h3>
+                    <h3 style="margin-top:0; font-family: 'Inter', sans-serif; font-size: 1.1rem; color: var(--text-secondary); border-bottom: 1px solid var(--card-border); padding-bottom: 0.5rem;">2. Stochastic Integral $I(t) = \int_0^t \sigma(s) dW(s)$</h3>
                     <div class="chart-container" style="height: 350px;">
                         <canvas id="stochIntegralChart"></canvas>
                     </div>
@@ -86,7 +86,7 @@
                 <summary style="cursor: pointer; font-weight: 600; color: #15803d; list-style: none; display: flex; align-items: center;">
                     <span style="margin-right: 0.5rem;">👉</span> Show Step-by-Step Solution
                 </summary>
-                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; color: #334155;">
+                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--card-border); color: var(--text-secondary);">
                     <p>To find the distribution of $I(t) = \int_0^t s^2 dW(s)$, we apply Itô Isometry:</p>
                     <ol style="line-height: 1.8;">
                         <li>Since the integrand $\sigma(s) = s^2$ is deterministic, the stochastic integral is normally distributed:

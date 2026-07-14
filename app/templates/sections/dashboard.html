@@ -1,7 +1,7 @@
 <div id="dashboard">
 <header>
     <h1>Estimating the Term Structure</h1>
-    <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280;">Interactive visualization of Curve Construction, PCA &amp;
+    <div class="subtitle" style="margin-top: 0.5rem; color: var(--text-muted);">Interactive visualization of Curve Construction, PCA &amp;
                     Smoothing Splines</div>
 </header>
 <div class="container">
@@ -19,7 +19,7 @@
 <details style="margin-top: 1rem; color: var(--text-color);">
     <summary style="cursor: pointer; font-weight: 600; color: var(--accent);">View Mathematical Steps
                         </summary>
-    <div style="padding: 1.5rem; background: #f8fafc; border-radius: 8px; border-left: 4px solid var(--accent); margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.6;">
+    <div style="padding: 1.5rem; background: var(--bg-subtle); border-radius: 8px; border-left: 4px solid var(--accent); margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.6;">
         <p><strong>Bootstrap Method:</strong> Iteratively solve for the discount factor \(P(T_n)\)
                                 by matching the present value of swap cash flows to par:</p>
         <p>$$ P(T_n) = \frac{1 - S_n \sum_{i=1}^{n-1} \Delta t_i P(T_i)}{1 + S_n \Delta t_n} $$</p>
@@ -46,7 +46,7 @@
 <details style="margin-top: 1rem; color: var(--text-color);">
     <summary style="cursor: pointer; font-weight: 600; color: var(--accent);">View Mathematical Steps
                         </summary>
-    <div style="padding: 1.5rem; background: #f8fafc; border-radius: 8px; border-left: 4px solid var(--accent); margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.6;">
+    <div style="padding: 1.5rem; background: var(--bg-subtle); border-radius: 8px; border-left: 4px solid var(--accent); margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.6;">
         <p>Compute the covariance matrix \( \Sigma \) of monthly yield changes \( \Delta Y \).
                                 Decompose into eigenvalues \( \lambda_j \) and eigenvectors \( A \):</p>
         <p>$$ \Sigma = A \Lambda A^T $$</p>
@@ -69,7 +69,7 @@
 <details style="margin-top: 1rem; color: var(--text-color); margin-bottom: 1.5rem;">
     <summary style="cursor: pointer; font-weight: 600; color: #10b981;">View Mathematical Steps
                         </summary>
-    <div style="padding: 1.5rem; background: #f8fafc; border-radius: 8px; border-left: 4px solid #10b981; margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.6;">
+    <div style="padding: 1.5rem; background: var(--bg-subtle); border-radius: 8px; border-left: 4px solid #10b981; margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.6;">
         <p>We build a smoothing spline curve using a specific inner product matrix \( H \)
                                 constructed from the maturities \( t_i \):</p>
         <p>$$ H_{i,j} = t_i t_j + \frac{1}{2} \min(t_i, t_j)^2 \max(t_i, t_j) - \frac{1}{6}
@@ -90,13 +90,13 @@
 <h2>Discount Curves Comparison</h2>
 <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
 <div style="width: 100%;">
-<h3 style="color: #94a3b8; font-size: 1rem; margin-bottom: 0;">Discount Factors (P)</h3>
+<h3 style="color: var(--text-faint); font-size: 1rem; margin-bottom: 0;">Discount Factors (P)</h3>
 <div class="chart-container" style="height: 300px;">
 <canvas id="curveChart"></canvas>
 </div>
 </div>
 <div style="width: 100%;">
-<h3 style="color: #94a3b8; font-size: 1rem; margin-bottom: 0;">Difference (Bootstrap -
+<h3 style="color: var(--text-faint); font-size: 1rem; margin-bottom: 0;">Difference (Bootstrap -
                                 Pseudoinverse) in Basis Points</h3>
 <div class="chart-container" style="height: 250px;">
 <canvas id="spreadChart"></canvas>

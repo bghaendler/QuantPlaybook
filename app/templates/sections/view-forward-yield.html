@@ -1,7 +1,7 @@
 <div id="view-forward-yield" style="display: none;">
     <header style="margin-bottom: 2rem;">
-        <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">Continuously Compounded Forward Rate (Forward Yield)</h1>
-        <div class="subtitle" style="color: #64748b; font-size: 1.1rem; font-weight: 500;">Reading Module covering the mathematical formulation of continuously compounded forward rates, its limit behaviors, and numerical comparisons.</div>
+        <h1 style="font-size: 2rem; font-weight: 800; color: var(--text-color); margin-bottom: 0.5rem; letter-spacing: -0.025em;">Continuously Compounded Forward Rate (Forward Yield)</h1>
+        <div class="subtitle" style="color: var(--text-muted); font-size: 1.1rem; font-weight: 500;">Reading Module covering the mathematical formulation of continuously compounded forward rates, its limit behaviors, and numerical comparisons.</div>
     </header>
 
     <div style="display: flex; flex-direction: column; gap: 2.5rem; max-width: 1400px; margin-bottom: 4rem;">
@@ -30,7 +30,7 @@
                 </div>
             </div>
 
-            <div class="card" style="margin-bottom: 0; background: #f8fafc; border: 1px solid #e2e8f0;">
+            <div class="card" style="margin-bottom: 0; background: var(--bg-subtle); border: 1px solid var(--card-border);">
                 <h3>Instantaneous Forward Limit ($\delta \to 0$)</h3>
                 <p>For an infinitesimally small reference period, as $T_1 \to T_0 = T$, the continuously compounded forward rate converges to the standard <strong>instantaneous forward rate</strong> with maturity $T$:</p>
                 <div style="margin: 1.25rem 0; text-align: center; font-size: 1.1rem; font-weight: 700; color: var(--accent);">
@@ -55,11 +55,11 @@
             <p><strong>Proof / Algebra:</strong></p>
             <p>Recall the zero-coupon bond pricing formulations under both compounding conventions:</p>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; text-align: center; font-size: 1rem;">
-                <div style="background: #f8fafc; padding: 1rem; border-radius: 6px;">
+                <div style="background: var(--bg-subtle); padding: 1rem; border-radius: 6px;">
                     <strong>Simple Forward Rate:</strong>
                     $$ \frac{P(t, T_0)}{P(t, T_1)} = 1 + \delta F(t, T_0, T_1) $$
                 </div>
-                <div style="background: #f8fafc; padding: 1rem; border-radius: 6px;">
+                <div style="background: var(--bg-subtle); padding: 1rem; border-radius: 6px;">
                     <strong>Continuously Compounded Forward:</strong>
                     $$ \frac{P(t, T_0)}{P(t, T_1)} = e^{\delta Y(t, T_0, T_1)} $$
                 </div>
@@ -78,30 +78,30 @@
                 Input or adjust parameters representing zero-coupon bond prices and tenor length to see how simple forward rates, forward yields, and instantaneous rates convert in real-time.
             </p>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 2rem; align-items: end;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; background: var(--bg-subtle); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 2rem; align-items: end;">
                 <div>
-                    <label for="yldP0Slider" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Bond Price $P(t, T_0)$: <span id="yldP0Value" style="color: #2563eb;">0.950</span></label>
+                    <label for="yldP0Slider" style="font-weight: 700; font-size: 0.85rem; color: var(--text-secondary);">Bond Price $P(t, T_0)$: <span id="yldP0Value" style="color: #2563eb;">0.950</span></label>
                     <input id="yldP0Slider" max="1.0" min="0.5" step="0.005" style="width: 100%; cursor: pointer;" type="range" value="0.95"/>
                 </div>
                 <div>
-                    <label for="yldP1Slider" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Bond Price $P(t, T_1)$: <span id="yldP1Value" style="color: #2563eb;">0.900</span></label>
+                    <label for="yldP1Slider" style="font-weight: 700; font-size: 0.85rem; color: var(--text-secondary);">Bond Price $P(t, T_1)$: <span id="yldP1Value" style="color: #2563eb;">0.900</span></label>
                     <input id="yldP1Slider" max="0.99" min="0.4" step="0.005" style="width: 100%; cursor: pointer;" type="range" value="0.90"/>
                 </div>
                 <div>
-                    <label for="yldDeltaSlider" style="font-weight: 700; font-size: 0.85rem; color: #334155;">Tenor length $\delta$ (Years): <span id="yldDeltaValue" style="color: #2563eb;">1.00</span></label>
+                    <label for="yldDeltaSlider" style="font-weight: 700; font-size: 0.85rem; color: var(--text-secondary);">Tenor length $\delta$ (Years): <span id="yldDeltaValue" style="color: #2563eb;">1.00</span></label>
                     <input id="yldDeltaSlider" max="5.0" min="0.10" step="0.10" style="width: 100%; cursor: pointer;" type="range" value="1.00"/>
                 </div>
             </div>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
                 <div style="background: var(--metric-bg); border-left: 4px solid #b91c1c; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                    <h4 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Simple Forward Rate $F(t, T_0, T_1)$</h4>
+                    <h4 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Simple Forward Rate $F(t, T_0, T_1)$</h4>
                     <span id="calcYldSimpleFwd" style="font-size: 1.8rem; font-weight: 800; color: #b91c1c; font-family: monospace;">—</span>
                     <p style="margin: 0.5rem 0 0 0; font-size: 0.85rem; opacity: 0.85; line-height: 1.5;">Quoted simple interest payback locked today for loans over $[T_0, T_1]$ under simple linear format.</p>
                 </div>
 
                 <div style="background: var(--metric-bg); border-left: 4px solid #1e3a8a; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                    <h4 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Forward Yield $Y(t, T_0, T_1)$</h4>
+                    <h4 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Forward Yield $Y(t, T_0, T_1)$</h4>
                     <span id="calcYldFwdYield" style="font-size: 1.8rem; font-weight: 800; color: #1e3a8a; font-family: monospace;">—</span>
                     <p style="margin: 0.5rem 0 0 0; font-size: 0.85rem; opacity: 0.85; line-height: 1.5;">Quoted yield rate locked today under continuously compounded exponential format.</p>
                 </div>

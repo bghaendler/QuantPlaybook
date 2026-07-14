@@ -1,7 +1,7 @@
 <div id="view-tool-delta-gamma-hedge" style="display: none; font-family: var(--font-family-sans);">
     <header style="margin-bottom: 2rem;">
         <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Delta-Gamma Dynamic Portfolio Hedging Simulator</h1>
-        <p style="color: #64748b; margin-top: 0.5rem;">Hold a short call, hedge it daily with stock — or neutralize gamma with a second option — and watch the hedging error distribution over simulated paths.</p>
+        <p style="color: var(--text-muted); margin-top: 0.5rem;">Hold a short call, hedge it daily with stock — or neutralize gamma with a second option — and watch the hedging error distribution over simulated paths.</p>
     </header>
 
     <div class="card">
@@ -33,7 +33,7 @@
         <h3>Hedging Error Distribution (final P&amp;L of short call + hedge)</h3>
         <div id="dgMetrics" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;"></div>
         <canvas id="dgCanvas" width="900" height="240" style="width: 100%; border: 1px solid var(--card-border); border-radius: 8px; background: var(--metric-bg);"></canvas>
-        <p style="font-size: 0.8rem; color: #64748b; margin-top: 0.5rem;">With realized = implied and frequent rebalancing, the distribution collapses around zero (replication works). Set realized ≠ implied to see the systematic gamma P&amp;L $\frac{1}{2}\Gamma S^2(\sigma_r^2 - \sigma_i^2)dt$; reduce frequency to see discrete-hedging noise; add the gamma hedge to kill both.</p>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">With realized = implied and frequent rebalancing, the distribution collapses around zero (replication works). Set realized ≠ implied to see the systematic gamma P&amp;L $\frac{1}{2}\Gamma S^2(\sigma_r^2 - \sigma_i^2)dt$; reduce frequency to see discrete-hedging noise; add the gamma hedge to kill both.</p>
     </div>
 </div>
 
@@ -97,7 +97,7 @@ function dgRun() {
     var p5 = pnls[Math.floor(0.05 * nPaths)], p95 = pnls[Math.floor(0.95 * nPaths)];
     function card(l, v) {
         return '<div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.6rem 0.8rem;">' +
-            '<div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">' + l + '</div>' +
+            '<div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">' + l + '</div>' +
             '<div style="font-size: 1.2rem; font-weight: 800;">' + v + '</div></div>';
     }
     document.getElementById('dgMetrics').innerHTML =

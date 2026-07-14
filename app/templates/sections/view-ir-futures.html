@@ -1,7 +1,7 @@
 <div id="view-ir-futures" style="display: none;">
     <header>
         <h1>Interest Rate Derivatives</h1>
-        <div class="subtitle" style="color: #6b7280;">1. Interest Rate Futures &amp; Convexity Adjustment</div>
+        <div class="subtitle" style="color: var(--text-muted);">1. Interest Rate Futures &amp; Convexity Adjustment</div>
     </header>
 
     <div style="display: flex; flex-direction: column; gap: 3rem; max-width: 1400px; margin-bottom: 4rem;">
@@ -43,7 +43,7 @@
                 <p style="text-align: center; font-size: 1.1rem; font-weight: 600;">$$ F(t, T_0, T_1) = \mathbb{E}^{\mathbb{Q}^{T_1}}_t\!\left[L(T_0, T_1)\right] $$</p>
                 <p>The two rates use different measures — hence they generally differ. The gap between them is the <strong style="color: var(--accent);">convexity adjustment</strong>:</p>
                 <p style="text-align: center; font-size: 1.15rem; font-weight: 700; color: var(--accent);">$$ \gamma(t, T_0, T_1) = R_\text{futures}(t, T_0, T_1) - F(t, T_0, T_1) $$</p>
-                <p style="font-size: 0.9rem; color: #64748b;">The convexity adjustment is model-dependent. Under $\mathbb{Q}$, futures holders are compensated daily in a way that pushes the futures rate systematically above the forward rate.</p>
+                <p style="font-size: 0.9rem; color: var(--text-muted);">The convexity adjustment is model-dependent. Under $\mathbb{Q}$, futures holders are compensated daily in a way that pushes the futures rate systematically above the forward rate.</p>
             </div>
 
             <div class="card" style="margin-bottom: 0; background: #fffbeb; border-left: 4px solid #f59e0b;">
@@ -66,20 +66,20 @@
             <p>Consider a Gaussian HJM model with <em>deterministic</em> forward rate volatility $\sigma(t, T)$, and $T$-bond return volatility $v(t, T) = -\int_t^T \sigma(t, u)\,du$.</p>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
-                <div style="background: #f8fafc; padding: 1.25rem; border-radius: 6px; border: 1px solid #e2e8f0;">
-                    <h4 style="margin-top: 0; color: #334155;">Step 1: Bond Price Ratio</h4>
+                <div style="background: var(--bg-subtle); padding: 1.25rem; border-radius: 6px; border: 1px solid var(--card-border);">
+                    <h4 style="margin-top: 0; color: var(--text-secondary);">Step 1: Bond Price Ratio</h4>
                     <p style="font-size: 0.9rem; line-height: 1.6;">Stochastic calculus shows the ratio of $T_0$-bond to $T_1$-bond can be written as:</p>
                     <p style="font-size: 0.85rem; text-align: center;">$$ \frac{P(t,T_0)}{P(t,T_1)} = \frac{P(0,T_0)}{P(0,T_1)}\,\underbrace{\mathcal{E}\!\left(\int_0^t \Delta v(s)\,dW^*(s)\right)}_{\mathbb{Q}\text{-martingale}} \cdot \underbrace{e^{\int_0^t \Delta v(s)\,-v(s,T_1)^\top ds}}_{\text{deterministic}} $$</p>
                     <p style="font-size: 0.85rem;">where $\Delta v(s) = v(s, T_0) - v(s, T_1) = \int_{T_0}^{T_1} \sigma(s, u) du$.</p>
                 </div>
-                <div style="background: #f8fafc; padding: 1.25rem; border-radius: 6px; border: 1px solid #e2e8f0;">
-                    <h4 style="margin-top: 0; color: #334155;">Step 2: Conditional Expectation</h4>
+                <div style="background: var(--bg-subtle); padding: 1.25rem; border-radius: 6px; border: 1px solid var(--card-border);">
+                    <h4 style="margin-top: 0; color: var(--text-secondary);">Step 2: Conditional Expectation</h4>
                     <p style="font-size: 0.9rem; line-height: 1.6;">Since $v$ is deterministic, the conditional $\mathbb{Q}$-expectation of the terminal ratio equals:</p>
                     <p style="font-size: 0.85rem; text-align: center;">$$ \mathbb{E}^{\mathbb{Q}}_t\!\left[\frac{P(T_0,T_0)}{P(T_0,T_1)}\right] = \frac{P(t,T_0)}{P(t,T_1)} \cdot e^{\int_t^{T_0} \Delta v(s)\,-v(s,T_1)^\top ds} $$</p>
                     <p style="font-size: 0.85rem;">The exponential correction factor is purely deterministic — this is the Gaussian model advantage.</p>
                 </div>
-                <div style="background: #f8fafc; padding: 1.25rem; border-radius: 6px; border: 1px solid #e2e8f0;">
-                    <h4 style="margin-top: 0; color: #334155;">Step 3: Convexity Formula</h4>
+                <div style="background: var(--bg-subtle); padding: 1.25rem; border-radius: 6px; border: 1px solid var(--card-border);">
+                    <h4 style="margin-top: 0; color: var(--text-secondary);">Step 3: Convexity Formula</h4>
                     <p style="font-size: 0.9rem; line-height: 1.6;">Since $L(T_0,T_1) = \tfrac{1}{\delta}\!\left(\tfrac{1}{P(T_0,T_1)}-1\right)$, the exact convexity adjustment is:</p>
                     <p style="font-size: 0.85rem; text-align: center; font-weight: 600;">$$ \gamma(t, T_0, T_1) = \frac{1}{\delta}\frac{P(t,T_0)}{P(t,T_1)}\left(e^{\int_t^{T_0} \left( \int_s^{T_1} \sigma(s,u)du \right) \left( \int_{T_0}^{T_1} \sigma(s,v)^\top dv \right) ds} - 1\right) $$</p>
                 </div>
@@ -115,8 +115,8 @@
 
             <div class="container" style="margin-bottom: 0; gap: 1.5rem; margin-top: 1.5rem;">
                 <!-- Left: parameters -->
-                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
-                    <h4 style="margin-top: 0; color: #334155; font-family: 'Inter', sans-serif;">Session Parameters</h4>
+                <div style="background: var(--bg-subtle); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border);">
+                    <h4 style="margin-top: 0; color: var(--text-secondary); font-family: 'Inter', sans-serif;">Session Parameters</h4>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-family: 'Inter', sans-serif; font-size: 0.9rem;">
                         <div class="metric" style="margin-bottom: 0;"><span class="metric-label">$\kappa$</span><span class="metric-value" style="font-size: 1rem;">0.86</span></div>
                         <div class="metric" style="margin-bottom: 0;"><span class="metric-label">$\theta$</span><span class="metric-value" style="font-size: 1rem;">0.08</span></div>
@@ -125,7 +125,7 @@
                         <div class="metric" style="margin-bottom: 0;"><span class="metric-label">$\delta$ (tenor)</span><span class="metric-value" style="font-size: 1rem;">3M (¼)</span></div>
                         <div class="metric secondary" style="margin-bottom: 0;"><span class="metric-label">$T_0 - t$ (fixed)</span><span class="metric-value" style="font-size: 1rem;">6M (½)</span></div>
                     </div>
-                    <p style="font-size: 0.85rem; color: #64748b; margin-top: 1rem; margin-bottom: 0;">These are the reference parameters from the session slides. Adjust them below in the interactive simulation.</p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem; margin-bottom: 0;">These are the reference parameters from the session slides. Adjust them below in the interactive simulation.</p>
                 </div>
                 <!-- Right: key results -->
                 <div style="background: #f0fdf4; border-left: 4px solid #22c55e; padding: 1.5rem; border-radius: 8px;">
@@ -145,21 +145,21 @@
             <h2>Interactive: Convexity Adjustment Explorer</h2>
             <p style="margin-bottom: 1.5rem;">Adjust the Vasicek parameters to see how the convexity adjustment changes with <em>time to maturity</em> (left chart) and with <em>volatility</em> $\sigma$ (right chart). Both charts update simultaneously.</p>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 1.5rem; align-items: end;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; background: var(--bg-subtle); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 1.5rem; align-items: end;">
                 <div>
-                    <label for="futkappa" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Mean Reversion $\kappa$: <span id="futkappaVal">0.86</span></label>
+                    <label for="futkappa" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Mean Reversion $\kappa$: <span id="futkappaVal">0.86</span></label>
                     <input type="range" id="futkappa" min="0.05" max="3" step="0.01" value="0.86" style="width: 100%;">
                 </div>
                 <div>
-                    <label for="futsigma" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Volatility $\sigma$: <span id="futsigmaVal">1.00%</span></label>
+                    <label for="futsigma" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Volatility $\sigma$: <span id="futsigmaVal">1.00%</span></label>
                     <input type="range" id="futsigma" min="0.001" max="0.05" step="0.001" value="0.01" style="width: 100%;">
                 </div>
                 <div>
-                    <label for="futdelta" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Tenor $\delta$ (yrs): <span id="futdeltaVal">0.25</span></label>
+                    <label for="futdelta" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Tenor $\delta$ (yrs): <span id="futdeltaVal">0.25</span></label>
                     <input type="range" id="futdelta" min="0.083" max="1" step="0.083" value="0.25" style="width: 100%;">
                 </div>
                 <div>
-                    <label for="futr0" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: #334155;">Initial Rate $r(0)$: <span id="futr0Val">6.0%</span></label>
+                    <label for="futr0" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-secondary);">Initial Rate $r(0)$: <span id="futr0Val">6.0%</span></label>
                     <input type="range" id="futr0" min="0.01" max="0.15" step="0.005" value="0.06" style="width: 100%;">
                 </div>
             </div>
@@ -182,13 +182,13 @@
 
             <div class="container" style="margin-bottom: 0; gap: 2rem;">
                 <div>
-                    <h4 style="font-family: 'Inter', sans-serif; color: #334155; margin-bottom: 0.5rem;">γ vs. Time to Maturity $T_0 - t$</h4>
+                    <h4 style="font-family: 'Inter', sans-serif; color: var(--text-secondary); margin-bottom: 0.5rem;">γ vs. Time to Maturity $T_0 - t$</h4>
                     <div class="chart-container" style="height: 300px;">
                         <canvas id="futMaturityChart"></canvas>
                     </div>
                 </div>
                 <div>
-                    <h4 style="font-family: 'Inter', sans-serif; color: #334155; margin-bottom: 0.5rem;">γ vs. Volatility $\sigma$ (at $T_0-t = 0.5$yr)</h4>
+                    <h4 style="font-family: 'Inter', sans-serif; color: var(--text-secondary); margin-bottom: 0.5rem;">γ vs. Volatility $\sigma$ (at $T_0-t = 0.5$yr)</h4>
                     <div class="chart-container" style="height: 300px;">
                         <canvas id="futVolChart"></canvas>
                     </div>
@@ -202,7 +202,7 @@
             <table style="width: 100%; border-collapse: collapse; font-family: 'Inter', sans-serif; font-size: 0.9rem;">
                 <thead>
                     <tr style="border-bottom: 2px solid var(--card-border);">
-                        <th style="padding: 0.75rem; text-align: left; color: #64748b; font-weight: 700; text-transform: uppercase; font-size: 0.78rem; letter-spacing: 0.04em;">Feature</th>
+                        <th style="padding: 0.75rem; text-align: left; color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 0.78rem; letter-spacing: 0.04em;">Feature</th>
                         <th style="padding: 0.75rem; text-align: center; color: var(--accent);">Forward Rate $F(t, T_0, T_1)$</th>
                         <th style="padding: 0.75rem; text-align: center; color: #7c3aed;">Futures Rate $R_\text{futures}(t, T_0, T_1)$</th>
                     </tr>
@@ -255,7 +255,7 @@
                     <p>So $e^\text{Exponent} - 1 \approx 7.95 \times 10^{-6}$ (very small!)</p>
                     <p>Multiplying by $\frac{1}{\delta}\frac{P(0,T_0)}{P(0,T_1)} \approx 4 \times 1.016 \approx 4.06$, we get:</p>
                     <p style="font-weight: 600; color: #166534;">$\gamma(0, T_0, T_1) \approx 3.23 \times 10^{-5} \approx 0.32$ basis points</p>
-                    <p style="font-size: 0.9rem; color: #4b5563;">This confirms the session's result: the convexity adjustment is less than 1 basis point for short maturities.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">This confirms the session's result: the convexity adjustment is less than 1 basis point for short maturities.</p>
                 </div>
             </details>
         </div>

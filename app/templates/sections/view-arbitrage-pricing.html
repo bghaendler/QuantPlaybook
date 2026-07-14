@@ -1,7 +1,7 @@
 <div id="view-arbitrage-pricing" style="display: none;">
 <header>
 <h1>Short Rate Models</h1>
-<div class="subtitle" style="color: #6b7280;">1. Arbitrage Bond Pricing</div>
+<div class="subtitle" style="color: var(--text-muted);">1. Arbitrage Bond Pricing</div>
 </header>
 <div class="container" style="grid-template-columns: 1fr; gap: 3rem; max-width: 1400px;">
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
@@ -28,35 +28,35 @@
 <div class="card" style="margin-bottom: 2rem;">
 <h2>Interactive Visualization: Pricing by Expectation</h2>
 <p style="margin-bottom: 1.5rem;">Adjust the mathematical parameters below. Notice how increasing volatility ($\sigma$) actually <em>increases</em> the bond price due to <strong>Convexity Bias</strong> (Jensen's Inequality: $\mathbb{E}[e^{-X}] &gt; e^{-\mathbb{E}[X]}$).</p>
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; background: var(--bg-subtle); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--card-border);">
 <!-- Parameter Controls -->
 <div style="display: flex; flex-direction: column; gap: 1rem;">
 <div>
-<label for="volatilitySlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.9rem; color: #334155;">Volatility ($\sigma$): <span id="volValue">0.02</span></label>
+<label for="volatilitySlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.9rem; color: var(--text-secondary);">Volatility ($\sigma$): <span id="volValue">0.02</span></label>
 <input id="volatilitySlider" max="0.15" min="0" step="0.01" style="width: 100%;" type="range" value="0.02"/>
 </div>
 <div>
-<label for="meanRevSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.9rem; color: #334155;">Mean Reversion ($\kappa$): <span id="kappaValue">0.50</span></label>
+<label for="meanRevSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.9rem; color: var(--text-secondary);">Mean Reversion ($\kappa$): <span id="kappaValue">0.50</span></label>
 <input id="meanRevSlider" max="2" min="0" step="0.1" style="width: 100%;" type="range" value="0.5"/>
 </div>
 <div>
-<label for="thetaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.9rem; color: #334155;">Long-Term Mean ($\theta$): <span id="thetaValue">5.0%</span></label>
+<label for="thetaSlider" style="font-weight: 600; display: block; margin-bottom: 0.25rem; font-size: 0.9rem; color: var(--text-secondary);">Long-Term Mean ($\theta$): <span id="thetaValue">5.0%</span></label>
 <input id="thetaSlider" max="0.1" min="0.01" step="0.01" style="width: 100%;" type="range" value="0.05"/>
 </div>
 </div>
 <!-- Mathematical Formula dynamically updated -->
-<div style="border-left: 2px solid #cbd5e1; border-right: 2px solid #cbd5e1; padding: 0 1.5rem; display: flex; flex-direction: column; justify-content: center;">
-<div style="font-size: 0.85rem; color: #64748b; font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem; text-align: center;">Simulated Process (Vasicek SDE)</div>
-<div style="background: white; padding: 1rem; border-radius: 4px; text-align: center; border: 1px solid #e2e8f0; font-family: 'Courier New', monospace; font-size: 0.95rem;">
+<div style="border-left: 2px solid var(--input-border); border-right: 2px solid var(--input-border); padding: 0 1.5rem; display: flex; flex-direction: column; justify-content: center;">
+<div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem; text-align: center;">Simulated Process (Vasicek SDE)</div>
+<div style="background: white; padding: 1rem; border-radius: 4px; text-align: center; border: 1px solid var(--card-border); font-family: 'Courier New', monospace; font-size: 0.95rem;">
                                 dr = <span id="dynKappa" style="color:#2563eb; font-weight:bold;">0.50</span>(<span id="dynTheta" style="color:#16a34a; font-weight:bold;">0.05</span> - r)dt + <span id="dynSigma" style="color:#dc2626; font-weight:bold;">0.02</span>dW
                             </div>
-<div style="text-align: center; margin-top: 1rem; font-size: 0.85rem; color: #475569; font-weight: 500;">
+<div style="text-align: center; margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary); font-weight: 500;">
                                 The simulated price is the empirical average: <br> $\frac{1}{N} \sum e^{-\int r_s ds}$
                             </br></div>
 </div>
 <!-- Price Output -->
 <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-<div style="font-size: 0.9rem; color: #64748b; font-weight: 600; text-transform: uppercase;">Simulated Bond Price $P(0, T)$</div>
+<div style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Simulated Bond Price $P(0, T)$</div>
 <div id="simulatedPrice" style="font-size: 2.5rem; font-weight: 800; color: var(--primary-color); font-family: 'Courier New', Courier, monospace; margin: 0.5rem 0;">$95.12</div>
 <button id="resimulateBtn" style="background: var(--primary-color); color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 4px; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%;">Run 10 New Paths</button>
 </div>
@@ -78,7 +78,7 @@
 <summary style="cursor: pointer; font-weight: 600; color: #15803d; list-style: none; display: flex; align-items: center;">
 <span style="margin-right: 0.5rem;">👉</span> Show Step-by-Step Solution
                         </summary>
-<div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; color: #334155;">
+<div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--card-border); color: var(--text-secondary);">
 <p>The pricing formula states: $P(0, 1) = \mathbb{E}^{\mathbb{Q}} \left[ 100 \cdot e^{-\int_0^1 r(s)ds} \right]$</p>
 <p>Since the rate is constant over the year in each scenario, the integral is just $r \cdot 1$.</p>
 <ol style="line-height: 1.8;">

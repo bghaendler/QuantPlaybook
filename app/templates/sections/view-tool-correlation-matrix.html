@@ -1,7 +1,7 @@
 <div id="view-tool-correlation-matrix" style="display: none; font-family: var(--font-family-sans);">
     <header style="margin-bottom: 2rem;">
         <h1 style="margin: 0; font-size: 2rem; font-weight: 800; border-bottom: none; padding-bottom: 0;">Multi-Asset Correlation Matrix Builder</h1>
-        <p style="color: #64748b; margin-top: 0.5rem;">Enter pairwise correlations for up to four assets, validate positive semi-definiteness, and compute portfolio volatility and diversification metrics live.</p>
+        <p style="color: var(--text-muted); margin-top: 0.5rem;">Enter pairwise correlations for up to four assets, validate positive semi-definiteness, and compute portfolio volatility and diversification metrics live.</p>
     </header>
 
     <div class="card">
@@ -17,7 +17,7 @@
         <div id="cmPsd" style="font-weight: 700; margin-bottom: 0.75rem;"></div>
         <div id="cmMatrix" style="overflow-x: auto; margin-bottom: 1rem;"></div>
         <div id="cmPort" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.75rem;"></div>
-        <p style="font-size: 0.8rem; color: #64748b; margin-top: 0.75rem;">Portfolio variance: $\sigma_p^2 = w^\top \Sigma w$ with $\Sigma_{ij} = \rho_{ij}\sigma_i\sigma_j$. The diversification ratio is $\sum w_i\sigma_i / \sigma_p$ — the higher, the more correlation benefit captured.</p>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.75rem;">Portfolio variance: $\sigma_p^2 = w^\top \Sigma w$ with $\Sigma_{ij} = \rho_{ij}\sigma_i\sigma_j$. The diversification ratio is $\sum w_i\sigma_i / \sigma_p$ — the higher, the more correlation benefit captured.</p>
     </div>
 
     <div class="card">
@@ -43,7 +43,7 @@ function cmBuildInputs() {
     for (var i = 0; i < n; i++) {
         html += '<tr><th style="padding:0.3rem;">A' + (i + 1) + '</th>';
         for (var j = 0; j < n; j++) {
-            if (j < i) html += '<td style="padding:0.2rem; text-align:center; color:#64748b;" id="cmMirror' + i + '_' + j + '">·</td>';
+            if (j < i) html += '<td style="padding:0.2rem; text-align:center; color: var(--text-muted);" id="cmMirror' + i + '_' + j + '">·</td>';
             else if (j === i) html += '<td style="padding:0.2rem; text-align:center; font-weight:700;">1</td>';
             else html += '<td style="padding:0.2rem;"><input id="cmR' + i + '_' + j + '" type="number" value="' + cmDefaults[i][j] + '" min="-1" max="1" step="0.05" oninput="cmCompute()" style="width: 70px; padding:0.25rem; border-radius:6px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-color);"></td>';
         }
@@ -125,7 +125,7 @@ function cmCompute() {
     var divRatio = sigP > 1e-12 ? wAvgVol / sigP : 0;
     function card(l, v) {
         return '<div style="background: var(--metric-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.6rem 0.8rem;">' +
-            '<div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">' + l + '</div>' +
+            '<div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">' + l + '</div>' +
             '<div style="font-size: 1.2rem; font-weight: 800;">' + v + '</div></div>';
     }
     document.getElementById('cmPort').innerHTML =

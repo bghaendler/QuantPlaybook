@@ -1,7 +1,7 @@
 <div id="view-cqf-mp-diffeq-undetermined" style="display: none;">
     <header style="margin-bottom: 2rem;">
-        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Non-Homogeneous Case - Method of Undetermined Coefficients</h1>
-        <div class="subtitle" style="margin-top: 0.5rem; color: #6b7280; font-size: 1rem; font-family: var(--font-family-sans);">Guided guesswork methods for finding particular integrals, exponential/polynomial/trigonometric RHS, and failure case overrides.</div>
+        <h1 style="margin: 0; font-size: 2rem; font-weight: 800; font-family: var(--font-family-sans); letter-spacing: -0.02em;">Non-Homogeneous Case - Method of Undetermined Coefficients</h1>
+        <div class="subtitle" style="margin-top: 0.5rem; color: var(--text-muted); font-size: 1rem; font-family: var(--font-family-sans);">Guided guesswork methods for finding particular integrals, exponential/polynomial/trigonometric RHS, and failure case overrides.</div>
     </header>
 
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch; margin-bottom: 2rem;">
@@ -23,11 +23,11 @@
                 <div style="background: var(--code-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--card-border); font-family: var(--font-family-sans); font-size: 0.92rem; line-height: 1.6; color: var(--text-color);">
                     <strong style="color: var(--accent);">Category A: Exponential RHS $g(x) = M e^{kx}$</strong>
                     <p style="margin: 0.25rem 0;">Trial Solution: $y_p = C e^{kx}$ (provided $k$ is not a root of the auxiliary equation).</p>
-                    <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #6b7280;"><em>Example:</em> For $y'' - 5y' + 6y = 3e^{5x}$, try $y_p = Ce^{5x}$. Subbing in yields $C = 1/14 \implies y_p = (1/14)e^{5x}$.</p>
+                    <p style="margin: 0.25rem 0; font-size: 0.85rem; color: var(--text-muted);"><em>Example:</em> For $y'' - 5y' + 6y = 3e^{5x}$, try $y_p = Ce^{5x}$. Subbing in yields $C = 1/14 \implies y_p = (1/14)e^{5x}$.</p>
 
                     <strong style="display: block; margin-top: 1rem; color: #10b981;">Category B: Polynomial RHS $g(x) = P_n(x)$</strong>
                     <p style="margin: 0.25rem 0;">Trial Solution: A general polynomial of the same degree: $y_p = p_0 + p_1 x + \dots + p_n x^n$.</p>
-                    <p style="margin: 0.25rem 0; font-size: 0.85rem; color: #6b7280;"><em>Example:</em> For $y'' - 5y' + 6y = x^2$, try $y_p = p_0 + p_1 x + p_2 x^2$. Substituting and equating coefficients yields $p_2 = 1/2$, $p_1 = -3/2$, and $p_0 = 7/4$.</p>
+                    <p style="margin: 0.25rem 0; font-size: 0.85rem; color: var(--text-muted);"><em>Example:</em> For $y'' - 5y' + 6y = x^2$, try $y_p = p_0 + p_1 x + p_2 x^2$. Substituting and equating coefficients yields $p_2 = 1/2$, $p_1 = -3/2$, and $p_0 = 7/4$.</p>
 
                     <strong style="display: block; margin-top: 1rem; color: var(--warning);">Category C: Trigonometric RHS $g(x) = M \cos\omega x$ or $N \sin\omega x$</strong>
                     <p style="margin: 0.25rem 0;">Trial Solution: Both sine and cosine must always be included together: $y_p = a \cos\omega x + b \sin\omega x$.</p>
@@ -81,19 +81,19 @@
                 <div>
                     <label style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.35rem;">Exponential parameter ($k$):</label>
                     <input type="range" id="diffeqUndetSliderK" min="0" max="3" value="2" step="1" style="width: 100%; margin-bottom: 1rem;">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: -0.75rem; margin-bottom: 1.25rem; color: #6b7280;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-top: -0.75rem; margin-bottom: 1.25rem; color: var(--text-muted);">
                         <span>0 (Polynomial constant)</span>
                         <span id="diffeqUndetKVal" style="font-weight: bold; color: var(--accent);">k = 2</span>
                         <span>3</span>
                     </div>
 
                     <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); margin-bottom: 0.75rem;">
-                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">ROOT MULTIPLICITY CLASS</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">ROOT MULTIPLICITY CLASS</div>
                         <div id="diffeqUndetClass" style="font-size: 1.1rem; font-weight: 700; color: #10b981; margin-top: 0.25rem;">Standard (No root overlap)</div>
                     </div>
 
                     <div style="background: var(--card-bg); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid var(--card-border); border-left: 4px solid var(--warning);">
-                        <div style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">PARTICULAR INTEGRAL y_p</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">PARTICULAR INTEGRAL y_p</div>
                         <div id="diffeqUndetSol" style="font-size: 1.05rem; font-weight: 700; color: var(--warning); margin-top: 0.25rem;">y_p = (1/3) e^{2x}</div>
                     </div>
                 </div>
