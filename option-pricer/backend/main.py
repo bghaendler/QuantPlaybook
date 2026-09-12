@@ -50,6 +50,10 @@ class OptionEngine:
         self.T = float(inputs.get('time', 1))
         self.r = float(inputs.get('rate', 0.05))
         self.sigma = float(inputs.get('volatility', 0.2))
+        if not all(np.isfinite(x) for x in (self.S, self.K, self.T, self.r, self.sigma)):
+            raise ValueError("spot, strike, time, rate, and volatility must be finite numbers")
+        if self.S <= 0 or self.K <= 0 or self.T <= 0:
+            raise ValueError("spot, strike, and time must be greater than zero")
         
         # The 'dividend' field is overloaded based on the model:
         # - Merton: Dividend Yield (q)
@@ -687,7 +691,7 @@ class OptionEngine:
         p_down = pricing_func(S_down, self.T, self.sigma, self.r)
         
         delta = (p_up - p_down) / (S_up - S_down)
-        gamma = (p_up - 2 * base_price + p_down) / ((S_up - self.S)**2)
+        gamma = (p_up - 2 * base_price + p_down) / ((S_up - self.S) * (self.S - S_down))
         
         if self.T > dT:
             p_t_minus = pricing_func(self.S, self.T - dT, self.sigma, self.r)
@@ -710,14 +714,14 @@ class OptionEngine:
         Reiner and Rubinstein (1991) Standard Barrier Formulas.
         Ref: Haug Chapter 4.17.1
         """
-        K = self.rebate
+        rebate = self.rebate
         H = self.H
         b = self.b
         
         if self.barrier_type.startswith("Down") and S <= H:
-            return K if "Out" in self.barrier_type else (self._generalized_bsm(S, self.K, T, r, b, sigma) + K)
+            return np.exp(-r * T) * rebate if "Out" in self.barrier_type else self._generalized_bsm(S, self.K, T, r, b, sigma)
         if self.barrier_type.startswith("Up") and S >= H:
-             return K if "Out" in self.barrier_type else (self._generalized_bsm(S, self.K, T, r, b, sigma) + K)
+             return np.exp(-r * T) * rebate if "Out" in self.barrier_type else self._generalized_bsm(S, self.K, T, r, b, sigma)
 
         mu = (b - sigma**2/2) / sigma**2
         lam = np.sqrt(mu**2 + 2*r/sigma**2)
@@ -747,10 +751,10 @@ class OptionEngine:
             return phi * safe_S * np.exp((b-r)*T) * (safe_H/safe_S)**(2*(mu+1)) * N(eta * y2) - \
                    phi * self.K * np.exp(-r*T) * (safe_H/safe_S)**(2*mu) * N(eta * (y2 - sigma_sqrt_T))
         def term_E(eta):
-            return K * np.exp(-r*T) * (N(eta * (x2 - sigma_sqrt_T)) - \
+            return rebate * np.exp(-r*T) * (N(eta * (x2 - sigma_sqrt_T)) - \
                                       (safe_H/safe_S)**(2*mu) * N(eta * (y2 - sigma_sqrt_T)))
         def term_F(eta):
-            return K * ((safe_H/safe_S)**(mu+lam) * N(eta * z) + \
+            return rebate * ((safe_H/safe_S)**(mu+lam) * N(eta * z) + \
                         (safe_H/safe_S)**(mu-lam) * N(eta * (z - 2*lam*sigma_sqrt_T)))
 
         val = 0.0
@@ -1124,9 +1128,8 @@ class OptionEngine:
                 gr = self._numerical_greeks(wrapper)
             elif self.model == 'black76f':
                 p = self._black76f_price(s, self.K, self.T, self.T_f, self.r, self.sigma)
-                d1, _ = self._d1_d2(s, self.K, self.T, 0.0, self.sigma)
-                df = np.exp(-self.r * self.T_f)
-                gr = {"delta": df * norm.cdf(d1) if self.is_call==1 else df*(norm.cdf(d1)-1), "gamma": 0, "theta": 0, "vega": 0, "rho": 0}
+                wrapper = lambda _s, _t, _v, _r: self._black76f_price(_s, self.K, _t, self.T_f, _r, _v)
+                gr = self._numerical_greeks(wrapper)
             elif self.model == 'brenner':
                 p = self._brenner_subrahmanyam(s, self.T, self.r, self.b, self.sigma)
                 gr = self._analytical_greeks(s, self.K, self.T, self.r, self.b, self.sigma)
