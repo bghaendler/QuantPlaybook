@@ -82,6 +82,12 @@ class OptionEngine:
             raise ValueError("correlation must be between -1 and 1")
         if 'barrier' in self.model and self.H <= 0:
             raise ValueError("barrier must be greater than zero")
+        if self.sigma <= 0 or self.rebate < 0 or self.div1_amt < 0 or self.div2_amt < 0:
+            raise ValueError("volatility must be positive and rebates/dividends cannot be negative")
+        if self.div1_time < 0 or self.div2_time < 0 or self.time_dividend < 0:
+            raise ValueError("dividend times cannot be negative")
+        if self.model == 'black76f' and self.q_or_rf < 0:
+            raise ValueError("Black-76F settlement time cannot be negative")
 
         # Special handling for Black-76F (Deferred Settlement)
         # T_f is the time to payment, T is time to option expiry.

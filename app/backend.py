@@ -13,6 +13,7 @@ from fastapi import Body, HTTPException
 from typing import Dict, Any
 import sys
 import os
+from functools import lru_cache
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from option_engine import OptionEngine
 
@@ -36,7 +37,7 @@ templates = Jinja2Templates(directory=os.path.dirname(__file__))
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173").split(","),
+    allow_origins=[origin.strip() for origin in os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173").split(",") if origin.strip()],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,6 +47,7 @@ def dt(d1, d2):
     return (d2 - d1).days / 360.0
 
 @app.get("/api/data")
+@lru_cache(maxsize=1)
 def get_data():
     # --- 1. Curve Construction (Bootstrap & Pseudoinverse) ---
     spot = datetime.date(2012, 10, 3)
