@@ -4,13 +4,39 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>QuantPlaybook - Quantitative Finance Reference Manual</title>
+<title>QuantPlaybook - Independent Quantitative Finance Training</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com" rel="preconnect"/>
 <link href="https://cdn.jsdelivr.net" rel="preconnect"/>
 <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin="anonymous"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+        // Keep the public product independent of legacy course branding while
+        // preserving internal route IDs for backwards-compatible links.
+        function removeLegacyCourseBranding(root = document.body) {
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+            const nodes = [];
+            let node;
+            while ((node = walker.nextNode())) nodes.push(node);
+            nodes.forEach(textNode => {
+                textNode.nodeValue = textNode.nodeValue
+                    .replace(/Certificate in Quantitative Finance/gi, 'QuantPlaybook Quant Training')
+                    .replace(/CQF Lecture Series/gi, 'QuantPlaybook Lecture Series')
+                    .replace(/CQF Institute/gi, 'QuantPlaybook')
+                    .replace(/CQF Alumni/gi, 'Quant Alumni')
+                    .replace(/\bCQF\b/gi, 'QuantPlaybook');
+            });
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            removeLegacyCourseBranding();
+            new MutationObserver(mutations => mutations.forEach(mutation => {
+                mutation.addedNodes.forEach(node => {
+                    if (node.nodeType === Node.TEXT_NODE) removeLegacyCourseBranding(node.parentElement);
+                    else if (node.nodeType === Node.ELEMENT_NODE) removeLegacyCourseBranding(node);
+                });
+            })).observe(document.body, { childList: true, subtree: true });
+        });
+
         window.MathJax = {
             tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
             svg: { fontCache: 'global' },
