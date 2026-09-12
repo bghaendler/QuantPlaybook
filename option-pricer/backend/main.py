@@ -6,6 +6,7 @@ import numpy as np
 from scipy.stats import norm, multivariate_normal
 from scipy.optimize import brentq
 from typing import Dict, Any
+import os
 
 # Helper for Cumulative Bivariate Normal Distribution
 def cbnd(a, b, rho):
@@ -24,14 +25,14 @@ def cbnd(a, b, rho):
     cov = [[1, rho], [rho, 1]]
     try:
         return multivariate_normal.cdf([a, b], mean=mean, cov=cov)
-    except:
-        return 0 # Fallback
+    except (ValueError, np.linalg.LinAlgError) as exc:
+        raise ValueError(f"bivariate normal calculation failed: {exc}") from exc
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173").split(","),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -92,6 +93,10 @@ class OptionEngine:
         self.correlation = float(inputs.get('correlation', 0.8))
         self.q1 = float(inputs.get('q1', 1.0))
         self.q2 = float(inputs.get('q2', 1.0))
+        if not np.isfinite(self.correlation) or not -1 <= self.correlation <= 1:
+            raise ValueError("correlation must be between -1 and 1")
+        if 'barrier' in self.model and self.H <= 0:
+            raise ValueError("barrier must be greater than zero")
 
         # Special handling for Black-76F (Deferred Settlement)
         # T_f is the time to payment, T is time to option expiry.
@@ -1536,10 +1541,12 @@ def calculate(payload: Dict[str, Any] = Body(...)):
             "gatheral_dynamics": gatheral['dynamics'],
             "distribution_data": dist_data
         }
-    except Exception as e:
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
+    except Exception:
         import traceback
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="pricing calculation failed")
 
 if __name__ == "__main__":
     import uvicorn

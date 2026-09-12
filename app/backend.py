@@ -36,7 +36,7 @@ templates = Jinja2Templates(directory=os.path.dirname(__file__))
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173").split(","),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -275,10 +275,12 @@ def calculate(payload: Dict[str, Any] = Body(...)):
             "gatheral_dynamics": gatheral['dynamics'],
             "distribution_data": dist_data
         }
-    except Exception as e:
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
+    except Exception:
         import traceback
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="pricing calculation failed")
 
 # Trigger reload for Options Applications subpage update
 @app.get("/")
@@ -289,4 +291,3 @@ def read_root(request: Request):
         return templates.TemplateResponse(request, "index.html", {"request": request})
     else:
         return templates.TemplateResponse("index.html", {"request": request})
-

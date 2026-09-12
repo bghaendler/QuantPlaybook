@@ -20,8 +20,8 @@ def cbnd(a, b, rho):
     cov = [[1, rho], [rho, 1]]
     try:
         return multivariate_normal.cdf([a, b], mean=mean, cov=cov)
-    except:
-        return 0 # Fallback
+    except (ValueError, np.linalg.LinAlgError) as exc:
+        raise ValueError(f"bivariate normal calculation failed: {exc}") from exc
 
 class OptionEngine:
     """
@@ -78,6 +78,10 @@ class OptionEngine:
         self.correlation = float(inputs.get('correlation', 0.8))
         self.q1 = float(inputs.get('q1', 1.0))
         self.q2 = float(inputs.get('q2', 1.0))
+        if not np.isfinite(self.correlation) or not -1 <= self.correlation <= 1:
+            raise ValueError("correlation must be between -1 and 1")
+        if 'barrier' in self.model and self.H <= 0:
+            raise ValueError("barrier must be greater than zero")
 
         # Special handling for Black-76F (Deferred Settlement)
         # T_f is the time to payment, T is time to option expiry.
