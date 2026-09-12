@@ -279,6 +279,43 @@ html,
   border-right: 1px solid var(--border-subtle);
 }
 
+/* Embedded QuantPlaybook house style. The pricer is rendered inside the main
+   app, so it must share the same paper, ink, rules and proportions rather than
+   looking like a separate SaaS product. */
+:root {
+  --bg-app: #f7f6f2;
+  --bg-panel: #ffffff;
+  --bg-subtle: #f2f1ea;
+  --primary: #001489;
+  --primary-dark: #141e55;
+  --primary-light: #e6e8f3;
+  --text-main: #141e55;
+  --text-secondary: #434b77;
+  --text-muted: #717c7d;
+  --border: #e2e0d5;
+  --border-subtle: #ebe9e0;
+  --shadow-soft: none;
+  --radius: 2px;
+}
+
+html, body, #root { background: var(--bg-app); color: var(--text-main); }
+.container { max-width: none; padding: 0; }
+.main-layout { grid-template-columns: 230px minmax(0, 1fr); gap: 14px; }
+.main-layout.with-math { grid-template-columns: 230px minmax(0, 1fr) 320px; }
+.main-layout.with-math.math-collapsed { grid-template-columns: 230px minmax(0, 1fr) 42px; }
+.card, .option-type-group, .stepper-wrapper { border-radius: 2px; box-shadow: none; }
+.card { border-color: var(--border); }
+.price-card-header { border-radius: 2px; box-shadow: none; border: 1px solid var(--border); }
+.input-panel { padding: 14px 12px; gap: 12px; }
+.slider-group { margin-bottom: 16px; }
+.tabs { border-bottom-color: var(--border); }
+.active-tab { color: var(--primary); border-bottom-color: var(--primary); }
+
+@media (prefers-color-scheme: dark) {
+  :root { --bg-app: #0a0f26; --bg-panel: #111739; --bg-subtle: #1a2149; --text-main: #e8e9ee; --text-secondary: #b9bbcc; --text-muted: #9ca3a4; --border: #2a3163; --border-subtle: #232a55; --primary: #808ac4; --primary-dark: #ccd0e7; --primary-light: #2a3163; }
+  .input-panel, .option-type-btn.active, .stepper-wrapper { background: var(--bg-panel); }
+}
+
 .stepper-btn:last-child {
   border-left: 1px solid var(--border-subtle);
 }
@@ -1561,4 +1598,25 @@ div.math-container button.math-header-icon-btn:hover,
 
 button.math-header-icon-btn:active {
   transform: translateY(0) !important;
+}
+
+/* The host application gives the embedded lab a narrower viewport than a
+   standalone browser. Keep the controls usable instead of overflowing or
+   hiding the first column at tablet widths. */
+@media (max-width: 1100px) {
+  .container { padding: 0; overflow: hidden; }
+  body { overflow: hidden; }
+  .main-layout.with-math { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 12px; }
+  .main-layout.with-math.math-collapsed { grid-template-columns: 210px minmax(0, 1fr); }
+  .input-panel { order: initial; width: auto; min-width: 0; }
+  .center-panel { order: initial; width: auto; min-width: 0; }
+  .right-panel { display: none; }
+  .price-card-header { padding: 16px 20px; }
+  .price-value { font-size: 2.2rem; }
+  .viz-card { min-height: 0; }
+}
+
+@media (max-width: 700px) {
+  .main-layout.with-math { display: flex; flex-direction: column; overflow-y: auto; }
+  .input-panel, .center-panel { width: 100%; }
 }
